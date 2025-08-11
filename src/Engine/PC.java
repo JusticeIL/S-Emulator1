@@ -14,10 +14,10 @@ public class PC {
 
     public void executeCurrentCommand() {
         String nextLabel = currentCommand.execute();
-        if (nextLabel == "") {
+        if (nextLabel.equals("")) {
             // Case: no label
         }
-        else if (nextLabel == EXIT_LABEL) {
+        else if (nextLabel.equals(EXIT_LABEL)) {
             //Case: exit command
         }
         else {

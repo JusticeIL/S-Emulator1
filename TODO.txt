@@ -1,2 +1,13 @@
 1. Handle "EXIT" hardcoded in the code.
 2. Implement both execute methods.
+
+O.O.B:
+
+1. implement Commands (execute,expand, toString).
+2. implement Program (execute, expand)  add cycleCounter- Base on existing PC.
+3. import schema
+4. generate jxbi , and implement ctor's for Program & Command.
+5. in GenericCommand add static(map<command,cycles>, create())
+6. write test (in UI module).
+
+*discuss Hierarchy and relations for Variable Class
