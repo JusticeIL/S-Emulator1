@@ -3,6 +3,7 @@ package Engine;
 import java.util.List;
 
 import Engine.XMLandJaxB.SInstruction;
+import Engine.XMLandJaxB.SInstructionArgument;
 import Engine.XMLandJaxB.SProgram;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
@@ -13,7 +14,7 @@ public class Program {
     private Instruction currentInstruction;
     private List<Instruction> instructionList;
     private String EXIT_LABEL = "EXIT";
-    int PC; // Program Counter
+    int currentCommandIndex; // Program Counter
     int cycleCounter;
     Statistics statistics;
 
@@ -41,6 +42,16 @@ public class Program {
             System.out.println("Program loaded this:");
             for (SInstruction inst : other.getSInstructions().getSInstruction()) {
                 System.out.println(inst.getSVariable() + " - " + inst.getName() + " - " + inst.getType());
+                System.out.println("Arguments: ");
+                try {
+                    for (SInstructionArgument arguments : inst.getSInstructionArguments().getSInstructionArgument()) {
+                        System.out.println("  " + arguments.getName() + " - " + arguments.getValue());
+                    }
+                }
+                catch (NullPointerException e) {
+                    System.out.println("(no arguemnts)");
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
