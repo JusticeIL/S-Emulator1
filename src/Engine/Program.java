@@ -1,6 +1,7 @@
 package Engine;
 
 import java.util.List;
+import java.util.Map;
 
 import Engine.XMLandJaxB.SInstruction;
 import Engine.XMLandJaxB.SInstructionArgument;
@@ -13,6 +14,7 @@ public class Program {
 
     private Instruction currentInstruction;
     private List<Instruction> instructionList;
+    private Map<String, Variable> variables;
     private String EXIT_LABEL = "EXIT";
     int currentCommandIndex; // Program Counter
     int cycleCounter;
