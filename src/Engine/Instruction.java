@@ -1,5 +1,7 @@
 package Engine;
 
+import Engine.XMLandJaxB.SInstruction;
+
 import java.util.List;
 
 abstract public class Instruction implements Executable, Expandable {
@@ -17,4 +19,5 @@ abstract public class Instruction implements Executable, Expandable {
     public abstract List<Instruction> expand();
 
     abstract public String toString();
+
 }
