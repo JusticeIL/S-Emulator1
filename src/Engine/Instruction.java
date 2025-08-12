@@ -1,6 +1,8 @@
 package Engine;
 
-abstract public class Command {
+import java.util.List;
+
+abstract public class Instruction implements Executable, Expandable {
 
     private int number;
     private String label;
@@ -12,4 +14,7 @@ abstract public class Command {
     public abstract String execute();
         // Implementation of command execution logic
 
+    public abstract List<Instruction> expand();
+
+    abstract public String toString();
 }
