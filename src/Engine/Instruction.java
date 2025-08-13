@@ -28,4 +28,3 @@ abstract public class Instruction implements Executable, Expandable {
         this.level = 0; // Implement
         this.command = sInstruction.getName();
     }
-}

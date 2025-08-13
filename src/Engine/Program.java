@@ -1,25 +1,29 @@
 package Engine;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import Engine.XMLandJaxB.SInstruction;
 import Engine.XMLandJaxB.SInstructionArgument;
+import Engine.XMLandJaxB.SInstructions;
 import Engine.XMLandJaxB.SProgram;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Program {
 
     private Instruction currentInstruction;
-    private List<Instruction> instructionList;
-    private Map<String, Variable> variables;
+
+    private final List<Instruction> instructionList = new ArrayList<Instruction>();
     private String EXIT_LABEL = "EXIT";
     int currentCommandIndex; // Program Counter
     int cycleCounter;
     Statistics statistics;
-
+    private final Map<String,Variable> Variables = new TreeMap<>();
     private void update() {
 
     }
@@ -35,27 +39,21 @@ public class Program {
         }
     }
 
-    public static void loadProgram(String filePath) {
+
+
+    public void loadProgram(String filePath) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            SProgram other = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
-            System.out.println("Program loaded successfully: " + other.getName());
-            System.out.println("Program loaded this:");
-            for (SInstruction inst : other.getSInstructions().getSInstruction()) {
-                System.out.println(inst.getSVariable() + " - " + inst.getName() + " - " + inst.getType());
-                System.out.println("Arguments: ");
-                try {
-                    for (SInstructionArgument arguments : inst.getSInstructionArguments().getSInstructionArgument()) {
-                        System.out.println("  " + arguments.getName() + " - " + arguments.getValue());
-                    }
-                }
-                catch (NullPointerException e) {
-                    System.out.println("(no arguemnts)");
-                }
-
+            SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
+            List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
+            InstructionFactory instructionFactory = new InstructionFactory(Variables);
+            for (SInstruction sInstr : sInstructions) {
+                Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionList.size());
+                instructionList.add(newInstruction);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
