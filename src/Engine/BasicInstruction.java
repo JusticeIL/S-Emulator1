@@ -20,4 +20,9 @@ abstract public class BasicInstruction extends Instruction {
         super(sInstruction, num);
         this.variable = variable;
     }
+
+    @Override
+    public String toString() {
+        return ("#" + number + " " + "B" + " " + "[" + label + "]" + " " + command + " " + cycles);
+    }
 }

@@ -26,5 +26,6 @@ abstract public class Instruction implements Executable, Expandable {
         this.cycles = 0; //Implement
         this.destinationLabel = sInstruction.getSLabel();
         this.level = 0; // Implement
+        this.command = sInstruction.getName();
     }
 }
