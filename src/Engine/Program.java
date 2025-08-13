@@ -28,7 +28,7 @@ public class Program {
 
     }
 
-    public void executeCurrentCommand() {
+    private void executeCurrentCommand() {
         String nextLabel = currentInstruction.execute();
         if (nextLabel.equals("")) {
             // Case: no label
@@ -39,6 +39,12 @@ public class Program {
         }
     }
 
+    public void runProgram() {
+        currentInstruction = instructionList.getFirst();
+        while(currentCommandIndex <= instructionList.size()) {
+            executeCurrentCommand();
+        }
+    }
 
 
     public void loadProgram(String filePath) {
