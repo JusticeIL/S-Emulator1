@@ -6,12 +6,12 @@ import java.util.List;
 
 abstract public class Instruction implements Executable, Expandable {
 
-    private int number;
-    private String label;
-    private String command;
-    private int cycles;
-    private String destinationLabel;
-    private int level;
+    protected int number;
+    protected String label;
+    protected int cycles;
+    protected String destinationLabel;
+    protected String command;
+    protected int level;
 
     public abstract String execute();
         // Implementation of command execution logic
@@ -20,4 +20,11 @@ abstract public class Instruction implements Executable, Expandable {
 
     abstract public String toString();
 
-}
+    public Instruction(SInstruction sInstruction, int num) {
+        this.number = num;
+        this.label = sInstruction.getSLabel();
+        this.cycles = 0; //Implement
+        this.destinationLabel = sInstruction.getSLabel();
+        this.level = 0; // Implement
+        this.command = sInstruction.getName();
+    }
