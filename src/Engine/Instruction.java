@@ -14,7 +14,7 @@ abstract public class Instruction implements Executable, Expandable {
     protected int level;
 
     public abstract String execute();
-        // Implementation of command execution logic
+    // Implementation of command execution logic
 
     public abstract List<Instruction> expand();
 
@@ -28,3 +28,4 @@ abstract public class Instruction implements Executable, Expandable {
         this.level = 0; // Implement
         this.command = sInstruction.getName();
     }
+}
