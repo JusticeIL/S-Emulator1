@@ -17,7 +17,6 @@ public class Program {
 
     private Instruction currentInstruction;
     private final List<Instruction> instructionList = new ArrayList<Instruction>();
-    private List<Variable> variableList;
     private String EXIT_LABEL = "EXIT";
     int currentCommandIndex; // Program Counter
     int cycleCounter;
@@ -46,7 +45,7 @@ public class Program {
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
-            InstructionFactory instructionFactory = new InstructionFactory(variableList);
+            InstructionFactory instructionFactory = new InstructionFactory(Variables);
             for (SInstruction sInstr : sInstructions) {
                 Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionList.size());
                 instructionList.add(newInstruction);
