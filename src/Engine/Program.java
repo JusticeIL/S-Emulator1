@@ -31,10 +31,6 @@ public class Program {
 
     private final Map<Label,Instruction> Labels = new HashMap<>();
 
-    private void update() {
-
-    }
-
     public List<Instruction> getInstructionList() {
         return instructionList;
     }
@@ -55,10 +51,6 @@ public class Program {
             currentInstruction = Labels.get(nextLabel);
             currentCommandIndex = currentInstruction.getNumber();
         }
-
-
-        nextLabel.ifPresentOrElse(label -> currentInstruction = label.getLabledInstruction(),
-                this::getNextInstruction);
     }
 
 
