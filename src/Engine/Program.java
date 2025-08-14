@@ -16,15 +16,30 @@ import java.util.Map;
 public class Program {
 
     private Instruction currentInstruction;
-
+    private String programName;
     private final List<Instruction> instructionList = new ArrayList<Instruction>();
     private final String EXIT_LABEL = "EXIT";
     int currentCommandIndex; // Program Counter
     int cycleCounter;
     Statistics statistics;
     private final Map<String,Variable> Variables = new TreeMap<>();
+
+    public Set<Label> getLabels() {
+        return Labels.keySet();
+    }
+
+    private final Map<Label,Instruction> Labels = new HashMap<>();
+
     private void update() {
 
+    }
+
+    public List<Instruction> getInstructionList() {
+        return instructionList;
+    }
+
+    public String getProgramName() {
+        return programName;
     }
 
     private void executeCurrentCommand() {
