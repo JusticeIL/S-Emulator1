@@ -1,5 +1,6 @@
 package Engine;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 import Engine.XMLandJaxB.SInstruction;
@@ -7,6 +8,7 @@ import Engine.XMLandJaxB.SInstructionArgument;
 import Engine.XMLandJaxB.SInstructions;
 import Engine.XMLandJaxB.SProgram;
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.Map;
@@ -21,7 +23,6 @@ public class Program {
     int cycleCounter;
     Statistics statistics;
     private final Map<String,Variable> Variables = new TreeMap<>();
-    private final Map<Label, Instruction> labelMap = new HashMap<>();
     private void update() {
 
     }
@@ -55,8 +56,8 @@ public class Program {
         }
     }
 
-    public void loadProgram(String filePath) {
-        try {
+    public void loadProgram(String filePath) throws FileNotFoundException, JAXBException {
+        if (new File(filePath).exists()) {
             JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
@@ -67,17 +68,16 @@ public class Program {
                 instructionList.add(newInstruction);
             }
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        else  {
+            throw new FileNotFoundException();
         }
     }
-
 
     public List<Variable> getVariables() {
         return (List<Variable>)Variables.values();
     }
 
-    public Program(String filePath) {
+    public Program(String filePath) throws FileNotFoundException, JAXBException {
         loadProgram(filePath);
         this.statistics = new Statistics();
         this.currentCommandIndex = 0;
