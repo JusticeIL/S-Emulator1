@@ -9,10 +9,10 @@ public class Increase extends BasicInstruction {
     }
 
     @Override
-    public String execute() {
+    public Label execute() {
         int tmp = variable.getValue();
         tmp++;
         variable.setValue(tmp);
-        return "";
+        return destinationLabel;
     }
 }

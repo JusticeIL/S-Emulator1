@@ -9,7 +9,7 @@ public class JumpNotZero extends BasicInstruction {
     }
 
     @Override
-    public String execute() {
+    public Label execute() {
         return destinationLabel;
     }
 }
