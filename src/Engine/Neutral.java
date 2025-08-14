@@ -9,7 +9,7 @@ public class Neutral extends BasicInstruction {
     }
 
     @Override
-    public String execute() {
-        return "";
+    public Label execute() {
+        return destinationLabel;
     }
 }

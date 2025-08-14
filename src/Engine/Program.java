@@ -1,8 +1,6 @@
 package Engine;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import Engine.XMLandJaxB.SInstruction;
 import Engine.XMLandJaxB.SInstructionArgument;
@@ -12,14 +10,13 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class Program {
 
     private Instruction currentInstruction;
 
     private final List<Instruction> instructionList = new ArrayList<Instruction>();
-    private String EXIT_LABEL = "EXIT";
+    private final String EXIT_LABEL = "EXIT";
     int currentCommandIndex; // Program Counter
     int cycleCounter;
     Statistics statistics;
@@ -29,20 +26,31 @@ public class Program {
     }
 
     private void executeCurrentCommand() {
-        String nextLabel = currentInstruction.execute();
-        if (nextLabel.equals("")) {
-            // Case: no label
-        } else if (nextLabel.equals(EXIT_LABEL)) {
-            // Case: exit command
-        } else {
-            // The rest
-        }
+        Optional<Label> nextLabel = Optional.ofNullable(currentInstruction.execute());
+        nextLabel.ifPresentOrElse(label -> currentInstruction = label.getLabledInstruction(),
+                this::getNextInstruction);
     }
 
-    public void runProgram() {
+
+    private void getNextInstruction() {
+        currentCommandIndex++;
+        currentInstruction = instructionList.get(currentCommandIndex);
+    }
+
+    public void runProgram(int ...variables) {
+        setArguments(variables);
         currentInstruction = instructionList.getFirst();
         while(currentCommandIndex <= instructionList.size()) {
             executeCurrentCommand();
+        }
+    }
+
+    private void setArguments(int[] variables) {
+        int variableCounter = 1;
+        for (int variable : variables) {
+            String variableName = "x" + variableCounter;
+            Variables.put(variableName, new Variable(variableName, variable));
+            variableCounter++;
         }
     }
 
@@ -62,5 +70,10 @@ public class Program {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public List<Variable> getVariables() {
+        return (List<Variable>)Variables.values();
     }
 }

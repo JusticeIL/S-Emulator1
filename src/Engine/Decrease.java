@@ -9,12 +9,12 @@ public class Decrease extends BasicInstruction{
     }
 
     @Override
-    public String execute() {
+    public Label execute() {
         int tmp = variable.getValue();
         if (tmp >0) { // Case: can be decreased
             tmp--;
             variable.setValue(tmp);
         }
-        return "";
+        return destinationLabel;
     }
 }

@@ -2,5 +2,5 @@ package Engine;
 
 public interface Executable {
 
-    String execute();
+    Label execute();
 }

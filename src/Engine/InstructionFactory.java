@@ -13,17 +13,21 @@ public class InstructionFactory {
         switch(sInstr.getName()){
             case("INCREASE"):
                 instruction = new Increase(sInstr,instructionListLength, variable);
+                break;
             case("DECREASE"):
                 instruction = new Decrease(sInstr,instructionListLength, variable);
+                break;
             case("JUMP_NOT_ZERO"):
                 instruction = new JumpNotZero(sInstr,instructionListLength, variable);
+                break;
             case("NEUTRAL"):
                 instruction = new Neutral(sInstr,instructionListLength, variable);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid Instruction");
+
         }
-
-
+        return instruction;
     }
 
     InstructionFactory(Map<String, Variable> variables) {
