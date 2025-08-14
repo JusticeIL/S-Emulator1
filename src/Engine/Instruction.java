@@ -27,13 +27,15 @@ abstract public class Instruction implements Executable, Expandable {
 
     public Instruction(SInstruction sInstruction, int num) {
         this.number = num;
-        String LabelName = sInstruction.getSInstructionArguments().getSInstructionArgument();
+        String LabelName = sInstruction.getSInstructionArguments().getSInstructionArgument() //Problem: not sure we're getting one argument!
+                .getFirst().
+                getValue();
         if (Labels.containsKey(LabelName)) {
             this.label = Labels.get(LabelName);
         }
         else {
-              this.label = new Label(this.LabelName);
-              Labels.put(());
+              this.label = new Label(LabelName);
+              Labels.put(LabelName, this.label);
             }
         this.cycles = 0; //Implement
         //this.destinationLabel = sInstruction.getSInstructionArguments().getSInstructionArgument();

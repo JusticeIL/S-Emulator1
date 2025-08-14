@@ -3,8 +3,8 @@ package Engine;
 public class Variable {
 
     private int value;
-    private String name;
-    private int id;
+    private final String name;
+    private final int id;
     private static int highestUsedID;
 
     public Variable(String name, int value) {
@@ -19,6 +19,10 @@ public class Variable {
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

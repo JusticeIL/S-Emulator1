@@ -7,11 +7,11 @@ import java.util.List;
 abstract public class SyntheticInstruction extends Instruction {
 
     List<Variable> variables;
-    List<Instruction> instructions;
+    protected List<Instruction> instructions;
 
     public SyntheticInstruction(SInstruction sInstruction, int num) {
         super(sInstruction, num);
     }
 
-    abstract public List<Instruction> extend(); //Implement
+    public List<Instruction> extend() { return instructions; }
 }

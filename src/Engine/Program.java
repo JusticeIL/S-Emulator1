@@ -48,7 +48,7 @@ public class Program {
     private void setArguments(int[] variables) {
         int variableCounter = 1;
         for (int variable : variables) {
-            String variableName = "x" + variableCounter;
+            String variableName = "x" + variableCounter; //The xs could also not be in order
             Variables.put(variableName, new Variable(variableName, variable));
             variableCounter++;
         }

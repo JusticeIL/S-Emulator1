@@ -6,6 +6,7 @@ public class Decrease extends BasicInstruction{
 
     public Decrease(SInstruction sInstruction, int num, Variable variable) {
         super(sInstruction, num, variable);
+        command = variable.getName() + " <- " + variable.getName() + " - 1";
     }
 
     @Override
