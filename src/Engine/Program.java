@@ -21,6 +21,7 @@ public class Program {
     int cycleCounter;
     Statistics statistics;
     private final Map<String,Variable> Variables = new TreeMap<>();
+    private final Map<Label, Instruction> labelMap = new HashMap<>();
     private void update() {
 
     }
@@ -54,7 +55,6 @@ public class Program {
         }
     }
 
-
     public void loadProgram(String filePath) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
@@ -75,5 +75,13 @@ public class Program {
 
     public List<Variable> getVariables() {
         return (List<Variable>)Variables.values();
+    }
+
+    public Program(String filePath) {
+        loadProgram(filePath);
+        this.statistics = new Statistics();
+        this.currentCommandIndex = 0;
+        this.cycleCounter = 0;
+        this.currentInstruction = instructionList.getFirst();
     }
 }

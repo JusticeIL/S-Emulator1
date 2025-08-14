@@ -14,4 +14,9 @@ abstract public class SyntheticInstruction extends Instruction {
     }
 
     public List<Instruction> extend() { return instructions; }
+
+    @Override
+    public String toString() {
+        return ("#" + number + " " + "S" + " " + "[" + label + "]" + " " + command + " " + cycles);
+    }
 }
