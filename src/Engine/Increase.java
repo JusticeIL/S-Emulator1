@@ -4,8 +4,10 @@ import Engine.XMLandJaxB.SInstruction;
 
 public class Increase extends BasicInstruction {
 
+    static private final int CYCLES = 1;
+
     public Increase(SInstruction sInstruction, int num, Variable variable) {
-        super(sInstruction, num, variable);
+        super(sInstruction, num, variable, CYCLES);
         command = variable.getName() + " <- " + variable.getName() + " + 1";
     }
 
