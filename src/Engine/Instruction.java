@@ -41,7 +41,8 @@ abstract public class Instruction implements Executable, Expandable {
         //this.destinationLabel = sInstruction.getSInstructionArguments().getSInstructionArgument();
         this.level = 0; // Implement
         this.command = sInstruction.getName();
-        }
+        });
+    }
 
     public int getNumber() {
         return number;
