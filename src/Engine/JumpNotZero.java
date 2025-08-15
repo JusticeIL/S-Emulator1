@@ -4,8 +4,10 @@ import Engine.XMLandJaxB.SInstruction;
 
 public class JumpNotZero extends BasicInstruction {
 
+    static private final int CYCLES = 2;
+
     public JumpNotZero(SInstruction sInstruction, int num, Variable variable) {
-        super(sInstruction, num, variable);
+        super(sInstruction, num, variable, CYCLES);
         command = "IF " + variable.getName() + "!=0" + " GOTO " + destinationLabel.getLabelName();
     }
 
