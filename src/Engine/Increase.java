@@ -6,8 +6,8 @@ public class Increase extends BasicInstruction {
 
     static private final int CYCLES = 1;
 
-    public Increase(SInstruction sInstruction, int num, Variable variable) {
-        super(sInstruction, num, variable, CYCLES);
+    public Increase(SInstruction sInstruction, int num, Variable variable, Label label, Label destinationLabel) {
+        super(sInstruction, num, variable, CYCLES,label, destinationLabel);
         command = variable.getName() + " <- " + variable.getName() + " + 1";
     }
 
