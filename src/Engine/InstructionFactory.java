@@ -64,7 +64,7 @@ public class InstructionFactory {
         Label destinationLabel = Program.EMPTY_LABEL;
         SInstructionArguments args = sInstruction.getSInstructionArguments();
         if (args != null) {
-            Optional<String> LabelName = Optional.ofNullable(args.getSInstructionArgument().getFirst().getName());
+            Optional<String> LabelName = Optional.ofNullable(args.getSInstructionArgument().getFirst().getValue());
             destinationLabel = getLabel(destinationLabel, LabelName);
         }
         return destinationLabel;
