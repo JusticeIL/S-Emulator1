@@ -10,7 +10,7 @@ abstract public class SyntheticInstruction extends Instruction {
     protected List<Instruction> instructions;
 
     public SyntheticInstruction(SInstruction sInstruction, int num) {
-        super(sInstruction, num);
+        super(sInstruction, num,0);
     }
 
     public List<Instruction> extend() { return instructions; }
