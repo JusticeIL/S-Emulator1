@@ -17,22 +17,19 @@ public class Program {
 
     private Instruction currentInstruction;
     private String programName;
-    private final List<Instruction> instructionList = new ArrayList<Instruction>();
-    private final String EXIT_LABEL = "EXIT";
+    private final List<Instruction> instructionList = new LinkedList<Instruction>();
     int currentCommandIndex; // Program Counter
     int cycleCounter;
     Statistics statistics;
     private final Map<String,Variable> Variables = new TreeMap<>();
+    static protected final Label EMPTY_LABEL =  new Label("");
+    static protected final Label EXIT_LABEL = new Label("EXIT");
 
     public Set<Label> getLabels() {
         return Labels.keySet();
     }
 
     private final Map<Label,Instruction> Labels = new HashMap<>();
-
-    private void update() {
-
-    }
 
     public List<Instruction> getInstructionList() {
         return instructionList;
@@ -43,9 +40,17 @@ public class Program {
     }
 
     private void executeCurrentCommand() {
-        Optional<Label> nextLabel = Optional.ofNullable(currentInstruction.execute());
-        nextLabel.ifPresentOrElse(label -> currentInstruction = label.getLabledInstruction(),
-                this::getNextInstruction);
+        Label nextLabel = currentInstruction.execute();
+        if (nextLabel.equals(EMPTY_LABEL)) {
+            currentInstruction = instructionList.get(currentCommandIndex++);
+        }
+        else if (nextLabel.equals(EXIT_LABEL)) {
+            currentCommandIndex = instructionList.size() + 1;
+        }
+        else { // Case: GOTO Label
+            currentInstruction = Labels.get(nextLabel);
+            currentCommandIndex = currentInstruction.getNumber();
+        }
     }
 
 
@@ -73,15 +78,19 @@ public class Program {
 
     public void loadProgram(String filePath) throws FileNotFoundException, JAXBException {
         if (new File(filePath).exists()) {
+            // Load JAXB
             JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
+            // Load instructions
             InstructionFactory instructionFactory = new InstructionFactory(Variables);
             for (SInstruction sInstr : sInstructions) {
                 Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionList.size());
                 instructionList.add(newInstruction);
             }
+            // Load program name
+            programName = sProgram.getName();
         }
         else  {
             throw new FileNotFoundException();

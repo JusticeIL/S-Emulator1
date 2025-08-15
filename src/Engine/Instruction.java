@@ -17,7 +17,7 @@ abstract public class Instruction implements Executable, Expandable {
 
     public abstract Label execute();
     // Implementation of command execution logic
-    private Map<String, Label> Labels = new TreeMap<>();
+    private final Map<String, Label> Labels = new TreeMap<>();
     public Map<String, Label> getLabels() {
         return Labels;
     }
@@ -42,4 +42,8 @@ abstract public class Instruction implements Executable, Expandable {
         this.level = 0; // Implement
         this.command = sInstruction.getName();
         }
+
+    public int getNumber() {
+        return number;
     }
+}
