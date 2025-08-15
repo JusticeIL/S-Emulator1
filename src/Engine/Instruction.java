@@ -29,7 +29,7 @@ abstract public class Instruction implements Executable, Expandable {
 
     public Instruction(SInstruction sInstruction, int num, int cycles) {
         this.number = num;
-        Optional<String> LabelName = Optional.of(sInstruction.getSLabel()); // Problem: not sure we're getting one argument!
+        Optional<String> LabelName = Optional.ofNullable(sInstruction.getSLabel()); // Problem: not sure we're getting one argument!
         LabelName.ifPresent(labelname -> {
             if (Labels.containsKey(labelname)) {
                 this.label = Labels.get(labelname);
@@ -38,7 +38,7 @@ abstract public class Instruction implements Executable, Expandable {
                 Labels.put(labelname, this.label);
             }
         this.cycles = cycles; //Implement
-        //this.destinationLabel = sInstruction.getSInstructionArguments().getSInstructionArgument();
+        this.destinationLabel = Program.EMPTY_LABEL;
         this.level = 0; // Implement
         this.command = sInstruction.getName();
         });
