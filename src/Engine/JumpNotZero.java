@@ -9,7 +9,6 @@ public class JumpNotZero extends BasicInstruction {
     public JumpNotZero(SInstruction sInstruction, int num, Variable variable, Label label, Label destinationLabel) {
         super(sInstruction, num, variable, CYCLES, label, destinationLabel);
         String newDestLabelName = sInstruction.getSInstructionArguments().getSInstructionArgument().getFirst().getValue();
-        parseDestinationLabel(sInstruction);
         command = "IF " + variable.getName() + "!=0" + " GOTO " + destinationLabel.getLabelName();
     }
 

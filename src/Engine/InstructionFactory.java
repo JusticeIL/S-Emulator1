@@ -2,8 +2,10 @@ package Engine;
 
 import Engine.XMLandJaxB.SInstruction;
 import Engine.XMLandJaxB.SInstructionArgument;
+import Engine.XMLandJaxB.SInstructionArguments;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -60,15 +62,12 @@ public class InstructionFactory {
 
     private Label getDestinationLabelFromSInstruction(SInstruction sInstruction) {
         Label destinationLabel = Program.EMPTY_LABEL;
-
-        Optional<String> LabelName = Optional.ofNullable(
-                sInstruction.getSInstructionArguments()
-                        .getSInstructionArgument()
-                        .getFirst()
-                        .getValue()
-        );
-
-        return getLabel(destinationLabel, LabelName);
+        SInstructionArguments args = sInstruction.getSInstructionArguments();
+        if (args != null) {
+            Optional<String> LabelName = Optional.ofNullable(args.getSInstructionArgument().getFirst().getName());
+            destinationLabel = getLabel(destinationLabel, LabelName);
+        }
+        return destinationLabel;
     }
 
     InstructionFactory(Map<String, Variable> variables) {
