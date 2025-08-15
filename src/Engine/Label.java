@@ -23,4 +23,9 @@ public class Label {
     public int hashCode() {
         return Objects.hashCode(labelName);
     }
+
+    @Override
+    public String toString() {
+        return labelName;
+    }
 }

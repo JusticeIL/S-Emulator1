@@ -88,6 +88,7 @@ public class Program {
             for (SInstruction sInstr : sInstructions) {
                 Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionList.size());
                 instructionList.add(newInstruction);
+                Labels.put(newInstruction.getLabel(), newInstruction);
             }
             // Load program name
             programName = sProgram.getName();

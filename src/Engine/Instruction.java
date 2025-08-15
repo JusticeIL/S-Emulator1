@@ -20,6 +20,11 @@ abstract public class Instruction implements Executable, Expandable {
     public abstract Label execute();
     // Implementation of command execution logic
     private final Map<String, Label> Labels = new TreeMap<>();
+
+    public Label getLabel() {
+        return label;
+    }
+
     public Map<String, Label> getLabels() {
         return Labels;
     }
@@ -27,22 +32,15 @@ abstract public class Instruction implements Executable, Expandable {
 
     abstract public String toString();
 
-    public Instruction(SInstruction sInstruction, int num, int cycles) {
+    public Instruction(SInstruction sInstruction, int num, int cycles,Label label, Label destinationLabel) {
         this.number = num;
-        Optional<String> LabelName = Optional.ofNullable(sInstruction.getSLabel()); // Problem: not sure we're getting one argument!
-        LabelName.ifPresent(labelname -> {
-            if (Labels.containsKey(labelname)) {
-                this.label = Labels.get(labelname);
-            } else {
-                this.label = new Label(labelname);
-                Labels.put(labelname, this.label);
-            }
-        this.cycles = cycles; //Implement
-        this.destinationLabel = Program.EMPTY_LABEL;
+        this.label = label;
+        this.cycles = cycles;
+        this.destinationLabel = destinationLabel;
         this.level = 0; // Implement
         this.command = sInstruction.getName();
-        });
     }
+
 
     public int getNumber() {
         return number;
@@ -52,15 +50,6 @@ abstract public class Instruction implements Executable, Expandable {
         this.cycles = cycles;
     }
 
-    protected void parseDestinationLabel(SInstruction sInstruction) { // Gal doesn't like this name
-        Optional<String> LabelName = Optional.ofNullable(sInstruction.getSLabel());
-        LabelName.ifPresent(labelname -> {
-            if (Labels.containsKey(labelname)) {
-                this.destinationLabel = Labels.get(labelname);
-            } else {
-                this.destinationLabel = new Label(labelname);
-                Labels.put(labelname, this.destinationLabel);
-            }
-        });
-    }
+
+
 }
