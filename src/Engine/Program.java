@@ -22,7 +22,7 @@ public class Program {
     int cycleCounter;
     Statistics statistics;
     private final Map<String,Variable> Variables = new TreeMap<>();
-    static protected final Label EMPTY_LABEL =  new Label("");
+    static public final Label EMPTY_LABEL =  new Label("     ");
     static protected final Label EXIT_LABEL = new Label("EXIT");
 
     public Set<Label> getLabels() {

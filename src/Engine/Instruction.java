@@ -38,7 +38,8 @@ abstract public class Instruction implements Executable, Expandable {
                 Labels.put(labelname, this.label);
             }
         this.cycles = cycles; //Implement
-        this.destinationLabel = Labels.get("     ");
+        this.destinationLabel = Program.EMPTY_LABEL;
+
         this.level = 0; // Implement
         this.command = sInstruction.getName();
         });
