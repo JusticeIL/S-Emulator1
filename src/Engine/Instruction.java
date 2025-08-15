@@ -17,7 +17,7 @@ abstract public class Instruction implements Executable, Expandable {
 
     public abstract Label execute();
     // Implementation of command execution logic
-    private Map<String, Label> Labels = new TreeMap<>();
+    private final Map<String, Label> Labels = new TreeMap<>();
     public Map<String, Label> getLabels() {
         return Labels;
     }

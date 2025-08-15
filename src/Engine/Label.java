@@ -15,8 +15,12 @@ public class Label {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Label label = (Label) o;
+        if (!(o instanceof Label label)) return false;
         return Objects.equals(labelName, label.labelName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(labelName);
     }
 }
