@@ -27,7 +27,7 @@ abstract public class Instruction implements Executable, Expandable {
 
     abstract public String toString();
 
-    public Instruction(SInstruction sInstruction, int num) {
+    public Instruction(SInstruction sInstruction, int num, int cycles) {
         this.number = num;
         Optional<String> LabelName = Optional.of(sInstruction.getSLabel()); // Problem: not sure we're getting one argument!
         LabelName.ifPresent(labelname -> {
@@ -37,8 +37,7 @@ abstract public class Instruction implements Executable, Expandable {
                 this.label = new Label(labelname);
                 Labels.put(labelname, this.label);
             }
-        });
-        this.cycles = 0; //Implement
+        this.cycles = cycles; //Implement
         //this.destinationLabel = sInstruction.getSInstructionArguments().getSInstructionArgument();
         this.level = 0; // Implement
         this.command = sInstruction.getName();
@@ -46,5 +45,9 @@ abstract public class Instruction implements Executable, Expandable {
 
     public int getNumber() {
         return number;
+    }
+
+    protected void updateCycles(int cycles) {
+        this.cycles = cycles;
     }
 }
