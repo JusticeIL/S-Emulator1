@@ -39,7 +39,6 @@ abstract public class Instruction implements Executable, Expandable {
             }
         this.cycles = cycles; //Implement
         this.destinationLabel = Program.EMPTY_LABEL;
-
         this.level = 0; // Implement
         this.command = sInstruction.getName();
         });
@@ -51,5 +50,17 @@ abstract public class Instruction implements Executable, Expandable {
 
     protected void updateCycles(int cycles) {
         this.cycles = cycles;
+    }
+
+    protected void parseDestinationLabel(SInstruction sInstruction) { // Gal doesn't like this name
+        Optional<String> LabelName = Optional.ofNullable(sInstruction.getSLabel());
+        LabelName.ifPresent(labelname -> {
+            if (Labels.containsKey(labelname)) {
+                this.destinationLabel = Labels.get(labelname);
+            } else {
+                this.destinationLabel = new Label(labelname);
+                Labels.put(labelname, this.destinationLabel);
+            }
+        });
     }
 }
