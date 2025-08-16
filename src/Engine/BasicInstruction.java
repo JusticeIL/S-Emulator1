@@ -16,8 +16,8 @@ abstract public class BasicInstruction extends Instruction {
         return res;
     }
 
-    public BasicInstruction(SInstruction sInstruction, int num, Variable variable, int cycles,Label label,Label destinationLabel) {
-        super(sInstruction, num, cycles, label, destinationLabel);
+    public BasicInstruction(int num, Variable variable, int cycles,Label label,Label destinationLabel) {
+        super(num, cycles, label, destinationLabel);
         this.variable = variable;
     }
 

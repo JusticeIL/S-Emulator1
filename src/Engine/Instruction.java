@@ -32,13 +32,12 @@ abstract public class Instruction implements Executable, Expandable {
 
     abstract public String toString();
 
-    public Instruction(SInstruction sInstruction, int num, int cycles,Label label, Label destinationLabel) {
+    public Instruction(int num, int cycles,Label label, Label destinationLabel) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.level = 0; // Implement
-        this.command = sInstruction.getName();
     }
 
 
@@ -49,7 +48,5 @@ abstract public class Instruction implements Executable, Expandable {
     protected void updateCycles(int cycles) {
         this.cycles = cycles;
     }
-
-
 
 }

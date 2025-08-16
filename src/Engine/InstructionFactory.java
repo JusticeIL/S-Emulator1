@@ -19,18 +19,18 @@ public class InstructionFactory {
         Label label = getLabelFromSIndtruction(sInstr);
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
 
-        switch(sInstr.getName()){
+        switch(sInstr.getName().toUpperCase()){
             case("INCREASE"):
-                instruction = new Increase(sInstr,instructionListLength, variable, label, destinationLabel);
+                instruction = new Increase(instructionListLength, variable, label, destinationLabel);
                 break;
             case("DECREASE"):
-                instruction = new Decrease(sInstr,instructionListLength, variable, label, destinationLabel);
+                instruction = new Decrease(instructionListLength, variable, label, destinationLabel);
                 break;
             case("JUMP_NOT_ZERO"):
-                instruction = new JumpNotZero(sInstr,instructionListLength, variable, label, destinationLabel);
+                instruction = new JumpNotZero(instructionListLength, variable, label, destinationLabel);
                 break;
             case("NEUTRAL"):
-                instruction = new Neutral(sInstr,instructionListLength, variable, label, destinationLabel);
+                instruction = new Neutral(instructionListLength, variable, label, destinationLabel);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Instruction");

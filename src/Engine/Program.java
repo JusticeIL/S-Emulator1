@@ -41,15 +41,19 @@ public class Program {
 
     private void executeCurrentCommand() {
         Label nextLabel = currentInstruction.execute();
-        if (nextLabel.equals(EMPTY_LABEL)) {
-            currentInstruction = instructionList.get(currentCommandIndex++);
-        }
-        else if (nextLabel.equals(EXIT_LABEL)) {
+        try {
+            if (nextLabel.equals(EMPTY_LABEL)) {
+                currentInstruction = instructionList.get(++currentCommandIndex);
+            }
+            else if (nextLabel.equals(EXIT_LABEL)) {
+                currentCommandIndex = instructionList.size() + 1;
+            }
+            else { // Case: GOTO Label
+                currentInstruction = Labels.get(nextLabel);
+                currentCommandIndex = currentInstruction.getNumber();
+            }
+        } catch (IndexOutOfBoundsException e) { // Case: Program Counter is out of bounds, e.g. when the last command was executed
             currentCommandIndex = instructionList.size() + 1;
-        }
-        else { // Case: GOTO Label
-            currentInstruction = Labels.get(nextLabel);
-            currentCommandIndex = currentInstruction.getNumber();
         }
     }
 
@@ -88,7 +92,9 @@ public class Program {
             for (SInstruction sInstr : sInstructions) {
                 Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionList.size());
                 instructionList.add(newInstruction);
-                Labels.put(newInstruction.getLabel(), newInstruction);
+                if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
+                    Labels.put(newInstruction.getLabel(), newInstruction);
+                }
             }
             // Load program name
             programName = sProgram.getName();
@@ -98,8 +104,8 @@ public class Program {
         }
     }
 
-    public List<Variable> getVariables() {
-        return (List<Variable>)Variables.values();
+    public Collection<Variable> getVariables() {
+        return Variables.values();
     }
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {

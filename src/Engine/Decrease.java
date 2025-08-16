@@ -6,8 +6,8 @@ public class Decrease extends BasicInstruction{
 
     static private final int CYCLES = 1;
 
-    public Decrease(SInstruction sInstruction, int num, Variable variable, Label label, Label destinationLabel) {
-        super(sInstruction, num, variable, CYCLES,label, destinationLabel);
+    public Decrease(int num, Variable variable, Label label, Label destinationLabel) {
+        super(num, variable, CYCLES,label, destinationLabel);
         command = variable.getName() + " <- " + variable.getName() + " - 1";
     }
 

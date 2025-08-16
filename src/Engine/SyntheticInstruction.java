@@ -11,7 +11,7 @@ abstract public class SyntheticInstruction extends Instruction {
 
     public SyntheticInstruction(SInstruction sInstruction, int num, Label label, Label destinationLabel) {
 
-        super(sInstruction, num, 0,label, destinationLabel );
+        super(num, 0,label, destinationLabel );
     }
 
     public List<Instruction> extend() { return instructions; }

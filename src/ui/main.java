@@ -8,10 +8,10 @@ import java.io.FileNotFoundException;
 public class main {
 
     static public String eithanPath = "C:\\Users\\eitan\\OneDrive\\שולחן העבודה\\Computer Science Degree\\Java\\badic.xml";
-    static public String galPath = "/Users/galrubinstein/Downloads/minus.xml";
+    static public String galPath = "/Users/galrubinstein/Downloads/badic.xml";
 
     public static void main(String[] args) {
-        fullTest2();
+        fullTest1();
 
     }
 
