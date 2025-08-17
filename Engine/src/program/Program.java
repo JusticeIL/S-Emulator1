@@ -66,6 +66,7 @@ public class Program {
     }
 
     public void runProgram(int ...variables) {
+        setUpNewRun();
         setArguments(variables);
         currentInstruction = instructionList.getFirst();
         while(currentCommandIndex <= instructionList.size()) {
@@ -112,6 +113,18 @@ public class Program {
 
     public Collection<Variable> getVariables() {
         return Variables.values();
+    }
+
+    private void setUpNewRun(){
+        if(Variables.containsKey("y")) {
+            Variables.get("y").setValue(0);
+        }else{
+            Variables.put("y", new Variable("y", 0));
+        }
+        for (Variable variable : Variables.values()) {
+            variable.setValue(0);
+        }
+        currentCommandIndex = 0;
     }
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
