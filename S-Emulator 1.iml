@@ -23,15 +23,16 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../../Programming/jaxb-ri-4.0.5/mod" />
+          <root url="file://C:/Programming/jaxb-ri-4.0.5/mod" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../../Programming/jaxb-ri-4.0.5/mod" />
+          <root url="file://C:/Programming/jaxb-ri-4.0.5/mod" />
         </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../../../../Programming/jaxb-ri-4.0.5/mod" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../Programming/jaxb-ri-4.0.5/mod" recursive="false" type="SOURCES" />
+        <jarDirectory url="file://C:/Programming/jaxb-ri-4.0.5/mod" recursive="false" />
+        <jarDirectory url="file://C:/Programming/jaxb-ri-4.0.5/mod" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="Engine" />
   </component>
 </module>
