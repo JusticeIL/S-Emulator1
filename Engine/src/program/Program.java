@@ -43,20 +43,20 @@ public class Program {
 
     private void executeCurrentCommand() {
         Label nextLabel = currentInstruction.execute();
-        try {
-            if (nextLabel.equals(EMPTY_LABEL)) {
-                currentInstruction = instructionList.get(++currentCommandIndex);
+
+
+        if (nextLabel.equals(EMPTY_LABEL)) {
+            currentCommandIndex++;
+            if (currentCommandIndex < instructionList.size()) {
+                currentInstruction = instructionList.get(currentCommandIndex);
             }
-            else if (nextLabel.equals(EXIT_LABEL)) {
-                currentCommandIndex = instructionList.size() + 1;
-            }
-            else { // Case: GOTO Label
-                currentInstruction = Labels.get(nextLabel);
-                currentCommandIndex = currentInstruction.getNumber();
-            }
-        } catch (IndexOutOfBoundsException e) { // Case: Program Counter is out of bounds, e.g. when the last command was executed
+        } else if (nextLabel.equals(EXIT_LABEL)) {
             currentCommandIndex = instructionList.size() + 1;
+        } else { // Case: GOTO Label
+            currentInstruction = Labels.get(nextLabel);
+            currentCommandIndex = currentInstruction.getNumber();
         }
+
     }
 
 
@@ -69,7 +69,7 @@ public class Program {
         setUpNewRun();
         setArguments(variables);
         currentInstruction = instructionList.getFirst();
-        while(currentCommandIndex <= instructionList.size()) {
+        while(currentCommandIndex < instructionList.size()) {
             executeCurrentCommand();
         }
     }

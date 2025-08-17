@@ -27,7 +27,7 @@ public class main {
         Program program = null;
         try {
             program = new Program(eithanPath);
-            program.runProgram(1,2);
+            program.runProgram(5,2);
             program.getVariables().forEach(System.out::println);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -39,7 +39,7 @@ public class main {
         try {
             program = new Program(eithanPath);
             program.runProgram(1,2);
-            program.runProgram(3,4);
+            program.runProgram(5,4);
             program.getVariables().forEach(System.out::println);
         } catch (Exception e) {
             System.out.println(e.getMessage());
