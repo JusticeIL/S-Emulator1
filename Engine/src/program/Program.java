@@ -110,7 +110,7 @@ public class Program {
         }
     }
 
-    public List<Variable> getVariables() {
+    public Collection<Variable> getVariables() {
         return Variables.values();
     }
 

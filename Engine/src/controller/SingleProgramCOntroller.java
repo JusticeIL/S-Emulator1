@@ -7,7 +7,7 @@ import program.ProgramData;
 import program.Statistics;
 
 import java.io.FileNotFoundException;
-import java.util.List;
+import java.util.Collection;
 
 public class SingleProgramCOntroller implements Controller{
 
@@ -42,7 +42,7 @@ public class SingleProgramCOntroller implements Controller{
     }
 
     @Override
-    public List<Variable> RunProgram() {
+    public Collection<Variable> RunProgram() {
         program.runProgram();
         return program.getVariables();
     }
