@@ -50,33 +50,33 @@ public class InstructionFactory {
     }
 
     private Variable getVariableFromArguments(SInstructionArguments sInstrArg) {
-        //returns the second argument of the instruction, if exists
-        if (sInstrArg == null || sInstrArg.getSInstructionArgument().size() < 2) {
-            return null; // No second argument, return null
-        }
-        Optional<String> argumentVariableName = Optional.ofNullable(sInstrArg.getSInstructionArgument().get(1).getValue());
-        if (argumentVariableName.isPresent()) {
-            String argumentVariable = argumentVariableName.get();
-            return getVariable(argumentVariable);
-        } else {
-            return null; // No second argument, return null
+        if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) {
+            return null;
         }
 
+        Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("VARIABLE"))
+                .map(SInstructionArgument::getValue) // may still be null
+                .findFirst();
+
+        return argumentVariableName.map(this::getVariable).orElse(null);
     }
 
     private int getConstantFromSInstruction(SInstruction sInstr) {
-        int constant = 0;
-        SInstructionArguments args = sInstr.getSInstructionArguments();
-        if (args != null && !args.getSInstructionArgument().isEmpty()) {
-            String value = args.getSInstructionArgument().getFirst().getValue();
-            try {
-                constant = Integer.parseInt(value);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid constant value: " + value);
-            }
+        SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+
+        if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) {
+            return 0;
         }
-        return constant;
+        Optional<String> argumentConstantName = sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("CONSTANT"))
+                .map(SInstructionArgument::getValue) // may still be null
+                .findFirst();
+        return argumentConstantName.map(Integer::parseInt).orElse(0);
     }
+
+
+
 
     private Label getLabelFromSIndtruction(SInstruction sInstruction) {
         Label label = Program.EMPTY_LABEL;
@@ -98,14 +98,14 @@ public class InstructionFactory {
         return label;
     }
 
-    private Label getDestinationLabelFromSInstruction(SInstruction sInstruction) {
+    private Label getDestinationLabelFromSInstruction(SInstruction sInstr) {
         Label destinationLabel = Program.EMPTY_LABEL;
-        SInstructionArguments args = sInstruction.getSInstructionArguments();
-        if (args != null) {
-            Optional<String> LabelName = Optional.ofNullable(args.getSInstructionArgument().getFirst().getValue());
-            destinationLabel = getLabel(destinationLabel, LabelName);
-        }
-        return destinationLabel;
+        SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+        Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("LABEL"))
+                .map(SInstructionArgument::getValue) // may still be null
+                .findFirst();
+        return getLabel(destinationLabel, argumentVariableName);
     }
 
     public InstructionFactory(Map<String, Variable> variables) {

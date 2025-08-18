@@ -4,7 +4,7 @@ import program.Program;
 
 public class main {
 
-    static public String eithanPath = "C:\\Users\\eitan\\OneDrive\\שולחן העבודה\\Computer Science Degree\\Java\\badic.xml";
+    static public String eithanPath = "C:\\Users\\eitan\\OneDrive\\שולחן העבודה\\Computer Science Degree\\Java\\synthetic.xml";
     static public String galPath = "/Users/galrubinstein/Downloads/badic.xml";
 
     public static void main(String[] args) {
