@@ -1,4 +1,4 @@
-package program;
+package instruction;
 
 import instruction.component.Label;
 

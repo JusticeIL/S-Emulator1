@@ -1,7 +1,5 @@
 package instruction;
 
-import program.Executable;
-import program.Expandable;
 import instruction.component.Label;
 
 import java.util.List;
@@ -32,7 +30,7 @@ abstract public class Instruction implements Executable, Expandable {
 
     abstract public String toString();
 
-    public Instruction(int num, int cycles,Label label, Label destinationLabel) {
+    public Instruction(int num, int cycles, Label label, Label destinationLabel) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
@@ -49,4 +47,7 @@ abstract public class Instruction implements Executable, Expandable {
         this.cycles = cycles;
     }
 
+    public int getCycles() {
+        return cycles;
+    }
 }

@@ -9,7 +9,7 @@ import program.Statistics;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 
-public class SingleProgramCOntroller implements Controller{
+public class SingleProgramController implements Controller{
 
     Program program;
     Statistics statistics;

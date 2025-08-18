@@ -44,7 +44,6 @@ public class Program {
     private void executeCurrentCommand() {
         Label nextLabel = currentInstruction.execute();
 
-
         if (nextLabel.equals(EMPTY_LABEL)) {
             currentCommandIndex++;
             if (currentCommandIndex < instructionList.size()) {
@@ -96,12 +95,14 @@ public class Program {
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
             // Load instructions
             InstructionFactory instructionFactory = new InstructionFactory(Variables);
+            int instructionCounter = 1;
             for (SInstruction sInstr : sInstructions) {
-                Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionList.size());
+                Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
                 instructionList.add(newInstruction);
                 if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
                     Labels.put(newInstruction.getLabel(), newInstruction);
                 }
+                instructionCounter++;
             }
             // Load program name
             programName = sProgram.getName();
@@ -131,7 +132,17 @@ public class Program {
         loadProgram(filePath);
         this.statistics = new Statistics();
         this.currentCommandIndex = 0;
-        this.cycleCounter = 0;
+        this.cycleCounter = calculateProgramCycles();
         this.currentInstruction = instructionList.getFirst();
+    }
+
+    private int calculateProgramCycles() {
+        return instructionList.stream().
+                mapToInt(Instruction::getCycles)
+                .sum();
+    }
+
+    public int getProgramCycles() {
+        return cycleCounter;
     }
 }

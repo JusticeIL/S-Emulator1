@@ -14,7 +14,7 @@ public class InstructionFactory {
     private final Map<String, Variable> variables;
     private final Map<String, Label> labels = new HashMap<>();
 
-    public Instruction GenerateInstruction(SInstruction sInstr, int instructionListLength) {
+    public Instruction GenerateInstruction(SInstruction sInstr, int instructionCounter) {
         Variable variable = GetVariable(sInstr.getSVariable());
         Instruction instruction;
         Label label = getLabelFromSIndtruction(sInstr);
@@ -22,16 +22,16 @@ public class InstructionFactory {
 
         switch(sInstr.getName().toUpperCase()){
             case("INCREASE"):
-                instruction = new Increase(instructionListLength, variable, label, destinationLabel);
+                instruction = new Increase(instructionCounter, variable, label, destinationLabel);
                 break;
             case("DECREASE"):
-                instruction = new Decrease(instructionListLength, variable, label, destinationLabel);
+                instruction = new Decrease(instructionCounter, variable, label, destinationLabel);
                 break;
             case("JUMP_NOT_ZERO"):
-                instruction = new JumpNotZero(instructionListLength, variable, label, destinationLabel);
+                instruction = new JumpNotZero(instructionCounter, variable, label, destinationLabel);
                 break;
             case("NEUTRAL"):
-                instruction = new Neutral(instructionListLength, variable, label, destinationLabel);
+                instruction = new Neutral(instructionCounter, variable, label, destinationLabel);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Instruction");
