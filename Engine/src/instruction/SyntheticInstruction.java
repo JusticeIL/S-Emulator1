@@ -8,7 +8,7 @@ import java.util.List;
 
 abstract public class SyntheticInstruction extends Instruction {
 
-    List<Variable> variables;
+    protected List<Variable> variables;
     protected List<Instruction> instructions;
 
     public SyntheticInstruction(int num, List<Variable> variables, int cycles, Label label, Label destinationLabel) {

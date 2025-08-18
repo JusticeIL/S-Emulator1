@@ -8,7 +8,7 @@ public class main {
     static public String galPath = "/Users/galrubinstein/Downloads/badic.xml";
 
     public static void main(String[] args) {
-        fullTest1();
+        fullTest2();
 
     }
 

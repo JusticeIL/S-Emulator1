@@ -1,5 +1,6 @@
-package instruction;
+package instruction.basic;
 
+import instruction.BasicInstruction;
 import program.Program;
 import instruction.component.Label;
 import instruction.component.Variable;

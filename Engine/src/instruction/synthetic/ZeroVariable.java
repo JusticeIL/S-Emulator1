@@ -1,6 +1,7 @@
-package instruction;
+package instruction.synthetic;
 
-import XMLandJaxB.SInstruction;
+import instruction.Instruction;
+import instruction.SyntheticInstruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 

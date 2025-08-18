@@ -1,5 +1,9 @@
 package instruction;
 
+import instruction.basic.Decrease;
+import instruction.basic.Increase;
+import instruction.basic.JumpNotZero;
+import instruction.basic.Neutral;
 import program.Program;
 import XMLandJaxB.SInstruction;
 import XMLandJaxB.SInstructionArguments;

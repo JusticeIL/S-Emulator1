@@ -1,12 +1,14 @@
-package instruction;
+package instruction.synthetic;
 
+import instruction.Instruction;
+import instruction.SyntheticInstruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.Program;
 
 import java.util.List;
 
-public class JumpEqualConstant extends SyntheticInstruction{
+public class JumpEqualConstant extends SyntheticInstruction {
 
     static private final int CYCLES = 2;
     private final int constValue;
