@@ -10,18 +10,17 @@ import java.util.List;
 public class Assignment extends SyntheticInstruction {
 
     static private final int CYCLES = 4;
+    Variable argumentVariable;
 
-    public Assignment(int num, List<Variable> variables, Label label, Label destinationLabel) {
-        super(num, variables, CYCLES, label, destinationLabel);
-        if (variables.size() != 2) {
-            throw new IllegalArgumentException("Assignment Instruction must have exactly two variables"); // Temporal fix
-        }
-        command = variables.getFirst().getName() + " <- " + variables.get(1).getName();
+    public Assignment(int num, Variable assignedVariable, Label label, Label destinationLabel, Variable argumentVariable) {
+        super(num, assignedVariable, CYCLES, label, destinationLabel);
+        this.argumentVariable = argumentVariable;
+        command = assignedVariable.getName() + " <- " + argumentVariable.getName();
     }
 
     @Override
     public Label execute() {
-        variables.getFirst().setValue(variables.get(1).getValue());
+        variable.setValue(argumentVariable.getValue());
         return destinationLabel;
     }
 

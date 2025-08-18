@@ -13,18 +13,15 @@ public class JumpEqualConstant extends SyntheticInstruction {
     static private final int CYCLES = 2;
     private final int constValue;
 
-    public JumpEqualConstant(int num, List<Variable> variables, Label label, Label destinationLabel, int constValue) {
-        super(num, variables, CYCLES, label, destinationLabel);
-        if (variables.size() != 1) {
-            throw new IllegalArgumentException("Jump Equal Constant Instruction must have exactly one variable"); // Temporal fix
-        }
-        command = "IF " + variables.getFirst().getName() + " = " + constValue + " GOTO " + destinationLabel.getLabelName();
+    public JumpEqualConstant(int num, Variable variable, Label label, Label destinationLabel, int constValue) {
+        super(num, variable, CYCLES, label, destinationLabel);
+        command = "IF " + variable.getName() + " = " + constValue + " GOTO " + destinationLabel.getLabelName();
         this.constValue = constValue;
     }
 
     @Override
     public Label execute() {
-        if (variables.getFirst().getValue() == constValue) {
+        if (variable.getValue() == constValue) {
             return destinationLabel;
         } else {
             return Program.EMPTY_LABEL; // No jump, handle later
