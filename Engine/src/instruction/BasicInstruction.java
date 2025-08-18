@@ -24,6 +24,6 @@ abstract public class BasicInstruction extends Instruction {
 
     @Override
     public String toString() {
-        return ("#" + number + " " + "B" + " " + "[" + label + "]" + " " + command + " " + cycles);
+        return ("#" + number + " " + "B" + " " + "[" + label + "]" + " " + command + " " + "(" + cycles + ")");
     }
 }

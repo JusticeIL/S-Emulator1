@@ -11,9 +11,9 @@ abstract public class SyntheticInstruction extends Instruction {
     List<Variable> variables;
     protected List<Instruction> instructions;
 
-    public SyntheticInstruction(SInstruction sInstruction, int num, Label label, Label destinationLabel) {
-
-        super(num, 0,label, destinationLabel );
+    public SyntheticInstruction(int num, List<Variable> variables, int cycles, Label label, Label destinationLabel) {
+        super(num, cycles ,label, destinationLabel);
+        this.variables = variables;
     }
 
     public List<Instruction> extend() { return instructions; }

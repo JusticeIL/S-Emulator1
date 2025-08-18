@@ -3,36 +3,25 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/Engine/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/UI/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="file://$USER_HOME$/jaxb-ri-4.0.5/mod" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$USER_HOME$/jaxb-ri-4.0.5/mod" />
-        </SOURCES>
-        <jarDirectory url="file://$USER_HOME$/jaxb-ri-4.0.5/mod" recursive="false" />
-        <jarDirectory url="file://$USER_HOME$/jaxb-ri-4.0.5/mod" recursive="false" type="SOURCES" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="file://C:/Programming/jaxb-ri-4.0.5/mod" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://C:/Programming/jaxb-ri-4.0.5/mod" />
-        </SOURCES>
-        <jarDirectory url="file://C:/Programming/jaxb-ri-4.0.5/mod" recursive="false" />
-        <jarDirectory url="file://C:/Programming/jaxb-ri-4.0.5/mod" recursive="false" type="SOURCES" />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="Engine" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../../Programming/jaxb-ri-4.0.5/mod" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../../Programming/jaxb-ri-4.0.5/mod" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/../../../../Programming/jaxb-ri-4.0.5/mod" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../../../Programming/jaxb-ri-4.0.5/mod" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>

@@ -1,6 +1,4 @@
-package program;
-
-import instruction.Instruction;
+package instruction;
 
 import java.util.List;
 
