@@ -7,16 +7,12 @@ import instruction.component.Variable;
 import java.util.List;
 
 abstract public class SyntheticInstruction extends Instruction {
+    protected Variable variable;
 
-    List<Variable> variables;
-    protected List<Instruction> instructions;
-
-    public SyntheticInstruction(int num, List<Variable> variables, int cycles, Label label, Label destinationLabel) {
+    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles ,label, destinationLabel);
-        this.variables = variables;
+        this.variable = variable;
     }
-
-    public List<Instruction> extend() { return instructions; }
 
     @Override
     public String toString() {

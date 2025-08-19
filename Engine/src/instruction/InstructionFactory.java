@@ -1,5 +1,11 @@
 package instruction;
 
+import XMLandJaxB.SInstructionArgument;
+import instruction.basic.Decrease;
+import instruction.basic.Increase;
+import instruction.basic.JumpNotZero;
+import instruction.basic.Neutral;
+import instruction.synthetic.*;
 import program.Program;
 import XMLandJaxB.SInstruction;
 import XMLandJaxB.SInstructionArguments;
@@ -9,37 +15,69 @@ import instruction.component.Variable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class InstructionFactory {
     private final Map<String, Variable> variables;
     private final Map<String, Label> labels = new HashMap<>();
 
     public Instruction GenerateInstruction(SInstruction sInstr, int instructionCounter) {
-        Variable variable = GetVariable(sInstr.getSVariable());
+        Variable variable = getVariable(sInstr.getSVariable());
+        Variable argumentVariable = getVariableFromArguments(sInstr.getSInstructionArguments());
         Instruction instruction;
         Label label = getLabelFromSIndtruction(sInstr);
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
 
-        switch(sInstr.getName().toUpperCase()){
-            case("INCREASE"):
-                instruction = new Increase(instructionCounter, variable, label, destinationLabel);
-                break;
-            case("DECREASE"):
-                instruction = new Decrease(instructionCounter, variable, label, destinationLabel);
-                break;
-            case("JUMP_NOT_ZERO"):
-                instruction = new JumpNotZero(instructionCounter, variable, label, destinationLabel);
-                break;
-            case("NEUTRAL"):
-                instruction = new Neutral(instructionCounter, variable, label, destinationLabel);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid Instruction");
+        int constant = getConstantFromSInstruction(sInstr);
 
-        }
+        instruction = switch (sInstr.getName().toUpperCase()) {
+            case ("INCREASE") -> new Increase(instructionCounter, variable, label, destinationLabel);
+            case ("DECREASE") -> new Decrease(instructionCounter, variable, label, destinationLabel);
+            case ("JUMP_NOT_ZERO") -> new JumpNotZero(instructionCounter, variable, label, destinationLabel);
+            case ("NEUTRAL") -> new Neutral(instructionCounter, variable, label, destinationLabel);
+            case("JUMP_ZERO") -> new JumpZero(instructionCounter, variable, label, destinationLabel);
+            case("ZERO_VARIABLE") -> new ZeroVariable(instructionCounter, variable, label, destinationLabel);
+            case ("JUMP_EQUAL_CONSTANT") -> new JumpEqualConstant(instructionCounter, variable, label, destinationLabel, constant);
+            case ("CONSTANT_ASSIGNMENT") -> new ConstantAssignment(instructionCounter, variable, label, destinationLabel, constant);
+            case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable);
+            case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
+            case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
+
+            default -> throw new IllegalArgumentException("Invalid Instruction");
+        };
 
         return instruction;
     }
+
+    private Variable getVariableFromArguments(SInstructionArguments sInstrArg) {
+        if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) {
+            return null;
+        }
+
+        Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("VARIABLE"))
+                .filter(arg->!arg.getName().toUpperCase().contains("LABEL"))
+                .map(SInstructionArgument::getValue) // may still be null
+                .findFirst();
+
+        return argumentVariableName.map(this::getVariable).orElse(null);
+    }
+
+    private int getConstantFromSInstruction(SInstruction sInstr) {
+        SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+
+        if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) {
+            return 0;
+        }
+        Optional<String> argumentConstantName = sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("CONSTANTVALUE"))
+                .map(SInstructionArgument::getValue) // may still be null
+                .findFirst();
+        return argumentConstantName.map(Integer::parseInt).orElse(0);
+    }
+
+
+
 
     private Label getLabelFromSIndtruction(SInstruction sInstruction) {
         Label label = Program.EMPTY_LABEL;
@@ -61,21 +99,25 @@ public class InstructionFactory {
         return label;
     }
 
-    private Label getDestinationLabelFromSInstruction(SInstruction sInstruction) {
+    private Label getDestinationLabelFromSInstruction(SInstruction sInstr) {
         Label destinationLabel = Program.EMPTY_LABEL;
-        SInstructionArguments args = sInstruction.getSInstructionArguments();
-        if (args != null) {
-            Optional<String> LabelName = Optional.ofNullable(args.getSInstructionArgument().getFirst().getValue());
-            destinationLabel = getLabel(destinationLabel, LabelName);
+        SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+        if (sInstrArg == null) {
+            return destinationLabel;
         }
-        return destinationLabel;
+        Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("LABEL"))
+                //.filter(arg->!arg.getName().toUpperCase().contains(""))
+                .map(SInstructionArgument::getValue) // may still be null
+                .findFirst();
+        return getLabel(destinationLabel, argumentVariableName);
     }
 
     public InstructionFactory(Map<String, Variable> variables) {
         this.variables = variables;
     }
 
-    Variable GetVariable(String variableName) {
+    Variable getVariable(String variableName) {
         try {
             if (variables.containsKey(variableName)) {
                 return variables.get(variableName);
