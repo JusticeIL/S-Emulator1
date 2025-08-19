@@ -41,7 +41,7 @@ public class InstructionFactory {
             case ("CONSTANT_ASSIGNMENT") -> new ConstantAssignment(instructionCounter, variable, label, destinationLabel, constant);
             case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
-            case ("GO_TO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
+            case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };
@@ -56,6 +56,7 @@ public class InstructionFactory {
 
         Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
                 .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("VARIABLE"))
+                .filter(arg->!arg.getName().toUpperCase().contains("LABEL"))
                 .map(SInstructionArgument::getValue) // may still be null
                 .findFirst();
 
@@ -69,7 +70,7 @@ public class InstructionFactory {
             return 0;
         }
         Optional<String> argumentConstantName = sInstrArg.getSInstructionArgument().stream()
-                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("CONSTANT"))
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("CONSTANTVALUE"))
                 .map(SInstructionArgument::getValue) // may still be null
                 .findFirst();
         return argumentConstantName.map(Integer::parseInt).orElse(0);
@@ -101,8 +102,12 @@ public class InstructionFactory {
     private Label getDestinationLabelFromSInstruction(SInstruction sInstr) {
         Label destinationLabel = Program.EMPTY_LABEL;
         SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+        if (sInstrArg == null) {
+            return destinationLabel;
+        }
         Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
                 .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("LABEL"))
+                //.filter(arg->!arg.getName().toUpperCase().contains(""))
                 .map(SInstructionArgument::getValue) // may still be null
                 .findFirst();
         return getLabel(destinationLabel, argumentVariableName);
