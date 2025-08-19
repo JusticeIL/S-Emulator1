@@ -2,9 +2,13 @@ package instruction.synthetic;
 
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
+import instruction.basic.Increase;
+import instruction.basic.JumpNotZero;
 import instruction.component.Label;
 import instruction.component.Variable;
+import program.Program;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GoToLabel extends SyntheticInstruction {
@@ -23,6 +27,10 @@ public class GoToLabel extends SyntheticInstruction {
 
     @Override
     public List<Instruction> expand() {
-        return List.of();
+        List<Instruction> expandedInstructions = new ArrayList<>();
+        Variable z1 = new Variable();
+        expandedInstructions.add(new Increase(number,z1, label, Program.EMPTY_LABEL));
+        expandedInstructions.add(new JumpNotZero(number,z1,Program.EMPTY_LABEL, destinationLabel));
+        return expandedInstructions;
     }
 }

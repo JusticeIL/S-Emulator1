@@ -5,6 +5,7 @@ import instruction.SyntheticInstruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Assignment extends SyntheticInstruction {
@@ -26,6 +27,8 @@ public class Assignment extends SyntheticInstruction {
 
     @Override
     public List<Instruction> expand() {
-        return List.of();
+        List<Instruction> expandedInstructions = new ArrayList<>();
+        return expandedInstructions;
+
     }
 }

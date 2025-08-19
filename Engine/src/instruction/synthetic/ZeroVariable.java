@@ -2,9 +2,14 @@ package instruction.synthetic;
 
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
+import instruction.basic.Decrease;
+import instruction.basic.Increase;
+import instruction.basic.JumpNotZero;
 import instruction.component.Label;
 import instruction.component.Variable;
+import program.Program;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ZeroVariable extends SyntheticInstruction {
@@ -24,6 +29,9 @@ public class ZeroVariable extends SyntheticInstruction {
 
     @Override
     public List<Instruction> expand() {
-        return List.of();
+        List<Instruction> expandedInstructions = new ArrayList<>();
+        expandedInstructions.add(new Decrease(number, variable, label, Program.EMPTY_LABEL));
+        expandedInstructions.add(new JumpNotZero(number, variable, Program.EMPTY_LABEL, label));
+        return expandedInstructions;
     }
 }
