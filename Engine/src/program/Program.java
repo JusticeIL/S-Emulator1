@@ -53,7 +53,7 @@ public class Program {
             currentCommandIndex = instructionList.size() + 1;
         } else { // Case: GOTO Label
             currentInstruction = Labels.get(nextLabel);
-            currentCommandIndex = currentInstruction.getNumber();
+            currentCommandIndex = currentInstruction.getNumber()-1;
         }
 
     }
