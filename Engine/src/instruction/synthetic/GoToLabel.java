@@ -29,8 +29,8 @@ public class GoToLabel extends SyntheticInstruction {
     public List<Instruction> expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Variable z1 = new Variable();
-        expandedInstructions.add(new Increase(number,z1, label, Program.EMPTY_LABEL));
-        expandedInstructions.add(new JumpNotZero(number,z1,Program.EMPTY_LABEL, destinationLabel));
+        expandedInstructions.add(new Increase(number, z1,  Program.EMPTY_LABEL, Program.EMPTY_LABEL));
+        expandedInstructions.add(new JumpNotZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
         return expandedInstructions;
     }
 }

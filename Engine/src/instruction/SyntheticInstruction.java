@@ -16,6 +16,6 @@ abstract public class SyntheticInstruction extends Instruction {
 
     @Override
     public String toString() {
-        return ("#" + number + " " + "S" + " " + "[" + label + "]" + " " + command + " " + cycles);
+        return ("#" + number + " " + "S" + " " + "[" + label + "]" + " " + command + " " + "(" +cycles + ")");
     }
 }

@@ -30,8 +30,9 @@ public class ZeroVariable extends SyntheticInstruction {
     @Override
     public List<Instruction> expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
-        expandedInstructions.add(new Decrease(number, variable, label, Program.EMPTY_LABEL));
-        expandedInstructions.add(new JumpNotZero(number, variable, Program.EMPTY_LABEL, label));
+        Label L1 = new Label();
+        expandedInstructions.add(new Decrease(number, variable, L1, Program.EMPTY_LABEL));
+        expandedInstructions.add(new JumpNotZero(number, variable, Program.EMPTY_LABEL, L1));
         return expandedInstructions;
     }
 }
