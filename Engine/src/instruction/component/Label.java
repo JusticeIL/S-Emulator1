@@ -3,10 +3,14 @@ package instruction.component;
 import java.util.*;
 
 public class Label {
-    private String labelName;
+    private static int highestUnusedLabelNumber = 1;
+    private final String labelName;
 
     public Label(String labelName) {
         this.labelName = labelName;
+        if (labelName.contains("L")) {
+            highestUnusedLabelNumber++;
+        }
     }
 
     public String getLabelName() {
@@ -17,6 +21,11 @@ public class Label {
     public boolean equals(Object o) {
         if (!(o instanceof Label label)) return false;
         return Objects.equals(labelName, label.labelName);
+    }
+
+    public Label() {
+        this.labelName = "L"+ highestUnusedLabelNumber;
+        highestUnusedLabelNumber++;
     }
 
     @Override
