@@ -1,9 +1,9 @@
 package instruction.synthetic;
 
+import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
-import instruction.basic.Increase;
 import instruction.basic.JumpNotZero;
 import instruction.component.Label;
 import instruction.component.Variable;
@@ -28,7 +28,7 @@ public class ZeroVariable extends SyntheticInstruction {
     }
 
     @Override
-    public List<Instruction> expand() {
+    public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Label L1 = new Label();
         expandedInstructions.add(new Decrease(number, variable, L1, Program.EMPTY_LABEL));

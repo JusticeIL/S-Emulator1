@@ -1,5 +1,6 @@
 package instruction.synthetic;
 
+import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Increase;
@@ -26,7 +27,7 @@ public class GoToLabel extends SyntheticInstruction {
     }
 
     @Override
-    public List<Instruction> expand() {
+    public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Variable z1 = new Variable();
         expandedInstructions.add(new Increase(number, z1,  Program.EMPTY_LABEL, Program.EMPTY_LABEL));

@@ -1,9 +1,9 @@
 package instruction.synthetic;
 
+import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
-import instruction.basic.Increase;
 import instruction.basic.JumpNotZero;
 import instruction.basic.Neutral;
 import instruction.component.Label;
@@ -34,7 +34,7 @@ public class JumpEqualConstant extends SyntheticInstruction {
     }
 
     @Override
-    public List<Instruction> expand() { // Waiting for answer from Aviad
+    public ExpandedSyntheticInstructionArguments expand() { // Waiting for answer from Aviad
         List<Instruction> expandedInstructions = new ArrayList<>();
         Label L1 = new Label();
         Variable z1 = new Variable();

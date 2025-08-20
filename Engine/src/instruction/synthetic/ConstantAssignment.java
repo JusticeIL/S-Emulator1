@@ -1,11 +1,9 @@
 package instruction.synthetic;
 
+import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
-import instruction.basic.Decrease;
 import instruction.basic.Increase;
-import instruction.basic.JumpNotZero;
-import instruction.basic.Neutral;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.Program;
@@ -31,7 +29,7 @@ public class ConstantAssignment extends SyntheticInstruction {
     }
 
     @Override
-    public List<Instruction> expand() {
+    public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Variable z1 = new Variable();
         expandedInstructions.add(new ZeroVariable(number, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL));

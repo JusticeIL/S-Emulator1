@@ -1,8 +1,8 @@
 package instruction.synthetic;
 
+import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
-import instruction.basic.Increase;
 import instruction.basic.JumpNotZero;
 import instruction.basic.Neutral;
 import instruction.component.Label;
@@ -31,7 +31,7 @@ public class JumpZero extends SyntheticInstruction {
     }
 
     @Override
-    public List<Instruction> expand() {
+    public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Label L1 = new Label();
         expandedInstructions.add(new JumpNotZero(number, variable, Program.EMPTY_LABEL, L1));

@@ -1,5 +1,6 @@
 package instruction.synthetic;
 
+import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
@@ -32,7 +33,7 @@ public class JumpEqualVariable extends SyntheticInstruction {
     }
 
     @Override
-    public List<Instruction> expand() {
+    public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Label L1 = new Label();
         Label L2 = new Label();

@@ -8,11 +8,14 @@ import java.util.List;
 
 abstract public class SyntheticInstruction extends Instruction {
     protected Variable variable;
+    protected boolean isExpanded = false;
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles ,label, destinationLabel);
         this.variable = variable;
     }
+
+
 
     @Override
     public String toString() {

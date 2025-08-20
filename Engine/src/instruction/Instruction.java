@@ -2,7 +2,6 @@ package instruction;
 
 import instruction.component.Label;
 
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,7 +25,7 @@ abstract public class Instruction implements Executable, Expandable {
     public Map<String, Label> getLabels() {
         return Labels;
     }
-    public abstract List<Instruction> expand();
+    public abstract ExpandedSyntheticInstructionArguments expand();
 
     abstract public String toString();
 
