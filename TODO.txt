@@ -1,4 +1,10 @@
 O.O.B:
 
-5. in GenericCommand add static(map<command,cycles>, create())
-7. Add better implementation of commands in children of instruction class.
+1. Update variables map from children instructions
+2. Update labels map from children instructions
+3. Does instructions need access to y?
+4. Fix labels corrections in expands
+5. Implement class InstructionExecutioner *star* *star*
+6. Update cycle counting for expanded synthetic instructions
+7. Implement program expanding
+8. Implement usage of InstructionExecutioner in Program and Instruction
