@@ -10,7 +10,9 @@ import instruction.component.Variable;
 import program.Program;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GoToLabel extends SyntheticInstruction {
 
@@ -29,9 +31,14 @@ public class GoToLabel extends SyntheticInstruction {
     @Override
     public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
+        Set<Variable> expandedVariables = new HashSet<>();
+        Set<Label> expandedLabels = new HashSet<>();
         Variable z1 = new Variable();
+        expandedVariables.add(z1);
         expandedInstructions.add(new Increase(number, z1,  Program.EMPTY_LABEL, Program.EMPTY_LABEL));
         expandedInstructions.add(new JumpNotZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
-        return expandedInstructions;
+        isExpanded = true;
+        this.expandedInstructions = expandedInstructions;
+        return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);
     }
 }

@@ -10,7 +10,9 @@ import instruction.component.Variable;
 import program.Program;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class JumpZero extends SyntheticInstruction {
 
@@ -33,10 +35,15 @@ public class JumpZero extends SyntheticInstruction {
     @Override
     public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
+        Set<Variable> expandedVariables = new HashSet<>();
+        Set<Label> expandedLabels = new HashSet<>();
         Label L1 = new Label();
+        expandedLabels.add(L1);
         expandedInstructions.add(new JumpNotZero(number, variable, Program.EMPTY_LABEL, L1));
         expandedInstructions.add(new GoToLabel(number, variable, Program.EMPTY_LABEL, destinationLabel));
         expandedInstructions.add(new Neutral(number, variable, L1, Program.EMPTY_LABEL)); // variable should be y
-        return expandedInstructions;
+        isExpanded = true;
+        this.expandedInstructions = expandedInstructions;
+        return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);
     }
 }

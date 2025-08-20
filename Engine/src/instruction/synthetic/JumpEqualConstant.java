@@ -11,7 +11,10 @@ import instruction.component.Variable;
 import program.Program;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 public class JumpEqualConstant extends SyntheticInstruction {
 
@@ -36,15 +39,21 @@ public class JumpEqualConstant extends SyntheticInstruction {
     @Override
     public ExpandedSyntheticInstructionArguments expand() { // Waiting for answer from Aviad
         List<Instruction> expandedInstructions = new ArrayList<>();
+        Set<Variable> expandedVariables = new HashSet<>();
+        Set<Label> expandedLabels = new HashSet<>();
         Label L1 = new Label();
+        expandedLabels.add(L1);
         Variable z1 = new Variable();
+        expandedVariables.add(z1);
         expandedInstructions.add(new Assignment(number, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, variable));
-        for (int i = 0 ; i<constValue; i++) { // It looks disgusting in lambda
+        IntStream.range(0, constValue).forEach(i -> {
             expandedInstructions.add(new JumpZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
             expandedInstructions.add(new Decrease(number, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        }
+        });
         expandedInstructions.add(new JumpNotZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
         expandedInstructions.add(new Neutral(number, z1, L1, Program.EMPTY_LABEL)); // z1 should be y
-        return expandedInstructions;
+        isExpanded = true;
+        this.expandedInstructions = expandedInstructions;
+        return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);
     }
 }

@@ -10,7 +10,9 @@ import instruction.component.Variable;
 import program.Program;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class JumpEqualVariable extends SyntheticInstruction {
 
@@ -35,11 +37,18 @@ public class JumpEqualVariable extends SyntheticInstruction {
     @Override
     public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
+        Set<Variable> expandedVariables = new HashSet<>();
+        Set<Label> expandedLabels = new HashSet<>();
         Label L1 = new Label();
         Label L2 = new Label();
         Label L3 = new Label();
         Variable z1 = new Variable();
         Variable z2 = new Variable();
+        expandedVariables.add(z1);
+        expandedVariables.add(z2);
+        expandedLabels.add(L1);
+        expandedLabels.add(L2);
+        expandedLabels.add(L3);
         expandedInstructions.add(new Assignment(number, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, variable));
         expandedInstructions.add(new Assignment(number, z2, Program.EMPTY_LABEL, Program.EMPTY_LABEL, argumentVariable));
         expandedInstructions.add(new JumpZero(number, z1, L2, L3));
@@ -49,6 +58,8 @@ public class JumpEqualVariable extends SyntheticInstruction {
         expandedInstructions.add(new GoToLabel(number, variable, Program.EMPTY_LABEL, L2));
         expandedInstructions.add(new JumpZero(number, z2, L3, destinationLabel));
         expandedInstructions.add(new Neutral(number, z1, L1, Program.EMPTY_LABEL)); // z1 should be y
-        return expandedInstructions;
+        isExpanded = true;
+        this.expandedInstructions = expandedInstructions;
+        return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);
     }
 }
