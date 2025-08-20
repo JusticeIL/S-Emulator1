@@ -9,7 +9,10 @@ import instruction.component.Variable;
 import program.Program;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 public class ConstantAssignment extends SyntheticInstruction {
 
@@ -31,11 +34,17 @@ public class ConstantAssignment extends SyntheticInstruction {
     @Override
     public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
+        Set<Variable> expandedVariables = new HashSet<>();
+        Set<Label> expandedLabels = new HashSet<>();
         Variable z1 = new Variable();
+        expandedVariables.add(z1);
         expandedInstructions.add(new ZeroVariable(number, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        for (int i = 0 ; i<constValue; i++) { // It looks disgusting in lambda
+        IntStream.range(0, constValue).forEach(i -> { // It looks disgusting in lambda
             expandedInstructions.add(new Increase(number, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        }
-        return expandedInstructions;
+        });
+
+        isExpanded = true;
+        this.expandedInstructions = expandedInstructions;
+        return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);
     }
 }

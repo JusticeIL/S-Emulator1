@@ -13,6 +13,7 @@ abstract public class Instruction implements Executable, Expandable {
     protected Label destinationLabel;
     protected String command;
     protected int level;
+    protected final InstructionType instructionType;
 
     public abstract Label execute();
     // Implementation of command execution logic
@@ -27,13 +28,12 @@ abstract public class Instruction implements Executable, Expandable {
     }
     public abstract ExpandedSyntheticInstructionArguments expand();
 
-    abstract public String toString();
-
-    public Instruction(int num, int cycles, Label label, Label destinationLabel) {
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
+        this.instructionType = instructionType;
         this.level = 0; // Implement
     }
 
@@ -48,5 +48,10 @@ abstract public class Instruction implements Executable, Expandable {
 
     public int getCycles() {
         return cycles;
+    }
+
+    @Override
+    public String toString() {
+        return ("#" + number + " " + instructionType + " " + "[" + label + "]" + " " + command + " " + "(" +cycles + ")");
     }
 }
