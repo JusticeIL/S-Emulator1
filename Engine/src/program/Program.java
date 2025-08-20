@@ -22,6 +22,9 @@ public class Program {
     private final List<Instruction> instructionList = new LinkedList<Instruction>();
     int currentCommandIndex; // Program Counter
     int cycleCounter;
+    private int runCounter;
+    private int currentProgramLevel;
+    private final int maxProgramLevel = 0; // TODO: Implement this in the future
     Statistics statistics;
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL =  new Label("     ");
@@ -53,7 +56,7 @@ public class Program {
             currentCommandIndex = instructionList.size() + 1;
         } else { // Case: GOTO Label
             currentInstruction = Labels.get(nextLabel);
-            currentCommandIndex = currentInstruction.getNumber()-1;
+            currentCommandIndex = currentInstruction.getNumber() - 1;
         }
 
     }
@@ -67,10 +70,20 @@ public class Program {
     public void runProgram(int ...variables) {
         setUpNewRun();
         setArguments(variables);
+        List<Variable> xVariables = Variables.entrySet().stream()
+                .filter(entry -> entry.getKey().contains("x"))
+                .map(Map.Entry::getValue)
+                .toList();
         currentInstruction = instructionList.getFirst();
         while(currentCommandIndex < instructionList.size()) {
+            this.cycleCounter += currentInstruction.getCycles();
             executeCurrentCommand();
         }
+        int yValue = Variables.get("y").getValue();
+
+        Run currentRun = new Run(runCounter, currentProgramLevel, xVariables, yValue, cycleCounter);
+        statistics.addRunToHistory(currentRun);
+        runCounter++;
     }
 
     private void setArguments(int[] arguments) {
@@ -125,21 +138,18 @@ public class Program {
         for (Variable variable : Variables.values()) {
             variable.setValue(0);
         }
-        currentCommandIndex = 0;
+        this.currentCommandIndex = 0;
+        this.cycleCounter = 0;
     }
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
         loadProgram(filePath);
         this.statistics = new Statistics();
         this.currentCommandIndex = 0;
-        this.cycleCounter = calculateProgramCycles();
+        this.cycleCounter = 0;
         this.currentInstruction = instructionList.getFirst();
-    }
-
-    private int calculateProgramCycles() {
-        return instructionList.stream().
-                mapToInt(Instruction::getCycles)
-                .sum();
+        this.runCounter = 1;
+        this.currentProgramLevel = 0;
     }
 
     public int getProgramCycles() {

@@ -10,4 +10,8 @@ public class Statistics {
     public Statistics() {
         history = new ArrayList<>();
     }
+
+    public void addRunToHistory(Run run) {
+        history.add(run);
+    }
 }
