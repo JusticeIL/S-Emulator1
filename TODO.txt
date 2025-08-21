@@ -10,3 +10,5 @@ O.O.B:
 8. Implement usage of InstructionExecutioner in
     a. Program  - Done
     b. Instruction
+9. Talk to aviad about the printing of the expandeds
+10. Check if destination label is working with expanding instructions correctly with every synthetic instruction
