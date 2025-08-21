@@ -91,6 +91,7 @@ public class Program {
         currentInstruction = instructionList.get(currentCommandIndex);
     }
 
+    // In Program.java
     public void runProgram(int ...variables) {
         setUpNewRun();
         setArguments(variables);
@@ -98,13 +99,11 @@ public class Program {
                 .filter(entry -> entry.getKey().contains("x"))
                 .map(Map.Entry::getValue)
                 .toList();
-        currentInstruction = instructionList.getFirst();
-        while(currentCommandIndex < instructionList.size()) {
-            this.cycleCounter += currentInstruction.getCycles();
-            executeCurrentCommand();
-        }
-        int yValue = Variables.get("y").getValue();
 
+        // Delegate execution to InstructionExecutioner
+        InstructionExecutioner.executeInstructions(instructionList, Labels);
+
+        int yValue = Variables.get("y").getValue();
         Run currentRun = new Run(runCounter, currentProgramLevel, xVariables, yValue, cycleCounter);
         statistics.addRunToHistory(currentRun);
         runCounter++;
