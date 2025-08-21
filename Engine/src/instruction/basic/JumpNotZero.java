@@ -16,10 +16,10 @@ public class JumpNotZero extends BasicInstruction {
 
     @Override
     public Label execute() {
-        if (variable.getValue() != 0) {
+        if (variable.getValue() != 0) { // Case: jump condition is met
             return destinationLabel;
         }
         else
-            return Program.EMPTY_LABEL; // No jump, handle later
+            return Program.EMPTY_LABEL;
     }
 }
