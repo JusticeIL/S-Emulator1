@@ -32,7 +32,7 @@ public class JumpZero extends SyntheticInstruction {
 
 
     @Override
-    public ExpandedSyntheticInstructionArguments expand() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label, Instruction> expandedLabels = new HashMap<>();

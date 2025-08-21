@@ -35,7 +35,7 @@ public class JumpEqualConstant extends SyntheticInstruction {
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expand() { // Waiting for answer from Aviad
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() { // Waiting for answer from Aviad
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
