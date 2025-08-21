@@ -47,7 +47,7 @@ public class Assignment extends SyntheticInstruction {
         expandedLabels.put(L2, L2Instruction);
         expandedLabels.put(L3, L3Instruction);
 
-        expandedInstructions.add(new ZeroVariable(number, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
+        expandedInstructions.add(new ZeroVariable(number, variable, label, Program.EMPTY_LABEL));
         expandedInstructions.add(new JumpNotZero(number, argumentVariable, Program.EMPTY_LABEL, L1));
         expandedInstructions.add(new GoToLabel(number, variable, Program.EMPTY_LABEL, L3));
         expandedInstructions.add(L1Instruction);

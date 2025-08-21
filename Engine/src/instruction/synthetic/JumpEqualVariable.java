@@ -25,10 +25,10 @@ public class JumpEqualVariable extends SyntheticInstruction {
 
     @Override
     public Label execute() {
-        if (variable.getValue() == argumentVariable.getValue()) {
+        if (variable.getValue() == argumentVariable.getValue()) { // Case: jump condition is met
             return destinationLabel;
         } else {
-            return Program.EMPTY_LABEL; // No jump, handle later
+            return Program.EMPTY_LABEL;
         }
     }
 
@@ -52,7 +52,7 @@ public class JumpEqualVariable extends SyntheticInstruction {
         expandedLabels.put(L1, L1Instruction);
         expandedLabels.put(L2, L2Instruction);
         expandedLabels.put(L3, L3Instruction);
-        expandedInstructions.add(new Assignment(number, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, variable));
+        expandedInstructions.add(new Assignment(number, z1, label, Program.EMPTY_LABEL, variable));
         expandedInstructions.add(new Assignment(number, z2, Program.EMPTY_LABEL, Program.EMPTY_LABEL, argumentVariable));
         expandedInstructions.add(L2Instruction);
         expandedInstructions.add(new JumpZero(number, z1, Program.EMPTY_LABEL, L1));
@@ -60,7 +60,7 @@ public class JumpEqualVariable extends SyntheticInstruction {
         expandedInstructions.add(new Decrease(number, z2, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
         expandedInstructions.add(new GoToLabel(number, variable, Program.EMPTY_LABEL, L2));
         expandedInstructions.add(L3Instruction);
-        expandedInstructions.add(L1Instruction); // z1 should be y
+        expandedInstructions.add(L1Instruction);
         isExpanded = true;
         this.expandedInstructions = expandedInstructions;
         return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);

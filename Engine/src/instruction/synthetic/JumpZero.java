@@ -23,10 +23,10 @@ public class JumpZero extends SyntheticInstruction {
 
     @Override
     public Label execute() {
-        if (variable.getValue() == 0) {
+        if (variable.getValue() == 0) { // Case: jump condition is met
             return destinationLabel;
         } else {
-            return Program.EMPTY_LABEL; // No jump, handle later
+            return Program.EMPTY_LABEL;
         }
     }
 
@@ -38,9 +38,9 @@ public class JumpZero extends SyntheticInstruction {
         Label L1 = new Label();
         Instruction L1Instruction = new Neutral(number, variable, L1, Program.EMPTY_LABEL);
         expandedLabels.put(L1, L1Instruction);
-        expandedInstructions.add(new JumpNotZero(number, variable, Program.EMPTY_LABEL, L1));
+        expandedInstructions.add(new JumpNotZero(number, variable, label, L1));
         expandedInstructions.add(new GoToLabel(number, variable, Program.EMPTY_LABEL, destinationLabel));
-        expandedInstructions.add(L1Instruction); // variable should be y
+        expandedInstructions.add(L1Instruction);
         isExpanded = true;
         this.expandedInstructions = expandedInstructions;
         return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);
