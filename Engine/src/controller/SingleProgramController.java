@@ -8,6 +8,7 @@ import program.Statistics;
 
 import java.io.FileNotFoundException;
 import java.util.Collection;
+import java.util.Optional;
 
 public class SingleProgramController implements Controller{
 
@@ -15,25 +16,15 @@ public class SingleProgramController implements Controller{
     Statistics statistics;
 
     @Override
-    public Program getProgram() {
-        return program;
+    public void loadProgram(String path) throws FileNotFoundException, JAXBException {
+        this.program = new Program(path);
+        this.statistics = new Statistics();
     }
 
     @Override
-    public ControllerResponse loadProgram(String path){
-        try {
-            program.loadProgram(path);
-            return new ControllerResponse();
-        } catch (FileNotFoundException e) {
-            return new ControllerResponse("File not found");
-        } catch (JAXBException e) {
-            return new ControllerResponse("File invalid");
-        }
-    }
-
-    @Override
-    public ProgramData getProgramData(Program program) {
-        return new ProgramData(program);
+    public Optional<ProgramData> getProgramData() {
+        return Optional.ofNullable(program)
+                .map(ProgramData::new);
     }
 
     @Override
@@ -51,6 +42,4 @@ public class SingleProgramController implements Controller{
     public Statistics getStatistics() {
         return statistics;
     }
-
-
 }

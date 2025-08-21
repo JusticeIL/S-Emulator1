@@ -31,7 +31,7 @@ public class Program {
     Statistics statistics;
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL =  new Label("     ");
-    static protected final Label EXIT_LABEL = new Label("EXIT");
+    static public final Label EXIT_LABEL = new Label("EXIT");
 
     public Set<Label> getLabels() {
         return Labels.keySet();
