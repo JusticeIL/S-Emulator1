@@ -12,7 +12,8 @@ abstract public class BasicInstruction extends Instruction {
     public ExpandedSyntheticInstructionArguments expand() {
         Set<Variable> newVariables = new HashSet<>();
         Map<Label,Instruction> newLabels = new HashMap<>();
-        return new ExpandedSyntheticInstructionArguments(newVariables, newLabels);
+        List<Instruction> newInstructions = new ArrayList<>();
+        return new ExpandedSyntheticInstructionArguments(newVariables, newLabels,newInstructions);
     }
 
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {

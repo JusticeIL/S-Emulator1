@@ -5,7 +5,6 @@ import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
 import instruction.basic.JumpNotZero;
-import instruction.basic.Neutral;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.Program;
@@ -23,26 +22,29 @@ public class ZeroVariable extends SyntheticInstruction {
         level = 1;
     }
 
-    @Override
-    public Label execute() {
-        variable.setValue(0);
-        return destinationLabel;
-    }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expand() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
         Label L1 = new Label();
-        Instruction L1Instruction = new Decrease(number, variable, L1, Program.EMPTY_LABEL);
 
-        expandedLabels.put(L1,L1Instruction);
-        expandedInstructions.add(new Neutral(number, variable, label, Program.EMPTY_LABEL)); // Added to allow "multiple labels"
+        int instructionNumber = 1;
+        Instruction L1Instruction = new Decrease(instructionNumber++, variable, L1, Program.EMPTY_LABEL);
+        expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
-        expandedInstructions.add(new JumpNotZero(number, variable, Program.EMPTY_LABEL, L1));
-        this.expandedInstructions = expandedInstructions;
+        expandedInstructions.add(new JumpNotZero(instructionNumber++, variable, Program.EMPTY_LABEL, L1));
+
         isExpanded = true;
-        return new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels) ;
+        this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
+        return this.expandedInstruction;
+    }
+
+    @Override
+    protected Label executeUnExpandedInstruction() {
+        variable.setValue(0);
+        return destinationLabel;
     }
 }
+

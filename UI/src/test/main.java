@@ -29,6 +29,7 @@ public class main {
         try {
             program = new Program(eithanPath);
             program.expand(1);
+            program.runProgram(5,4);
             program.getVariables().forEach(System.out::println);
         } catch (Exception e) {
             System.out.println(e.getMessage());

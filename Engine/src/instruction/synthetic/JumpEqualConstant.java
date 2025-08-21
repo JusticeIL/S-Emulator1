@@ -26,34 +26,37 @@ public class JumpEqualConstant extends SyntheticInstruction {
     }
 
     @Override
-    public Label execute() {
-        if (variable.getValue() == constValue) { // Case: jump condition is met
+    protected Label executeUnExpandedInstruction() {
+        if (variable.getValue() == constValue) {
             return destinationLabel;
         } else {
-            return Program.EMPTY_LABEL;
+            return Program.EMPTY_LABEL; // No jump, handle later
         }
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expand() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() { // Waiting for answer from Aviad
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
         Variable z1 = new Variable();
         Label L1 = new Label();
-        Instruction L1Instruction = new Neutral(number, z1, L1, Program.EMPTY_LABEL);
-        expandedLabels.put(L1, L1Instruction);
+        int instructionNumber = 1;
         expandedVariables.add(z1);
 
-        expandedInstructions.add(new Assignment(number, z1, label, Program.EMPTY_LABEL, variable));
-        IntStream.range(0, constValue).forEach(i -> {
-            expandedInstructions.add(new JumpZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
-            expandedInstructions.add(new Decrease(number, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        });
-        expandedInstructions.add(new JumpNotZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
-        expandedInstructions.add(L1Instruction);
+        expandedInstructions.add(new Assignment(instructionNumber++, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, variable));
+        for (int i = 0; i < constValue; i++) {
+            expandedInstructions.add(new JumpZero(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel));
+            expandedInstructions.add(new Decrease(instructionNumber++, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
+        }
+        expandedInstructions.add(new JumpNotZero(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel));
+        Instruction L1Instruction = new Neutral(instructionNumber++, z1, L1, Program.EMPTY_LABEL);
+        expandedLabels.put(L1, L1Instruction);
+        expandedInstructions.add(L1Instruction); // z1 should be y
         isExpanded = true;
-        this.expandedInstructions = expandedInstructions;
-        return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);
+
+        this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
+        return this.expandedInstruction;
+
     }
 }
