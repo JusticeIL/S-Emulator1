@@ -8,10 +8,7 @@ import instruction.component.Label;
 import instruction.component.Variable;
 import program.Program;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class ConstantAssignment extends SyntheticInstruction {
@@ -23,6 +20,7 @@ public class ConstantAssignment extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         command = variable.getName() + " <- " + constValue;
         this.constValue = constValue;
+        super.level = 2; // Implement
     }
 
     @Override
@@ -35,7 +33,7 @@ public class ConstantAssignment extends SyntheticInstruction {
     public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
-        Set<Label> expandedLabels = new HashSet<>();
+        Map<Label,Instruction> expandedLabels = new HashMap<>();
         Variable z1 = new Variable();
         expandedVariables.add(z1);
         expandedInstructions.add(new ZeroVariable(number, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL));

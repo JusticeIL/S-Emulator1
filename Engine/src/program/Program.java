@@ -5,6 +5,7 @@ import java.util.*;
 
 import XMLandJaxB.SInstruction;
 import XMLandJaxB.SProgram;
+import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;
 import instruction.component.Label;
@@ -14,6 +15,8 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Program {
 
@@ -24,7 +27,7 @@ public class Program {
     int cycleCounter;
     private int runCounter;
     private int currentProgramLevel;
-    private final int maxProgramLevel = 0; // TODO: Implement this in the future
+    private int maxProgramLevel = 0; // TODO: Implement this in the future
     Statistics statistics;
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL =  new Label("     ");
@@ -61,12 +64,44 @@ public class Program {
 
     }
 
+    private int calculateMaxProgramLevel() {
+        // Calculate the maximum program level based on the instructions
+        return instructionList.stream()
+                .mapToInt(Instruction::getLevel)
+                .max()
+                .orElse(0);
+    }
+
+    public boolean expand(int level) {
+        int updatedLevel = currentProgramLevel + level;
+        if (updatedLevel <= maxProgramLevel) {
+            IntStream.range(0, level).forEach(i -> {
+                instructionList.forEach(instruction -> {
+                    ExpandedSyntheticInstructionArguments expandedArgs = instruction.expand();
+                    if (expandedArgs != null) {
+                        Variables.putAll(expandedArgs.getVariables().stream()
+                                .collect(Collectors.toMap(Variable::getName, v -> v)));
+                        expandedArgs.getLabels().forEach((label, instr) -> {
+                            if (!Labels.containsKey(label)) {
+                                Labels.put(label, instr);
+                            }
+                        });
+                    }
+                });
+            });
+            currentProgramLevel = updatedLevel;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private void getNextInstruction() {
         currentCommandIndex++;
         currentInstruction = instructionList.get(currentCommandIndex);
     }
 
+    // In Program.java
     public void runProgram(int ...variables) {
         setUpNewRun();
         setArguments(variables);
@@ -74,13 +109,11 @@ public class Program {
                 .filter(entry -> entry.getKey().contains("x"))
                 .map(Map.Entry::getValue)
                 .toList();
-        currentInstruction = instructionList.getFirst();
-        while(currentCommandIndex < instructionList.size()) {
-            this.cycleCounter += currentInstruction.getCycles();
-            executeCurrentCommand();
-        }
-        int yValue = Variables.get("y").getValue();
 
+        // Delegate execution to InstructionExecutioner
+        InstructionExecutioner.executeInstructions(instructionList, Labels);
+
+        int yValue = Variables.get("y").getValue();
         Run currentRun = new Run(runCounter, currentProgramLevel, xVariables, yValue, cycleCounter);
         statistics.addRunToHistory(currentRun);
         runCounter++;
@@ -119,6 +152,7 @@ public class Program {
             }
             // Load program name
             programName = sProgram.getName();
+
         }
         else  {
             throw new FileNotFoundException();
@@ -144,12 +178,14 @@ public class Program {
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
         loadProgram(filePath);
+
         this.statistics = new Statistics();
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
         this.currentInstruction = instructionList.getFirst();
         this.runCounter = 1;
         this.currentProgramLevel = 0;
+        this.maxProgramLevel = calculateMaxProgramLevel();
     }
 
     public int getProgramCycles() {

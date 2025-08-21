@@ -1,10 +1,12 @@
 O.O.B:
 
-1. Update variables map from children instructions
-2. Update labels map from children instructions
-3. Does instructions need access to y?
+1. Update variables map from children instructions-Done
+2. Update labels map from children instructions-Done
+3. Does instructions need access to y? - Aviad answer: No, y can be replaced with a local variable
 4. Fix labels corrections in expands
-5. Implement class InstructionExecutioner *star* *star*
+5. Implement class InstructionExecutioner *star* *star* - Done
 6. Update cycle counting for expanded synthetic instructions
-7. Implement program expanding
-8. Implement usage of InstructionExecutioner in Program and Instruction
+7. Implement program expanding-Done
+8. Implement usage of InstructionExecutioner in
+    a. Program  - Done
+    b. Instruction
