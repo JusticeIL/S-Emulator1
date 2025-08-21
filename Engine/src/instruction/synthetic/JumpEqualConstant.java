@@ -27,15 +27,15 @@ public class JumpEqualConstant extends SyntheticInstruction {
 
     @Override
     public Label execute() {
-        if (variable.getValue() == constValue) {
+        if (variable.getValue() == constValue) { // Case: jump condition is met
             return destinationLabel;
         } else {
-            return Program.EMPTY_LABEL; // No jump, handle later
+            return Program.EMPTY_LABEL;
         }
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expand() { // Waiting for answer from Aviad
+    public ExpandedSyntheticInstructionArguments expand() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
@@ -45,13 +45,13 @@ public class JumpEqualConstant extends SyntheticInstruction {
         expandedLabels.put(L1, L1Instruction);
         expandedVariables.add(z1);
 
-        expandedInstructions.add(new Assignment(number, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, variable));
+        expandedInstructions.add(new Assignment(number, z1, label, Program.EMPTY_LABEL, variable));
         IntStream.range(0, constValue).forEach(i -> {
             expandedInstructions.add(new JumpZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
             expandedInstructions.add(new Decrease(number, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
         });
         expandedInstructions.add(new JumpNotZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
-        expandedInstructions.add(L1Instruction); // z1 should be y
+        expandedInstructions.add(L1Instruction);
         isExpanded = true;
         this.expandedInstructions = expandedInstructions;
         return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);

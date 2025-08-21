@@ -5,6 +5,7 @@ import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
 import instruction.basic.JumpNotZero;
+import instruction.basic.Neutral;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.Program;
@@ -37,6 +38,7 @@ public class ZeroVariable extends SyntheticInstruction {
         Instruction L1Instruction = new Decrease(number, variable, L1, Program.EMPTY_LABEL);
 
         expandedLabels.put(L1,L1Instruction);
+        expandedInstructions.add(new Neutral(number, variable, label, Program.EMPTY_LABEL)); // Added to allow "multiple labels"
         expandedInstructions.add(L1Instruction);
         expandedInstructions.add(new JumpNotZero(number, variable, Program.EMPTY_LABEL, L1));
         this.expandedInstructions = expandedInstructions;
