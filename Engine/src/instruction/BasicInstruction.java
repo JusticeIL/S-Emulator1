@@ -3,10 +3,7 @@ package instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 abstract public class BasicInstruction extends Instruction {
 
@@ -14,7 +11,7 @@ abstract public class BasicInstruction extends Instruction {
 
     public ExpandedSyntheticInstructionArguments expand() {
         Set<Variable> newVariables = new HashSet<>();
-        Set<Label> newLabels = new HashSet<>();
+        Map<Label,Instruction> newLabels = new HashMap<>();
         return new ExpandedSyntheticInstructionArguments(newVariables, newLabels);
     }
 

@@ -3,13 +3,14 @@ package instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 
+import java.util.Map;
 import java.util.Set;
 
 public class ExpandedSyntheticInstructionArguments {
     private final Set<Variable> variables;
-    private final Set<Label> labels;
+    private final Map<Label,Instruction> labels;
 
-    public ExpandedSyntheticInstructionArguments(Set<Variable> variables, Set<Label> labels) {
+    public ExpandedSyntheticInstructionArguments(Set<Variable> variables, Map<Label, Instruction> labels) {
         this.variables = variables;
         this.labels = labels;
     }
@@ -19,7 +20,7 @@ public class ExpandedSyntheticInstructionArguments {
         return variables;
     }
 
-    public Set<Label> getLabels() {
+    public Map<Label, Instruction> getLabels() {
         return labels;
     }
 }

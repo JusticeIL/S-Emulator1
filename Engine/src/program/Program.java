@@ -5,6 +5,7 @@ import java.util.*;
 
 import XMLandJaxB.SInstruction;
 import XMLandJaxB.SProgram;
+import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;
 import instruction.component.Label;
@@ -14,6 +15,8 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Program {
 
@@ -61,6 +64,27 @@ public class Program {
 
     }
 
+    public boolean  expand(int level){
+        int updatedLevel = currentProgramLevel + level;
+        if (updatedLevel <= maxProgramLevel) {
+            for(IntStream.range(0, level).forEach(i -> {
+                ExpandedSyntheticInstructionArguments expandedArgs = currentInstruction.expand();
+                if (expandedArgs != null) {
+                    Variables.putAll(expandedArgs.getVariables().stream()
+                            .collect(Collectors.toMap(Variable::getName, v -> v)));
+                    //Add returned map from labels to instructions to the existing Labels map
+                    expandedArgs.getLabels().forEach((label, instruction) -> {
+                        if (!Labels.containsKey(label)) {
+                            Labels.put(label, instruction);
+                        }
+                    });
+                }
+                currentProgramLevel = updatedLevel;
+            });;);
+        }else{
+            return false;
+        }
+    }
 
     private void getNextInstruction() {
         currentCommandIndex++;
