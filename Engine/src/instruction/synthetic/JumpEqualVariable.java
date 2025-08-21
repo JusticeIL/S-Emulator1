@@ -20,6 +20,7 @@ public class JumpEqualVariable extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         this.argumentVariable = argumentVariable;
         command = command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();;
+        super.level = 3; // Implement
     }
 
     @Override

@@ -18,6 +18,7 @@ public class GoToLabel extends SyntheticInstruction {
     public GoToLabel(int num, Variable variable, Label label, Label destinationLabel) {
         super(num, variable, CYCLES, label, destinationLabel);
         command = "GOTO " + destinationLabel.getLabelName();
+        super.level = 1; // Implement
     }
 
     @Override

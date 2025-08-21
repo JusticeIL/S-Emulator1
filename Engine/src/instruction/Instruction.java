@@ -28,6 +28,10 @@ abstract public class Instruction implements Executable, Expandable {
     }
     public abstract ExpandedSyntheticInstructionArguments expand();
 
+    public int getLevel() {
+        return level;
+    }
+
     public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType) {
         this.number = num;
         this.label = label;

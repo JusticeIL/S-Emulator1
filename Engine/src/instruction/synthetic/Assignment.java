@@ -22,6 +22,7 @@ public class Assignment extends SyntheticInstruction {
         super(num, assignedVariable, CYCLES, label, destinationLabel);
         this.argumentVariable = argumentVariable;
         command = assignedVariable.getName() + " <- " + argumentVariable.getName();
+        super.level = 2;
     }
 
     @Override

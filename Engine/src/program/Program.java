@@ -27,7 +27,7 @@ public class Program {
     int cycleCounter;
     private int runCounter;
     private int currentProgramLevel;
-    private final int maxProgramLevel = 0; // TODO: Implement this in the future
+    private int maxProgramLevel = 0; // TODO: Implement this in the future
     Statistics statistics;
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL =  new Label("     ");
@@ -64,24 +64,34 @@ public class Program {
 
     }
 
-    public boolean  expand(int level){
+    private int calculateMaxProgramLevel() {
+        // Calculate the maximum program level based on the instructions
+        return instructionList.stream()
+                .mapToInt(Instruction::getLevel)
+                .max()
+                .orElse(0);
+    }
+
+    public boolean expand(int level) {
         int updatedLevel = currentProgramLevel + level;
         if (updatedLevel <= maxProgramLevel) {
-            for(IntStream.range(0, level).forEach(i -> {
-                ExpandedSyntheticInstructionArguments expandedArgs = currentInstruction.expand();
-                if (expandedArgs != null) {
-                    Variables.putAll(expandedArgs.getVariables().stream()
-                            .collect(Collectors.toMap(Variable::getName, v -> v)));
-                    //Add returned map from labels to instructions to the existing Labels map
-                    expandedArgs.getLabels().forEach((label, instruction) -> {
-                        if (!Labels.containsKey(label)) {
-                            Labels.put(label, instruction);
-                        }
-                    });
-                }
-                currentProgramLevel = updatedLevel;
-            });;);
-        }else{
+            IntStream.range(0, level).forEach(i -> {
+                instructionList.forEach(instruction -> {
+                    ExpandedSyntheticInstructionArguments expandedArgs = instruction.expand();
+                    if (expandedArgs != null) {
+                        Variables.putAll(expandedArgs.getVariables().stream()
+                                .collect(Collectors.toMap(Variable::getName, v -> v)));
+                        expandedArgs.getLabels().forEach((label, instr) -> {
+                            if (!Labels.containsKey(label)) {
+                                Labels.put(label, instr);
+                            }
+                        });
+                    }
+                });
+            });
+            currentProgramLevel = updatedLevel;
+            return true;
+        } else {
             return false;
         }
     }
@@ -142,6 +152,7 @@ public class Program {
             }
             // Load program name
             programName = sProgram.getName();
+
         }
         else  {
             throw new FileNotFoundException();
@@ -167,12 +178,14 @@ public class Program {
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
         loadProgram(filePath);
+
         this.statistics = new Statistics();
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
         this.currentInstruction = instructionList.getFirst();
         this.runCounter = 1;
         this.currentProgramLevel = 0;
+        this.maxProgramLevel = calculateMaxProgramLevel();
     }
 
     public int getProgramCycles() {

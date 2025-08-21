@@ -18,6 +18,7 @@ public class JumpZero extends SyntheticInstruction {
     public JumpZero(int num, Variable variable, Label label, Label destinationLabel) {
         super(num, variable, CYCLES, label, destinationLabel);
         command = "IF " + variable.getName() + " =0" + " GOTO " + destinationLabel.getLabelName();
+        super.level = 2;
     }
 
     @Override

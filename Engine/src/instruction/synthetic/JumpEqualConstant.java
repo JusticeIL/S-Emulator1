@@ -22,6 +22,7 @@ public class JumpEqualConstant extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         command = "IF " + variable.getName() + " = " + constValue + " GOTO " + destinationLabel.getLabelName();
         this.constValue = constValue;
+        super.level = 3; // Implement
     }
 
     @Override

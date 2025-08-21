@@ -20,6 +20,7 @@ public class ConstantAssignment extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         command = variable.getName() + " <- " + constValue;
         this.constValue = constValue;
+        super.level = 2; // Implement
     }
 
     @Override

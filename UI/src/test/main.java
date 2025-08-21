@@ -8,7 +8,7 @@ public class main {
     static public String galPath = "/Users/galrubinstein/Downloads/badic.xml";
 
     public static void main(String[] args) {
-        fullTest2();
+        fullTestEitanExpand();
 
     }
 
@@ -18,6 +18,17 @@ public class main {
             program = new Program(galPath);
             program.runProgram(1,2);
             program.runProgram(5,4);
+            program.getVariables().forEach(System.out::println);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void fullTestEitanExpand(){
+        Program program = null;
+        try {
+            program = new Program(eithanPath);
+            program.expand(1);
             program.getVariables().forEach(System.out::println);
         } catch (Exception e) {
             System.out.println(e.getMessage());
