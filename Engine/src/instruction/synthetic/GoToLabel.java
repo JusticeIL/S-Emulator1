@@ -22,7 +22,7 @@ public class GoToLabel extends SyntheticInstruction {
     }
 
     @Override
-    public Label execute() {
+    protected Label executeUnExpandedInstruction() {
         return destinationLabel;
     }
 
@@ -33,10 +33,12 @@ public class GoToLabel extends SyntheticInstruction {
         Map<Label,Instruction> expandedLabels = new HashMap<>();
         Variable z1 = new Variable();
         expandedVariables.add(z1);
-        expandedInstructions.add(new Increase(number, z1,  Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        expandedInstructions.add(new JumpNotZero(number, z1, Program.EMPTY_LABEL, destinationLabel));
+        expandedInstructions.add(new Increase(1, z1,  Program.EMPTY_LABEL, Program.EMPTY_LABEL));
+        expandedInstructions.add(new JumpNotZero(2, z1, Program.EMPTY_LABEL, destinationLabel));
         isExpanded = true;
-        this.expandedInstructions = expandedInstructions;
-        return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels);
+
+        this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
+        return this.expandedInstruction;
+
     }
 }
