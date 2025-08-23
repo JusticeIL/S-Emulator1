@@ -12,6 +12,7 @@ public final class ProgramData {
     private final List<String> programArguments = new ArrayList<>();
     private final List<String> programLabels = new ArrayList<>();
     private final List<String> programInstructions = new ArrayList<>();
+    private final List<String> expandedProgramInstructions = new ArrayList<>();
 
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
@@ -26,6 +27,11 @@ public final class ProgramData {
         for (Label label : program.getLabels()) {
             programLabels.add(label.toString());
         }
+        expandedProgramInstructions.addAll(program.getExpandedProgramStringRepresentation());
+    }
+
+    public List<String> getExpandedProgramInstructions() {
+        return expandedProgramInstructions;
     }
 
     public String getProgramName() {

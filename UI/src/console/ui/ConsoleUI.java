@@ -22,7 +22,7 @@ public class ConsoleUI {
         new ConsoleUI().run();
     }
 
-    private void run() {
+    public void run() {
         System.out.println("Welcome to S-Emulator!");
 
         boolean exit = false;
@@ -36,8 +36,8 @@ public class ConsoleUI {
                     case 1 -> handleLoadXml();
                     case 2 -> handleShowProgram();
                     case 3 -> handleExpand();
-                    case 4 -> handleRun();
-                    case 5 -> handleShowHistory();
+//                    case 4 -> handleRun();
+//                    case 5 -> handleShowHistory();
                     case 6 -> {
                         System.out.println("\nExiting. Goodbye!");
                         exit = true;
@@ -49,6 +49,28 @@ public class ConsoleUI {
             }
         }
         in.close();
+    }
+
+    private void handleExpand() {
+        Optional<ProgramData> programDataOpt = engine.getProgramData();
+        if (programDataOpt.isEmpty()) {
+            System.out.println("No program loaded.");
+            System.out.println("Load program first!");
+            return;
+        }
+        System.out.print("Enter expansion level (positive integer): ");
+        String input = in.nextLine().trim();
+        try {
+            int level = Integer.parseInt(input);
+            if (level <= 0) {
+                System.out.println("Expansion level must be a positive integer.");
+                return;
+            }
+            engine.Expand(level);
+            engine.getProgramData().get().getExpandedProgramInstructions().forEach(System.out::println);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a positive integer.");
+        }
     }
 
     private void showMenu() {
@@ -99,4 +121,5 @@ public class ConsoleUI {
             System.out.println("Load program first!");
         });
     }
+
 }

@@ -16,10 +16,18 @@ abstract public class BasicInstruction extends Instruction {
         return new ExpandedSyntheticInstructionArguments(newVariables, newLabels,newInstructions);
     }
 
+    @Override
+    public void revertExpansion() {
+        // No expansion to revert for basic instructions
+    }
+
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles, label, destinationLabel, InstructionType.B);
         this.variable = variable;
     }
 
-
+    @Override
+    public Collection<String> getExpandedStringRepresentation() {
+        return Collections.singletonList(this.toString());
+    }
 }

@@ -17,8 +17,14 @@ public class SingleProgramController implements Controller{
 
     @Override
     public void loadProgram(String path) throws FileNotFoundException, JAXBException {
-        this.program = new Program(path);
-        this.statistics = new Statistics();
+        try {
+            this.program = new Program(path);
+            this.statistics = new Statistics();
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException("File not found at path: " + path);
+        } catch (JAXBException e) {
+            throw new JAXBException("Error parsing XML file at path: " + path);
+        }
     }
 
     @Override
@@ -29,8 +35,11 @@ public class SingleProgramController implements Controller{
 
     @Override
     public Void Expand(int level) {
+        program.expand(level);
         return null;
     }
+
+
 
     @Override
     public Collection<Variable> RunProgram() {

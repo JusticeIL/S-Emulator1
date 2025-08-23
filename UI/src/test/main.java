@@ -1,6 +1,9 @@
 package test;
 
+import console.ui.ConsoleUI;
 import program.Program;
+
+import java.io.Console;
 
 public class main {
 
@@ -8,7 +11,7 @@ public class main {
     static public String galPath = "/Users/galrubinstein/Downloads/badic.xml";
 
     public static void main(String[] args) {
-        fullTestEitanExpand();
+        UItest1();
 
     }
 
@@ -45,6 +48,11 @@ public class main {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private static void UItest1(){
+        ConsoleUI ui = new ConsoleUI();
+        ui.run();
     }
 
     private static void fullTestEitan3(){
