@@ -72,6 +72,20 @@ public class Program {
                 .orElse(0);
     }
 
+    public void revertExpansion() {
+        for (Instruction instruction : instructionList) {
+            instruction.revertExpansion();
+        }
+    }
+
+    public List<String> getExpandedProgramStringRepresentation() {
+        List<String> result = new ArrayList<>();
+        for (instruction.Instruction instruction : instructionList) {
+            result.addAll(instruction.getExpandedStringRepresentation());
+        }
+        return result;
+    }
+
     public boolean expand(int level) {
         int updatedLevel = currentProgramLevel + level;
         if (updatedLevel <= maxProgramLevel) {
@@ -94,11 +108,6 @@ public class Program {
         } else {
             return false;
         }
-    }
-
-    private void getNextInstruction() {
-        currentCommandIndex++;
-        currentInstruction = instructionList.get(currentCommandIndex);
     }
 
     // In Program.java

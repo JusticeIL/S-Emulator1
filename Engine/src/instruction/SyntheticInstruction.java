@@ -29,10 +29,22 @@ abstract public class SyntheticInstruction extends Instruction {
                     expandedVariables.addAll(args.getVariables());
                     expandedLabels.putAll(args.getLabels());
                 }
-            );;
+            );
             return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels,expandedInstructions);
         }
         return expandSyntheticInstruction();
+    }
+
+    public List<String> getExpandedStringRepresentation() {
+        List<String> result = new ArrayList<>();
+        if (isExpanded) {
+            for (Instruction instr : expandedInstruction.getInstructions()) {
+                result.addAll(instr.getExpandedStringRepresentation());
+            }
+        }else{
+            result.add(this.toString());
+        }
+        return result;
     }
 
     protected abstract ExpandedSyntheticInstructionArguments expandSyntheticInstruction();
@@ -43,6 +55,16 @@ abstract public class SyntheticInstruction extends Instruction {
             return InstructionExecutioner.executeInstructions(expandedInstruction.getInstructions(), expandedInstruction.getLabels());
         }
         return executeUnExpandedInstruction();
+    }
+
+    @Override
+    public void revertExpansion() {
+        if (isExpanded && expandedInstruction != null) {
+            for (Instruction instr : expandedInstruction.getInstructions()) {
+                instr.revertExpansion();
+            }
+            isExpanded = false;
+        }
     }
 
     protected abstract Label executeUnExpandedInstruction();
