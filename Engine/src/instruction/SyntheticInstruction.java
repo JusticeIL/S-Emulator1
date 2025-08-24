@@ -35,13 +35,17 @@ abstract public class SyntheticInstruction extends Instruction {
         return expandSyntheticInstruction();
     }
 
+    @Override
     public List<String> getExpandedStringRepresentation() {
         List<String> result = new ArrayList<>();
         if (isExpanded) {
+            String prefix = "<<<" + this.toString() + " ";
             for (Instruction instr : expandedInstruction.getInstructions()) {
-                result.addAll(instr.getExpandedStringRepresentation());
+                List<String> subList = instr.getExpandedStringRepresentation();
+                subList.replaceAll(s -> s + prefix);
+                result.addAll(subList);
             }
-        }else{
+        } else {
             result.add(this.toString());
         }
         return result;

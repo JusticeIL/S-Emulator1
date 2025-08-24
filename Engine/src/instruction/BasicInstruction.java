@@ -27,7 +27,10 @@ abstract public class BasicInstruction extends Instruction {
     }
 
     @Override
-    public Collection<String> getExpandedStringRepresentation() {
-        return Collections.singletonList(this.toString());
+    public List<String> getExpandedStringRepresentation() {
+        // Use ArrayList to ensure mutability
+        List<String> result = new ArrayList<>();
+        result.add(this.toString());
+        return result;
     }
 }

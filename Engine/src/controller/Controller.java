@@ -1,7 +1,6 @@
 package controller;
 
 import jakarta.xml.bind.JAXBException;
-import program.Program;
 import program.ProgramData;
 import program.Statistics;
 import instruction.component.Variable;
@@ -14,7 +13,8 @@ public interface Controller {
     void loadProgram(String path) throws JAXBException, FileNotFoundException;
     Optional<ProgramData> getProgramData();
     Void Expand(int level);
-    Collection<Variable> RunProgram();
+    Collection<Variable> runProgram(int ... args);
     Statistics getStatistics();
+    boolean isProgramLoaded();
 
 }

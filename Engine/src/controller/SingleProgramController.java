@@ -28,6 +28,11 @@ public class SingleProgramController implements Controller{
     }
 
     @Override
+    public boolean isProgramLoaded() {
+        return program != null;
+    }
+
+    @Override
     public Optional<ProgramData> getProgramData() {
         return Optional.ofNullable(program)
                 .map(ProgramData::new);
@@ -42,8 +47,8 @@ public class SingleProgramController implements Controller{
 
 
     @Override
-    public Collection<Variable> RunProgram() {
-        program.runProgram();
+    public Collection<Variable> runProgram(int... args) {
+        program.runProgram(args);
         return program.getVariables();
     }
 
