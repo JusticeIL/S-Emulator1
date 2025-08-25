@@ -1,7 +1,6 @@
 package console.ui;
 
 import controller.Controller;
-import controller.ControllerResponse;
 import controller.SingleProgramController;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
@@ -36,15 +35,14 @@ public class ConsoleUI {
                     case 1 -> handleLoadXml();
                     case 2 -> handleShowProgram();
                     case 3 -> handleExpand();
-//                    case 4 -> handleRun();
+                    case 4 -> handleRun();
 //                    case 5 -> handleShowHistory();
                     case 6 -> {
                         System.out.println("\nExiting. Goodbye!");
                         exit = true;
                     }
                 }
-            }
-            catch (InputMismatchException e) { // Case: user inputs a non-integer
+            } catch (InputMismatchException e) { // Case: user inputs a non-integer
                 System.out.println("Invalid input. Please enter a number between 1 and 6.");
             }
         }
@@ -52,8 +50,7 @@ public class ConsoleUI {
     }
 
     private void handleExpand() {
-        Optional<ProgramData> programDataOpt = engine.getProgramData();
-        if (programDataOpt.isEmpty()) {
+        if (!engine.isProgramLoaded()) {
             System.out.println("No program loaded.");
             System.out.println("Load program first!");
             return;
@@ -83,6 +80,7 @@ public class ConsoleUI {
         System.out.println("6) Exit");
     }
 
+
     private void handleLoadXml() {
         System.out.println("Enter full XML path: ");
         String path = in.nextLine().trim();
@@ -107,7 +105,7 @@ public class ConsoleUI {
     private void handleShowProgram() {
         engine.getProgramData().ifPresentOrElse(programData -> {
             System.out.println("Current Program Name: " + programData.getProgramName());
-            System.out.println("Variables: " + programData.getProgramArguments());
+            System.out.println("Variables: " + programData.getProgramXArguments());
             System.out.println("Labels: " + programData.getProgramLabels().stream()
                     .sorted((a, b) -> {
                         if (a.equals(Program.EXIT_LABEL.getLabelName())) return 1;
@@ -122,4 +120,45 @@ public class ConsoleUI {
         });
     }
 
+    private void handleRun() {
+        Optional<ProgramData> programDataOpt = engine.getProgramData();
+        if (!engine.isProgramLoaded()) {
+            System.out.println("No program loaded.");
+            System.out.println("Load program first!");
+            return;
+        }
+        System.out.print("Enter expansion level (0 for no expansion): ");
+        String input = in.nextLine().trim();
+        try {
+            int level = Integer.parseInt(input);
+            if (level < 0) {
+                System.out.println("Expansion level must be a non-negative integer.");
+                return;
+            }
+            System.out.println("Program x arguments: " + programDataOpt.get().getProgramXArguments());
+            System.out.print("Enter x arguments separated by ',': ");
+            String argsInput = in.nextLine().trim();
+            String[] parts = argsInput.split(",");
+            int[] args = new int[parts.length];
+            for (int i = 0; i < parts.length; i++) {
+                args[i] = Integer.parseInt(parts[i].trim());
+                if (args[i] < 0) {
+                    System.out.println("All arguments must be non-negative integers.");
+                    return;
+                }
+            }
+            engine.Expand(level);
+            engine.runProgram(args);
+            engine.getProgramData().get().getProgramVariablesCurrentState().forEach(System.out::println);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter non-negative integers separated by ','.");
+        }
+    }
+
 }
+
+
+
+
+
+

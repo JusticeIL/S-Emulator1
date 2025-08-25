@@ -2,7 +2,7 @@ package instruction;
 
 import instruction.component.Label;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -15,6 +15,7 @@ abstract public class Instruction implements Executable, Expandable {
     protected String command;
     protected int level;
     protected final InstructionType instructionType;
+    protected final Instruction OriginalInstruction;
 
     public abstract Label execute();
     // Implementation of command execution logic
@@ -27,7 +28,7 @@ abstract public class Instruction implements Executable, Expandable {
     public Map<String, Label> getLabels() {
         return Labels;
     }
-    public abstract ExpandedSyntheticInstructionArguments expand();
+    public abstract ExpandedSyntheticInstructionArguments generateExpandedInstructions();
 
     public int getLevel() {
         return level;
@@ -40,6 +41,17 @@ abstract public class Instruction implements Executable, Expandable {
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
         this.level = 0; // Implement
+        this.OriginalInstruction = null;
+    }
+
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Instruction originalInstruction) {
+        this.number = num;
+        this.label = label;
+        this.cycles = cycles;
+        this.destinationLabel = destinationLabel;
+        this.instructionType = instructionType;
+        this.level = 0; // Implement
+        this.OriginalInstruction = originalInstruction;
     }
 
 
@@ -62,6 +74,9 @@ abstract public class Instruction implements Executable, Expandable {
 
     public abstract void revertExpansion();
 
+    public abstract List<String> getExpandedStringRepresentation();
 
-    public abstract Collection<String> getExpandedStringRepresentation();
+    public void setNumber(int number) {
+        this.number = number;
+    }
 }

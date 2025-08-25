@@ -9,7 +9,8 @@ import java.util.List;
 
 public final class ProgramData {
     private final String programName;
-    private final List<String> programArguments = new ArrayList<>();
+    private final List<String> programXArguments = new ArrayList<>();
+    private final List<String> programVariablesCurrentState = new ArrayList<>();
     private final List<String> programLabels = new ArrayList<>();
     private final List<String> programInstructions = new ArrayList<>();
     private final List<String> expandedProgramInstructions = new ArrayList<>();
@@ -21,9 +22,21 @@ public final class ProgramData {
         }
         for (Variable variable : program.getVariables()) {
             if(variable.getName().contains("x")){
-                programArguments.add(variable.getName());
+                programXArguments.add(variable.getName());
             }
+            programVariablesCurrentState.add(variable.toString());
         }
+
+        programVariablesCurrentState.sort((a, b) -> {
+            // Assign priority: y=0, x=1, z=2, others=3
+            int priorityA = a.startsWith("y") ? 0 : (a.startsWith("x") ? 1 : (a.startsWith("z") ? 2 : 3));
+            int priorityB = b.startsWith("y") ? 0 : (b.startsWith("x") ? 1 : (b.startsWith("z") ? 2 : 3));
+            if (priorityA != priorityB) {
+                return Integer.compare(priorityA, priorityB);
+            }
+            return a.compareTo(b);
+        });
+
         for (Label label : program.getLabels()) {
             programLabels.add(label.toString());
         }
@@ -38,12 +51,16 @@ public final class ProgramData {
         return programName;
     }
 
-    public List<String> getProgramArguments() {
-        return programArguments;
+    public List<String> getProgramXArguments() {
+        return programXArguments;
     }
 
     public List<String> getProgramLabels() {
         return programLabels;
+    }
+
+    public List<String> getProgramVariablesCurrentState() {
+        return programVariablesCurrentState;
     }
 
     public List<String> getProgramInstructions() {

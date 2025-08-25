@@ -8,17 +8,21 @@ import program.Statistics;
 
 import java.io.FileNotFoundException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class SingleProgramController implements Controller{
 
-    Program program;
+    Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();
+    Program activeProgram;
     Statistics statistics;
 
     @Override
     public void loadProgram(String path) throws FileNotFoundException, JAXBException {
         try {
-            this.program = new Program(path);
+            this.activeProgram = new Program(path);
+            this.ProgramExpansionsByLevel.put(0, activeProgram);
             this.statistics = new Statistics();
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("File not found at path: " + path);
@@ -28,23 +32,36 @@ public class SingleProgramController implements Controller{
     }
 
     @Override
+    public boolean isProgramLoaded() {
+        return activeProgram != null;
+    }
+
+    @Override
     public Optional<ProgramData> getProgramData() {
-        return Optional.ofNullable(program)
+        return Optional.ofNullable(activeProgram)
                 .map(ProgramData::new);
     }
 
     @Override
     public Void Expand(int level) {
-        program.expand(level);
+        if(ProgramExpansionsByLevel.containsKey(level)) {
+            activeProgram = ProgramExpansionsByLevel.get(level);
+        }else{
+            Program expandedProgram = ProgramExpansionsByLevel.get(0).expand(level);
+            if(expandedProgram != null) {
+                ProgramExpansionsByLevel.put(level, expandedProgram);
+                activeProgram = expandedProgram;
+            } else {
+                return null;
+            }
+        }
         return null;
     }
 
-
-
     @Override
-    public Collection<Variable> RunProgram() {
-        program.runProgram();
-        return program.getVariables();
+    public Collection<Variable> runProgram(int... args) {
+        activeProgram.runProgram(args);
+        return activeProgram.getVariables();
     }
 
     @Override
