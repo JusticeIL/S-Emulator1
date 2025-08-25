@@ -25,6 +25,13 @@ public class Assignment extends SyntheticInstruction {
         super.level = 2;
     }
 
+    public Assignment(int num, Variable assignedVariable, Label label, Label destinationLabel, Variable argumentVariable, Instruction parentInstruction) {
+        super(num, assignedVariable, CYCLES, label, destinationLabel, parentInstruction);
+        this.argumentVariable = argumentVariable;
+        command = assignedVariable.getName() + " <- " + argumentVariable.getName();
+        super.level = 2;
+    }
+
     @Override
     protected Label executeUnExpandedInstruction() {
         variable.setValue(argumentVariable.getValue());
@@ -41,23 +48,24 @@ public class Assignment extends SyntheticInstruction {
         Label L2 = new Label();
         Label L3 = new Label();
         Variable z1 = new Variable();
-        Instruction L1Instruction = new Decrease(4, argumentVariable, L1, Program.EMPTY_LABEL);
-        Instruction L2Instruction = new Decrease(7, z1, L2, Program.EMPTY_LABEL);
-        Instruction L3Instruction = new Neutral(11, variable, L3, Program.EMPTY_LABEL);
+        expandedVariables.add(z1);
+        Instruction L1Instruction = new Decrease(4, argumentVariable, L1, Program.EMPTY_LABEL,this);
+        Instruction L2Instruction = new Decrease(7, z1, L2, Program.EMPTY_LABEL,this);
+        Instruction L3Instruction = new Neutral(11, variable, L3, Program.EMPTY_LABEL,this);
         expandedLabels.put(L1, L1Instruction);
         expandedLabels.put(L2, L2Instruction);
         expandedLabels.put(L3, L3Instruction);
 
-        expandedInstructions.add(new ZeroVariable(1, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        expandedInstructions.add(new JumpNotZero(2, argumentVariable, Program.EMPTY_LABEL, L1));
-        expandedInstructions.add(new GoToLabel(3, variable, Program.EMPTY_LABEL, L3));
+        expandedInstructions.add(new ZeroVariable(1, variable, label, Program.EMPTY_LABEL, this));
+        expandedInstructions.add(new JumpNotZero(2, argumentVariable, Program.EMPTY_LABEL, L1, this));
+        expandedInstructions.add(new GoToLabel(3, variable, Program.EMPTY_LABEL, L3, this));
         expandedInstructions.add(L1Instruction);
-        expandedInstructions.add(new Increase(5, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        expandedInstructions.add(new JumpNotZero(6, argumentVariable, Program.EMPTY_LABEL, L1));
+        expandedInstructions.add(new Increase(5, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
+        expandedInstructions.add(new JumpNotZero(6, argumentVariable, Program.EMPTY_LABEL, L1, this));
         expandedInstructions.add(L2Instruction);
-        expandedInstructions.add(new Increase(8, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        expandedInstructions.add(new Increase(9, argumentVariable, Program.EMPTY_LABEL, Program.EMPTY_LABEL));
-        expandedInstructions.add(new JumpNotZero(10, z1, Program.EMPTY_LABEL, L2));
+        expandedInstructions.add(new Increase(8, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
+        expandedInstructions.add(new Increase(9, argumentVariable, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
+        expandedInstructions.add(new JumpNotZero(10, z1, Program.EMPTY_LABEL, L2, this));
         expandedInstructions.add(L3Instruction);
         isExpanded = true;
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);

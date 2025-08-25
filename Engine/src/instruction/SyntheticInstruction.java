@@ -18,6 +18,12 @@ abstract public class SyntheticInstruction extends Instruction {
         this.isExpanded = false;
     }
 
+    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
+        super(num, cycles ,label, destinationLabel,InstructionType.S, parentInstruction);
+        this.variable = variable;
+        this.isExpanded = false;
+    }
+
 
     public ExpandedSyntheticInstructionArguments generateExpandedInstructions() {
         if(isExpanded) {

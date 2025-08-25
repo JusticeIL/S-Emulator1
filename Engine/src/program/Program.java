@@ -91,7 +91,7 @@ public class Program {
 
     public Program expand(int level) {
         if (wasExpanded) {
-            return this.expandedProgram;
+            return this.expandedProgram.expand(level-1);
         }else if(level == 0){
             return this;
         }

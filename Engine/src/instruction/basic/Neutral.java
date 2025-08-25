@@ -1,6 +1,7 @@
 package instruction.basic;
 
 import instruction.BasicInstruction;
+import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 
@@ -10,6 +11,11 @@ public class Neutral extends BasicInstruction {
 
     public Neutral(int num, Variable variable, Label label, Label destinationLabel) {
         super(num, variable, CYCLES, label, destinationLabel);
+        command = variable.getName() + " <- " + variable.getName();
+    }
+
+    public Neutral(int num, Variable variable, Label label, Label destinationLabel, Instruction parentInstruction) {
+        super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         command = variable.getName() + " <- " + variable.getName();
     }
 
