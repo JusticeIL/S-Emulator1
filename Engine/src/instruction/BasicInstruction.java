@@ -9,10 +9,12 @@ abstract public class BasicInstruction extends Instruction {
 
     protected Variable variable;
 
-    public ExpandedSyntheticInstructionArguments expand() {
+    public ExpandedSyntheticInstructionArguments generateExpandedInstructions() {
         Set<Variable> newVariables = new HashSet<>();
         Map<Label,Instruction> newLabels = new HashMap<>();
         List<Instruction> newInstructions = new ArrayList<>();
+        newInstructions.add(this);
+
         return new ExpandedSyntheticInstructionArguments(newVariables, newLabels,newInstructions);
     }
 

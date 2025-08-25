@@ -3,6 +3,7 @@ package instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.InstructionExecutioner;
+import program.Program;
 
 import java.util.*;
 
@@ -18,12 +19,12 @@ abstract public class SyntheticInstruction extends Instruction {
     }
 
 
-    public ExpandedSyntheticInstructionArguments expand() {
+    public ExpandedSyntheticInstructionArguments generateExpandedInstructions() {
         if(isExpanded) {
             List<Instruction> expandedInstructions = new ArrayList<>();
             Set<Variable> expandedVariables = new HashSet<>();
             Map<Label, Instruction> expandedLabels = new HashMap<>();
-            expandedInstruction.getInstructions().stream().map(Instruction::expand).forEach(
+            expandedInstruction.getInstructions().stream().map(Instruction::generateExpandedInstructions).forEach(
                 args -> {
                     expandedInstructions.addAll(args.getInstructions());
                     expandedVariables.addAll(args.getVariables());
@@ -55,9 +56,6 @@ abstract public class SyntheticInstruction extends Instruction {
 
     @Override
     public Label execute() {
-        if(isExpanded){
-            return InstructionExecutioner.executeInstructions(expandedInstruction.getInstructions(), expandedInstruction.getLabels());
-        }
         return executeUnExpandedInstruction();
     }
 
@@ -70,6 +68,8 @@ abstract public class SyntheticInstruction extends Instruction {
             isExpanded = false;
         }
     }
+
+
 
     protected abstract Label executeUnExpandedInstruction();
 }

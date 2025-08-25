@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+
 public class Program {
 
     private Instruction currentInstruction;
@@ -26,18 +27,20 @@ public class Program {
     int currentCommandIndex; // Program Counter
     int cycleCounter;
     private int runCounter;
-    private int currentProgramLevel;
+    private final int currentProgramLevel;
     private int maxProgramLevel = 0; // TODO: Implement this in the future
     Statistics statistics;
     private final Map<String, Variable> Variables = new TreeMap<>();
-    static public final Label EMPTY_LABEL =  new Label("     ");
+    static public final Label EMPTY_LABEL = new Label("     ");
     static public final Label EXIT_LABEL = new Label("EXIT");
+    private boolean wasExpanded = false;
+    private Program expandedProgram = null;
 
     public Set<Label> getLabels() {
         return Labels.keySet();
     }
 
-    private final Map<Label,Instruction> Labels = new HashMap<>();
+    private final Map<Label, Instruction> Labels = new HashMap<>();
 
     public List<Instruction> getInstructionList() {
         return instructionList;
@@ -86,29 +89,39 @@ public class Program {
         return result;
     }
 
-    public boolean expand(int level) {
-        int updatedLevel = currentProgramLevel + level;
-        if (updatedLevel <= maxProgramLevel) {
-            IntStream.range(0, level).forEach(i -> {
-                instructionList.forEach(instruction -> {
-                    ExpandedSyntheticInstructionArguments expandedArgs = instruction.expand();
-                    if (expandedArgs != null) {
-                        Variables.putAll(expandedArgs.getVariables().stream()
-                                .collect(Collectors.toMap(Variable::getName, v -> v)));
-                        expandedArgs.getLabels().forEach((label, instr) -> {
-                            if (!Labels.containsKey(label)) {
-                                Labels.put(label, instr);
-                            }
-                        });
-                    }
-                });
+    public Program expand(int level) {
+        if (wasExpanded) {
+            return this.expandedProgram;
+        }else if(level == 0){
+            return this;
+        }
+        else {
+            List<Instruction> expandedInstructions = new ArrayList<>();
+            Map<Label, Instruction> expandedLabels = new HashMap<>(Labels);
+            Set<Variable> expandedVariables = new HashSet<>(Variables.values());
+
+            instructionList.forEach(instruction -> {
+                ExpandedSyntheticInstructionArguments singleExpandedInstruction = instruction.generateExpandedInstructions();
+                if (singleExpandedInstruction != null) {
+                    expandedVariables.addAll(singleExpandedInstruction.getVariables());
+                    expandedInstructions.addAll(singleExpandedInstruction.getInstructions());
+                    singleExpandedInstruction.getLabels().forEach((label, instr) -> {
+                        if (!Labels.containsKey(label)) {
+                            singleExpandedInstruction.getLabels().put(label, instr);
+                        }
+                    });
+                }
             });
-            currentProgramLevel = updatedLevel;
-            return true;
-        } else {
-            return false;
+            IntStream.range(1, expandedInstructions.size() + 1).forEach(i -> expandedInstructions.get(i - 1).setNumber(i));
+            ExpandedSyntheticInstructionArguments expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
+
+            wasExpanded = true;
+            this.expandedProgram = new Program(this, expandedInstruction);
+            return this.expandedProgram.expand(level-1);
         }
     }
+
+
 
     // In Program.java
     public void runProgram(int ...variables) {
@@ -126,6 +139,31 @@ public class Program {
         Run currentRun = new Run(runCounter, currentProgramLevel, xVariables, yValue, cycleCounter);
         statistics.addRunToHistory(currentRun);
         runCounter++;
+    }
+
+    public Program(Program baseProgram, ExpandedSyntheticInstructionArguments newInstructions) {
+        // Copy statistics and program name from the base program
+        this.statistics = baseProgram.statistics;
+        this.programName = baseProgram.programName;
+        this.instructionList.addAll(newInstructions.getInstructions());
+
+        // Copy variables and labels from the base program
+        this.Variables.putAll(newInstructions.getVariables().stream().
+                collect(Collectors.toMap(Variable::getName, v -> v)));
+
+        this.Labels.putAll(newInstructions.getLabels());
+
+        // Set up initial state
+        this.currentCommandIndex = 0;
+        this.cycleCounter = 0;
+        this.runCounter = baseProgram.runCounter;
+        this.currentProgramLevel = baseProgram.currentProgramLevel + 1;
+        this.maxProgramLevel = Math.max(this.currentProgramLevel, calculateMaxProgramLevel());
+
+        // Set the current instruction if the list is not empty
+        if (!instructionList.isEmpty()) {
+            this.currentInstruction = instructionList.getFirst();
+        }
     }
 
     private void setArguments(int[] arguments) {
