@@ -39,6 +39,7 @@ public class GoToLabel extends SyntheticInstruction {
         Map<Label,Instruction> expandedLabels = new HashMap<>();
         Variable z1 = new Variable();
         expandedVariables.add(z1);
+
         expandedInstructions.add(new Increase(1, z1,  label, Program.EMPTY_LABEL, this));
         expandedInstructions.add(new JumpNotZero(2, z1, Program.EMPTY_LABEL, destinationLabel, this));
         isExpanded = true;

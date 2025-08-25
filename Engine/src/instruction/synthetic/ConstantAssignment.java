@@ -41,8 +41,7 @@ public class ConstantAssignment extends SyntheticInstruction {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
-        Variable z1 = new Variable();
-        expandedVariables.add(z1);
+
         expandedInstructions.add(new ZeroVariable(1, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
         IntStream.range(0, constValue).forEach(i -> { // It looks disgusting in lambda
             expandedInstructions.add(new Increase(i+2, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL,this));

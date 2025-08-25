@@ -42,7 +42,7 @@ public class JumpZero extends SyntheticInstruction {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label, Instruction> expandedLabels = new HashMap<>();
-        Label L1 = new Label();
+        Label L1 =  new Label();
 
         int instructionNumber = 1;
         expandedInstructions.add(new JumpNotZero(instructionNumber++, variable, label, L1, this));

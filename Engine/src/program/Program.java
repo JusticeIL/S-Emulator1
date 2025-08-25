@@ -107,7 +107,7 @@ public class Program {
                     expandedInstructions.addAll(singleExpandedInstruction.getInstructions());
                     singleExpandedInstruction.getLabels().forEach((label, instr) -> {
                         if (!Labels.containsKey(label)) {
-                            singleExpandedInstruction.getLabels().put(label, instr);
+                            expandedLabels.put(label, instr);
                         }
                     });
                 }
