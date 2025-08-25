@@ -9,11 +9,15 @@ import java.util.List;
 
 public final class ProgramData {
     private final String programName;
+    private final int maxExpandLevel;
+    private int currentCycles;
     private final List<String> programXArguments = new ArrayList<>();
     private final List<String> programVariablesCurrentState = new ArrayList<>();
     private final List<String> programLabels = new ArrayList<>();
     private final List<String> programInstructions = new ArrayList<>();
+    private final List<String> runtimeExecutedInstructions = new ArrayList<>(); // TODO: Implement
     private final List<String> expandedProgramInstructions = new ArrayList<>();
+    private final Statistics statistics;
 
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
@@ -41,6 +45,9 @@ public final class ProgramData {
             programLabels.add(label.toString());
         }
         expandedProgramInstructions.addAll(program.getExpandedProgramStringRepresentation());
+        this.maxExpandLevel = program.getMaxProgramLevel();
+        this.currentCycles = program.getProgramCycles();
+        this.statistics = program.getStatistics();
     }
 
     public List<String> getExpandedProgramInstructions() {
@@ -65,5 +72,21 @@ public final class ProgramData {
 
     public List<String> getProgramInstructions() {
         return programInstructions;
+    }
+
+    public int getMaxExpandLevel() {
+        return maxExpandLevel;
+    }
+
+    public List<String> getRuntimeExecutedInstructions() {
+        return runtimeExecutedInstructions;
+    }
+
+    public int getCurrentCycles() {
+        return currentCycles;
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
     }
 }

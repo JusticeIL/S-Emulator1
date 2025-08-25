@@ -29,7 +29,7 @@ public class Program {
     private int runCounter;
     private final int currentProgramLevel;
     private int maxProgramLevel = 0; // TODO: Implement this in the future
-    Statistics statistics;
+    private Statistics statistics;
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL = new Label("     ");
     static public final Label EXIT_LABEL = new Label("EXIT");
@@ -121,8 +121,6 @@ public class Program {
         }
     }
 
-
-
     // In Program.java
     public void runProgram(int ...variables) {
         setUpNewRun();
@@ -143,8 +141,8 @@ public class Program {
 
     public Program(Program baseProgram, ExpandedSyntheticInstructionArguments newInstructions) {
         // Copy statistics and program name from the base program
-        this.statistics = baseProgram.statistics;
-        this.programName = baseProgram.programName;
+        this.statistics = baseProgram.getStatistics();
+        this.programName = baseProgram.getProgramName();
         this.instructionList.addAll(newInstructions.getInstructions());
 
         // Copy variables and labels from the base program
@@ -177,6 +175,7 @@ public class Program {
             }
             variableCounter++;
         }
+        variableCounter--;
     }
 
     public void loadProgram(String filePath) throws FileNotFoundException, JAXBException {
@@ -238,4 +237,14 @@ public class Program {
     public int getProgramCycles() {
         return cycleCounter;
     }
+
+    public int getMaxProgramLevel() {
+        return maxProgramLevel;
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
+
 }

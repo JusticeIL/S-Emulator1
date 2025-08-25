@@ -12,3 +12,4 @@ O.O.B:
     b. Instruction
 9. Talk to aviad about the printing of the expandeds
 10. Check if destination label is working with expanding instructions correctly with every synthetic instruction
+11. Needed to add "cycles+=" for the current command executed in program after merge of program with instruction executioner
