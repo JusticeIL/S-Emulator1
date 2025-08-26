@@ -130,8 +130,28 @@ public class Program {
                 .map(Map.Entry::getValue)
                 .toList();
 
-        // Delegate execution to InstructionExecutioner
-        InstructionExecutioner.executeInstructions(instructionList, Labels);
+
+        Label nextLabel = null;
+        int currentIndex = 0;
+        Instruction currentInstruction = instructionList.get(currentIndex);
+
+        while (currentIndex < instructionList.size()) {
+            nextLabel = currentInstruction.execute();
+            cycleCounter += currentInstruction.getCycles();
+
+            if (nextLabel.equals(Program.EMPTY_LABEL)) {
+                currentIndex++;
+            } else if (nextLabel.equals(Program.EXIT_LABEL)) {
+                currentIndex = instructionList.size(); // Exit the loop
+            } else {
+                currentInstruction = Labels.get(nextLabel);
+                currentIndex = currentInstruction.getNumber() - 1;
+            }
+
+            if (currentIndex < instructionList.size()) {
+                currentInstruction = instructionList.get(currentIndex);
+            }
+        }
 
         int yValue = Variables.get("y").getValue();
         Run currentRun = new Run(runCounter, currentProgramLevel, xVariables, yValue, cycleCounter);
