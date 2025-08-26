@@ -21,6 +21,11 @@ public class JumpNotZero extends BasicInstruction {
     }
 
     @Override
+    protected BasicInstruction createCopy() {
+        return new JumpNotZero(number, this.variable, this.label, this.destinationLabel, this.parentInstruction);
+    }
+
+    @Override
     public Label execute() {
         if (variable.getValue() != 0) { // Case: jump condition is met
             return destinationLabel;

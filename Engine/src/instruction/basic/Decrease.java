@@ -20,6 +20,11 @@ public class Decrease extends BasicInstruction {
     }
 
     @Override
+    protected BasicInstruction createCopy(){
+        return new Decrease(this.number, (Variable) this.variable, this.label, this.destinationLabel, this.parentInstruction);
+    }
+
+    @Override
     public Label execute() {
         int tmp = variable.getValue();
         if (tmp >0) { // Case: can be decreased

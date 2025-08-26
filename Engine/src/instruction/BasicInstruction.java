@@ -13,10 +13,14 @@ abstract public class BasicInstruction extends Instruction {
         Set<Variable> newVariables = new HashSet<>();
         Map<Label,Instruction> newLabels = new HashMap<>();
         List<Instruction> newInstructions = new ArrayList<>();
-        newInstructions.add(this);
-
+        Instruction newInstruction = this.createCopy();
+        newInstructions.add(newInstruction);
+        newLabels.put(this.label, newInstruction);
         return new ExpandedSyntheticInstructionArguments(newVariables, newLabels,newInstructions);
     }
+
+    abstract protected BasicInstruction createCopy();
+
 
     @Override
     public void revertExpansion() {

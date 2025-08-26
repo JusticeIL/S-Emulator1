@@ -4,6 +4,6 @@ import program.Program;
 
 public interface Expandable {
 
-    ExpandedSyntheticInstructionArguments generateExpandedInstructions();
+    ExpandedSyntheticInstructionArguments generateExpandedInstructions() throws CloneNotSupportedException;
 
 }

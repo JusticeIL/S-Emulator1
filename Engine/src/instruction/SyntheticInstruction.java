@@ -30,11 +30,13 @@ abstract public class SyntheticInstruction extends Instruction {
             List<Instruction> expandedInstructions = new ArrayList<>();
             Set<Variable> expandedVariables = new HashSet<>();
             Map<Label, Instruction> expandedLabels = new HashMap<>();
+
             expandedInstruction.getInstructions().stream().map(Instruction::generateExpandedInstructions).forEach(
                 args -> {
                     expandedInstructions.addAll(args.getInstructions());
                     expandedVariables.addAll(args.getVariables());
                     expandedLabels.putAll(args.getLabels());
+                    expandedLabels.put(this.label, expandedInstructions.getFirst());
                 }
             );
             return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels,expandedInstructions);

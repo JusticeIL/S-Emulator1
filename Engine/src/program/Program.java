@@ -93,11 +93,7 @@ public class Program {
                 if (singleExpandedInstruction != null) {
                     expandedVariables.addAll(singleExpandedInstruction.getVariables());
                     expandedInstructions.addAll(singleExpandedInstruction.getInstructions());
-                    singleExpandedInstruction.getLabels().forEach((label, instr) -> {
-                        if (!Labels.containsKey(label)) {
-                            expandedLabels.put(label, instr);
-                        }
-                    });
+                    expandedLabels.putAll(singleExpandedInstruction.getLabels());
                 }
             });
             IntStream.range(1, expandedInstructions.size() + 1).forEach(i -> expandedInstructions.get(i - 1).setNumber(i));

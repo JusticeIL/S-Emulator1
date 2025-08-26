@@ -20,6 +20,11 @@ public class Neutral extends BasicInstruction {
     }
 
     @Override
+    protected BasicInstruction createCopy() {
+        return new Neutral(number, this.variable, this.label, this.destinationLabel, this.parentInstruction);
+    }
+
+    @Override
     public Label execute() {
         return destinationLabel;
     }

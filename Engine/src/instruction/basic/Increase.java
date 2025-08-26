@@ -20,6 +20,11 @@ public class Increase extends BasicInstruction {
     }
 
     @Override
+    protected BasicInstruction createCopy() {
+        return new Increase(number, this.variable, this.label, this.destinationLabel, this.parentInstruction);
+    }
+
+    @Override
     public Label execute() {
         int tmp = variable.getValue();
         tmp++;
