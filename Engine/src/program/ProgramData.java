@@ -24,6 +24,10 @@ public final class ProgramData {
         for (Instruction instruction : program.getInstructionList()) {
             programInstructions.add(instruction.toString());
         }
+        for(Instruction instruction: program.getRuntimeExecutedInstructions()){
+            runtimeExecutedInstructions.add(instruction.toString());
+        }
+
         for (Variable variable : program.getVariables()) {
             if(variable.getName().contains("x")){
                 programXArguments.add(variable.getName());

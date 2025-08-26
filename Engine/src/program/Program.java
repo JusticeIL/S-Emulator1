@@ -35,6 +35,8 @@ public class Program {
     static public final Label EXIT_LABEL = new Label("EXIT");
     private boolean wasExpanded = false;
     private Program expandedProgram = null;
+    private final List<Instruction> runtimeExecutedInstructions = new ArrayList<>();
+
 
     public Set<Label> getLabels() {
         return Labels.keySet();
@@ -50,22 +52,7 @@ public class Program {
         return programName;
     }
 
-    private void executeCurrentCommand() {
-        Label nextLabel = currentInstruction.execute();
 
-        if (nextLabel.equals(EMPTY_LABEL)) {
-            currentCommandIndex++;
-            if (currentCommandIndex < instructionList.size()) {
-                currentInstruction = instructionList.get(currentCommandIndex);
-            }
-        } else if (nextLabel.equals(EXIT_LABEL)) {
-            currentCommandIndex = instructionList.size() + 1;
-        } else { // Case: GOTO Label
-            currentInstruction = Labels.get(nextLabel);
-            currentCommandIndex = currentInstruction.getNumber() - 1;
-        }
-
-    }
 
     private int calculateMaxProgramLevel() {
         // Calculate the maximum program level based on the instructions
@@ -135,7 +122,9 @@ public class Program {
         int currentIndex = 0;
         Instruction currentInstruction = instructionList.get(currentIndex);
 
+
         while (currentIndex < instructionList.size()) {
+            runtimeExecutedInstructions.add(currentInstruction);
             nextLabel = currentInstruction.execute();
             cycleCounter += currentInstruction.getCycles();
 
@@ -240,6 +229,11 @@ public class Program {
         }
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
+        runtimeExecutedInstructions.clear(); ;
+    }
+
+    public List<Instruction> getRuntimeExecutedInstructions() {
+        return runtimeExecutedInstructions;
     }
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
