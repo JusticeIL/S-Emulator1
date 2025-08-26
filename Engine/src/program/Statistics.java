@@ -14,4 +14,8 @@ public class Statistics {
     public void addRunToHistory(Run run) {
         history.add(run);
     }
+
+    public List<Run> getHistory() {
+        return history;
+    }
 }

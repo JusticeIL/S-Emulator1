@@ -5,10 +5,12 @@ import controller.SingleProgramController;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
 import program.ProgramData;
+import program.Run;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -28,46 +30,25 @@ public class ConsoleUI {
         while (!exit) {
             showMenu();
             System.out.print("choose an option (1-6): ");
+            String input = in.nextLine().trim();
             try {
-                int choice = in.nextInt(); // TODO: make it readline and parse it later
-                in.nextLine();
+                int choice = Integer.parseInt(input);
                 switch (choice) {
                     case 1 -> handleLoadXml();
                     case 2 -> handleShowProgram();
                     case 3 -> handleExpand();
                     case 4 -> handleRun();
-//                    case 5 -> handleShowHistory();
+                    case 5 -> handleShowHistory();
                     case 6 -> {
                         System.out.println("\nExiting. Goodbye!");
                         exit = true;
                     }
                 }
-            } catch (InputMismatchException e) { // Case: user inputs a non-integer
+            } catch (NumberFormatException e) { // Case: user inputs a non-integer
                 System.out.println("Invalid input. Please enter a number between 1 and 6.");
             }
         }
         in.close();
-    }
-
-    private void handleExpand() {
-        if (!engine.isProgramLoaded()) {
-            System.out.println("No program loaded.");
-            System.out.println("Load program first!");
-            return;
-        }
-        System.out.print("Enter expansion level (positive integer): ");
-        String input = in.nextLine().trim();
-        try {
-            int level = Integer.parseInt(input);
-            if (level <= 0) {
-                System.out.println("Expansion level must be a positive integer.");
-                return;
-            }
-            engine.Expand(level);
-            engine.getProgramData().get().getExpandedProgramInstructions().forEach(System.out::println);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a positive integer.");
-        }
     }
 
     private void showMenu() {
@@ -82,7 +63,7 @@ public class ConsoleUI {
 
 
     private void handleLoadXml() {
-        System.out.println("Enter full XML path: ");
+        System.out.print("Enter full XML path: ");
         String path = in.nextLine().trim();
 
         if (!path.endsWith(".xml")) { // Case: not a xml file
@@ -120,6 +101,27 @@ public class ConsoleUI {
         });
     }
 
+    private void handleExpand() {
+        if (!engine.isProgramLoaded()) {
+            System.out.println("No program loaded.");
+            System.out.println("Load program first!");
+            return;
+        }
+        System.out.print("Enter expansion level (positive integer): ");
+        String input = in.nextLine().trim();
+        try {
+            int level = Integer.parseInt(input);
+            if (level <= 0) {
+                System.out.println("Expansion level must be a positive integer.");
+                return;
+            }
+            engine.Expand(level);
+            engine.getProgramData().get().getExpandedProgramInstructions().forEach(System.out::println);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a positive integer.");
+        }
+    }
+
     private void handleRun() {
         Optional<ProgramData> programDataOpt = engine.getProgramData();
         if (!engine.isProgramLoaded()) {
@@ -127,12 +129,17 @@ public class ConsoleUI {
             System.out.println("Load program first!");
             return;
         }
-        System.out.print("Enter expansion level (0 for no expansion): ");
+        final int maxLevel = programDataOpt.get().getMaxExpandLevel();
+        System.out.print("Enter expansion level between 0 and " + maxLevel + " (0 for no expansion): ");
         String input = in.nextLine().trim();
         try {
             int level = Integer.parseInt(input);
-            if (level < 0) {
+            if (level < 0) { // Case: number is not valid
                 System.out.println("Expansion level must be a non-negative integer.");
+                return;
+            }
+            else if (level > maxLevel) { // Case: the user number input is higher than the max level of the program
+                System.out.println("Expansion level must be between 0 and " + maxLevel + ".");
                 return;
             }
             System.out.println("Program x arguments: " + programDataOpt.get().getProgramXArguments());
@@ -149,12 +156,45 @@ public class ConsoleUI {
             }
             engine.Expand(level);
             engine.runProgram(args);
-            engine.getProgramData().get().getProgramVariablesCurrentState().forEach(System.out::println);
+            System.out.println("Executed instructions:");
+            programDataOpt.get().getRuntimeExecutedInstructions().forEach(System.out::println);
+            programDataOpt.get().getProgramVariablesCurrentState().forEach(System.out::println);
+            System.out.println("Program cycles: " + engine.getProgramData().get().getCurrentCycles());
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter non-negative integers separated by ','.");
         }
     }
 
+    private void handleShowHistory() {
+        Optional<ProgramData> programDataOpt = engine.getProgramData();
+        if (!engine.isProgramLoaded()) { // Case: no program loaded
+            System.out.println("No program loaded.");
+            System.out.println("Load program first!");
+            return;
+        }
+
+        List<Run> history = programDataOpt.get().getStatistics().getHistory();
+
+        if (history.isEmpty()) { // Case: no runs have been executed yet
+            System.out.println("No runs have been executed yet.");
+            return;
+        }
+
+        history.stream()
+                .map(run -> String.format(
+                        """
+                                Run ID: %d |
+                                Expansion Level: %d |
+                                Input Args: %s |
+                                y value: %d |
+                                Cycles: %d""",
+                        run.getRunID(),
+                        run.getExpansionLevel(),
+                        run.getInputArgs().toString(),
+                        run.getyValue(),
+                        run.getRunCycles()
+                )).forEach(System.out::println);
+    }
 }
 
 
