@@ -15,7 +15,7 @@ public final class ProgramData {
     private final List<String> programVariablesCurrentState = new ArrayList<>();
     private final List<String> programLabels = new ArrayList<>();
     private final List<String> programInstructions = new ArrayList<>();
-    private final List<String> runtimeExecutedInstructions = new ArrayList<>(); // TODO: Implement
+    private final List<String> runtimeExecutedInstructions = new ArrayList<>();
     private final List<String> expandedProgramInstructions = new ArrayList<>();
     private final Statistics statistics;
 
@@ -29,12 +29,8 @@ public final class ProgramData {
         }
 
         for (Variable variable : program.getVariables()) {
-            if(variable.getName().contains("x")){
-                programXArguments.add(variable.getName());
-            }
             programVariablesCurrentState.add(variable.toString());
         }
-
         programVariablesCurrentState.sort((a, b) -> {
             // Assign priority: y=0, x=1, z=2, others=3
             int priorityA = a.startsWith("y") ? 0 : (a.startsWith("x") ? 1 : (a.startsWith("z") ? 2 : 3));
@@ -44,6 +40,8 @@ public final class ProgramData {
             }
             return a.compareTo(b);
         });
+
+        this.programXArguments.addAll(program.getUsedXVariableNames());
 
         for (Label label : program.getLabels()) {
             programLabels.add(label.toString());
