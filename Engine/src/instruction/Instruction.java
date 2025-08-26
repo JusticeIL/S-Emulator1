@@ -15,7 +15,7 @@ abstract public class Instruction implements Executable, Expandable {
     protected String command;
     protected int level;
     protected final InstructionType instructionType;
-    protected final Instruction OriginalInstruction;
+    protected final Instruction parentInstruction;
 
     public abstract Label execute();
     // Implementation of command execution logic
@@ -41,17 +41,17 @@ abstract public class Instruction implements Executable, Expandable {
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
         this.level = 0; // Implement
-        this.OriginalInstruction = null;
+        this.parentInstruction = null;
     }
 
-    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Instruction originalInstruction) {
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Instruction parentInstruction) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
         this.level = 0; // Implement
-        this.OriginalInstruction = originalInstruction;
+        this.parentInstruction = parentInstruction;
     }
 
 
@@ -69,7 +69,11 @@ abstract public class Instruction implements Executable, Expandable {
 
     @Override
     public String toString() {
-        return ("#" + number + " " + instructionType + " " + "[" + label + "]" + " " + command + " " + "(" +cycles + ")");
+        String thisInstructionString = "#" + number + " " + instructionType + " " + "[" + label + "]" + " " + command + " " + "(" +cycles + ")";
+        if(parentInstruction != null) {
+            thisInstructionString += (" <<< " + parentInstruction.toString());
+        }
+        return thisInstructionString;
     }
 
     public abstract void revertExpansion();
