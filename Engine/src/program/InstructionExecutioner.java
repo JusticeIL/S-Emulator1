@@ -18,7 +18,7 @@ public class InstructionExecutioner {
 
             if (nextLabel.equals(Program.EMPTY_LABEL)) {
                 currentIndex++;
-            } else if (nextLabel.equals(Program.EXIT_LABEL)||!labels.containsKey(nextLabel)) {
+            } else if (nextLabel.equals(Program.EXIT_LABEL)) {
                 currentIndex = instructions.size(); // Exit the loop
             } else {
                 currentInstruction = labels.get(nextLabel);

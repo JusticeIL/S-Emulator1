@@ -28,6 +28,11 @@ abstract public class BasicInstruction extends Instruction {
         this.variable = variable;
     }
 
+    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
+        super(num, cycles, label, destinationLabel, InstructionType.B, parentInstruction);
+        this.variable = variable;
+    }
+
     @Override
     public List<String> getExpandedStringRepresentation() {
         // Use ArrayList to ensure mutability

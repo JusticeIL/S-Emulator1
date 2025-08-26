@@ -10,7 +10,7 @@ import java.util.List;
 public final class ProgramData {
     private final String programName;
     private final int maxExpandLevel;
-    private int currentCycles;
+    private final int currentCycles;
     private final List<String> programXArguments = new ArrayList<>();
     private final List<String> programVariablesCurrentState = new ArrayList<>();
     private final List<String> programLabels = new ArrayList<>();
@@ -24,6 +24,10 @@ public final class ProgramData {
         for (Instruction instruction : program.getInstructionList()) {
             programInstructions.add(instruction.toString());
         }
+        for(Instruction instruction: program.getRuntimeExecutedInstructions()){
+            runtimeExecutedInstructions.add(instruction.toString());
+        }
+
         for (Variable variable : program.getVariables()) {
             if(variable.getName().contains("x")){
                 programXArguments.add(variable.getName());
