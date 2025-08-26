@@ -156,6 +156,7 @@ public class ConsoleUI {
             }
             engine.Expand(level);
             engine.runProgram(args);
+            programDataOpt = engine.getProgramData(); // Refresh program data after run
             System.out.println("Executed instructions:");
             programDataOpt.get().getRuntimeExecutedInstructions().forEach(System.out::println);
             programDataOpt.get().getProgramVariablesCurrentState().forEach(System.out::println);
