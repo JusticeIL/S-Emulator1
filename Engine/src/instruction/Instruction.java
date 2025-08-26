@@ -16,6 +16,7 @@ abstract public class Instruction implements Executable, Expandable {
     protected int level;
     protected final InstructionType instructionType;
     protected final Instruction parentInstruction;
+    protected final String DELIMITER = ">>>";
 
     public abstract Label execute();
     // Implementation of command execution logic
@@ -69,9 +70,9 @@ abstract public class Instruction implements Executable, Expandable {
 
     @Override
     public String toString() {
-        String thisInstructionString = "#" + number + " " + instructionType + " " + "[" + label + "]" + " " + command + " " + "(" +cycles + ")";
+        String thisInstructionString = "#" + number + " " + instructionType + " " + "[" + String.format(" %-4s", label) + "]" + " " + command + " " + "(" + cycles + ")";
         if(parentInstruction != null) {
-            thisInstructionString += (" <<< " + parentInstruction.toString());
+            thisInstructionString += (" " + DELIMITER + " " + parentInstruction.toString()); // Are we sure we need the parentheses?
         }
         return thisInstructionString;
     }

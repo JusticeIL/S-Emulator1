@@ -28,10 +28,10 @@ public class Program {
     int cycleCounter;
     private int runCounter;
     private final int currentProgramLevel;
-    private int maxProgramLevel = 0; // TODO: Implement this in the future
+    private int maxProgramLevel;
     private Statistics statistics;
     private final Map<String, Variable> Variables = new TreeMap<>();
-    static public final Label EMPTY_LABEL = new Label("     ");
+    static public final Label EMPTY_LABEL = new Label("    ");
     static public final Label EXIT_LABEL = new Label("EXIT");
     private boolean wasExpanded = false;
     private Program expandedProgram = null;

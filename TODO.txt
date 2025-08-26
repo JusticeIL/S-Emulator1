@@ -1,15 +1,18 @@
 O.O.B:
 
-1. Update variables map from children instructions-Done
-2. Update labels map from children instructions-Done
-3. Does instructions need access to y? - Aviad answer: No, y can be replaced with a local variable-Done
-4. Fix labels corrections in expands-Done
-5. Implement class InstructionExecutioner *star* *star* - Done
-6. Update cycle counting for expanded synthetic instructions
-7. Implement program expanding-Done
-8. Implement usage of InstructionExecutioner in
-    a. Program  - Done
-    b. Instruction
-9. Talk to aviad about the printing of the expandeds
-10. Check if destination label is working with expanding instructions correctly with every synthetic instruction- good
-11. Needed to add "cycles+=" for the current command executed in program after merge of program with instruction executioner- done
+1. Update cycle counting for expanded synthetic instructions
+2. Talk to aviad about the printing of the expands
+3. Add spacing for labels-Done
+4. Do i must add expand level in the running? (aka: 4 Run program)
+5. Are we sure we need parentheses for toString in instruction father?
+6. Are we sure we need to allow in the expansion command (aka 3 expand program) to expand without "0" option?
+7. Can maxProgramLevel in Program be final?
+8. Can statistics in Program be final?
+9. The calculation of the maxProgramLevel in Program should be the maximum between baseProgram-1 and calculated, shouldn't it?
+10. Add a condition to check if the expansion level entered by user is valid (aka between 0 and maxProgramLevel)
+11. Bug in expansion (command 3): when asking to expand the program, it exceeds the max level by 1 (was checked once)
+12. Need to check more than one argument and to see how it prints it (command 5)
+13. Bug in statistics: prints new input instead of the original one
+14. Bug: incorrect numbering of the instructions in the expansion (command 3)
+15. (Not fully checked) Bug: incorrect instructions parents in the expansion (command 3)
+16. (Not fully checked) Bug: incorrect used z variables (all of the were 0s in one test)

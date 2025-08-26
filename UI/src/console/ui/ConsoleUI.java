@@ -18,6 +18,7 @@ public class ConsoleUI {
 
     private final Scanner in = new Scanner(System.in);
     private final Controller engine = new SingleProgramController();
+    private final int WAIT = 1 * 1000;
 
     public static void main(String[] args) {
         new ConsoleUI().run();
@@ -40,12 +41,20 @@ public class ConsoleUI {
                     case 4 -> handleRun();
                     case 5 -> handleShowHistory();
                     case 6 -> {
-                        System.out.println("\nExiting. Goodbye!");
+                        System.out.print("Exiting. Goodbye!");
                         exit = true;
+                    }
+                    default -> {
+                        System.out.println("Option does not exist in the menu. Please choose a number that exists in the menu.");
                     }
                 }
             } catch (NumberFormatException e) { // Case: user inputs a non-integer
                 System.out.println("Invalid input. Please enter a number between 1 and 6.");
+            }
+            try {
+                Thread.sleep(WAIT);
+            } catch (InterruptedException e) { // Case: someone interrupted the sleep of the main thread
+                System.out.println("Could not wait due to another thread interruption.");
             }
         }
         in.close();
