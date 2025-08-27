@@ -145,6 +145,7 @@ public class InstructionFactory {
     }
 
     public Set<Label> getMissingLabels() {
-        return destinationLabelSet.stream().filter(label -> !sourceLabelSet.contains(label)).collect(Collectors.toSet());
+        return destinationLabelSet.stream().filter(label -> !sourceLabelSet.contains(label))
+                .filter(label -> !label.equals(Program.EXIT_LABEL)).collect(Collectors.toSet());
     }
 }
