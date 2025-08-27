@@ -137,13 +137,14 @@ public class ConsoleUI {
     }
 
     private void handleRun() {
-        engine.Expand(0);
-        Optional<ProgramData> programDataOpt = engine.getProgramData();
+
         if (!engine.isProgramLoaded()) {
             System.out.println("No program loaded.");
             System.out.println("Load program first!");
             return;
         }
+        engine.Expand(0);
+        Optional<ProgramData> programDataOpt = engine.getProgramData();
         final int maxLevel = programDataOpt.get().getMaxExpandLevel();
         System.out.print("Enter expansion level between 0 and " + maxLevel + " (0 for no expansion): ");
         String input = in.nextLine().trim();
