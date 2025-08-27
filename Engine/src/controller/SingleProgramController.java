@@ -44,8 +44,9 @@ public class SingleProgramController implements Controller{
 
     @Override
     public void Expand(int level) {
-        if(level > activeProgram.getMaxProgramLevel()){
-            throw new IllegalArgumentException("Level exceeds maximum program level of " + activeProgram.getMaxProgramLevel());
+        int maxLevel = ProgramExpansionsByLevel.get(0).getMaxProgramLevel();
+        if(level > maxLevel) {
+            throw new IllegalArgumentException("Level exceeds maximum program level of " + maxLevel);
         }
         if(ProgramExpansionsByLevel.containsKey(level)) {
             activeProgram = ProgramExpansionsByLevel.get(level);

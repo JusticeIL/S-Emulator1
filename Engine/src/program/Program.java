@@ -63,11 +63,6 @@ public class Program {
                 .orElse(0);
     }
 
-    public void revertExpansion() {
-        for (Instruction instruction : instructionList) {
-            instruction.revertExpansion();
-        }
-    }
 
     public List<String> getExpandedProgramStringRepresentation() {
         List<String> result = new ArrayList<>();
@@ -159,7 +154,7 @@ public class Program {
         this.cycleCounter = 0;
         this.runCounter = baseProgram.runCounter;
         this.currentProgramLevel = baseProgram.currentProgramLevel + 1;
-        this.maxProgramLevel = Math.max(this.currentProgramLevel, calculateMaxProgramLevel());
+        this.maxProgramLevel = baseProgram.maxProgramLevel-1;
         this.usedXVariableNames = baseProgram.usedXVariableNames;
 
         // Set the current instruction if the list is not empty

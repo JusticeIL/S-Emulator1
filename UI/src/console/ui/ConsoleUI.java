@@ -93,6 +93,7 @@ public class ConsoleUI {
     }
 
     private void handleShowProgram() {
+        engine.Expand(0);
         engine.getProgramData().ifPresentOrElse(programData -> {
             System.out.println("Current Program Name: " + programData.getProgramName());
             System.out.println("Variables: " + programData.getProgramXArguments());
@@ -135,6 +136,7 @@ public class ConsoleUI {
     }
 
     private void handleRun() {
+        engine.Expand(0);
         Optional<ProgramData> programDataOpt = engine.getProgramData();
         if (!engine.isProgramLoaded()) {
             System.out.println("No program loaded.");
