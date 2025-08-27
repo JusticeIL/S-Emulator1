@@ -1,6 +1,6 @@
 O.O.B:
 
-1. Talk to aviad about the printing of the expands - Aviad
+1. Talk to aviad about the printing of the expands and <<< or >>> and check spaces in jumpNotZero - Aviad
 2. Are we sure we need to allow in the expansion command (aka 3 expand program) to expand without "0" option? - Aviad
 3. Change printing of the X arguments (command 5) - Gal
 4. Bug: x1 is "after" snapshot but should be "before" snapshot - Needs checking
