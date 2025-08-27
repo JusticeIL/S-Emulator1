@@ -1,6 +1,6 @@
 O.O.B:
 
 3. Change printing of the X arguments (command 5) - Gal
-4. Bug: x1 is "after" snapshot but should be "before" snapshot - Happens in badic.xml, Eitan (Aviad)
+4. Bug: x1 is "after" snapshot but should be "before" snapshot - Happens in badic.xml, Eitan
 5. Bug in show program: shows empty label, not good - Try to recreate this bug
 6. Bonus: try catch

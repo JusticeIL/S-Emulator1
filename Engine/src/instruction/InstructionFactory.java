@@ -56,13 +56,13 @@ public class InstructionFactory {
             return null;
         }
 
-        Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
+        return sInstrArg.getSInstructionArgument().stream()
                 .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("VARIABLE"))
                 .filter(arg->!arg.getName().toUpperCase().contains("LABEL"))
                 .map(SInstructionArgument::getValue) // may still be null
-                .findFirst();
-
-        return argumentVariableName.map(this::getVariable).orElse(null);
+                .findFirst()
+                .map(this::getVariable)
+                .orElse(null);
     }
 
     private int getConstantFromSInstruction(SInstruction sInstr) {
