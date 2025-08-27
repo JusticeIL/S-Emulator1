@@ -70,7 +70,7 @@ abstract public class Instruction implements Executable, Expandable {
 
     @Override
     public String toString() {
-        String thisInstructionString = "#" + number + " " + instructionType + " " + "[" + String.format(" %-4s", label) + "]" + " " + command + " " + "(" + cycles + ")";
+        String thisInstructionString = "#" + number + " " + "(" + instructionType + ")" + " " + "[" + String.format(" %-4s", label) + "]" + " " + command + " " + "(" + cycles + ")";
         if(parentInstruction != null) {
             thisInstructionString += (" " + DELIMITER + " " + parentInstruction.toString()); // Are we sure we need the parentheses?
         }

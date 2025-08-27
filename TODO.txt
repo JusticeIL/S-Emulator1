@@ -4,7 +4,7 @@ O.O.B:
 2. Talk to aviad about the printing of the expands
 3. Add spacing for labels-Done
 4. Do i must add expand level in the running? (aka: 4 Run program) -dont think so bc it is an input(maybe in statistics)
-5. Are we sure we need parentheses for toString in instruction father?
+5. Are we sure we need parentheses for toString in instruction father? - thisInstructionString += (" " + DELIMITER + " " + parentInstruction.toString()); this!!!!!!
 6. Are we sure we need to allow in the expansion command (aka 3 expand program) to expand without "0" option?
 7. Can maxProgramLevel in Program be final? - lets try
 8. Can statistics in Program be final? - yes bc it is a collection
@@ -16,3 +16,6 @@ O.O.B:
 14. Bug: incorrect numbering of the instructions in the expansion (command 3)
 15. (Not fully checked) Bug: incorrect instructions parents in the expansion (command 3)
 16. (Not fully checked) Bug: incorrect used z variables (all of the were 0s in one test)
+17. Bug: x1 is "after" snapshot but should be "before" snapshot
+18. Bug: minus max level is not 1, is 2
+19. Bug: after running expansion and then running no expansion, it doesn't erase the instructions with the work variables.
