@@ -12,14 +12,14 @@ import XMLandJaxB.SInstructionArguments;
 import instruction.component.Label;
 import instruction.component.Variable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InstructionFactory {
     private final Map<String, Variable> variables;
     private final Map<String, Label> labels = new HashMap<>();
+    private final Set<Label> destinationLabelSet = new HashSet<>();
+    private final Set<Label> sourceLabelSet = new HashSet<>();
 
     public Instruction GenerateInstruction(SInstruction sInstr, int instructionCounter) {
         Variable variable = getVariable(sInstr.getSVariable());
@@ -27,6 +27,8 @@ public class InstructionFactory {
         Instruction instruction;
         Label label = getLabelFromSIndtruction(sInstr);
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
+        destinationLabelSet.add(destinationLabel);
+        sourceLabelSet.add(label);
 
         int constant = getConstantFromSInstruction(sInstr);
 
@@ -99,6 +101,8 @@ public class InstructionFactory {
         return label;
     }
 
+
+
     private Label getDestinationLabelFromSInstruction(SInstruction sInstr) {
         Label destinationLabel = Program.EMPTY_LABEL;
         SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
@@ -130,5 +134,17 @@ public class InstructionFactory {
             System.out.println("HARA AL HAROSH SHELI");
             return null;
         }
+    }
+
+    public Set<Label> getDestinationLabelSet() {
+        return destinationLabelSet;
+    }
+
+    public Set<Label> getSourceLabelSet() {
+        return sourceLabelSet;
+    }
+
+    public Set<Label> getMissingLabels() {
+        return destinationLabelSet.stream().filter(label -> !sourceLabelSet.contains(label)).collect(Collectors.toSet());
     }
 }

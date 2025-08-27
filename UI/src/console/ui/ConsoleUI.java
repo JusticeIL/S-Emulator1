@@ -88,7 +88,7 @@ public class ConsoleUI {
         } catch (JAXBException e) {
             System.out.println("Error: Malformed XML file detected: " + Paths.get(path).getFileName());
         } catch (Exception e) {
-            System.out.println("Unexpected error while loading: " + e.getMessage());
+            System.out.println("Error: " +e.getMessage());
         }
     }
 

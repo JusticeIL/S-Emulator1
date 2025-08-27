@@ -197,7 +197,10 @@ public class Program {
             }
             // Load program name
             programName = sProgram.getName();
-
+            Set<Label> missingLabels = instructionFactory.getMissingLabels();
+            if (!missingLabels.isEmpty()) {
+                throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
+            }
         }
         else  {
             throw new FileNotFoundException();
