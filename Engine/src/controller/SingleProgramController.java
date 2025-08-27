@@ -49,9 +49,12 @@ public class SingleProgramController implements Controller{
         if(level > maxLevel) {
             throw new IllegalArgumentException("Level exceeds maximum program level of " + maxLevel);
         }
+        else if (level < 0) {
+            throw new IllegalArgumentException("Level is a negative number! the level number should be between 0 and " + activeProgram.getMaxProgramLevel());
+        }
         if(ProgramExpansionsByLevel.containsKey(level)) {
             activeProgram = ProgramExpansionsByLevel.get(level);
-        }else{
+        } else {
             Program expandedProgram = ProgramExpansionsByLevel.get(0).expand(level);
             if(expandedProgram != null) {
                 ProgramExpansionsByLevel.put(level, expandedProgram);
