@@ -1,10 +1,6 @@
 O.O.B:
 
-1. Talk to aviad about the printing of the expands and <<< or >>> and check spaces in jumpNotZero - Aviad
-2. Are we sure we need to allow in the expansion command (aka 3 expand program) to expand without "0" option? - Aviad
 3. Change printing of the X arguments (command 5) - Gal
-4. Bug: x1 is "after" snapshot but should be "before" snapshot - Needs checking
-5. Bug in show program: if it was expanded, it shows the expanded instead of the original - Needs checking
-6. Bug in show program: shows empty label, not good - Aviad
-7. Need to check if a destination label is legal
-8. Bonus: try catch
+4. Bug: x1 is "after" snapshot but should be "before" snapshot - Happens in badic.xml, Eitan (Aviad)
+5. Bug in show program: shows empty label, not good - Try to recreate this bug
+6. Bonus: try catch

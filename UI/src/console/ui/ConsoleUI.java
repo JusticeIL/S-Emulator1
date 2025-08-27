@@ -13,12 +13,13 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class ConsoleUI {
 
     private final Scanner in = new Scanner(System.in);
     private final Controller engine = new SingleProgramController();
-    private final int WAIT = 1 * 1000;
+    private final long WAIT = 1;
 
     public static void main(String[] args) {
         new ConsoleUI().run();
@@ -52,7 +53,7 @@ public class ConsoleUI {
                 System.out.println("Invalid input. Please enter a number between 1 and 6.");
             }
             try {
-                Thread.sleep(WAIT);
+                Thread.sleep(TimeUnit.SECONDS.toMillis(WAIT));
             } catch (InterruptedException e) { // Case: someone interrupted the sleep of the main thread
                 System.out.println("Could not wait due to another thread interruption.");
             }

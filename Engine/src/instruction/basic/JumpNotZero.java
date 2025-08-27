@@ -12,12 +12,12 @@ public class JumpNotZero extends BasicInstruction {
 
     public JumpNotZero(int num, Variable variable, Label label, Label destinationLabel) {
         super(num, variable, CYCLES, label, destinationLabel);
-        command = "IF " + variable.getName() + "!=0" + " GOTO " + destinationLabel.getLabelName();
+        command = "IF " + variable.getName() + " !=0 " + " GOTO " + destinationLabel.getLabelName();
     }
 
     public JumpNotZero(int num, Variable variable, Label label, Label destinationLabel, Instruction parentInstruction) {
         super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
-        command = "IF " + variable.getName() + "!=0" + " GOTO " + destinationLabel.getLabelName();
+        command = "IF " + variable.getName() + " !=0 " + " GOTO " + destinationLabel.getLabelName();
     }
 
     @Override
