@@ -129,6 +129,9 @@ public class ConsoleUI {
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a positive integer.");
         }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void handleRun() {
@@ -172,6 +175,9 @@ public class ConsoleUI {
             System.out.println("Program cycles: " + engine.getProgramData().get().getCurrentCycles());
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter non-negative integers separated by ','.");
+        }
+        catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
         }
     }
 
