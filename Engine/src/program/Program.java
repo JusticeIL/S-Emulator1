@@ -78,12 +78,11 @@ public class Program {
     }
 
     public Program expand(int level) {
-        if (wasExpanded) {
-            return this.expandedProgram.expand(level-1);
-        }else if(level == 0){
+        if (level == 0) {
             return this;
-        }
-        else {
+        } else if (wasExpanded) {
+            return this.expandedProgram.expand(level - 1);
+        } else {
             List<Instruction> expandedInstructions = new ArrayList<>();
             Map<Label, Instruction> expandedLabels = new HashMap<>(Labels);
             Set<Variable> expandedVariables = new HashSet<>(Variables.values());
@@ -101,7 +100,7 @@ public class Program {
 
             wasExpanded = true;
             this.expandedProgram = new Program(this, expandedInstruction);
-            return this.expandedProgram.expand(level-1);
+            return this.expandedProgram.expand(level - 1);
         }
     }
 
@@ -140,9 +139,7 @@ public class Program {
         }
 
         int yValue = Variables.get("y").getValue();
-        Run currentRun = new Run(runCounter, currentProgramLevel, xVariables, yValue, cycleCounter);
-        statistics.addRunToHistory(currentRun);
-        runCounter++;
+        statistics.addRunToHistory(currentProgramLevel, xVariables, yValue, cycleCounter);
     }
 
     public Program(Program baseProgram, ExpandedSyntheticInstructionArguments newInstructions) {
