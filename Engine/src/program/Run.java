@@ -14,16 +14,13 @@ public class Run {
     private final int yValue;
     private final int runCycles;
 
-    public Run(int runNumber, int runLevel, List<Variable> inputInts, int yValue, int runCycles) {
+    public Run(int runNumber, int runLevel, Map<String,Integer> inputArguments, int yValue, int runCycles) {
         this.inputArgs = new HashMap<>();
+        inputArgs.putAll(inputArguments);
         this.runID = runNumber;
         this.expansionLevel = runLevel;
         this.yValue = yValue;
         this.runCycles = runCycles;
-        
-        for(Variable var : inputInts) {
-            inputArgs.put(var.getName(), var.getValue());
-        }
     }
 
     public int getRunID() {

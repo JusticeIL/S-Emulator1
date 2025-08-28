@@ -103,10 +103,11 @@ public class Program {
     public void runProgram(int ...variables) {
         setUpNewRun();
         setArguments(variables);
-        List<Variable> xVariables = Variables.entrySet().stream()
+        Map<String,Integer> xVariables = new HashMap<>();
+        Variables.entrySet().stream()
                 .filter(entry -> entry.getKey().contains("x"))
                 .map(Map.Entry::getValue)
-                .toList();
+                .forEach(v -> xVariables.put(v.getName(), v.getValue()));
 
 
         Label nextLabel = null;
