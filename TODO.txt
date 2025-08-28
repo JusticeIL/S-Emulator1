@@ -1,3 +1,4 @@
 O.O.B:
 
-6. Bonus: try catch
+1. Check all code parts and remove any unnecessary comments or code.
+2. Bonus: try catch
