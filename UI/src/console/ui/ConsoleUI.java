@@ -113,26 +113,38 @@ public class ConsoleUI {
     }
 
     private void handleExpand() {
-        if (!engine.isProgramLoaded()) {
+        if (!engine.isProgramLoaded()) { // Case: no program was loaded
             System.out.println("No program loaded.");
             System.out.println("Load program first!");
             return;
         }
-        System.out.print("Enter expansion level (positive integer): ");
-        String input = in.nextLine().trim();
-        try {
-            int level = Integer.parseInt(input);
-            if (level <= 0) {
-                System.out.println("Expansion level must be a positive integer.");
-                return;
-            }
-            engine.Expand(level);
-            engine.getProgramData().get().getExpandedProgramInstructions().forEach(System.out::println);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a positive integer.");
+        engine.Expand(0); //Reset current active program
+        if (engine.getProgramData().get().getMaxExpandLevel() == 0) { // Case: program cannot be expanded
+            System.out.println("This program " + "(" + engine.getProgramData().get().getProgramName() +")" + " cannot be expanded.");
+            return;
         }
-        catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+
+        int level = -1;
+        while (level <= 0) {
+            System.out.print("Enter expansion level (positive number): ");
+            String input = in.nextLine().trim();
+            try {
+                level = Integer.parseInt(input);
+                if (level <= 0) {
+                    System.out.println("Expansion level must be a positive number.");
+                    continue;
+                }
+                    engine.Expand(level);
+                    engine.getProgramData().get().getExpandedProgramInstructions().forEach(System.out::println);
+
+            } catch (NumberFormatException e) { // Case: user input was not a number
+                System.out.println("Invalid input. Please enter a positive number.");
+                level = -1;
+            }
+            catch (IllegalArgumentException e) { // Case: expansion level is too high
+                System.out.println(e.getMessage());
+                level = -1;
+            }
         }
     }
 
