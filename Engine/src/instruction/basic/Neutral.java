@@ -8,9 +8,11 @@ import instruction.component.Variable;
 public class Neutral extends BasicInstruction {
 
     static private final int CYCLES = 0;
+    private Variable variable1;
 
     public Neutral(int num, Variable variable, Label label, Label destinationLabel) {
         super(num, variable, CYCLES, label, destinationLabel);
+        variable1 = variable;
         command = variable.getName() + " <- " + variable.getName();
     }
 

@@ -148,4 +148,8 @@ public class InstructionFactory {
         return destinationLabelSet.stream().filter(label -> !sourceLabelSet.contains(label))
                 .filter(label -> !label.equals(Program.EXIT_LABEL)).collect(Collectors.toSet());
     }
+
+    public Instruction GenerateExitInstruction(int size) {
+        return new Neutral(size + 1, new Variable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL);
+    }
 }

@@ -26,6 +26,10 @@ abstract public class Instruction implements Executable, Expandable {
         return label;
     }
 
+    public Label getDestinationLabel() {
+        return destinationLabel;
+    }
+
     public Map<String, Label> getLabels() {
         return Labels;
     }
