@@ -210,7 +210,9 @@ public class ConsoleUI {
                                 Cycles: %d""",
                         run.getRunID(),
                         run.getExpansionLevel(),
-                        run.getInputArgs().toString(),
+                                run.getInputArgs().entrySet().stream()
+                                        .map(entry -> entry.getKey() + " = " + entry.getValue())
+                                        .toList(),
                         run.getyValue(),
                         run.getRunCycles()
                 )).forEach(System.out::println);
