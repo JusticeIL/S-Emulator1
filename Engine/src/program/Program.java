@@ -40,7 +40,6 @@ public class Program implements Serializable {
     private Program expandedProgram = null;
     private final List<Instruction> runtimeExecutedInstructions = new ArrayList<>();
 
-
     public Set<Label> getLabels() {
         return Labels.keySet();
     }
@@ -54,8 +53,6 @@ public class Program implements Serializable {
     public String getProgramName() {
         return programName;
     }
-
-
 
     private int calculateMaxProgramLevel() {
         // Calculate the maximum program level based on the instructions
