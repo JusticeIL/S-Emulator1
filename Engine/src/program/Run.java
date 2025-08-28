@@ -2,11 +2,12 @@ package program;
 
 import instruction.component.Variable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Run {
+public class Run implements Serializable {
 
     private final int runID;
     private final int expansionLevel;

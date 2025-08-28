@@ -1,9 +1,11 @@
 package instruction;
 
 import instruction.component.Label;
+
+import java.io.Serializable;
 import java.util.List;
 
-abstract public class Instruction implements Executable, Expandable {
+abstract public class Instruction implements Executable, Expandable, Serializable {
 
     protected int number;
     protected Label label;

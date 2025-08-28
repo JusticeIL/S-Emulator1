@@ -6,7 +6,7 @@ import jakarta.xml.bind.JAXBException;
 import program.Program;
 import program.ProgramData;
 import program.Run;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.List;
@@ -16,9 +16,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ConsoleUI {
 
-    private final Scanner in = new Scanner(System.in);
-    private final Controller engine = new SingleProgramController();
+    private final Scanner scanner = new Scanner(System.in);
+    private Controller engine = new SingleProgramController();
     private final long WAIT = 1;
+    private final String serializationURL = "engine.ser";
 
     public static void main(String[] args) {
         new ConsoleUI().run();
@@ -30,8 +31,8 @@ public class ConsoleUI {
         boolean exit = false;
         while (!exit) {
             showMenu();
-            System.out.print("choose an option (1-6): ");
-            String input = in.nextLine().trim();
+            System.out.print("choose an option (1-8): ");
+            String input = scanner.nextLine().trim();
             try {
                 int choice = Integer.parseInt(input);
                 switch (choice) {
@@ -44,7 +45,10 @@ public class ConsoleUI {
                         System.out.print("Exiting. Goodbye!");
                         exit = true;
                     }
-                    default -> System.out.println("Option does not exist in the menu. Please choose a number that exists in the menu.");
+                    case 7 -> handleSaveState();
+                    case 8 -> handleLoadState();
+                    default ->
+                            System.out.println("Option does not exist in the menu. Please choose a number that exists in the menu.");
                 }
             } catch (NumberFormatException e) { // Case: user inputs a non-integer
                 System.out.println("Invalid input. Please enter a number between 1 and 6.");
@@ -55,7 +59,7 @@ public class ConsoleUI {
                 System.out.println("Could not wait due to another thread interruption.");
             }
         }
-        in.close();
+        scanner.close();
     }
 
     private void showMenu() {
@@ -66,12 +70,14 @@ public class ConsoleUI {
         System.out.println("4) Run program");
         System.out.println("5) Show run history / statistics");
         System.out.println("6) Exit");
+        System.out.println("7) Save state");
+        System.out.println("8) Load state");
     }
 
 
     private void handleLoadXml() {
         System.out.print("Enter full XML path: ");
-        String path = in.nextLine().trim();
+        String path = scanner.nextLine().trim();
 
         if (!path.endsWith(".xml")) { // Case: not a xml file
             System.out.println("file must be an XML file (AKA ends with .xml)");
@@ -88,7 +94,7 @@ public class ConsoleUI {
         } catch (JAXBException e) {
             System.out.println("Error: Malformed XML file detected: " + Paths.get(path).getFileName());
         } catch (Exception e) { // Case: general exception
-            System.out.println("Error: " +e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -120,7 +126,7 @@ public class ConsoleUI {
         engine.Expand(0); // Reset current active program
 
         if (engine.getProgramData().get().getMaxExpandLevel() == 0) { // Case: program cannot be expanded
-            System.out.println("This program " + "(" + engine.getProgramData().get().getProgramName() +")" + " cannot be expanded.");
+            System.out.println("This program " + "(" + engine.getProgramData().get().getProgramName() + ")" + " cannot be expanded.");
             return;
         }
 
@@ -130,21 +136,20 @@ public class ConsoleUI {
         int level = -1;
         while (level <= 0) {
             System.out.print("Enter expansion level between 1 and " + maxLevel + " (positive number): ");
-            String input = in.nextLine().trim();
+            String input = scanner.nextLine().trim();
             try {
                 level = Integer.parseInt(input);
                 if (level <= 0) {
                     System.out.println("Expansion level must be a positive number.");
                     continue;
                 }
-                    engine.Expand(level);
-                    engine.getProgramData().get().getExpandedProgramInstructions().forEach(System.out::println);
+                engine.Expand(level);
+                engine.getProgramData().get().getExpandedProgramInstructions().forEach(System.out::println);
 
             } catch (NumberFormatException e) { // Case: user input was not a number
                 System.out.println("Invalid input. Please enter a positive number.");
                 level = -1;
-            }
-            catch (IllegalArgumentException e) { // Case: expansion level is too high
+            } catch (IllegalArgumentException e) { // Case: expansion level is too high
                 System.out.println(e.getMessage());
                 level = -1;
             }
@@ -168,7 +173,7 @@ public class ConsoleUI {
         Optional<ProgramData> programDataOpt = engine.getProgramData();
         final int maxLevel = programDataOpt.get().getMaxExpandLevel();
         System.out.print("Enter expansion level between 0 and " + maxLevel + " (0 for no expansion): ");
-        String input = in.nextLine().trim();
+        String input = scanner.nextLine().trim();
         try {
             int level = Integer.parseInt(input);
             if (level < 0) { // Case: number is not valid
@@ -181,7 +186,7 @@ public class ConsoleUI {
             }
             System.out.println("Program x arguments: " + programDataOpt.get().getProgramXArguments());
             System.out.print("Enter x arguments separated by ',': ");
-            String argsInput = in.nextLine().trim();
+            String argsInput = scanner.nextLine().trim();
             String[] parts = argsInput.split(",");
             int[] args = new int[parts.length];
             for (int i = 0; i < parts.length; i++) {
@@ -201,7 +206,7 @@ public class ConsoleUI {
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter non-negative integers separated by ','.");
         }
-        catch (IllegalArgumentException e){
+        catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -231,11 +236,43 @@ public class ConsoleUI {
                                 Cycles: %d""",
                         run.getRunID(),
                         run.getExpansionLevel(),
-                                run.getInputArgs().entrySet().stream()
-                                        .map(entry -> entry.getKey() + " = " + entry.getValue())
-                                        .toList(),
+                        run.getInputArgs().entrySet().stream()
+                                .map(entry -> entry.getKey() + " = " + entry.getValue())
+                                .toList(),
                         run.getyValue(),
                         run.getRunCycles()
                 )).forEach(System.out::println);
+    }
+
+    private void handleSaveState() {
+        try {
+            try (ObjectOutputStream out =
+                         new ObjectOutputStream(
+                                 new FileOutputStream(serializationURL))) {
+                out.writeObject(engine);
+                out.flush();
+                System.out.println("State saved successfully!");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error with creating the serialization file");
+        } catch (IOException e) {
+            System.out.println("Potential I/O error happend: " + e.getMessage());
+        }
+    }
+
+    private void handleLoadState() {
+        try (ObjectInputStream in =
+                new ObjectInputStream(
+                        new FileInputStream(serializationURL))) {
+            engine = (Controller) in.readObject();
+            System.out.println("State loaded successfully!");
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not find the serialization file.");
+            System.out.println("Please save the state first.");
+        } catch (IOException e) {
+            System.out.println("Potential I/O error happend: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

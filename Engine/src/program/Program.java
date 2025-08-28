@@ -1,8 +1,8 @@
 package program;
 
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.*;
-
 import XMLandJaxB.SInstruction;
 import XMLandJaxB.SProgram;
 import instruction.ExpandedSyntheticInstructionArguments;
@@ -18,9 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-
-
-public class Program {
+public class Program implements Serializable {
 
     private Instruction currentInstruction;
     private String programName;

@@ -1,5 +1,7 @@
 package instruction;
 
-public enum InstructionType {
+import java.io.Serializable;
+
+public enum InstructionType implements Serializable {
     B,S
 }

@@ -1,6 +1,8 @@
 package instruction.component;
 
-public class Variable {
+import java.io.Serializable;
+
+public class Variable implements Serializable {
 
     private static int highestUnusedZId = 1;
     private static int previousHighestUnusedZId = 1;

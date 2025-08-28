@@ -1,15 +1,14 @@
 package program;
 
-import instruction.component.Variable;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Statistics {
+public class Statistics implements Serializable {
 
     private final List<Run> history;
-    int runCounter = 1;
+    private int runCounter = 1;
 
 
     public Statistics() {
@@ -18,11 +17,6 @@ public class Statistics {
 
     public void addRunToHistory(int runLevel, Map<String,Integer> inputInts, int yValue, int runCycles) {
         history.add(new Run(runCounter++, runLevel, inputInts, yValue, runCycles));
-    }
-
-
-    public void addRunToHistory(Run run) {
-        history.add(run);
     }
 
     public List<Run> getHistory() {

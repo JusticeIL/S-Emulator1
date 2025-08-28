@@ -7,12 +7,13 @@ import program.ProgramData;
 import program.Statistics;
 
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SingleProgramController implements Controller{
+public class SingleProgramController implements Controller, Serializable {
 
     private final Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();
     private Program activeProgram;

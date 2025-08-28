@@ -1,8 +1,9 @@
 package instruction.component;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Label {
+public class Label implements Serializable {
     private static int highestUnusedLabelNumber = 1;
     private static int previousHighestUnusedLabelNumber = 1;
     private final String labelName;
