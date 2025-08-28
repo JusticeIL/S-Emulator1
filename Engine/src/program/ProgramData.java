@@ -4,10 +4,11 @@ import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ProgramData {
+public final class ProgramData implements Serializable {
     private final String programName;
     private final int maxExpandLevel;
     private final int currentCycles;

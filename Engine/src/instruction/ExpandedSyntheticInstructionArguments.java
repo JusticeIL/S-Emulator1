@@ -3,9 +3,10 @@ package instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class ExpandedSyntheticInstructionArguments {
+public class ExpandedSyntheticInstructionArguments implements Serializable {
     private final Set<Variable> variables;
     private final Map<Label,Instruction> labels;
     private final List<Instruction> instructions;
