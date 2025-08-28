@@ -4,3 +4,4 @@ O.O.B:
 2. create 2 readme files
     - one .md for github
     - one .pdf or .docx for submission
+3. Check if the map is working properly and not crashing
