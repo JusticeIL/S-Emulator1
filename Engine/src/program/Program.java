@@ -34,6 +34,7 @@ public class Program {
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL = new Label("    ");
     static public final Label EXIT_LABEL = new Label("EXIT");
+
     private boolean wasExpanded = false;
     private Program expandedProgram = null;
     private final List<Instruction> runtimeExecutedInstructions = new ArrayList<>();
@@ -103,10 +104,11 @@ public class Program {
     public void runProgram(int ...variables) {
         setUpNewRun();
         setArguments(variables);
-        List<Variable> xVariables = Variables.entrySet().stream()
+        Map<String,Integer> xVariables = new HashMap<>();
+        Variables.entrySet().stream()
                 .filter(entry -> entry.getKey().contains("x"))
                 .map(Map.Entry::getValue)
-                .toList();
+                .forEach(v -> xVariables.put(v.getName(), v.getValue()));
 
 
         Label nextLabel = null;
@@ -187,13 +189,21 @@ public class Program {
             // Load instructions
             InstructionFactory instructionFactory = new InstructionFactory(Variables);
             int instructionCounter = 1;
+            boolean containsExit = false;
             for (SInstruction sInstr : sInstructions) {
                 Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
                 instructionList.add(newInstruction);
                 if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
                     Labels.put(newInstruction.getLabel(), newInstruction);
                 }
+                if(newInstruction.getDestinationLabel().equals(EXIT_LABEL)){
+                    containsExit = true;
+                }
                 instructionCounter++;
+            }
+            if(containsExit){
+                Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
+                Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
             }
             // Load program name
             programName = sProgram.getName();
