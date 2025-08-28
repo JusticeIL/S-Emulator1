@@ -22,14 +22,14 @@ public class JumpEqualConstant extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         command = "IF " + variable.getName() + " = " + constValue + " GOTO " + destinationLabel.getLabelName();
         this.constValue = constValue;
-        super.level = 3; // Implement
+        super.level = 3;
     }
 
     public JumpEqualConstant(int num, Variable variable, Label label, Label destinationLabel, int constValue, Instruction parentInstruction) {
         super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         command = "IF " + variable.getName() + " = " + constValue + " GOTO " + destinationLabel.getLabelName();
         this.constValue = constValue;
-        super.level = 3; // Implement
+        super.level = 3;
     }
 
     @Override
@@ -37,12 +37,12 @@ public class JumpEqualConstant extends SyntheticInstruction {
         if (variable.getValue() == constValue) {
             return destinationLabel;
         } else {
-            return Program.EMPTY_LABEL; // No jump, handle later
+            return Program.EMPTY_LABEL;
         }
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() { // Waiting for answer from Aviad
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
@@ -59,7 +59,7 @@ public class JumpEqualConstant extends SyntheticInstruction {
         expandedInstructions.add(new JumpNotZero(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this));
         Instruction L1Instruction = new Neutral(instructionNumber++, z1, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
-        expandedInstructions.add(L1Instruction); // z1 should be y
+        expandedInstructions.add(L1Instruction);
         isExpanded = true;
         expandedLabels.put(label, expandedInstructions.getFirst());
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);

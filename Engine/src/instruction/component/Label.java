@@ -36,14 +36,10 @@ public class Label {
         return Objects.equals(labelName, label.labelName);
     }
 
-
-
     public Label() {
         this.labelName = "L"+ highestUnusedLabelNumber;
         highestUnusedLabelNumber++;
     }
-
-
 
     @Override
     public int hashCode() {

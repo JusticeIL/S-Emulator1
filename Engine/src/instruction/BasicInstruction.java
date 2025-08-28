@@ -21,12 +21,6 @@ abstract public class BasicInstruction extends Instruction {
 
     abstract protected BasicInstruction createCopy();
 
-
-    @Override
-    public void revertExpansion() {
-        // No expansion to revert for basic instructions
-    }
-
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles, label, destinationLabel, InstructionType.B);
         this.variable = variable;

@@ -20,14 +20,14 @@ public class ConstantAssignment extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         command = variable.getName() + " <- " + constValue;
         this.constValue = constValue;
-        super.level = 2; // Implement
+        super.level = 2;
     }
 
     public ConstantAssignment(int num, Variable variable, Label label, Label destinationLabel, int constValue, Instruction parentInstruction) {
         super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         command = variable.getName() + " <- " + constValue;
         this.constValue = constValue;
-        super.level = 2; // Implement
+        super.level = 2;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ConstantAssignment extends SyntheticInstruction {
         Map<Label,Instruction> expandedLabels = new HashMap<>();
 
         expandedInstructions.add(new ZeroVariable(1, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
-        IntStream.range(0, constValue).forEach(i -> { // It looks disgusting in lambda
+        IntStream.range(0, constValue).forEach(i -> {
             expandedInstructions.add(new Increase(i+2, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL,this));
         });
 

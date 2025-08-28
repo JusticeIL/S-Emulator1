@@ -65,7 +65,6 @@ public class Program {
                 .orElse(0);
     }
 
-
     public List<String> getExpandedProgramStringRepresentation() {
         List<String> result = new ArrayList<>();
         for (instruction.Instruction instruction : instructionList) {
@@ -101,7 +100,6 @@ public class Program {
         }
     }
 
-    // In Program.java
     public void runProgram(int ...variables) {
         setUpNewRun();
         setArguments(variables);
@@ -286,6 +284,4 @@ public class Program {
     public Statistics getStatistics() {
         return statistics;
     }
-
-
 }

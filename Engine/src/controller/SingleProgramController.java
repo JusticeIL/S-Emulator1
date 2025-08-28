@@ -14,9 +14,9 @@ import java.util.Optional;
 
 public class SingleProgramController implements Controller{
 
-    Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();
-    Program activeProgram;
-    Statistics statistics;
+    private final Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();
+    private Program activeProgram;
+    private Statistics statistics;
 
     @Override
     public void loadProgram(String path) throws FileNotFoundException, JAXBException {
@@ -67,10 +67,5 @@ public class SingleProgramController implements Controller{
     public Collection<Variable> runProgram(int... args) {
         activeProgram.runProgram(args);
         return activeProgram.getVariables();
-    }
-
-    @Override
-    public Statistics getStatistics() {
-        return statistics;
     }
 }

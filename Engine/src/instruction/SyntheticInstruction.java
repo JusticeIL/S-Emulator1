@@ -22,7 +22,6 @@ abstract public class SyntheticInstruction extends Instruction {
         this.isExpanded = false;
     }
 
-
     public ExpandedSyntheticInstructionArguments generateExpandedInstructions() {
         if(isExpanded) {
             List<Instruction> expandedInstructions = new ArrayList<>();
@@ -64,18 +63,6 @@ abstract public class SyntheticInstruction extends Instruction {
     public Label execute() {
         return executeUnExpandedInstruction();
     }
-
-    @Override
-    public void revertExpansion() {
-        if (isExpanded && expandedInstruction != null) {
-            for (Instruction instr : expandedInstruction.getInstructions()) {
-                instr.revertExpansion();
-            }
-            isExpanded = false;
-        }
-    }
-
-
 
     protected abstract Label executeUnExpandedInstruction();
 }

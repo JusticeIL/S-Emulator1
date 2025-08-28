@@ -32,7 +32,7 @@ public class JumpZero extends SyntheticInstruction {
         if (variable.getValue() == 0) {
             return destinationLabel;
         } else {
-            return Program.EMPTY_LABEL; // No jump, handle later
+            return Program.EMPTY_LABEL;
         }
     }
 
@@ -49,7 +49,7 @@ public class JumpZero extends SyntheticInstruction {
         expandedInstructions.add(new GoToLabel(instructionNumber++, variable, Program.EMPTY_LABEL, destinationLabel, this));
         Instruction L1Instruction = new Neutral(instructionNumber++, variable, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
-        expandedInstructions.add(L1Instruction); // variable should be y
+        expandedInstructions.add(L1Instruction);
 
         isExpanded = true;
         expandedLabels.put(label, expandedInstructions.getFirst());

@@ -20,7 +20,6 @@ public class Variable {
         highestUnusedZId = 1;
     }
 
-
     public static void saveHighestUnusedZId() {
         previousHighestUnusedZId = highestUnusedZId;
     }

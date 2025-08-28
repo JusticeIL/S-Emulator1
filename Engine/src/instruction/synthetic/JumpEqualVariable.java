@@ -20,14 +20,14 @@ public class JumpEqualVariable extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         this.argumentVariable = argumentVariable;
         command = command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();;
-        super.level = 3; // Implement
+        super.level = 3;
     }
 
     public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable, Instruction parentInstruction) {
         super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         this.argumentVariable = argumentVariable;
         command = command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();;
-        super.level = 3; // Implement
+        super.level = 3;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class JumpEqualVariable extends SyntheticInstruction {
         if (variable.getValue() == argumentVariable.getValue()) {
             return destinationLabel;
         } else {
-            return Program.EMPTY_LABEL; // No jump, handle later
+            return Program.EMPTY_LABEL;
         }
     }
 
@@ -67,7 +67,7 @@ public class JumpEqualVariable extends SyntheticInstruction {
         expandedInstructions.add(L3Instruction);
         Instruction L1Instruction = new Neutral(instructionNumber++, z1, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
-        expandedInstructions.add(L1Instruction); // z1 should be y
+        expandedInstructions.add(L1Instruction);
         expandedLabels.put(label, expandedInstructions.getFirst());
         isExpanded = true;
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);

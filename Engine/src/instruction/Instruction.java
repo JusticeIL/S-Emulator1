@@ -18,8 +18,7 @@ abstract public class Instruction implements Executable, Expandable {
     protected final Instruction parentInstruction;
     protected final String DELIMITER = ">>>";
 
-    public abstract Label execute();
-    // Implementation of command execution logic
+    public abstract Label execute(); // Implementation of command execution logic
     private final Map<String, Label> Labels = new TreeMap<>();
 
     public Label getLabel() {
@@ -45,7 +44,7 @@ abstract public class Instruction implements Executable, Expandable {
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
-        this.level = 0; // Implement
+        this.level = 0; // TODO: Implement
         this.parentInstruction = null;
     }
 
@@ -55,7 +54,7 @@ abstract public class Instruction implements Executable, Expandable {
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
-        this.level = 0; // Implement
+        this.level = 0; // TODO: Implement
         this.parentInstruction = parentInstruction;
     }
 
@@ -73,12 +72,10 @@ abstract public class Instruction implements Executable, Expandable {
     public String toString() {
         String thisInstructionString = "#" + number + " " + "(" + instructionType + ")" + " " + "[" + String.format(" %-4s", label) + "]" + " " + command + " " + "(" + cycles + ")";
         if(parentInstruction != null) {
-            thisInstructionString += " " + DELIMITER + " " + parentInstruction.toString(); // Are we sure we need the parentheses?
+            thisInstructionString += " " + DELIMITER + " " + parentInstruction.toString();
         }
         return thisInstructionString;
     }
-
-    public abstract void revertExpansion();
 
     public abstract List<String> getExpandedStringRepresentation();
 

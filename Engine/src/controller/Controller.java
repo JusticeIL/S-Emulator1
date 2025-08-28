@@ -14,7 +14,6 @@ public interface Controller {
     Optional<ProgramData> getProgramData();
     void Expand(int level) throws IllegalArgumentException;
     Collection<Variable> runProgram(int ... args);
-    Statistics getStatistics();
     boolean isProgramLoaded();
 
 }

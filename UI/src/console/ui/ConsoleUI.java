@@ -6,10 +6,9 @@ import jakarta.xml.bind.JAXBException;
 import program.Program;
 import program.ProgramData;
 import program.Run;
-
 import java.io.FileNotFoundException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -85,10 +84,12 @@ public class ConsoleUI {
             engine.loadProgram(path);
             System.out.println("Program loaded successfully!");
         } catch (FileNotFoundException e) {
-            System.out.println("Error: file " + Paths.get(path).getFileName() + " not found!");
+            System.out.println("Error: file " + path + " not found!");
+        } catch (InvalidPathException e) {
+            System.out.println("Error: invalid file path entered: " + path + "." + "Please check the path format.");
         } catch (JAXBException e) {
             System.out.println("Error: Malformed XML file detected: " + Paths.get(path).getFileName());
-        } catch (Exception e) {
+        } catch (Exception e) { // Case: general exception
             System.out.println("Error: " +e.getMessage());
         }
     }
@@ -148,6 +149,12 @@ public class ConsoleUI {
             catch (IllegalArgumentException e) { // Case: expansion level is too high
                 System.out.println(e.getMessage());
                 level = -1;
+            }
+
+            try { // Just to make sure the user has time to read the output before the next line shows up
+                Thread.sleep(TimeUnit.SECONDS.toMillis(WAIT));
+            } catch (InterruptedException e) { // Case: someone interrupted the sleep of the main thread
+                System.out.println("Could not wait due to another thread interruption.");
             }
         }
     }
@@ -234,9 +241,3 @@ public class ConsoleUI {
                 )).forEach(System.out::println);
     }
 }
-
-
-
-
-
-
