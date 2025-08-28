@@ -47,6 +47,14 @@ public class Label implements Serializable {
         return Objects.hashCode(labelName);
     }
 
+    public static int getHighestUnusedLabelNumber() {
+        return highestUnusedLabelNumber;
+    }
+
+    public static void setHighestUnusedLabelNumber(int highestUnusedLabelNumber) {
+        Label.highestUnusedLabelNumber = highestUnusedLabelNumber;
+    }
+
     @Override
     public String toString() {
         return labelName;

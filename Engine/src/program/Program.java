@@ -24,8 +24,8 @@ public class Program implements Serializable {
     private String programName;
     private final List<Instruction> instructionList = new LinkedList<>();
     private final Set<String> usedXVariableNames;
-    int currentCommandIndex; // Program Counter
-    int cycleCounter;
+    private int currentCommandIndex; // Program Counter
+    private int cycleCounter;
     private final int runCounter;
     private final int currentProgramLevel;
     private final int maxProgramLevel;
@@ -33,6 +33,8 @@ public class Program implements Serializable {
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL = new Label("    ");
     static public final Label EXIT_LABEL = new Label("EXIT");
+    private int highestZVariableId = 0;
+    private int higesLabelId = 0;
 
     private boolean wasExpanded = false;
     private Program expandedProgram = null;
@@ -81,6 +83,9 @@ public class Program implements Serializable {
             Map<Label, Instruction> expandedLabels = new HashMap<>(Labels);
             Set<Variable> expandedVariables = new HashSet<>(Variables.values());
 
+            Label.setHighestUnusedLabelNumber(higesLabelId);
+            Variable.setHighestUnusedZId(highestZVariableId);
+
             instructionList.forEach(instruction -> {
                 ExpandedSyntheticInstructionArguments singleExpandedInstruction = instruction.generateExpandedInstructions();
                 if (singleExpandedInstruction != null) {
@@ -91,6 +96,9 @@ public class Program implements Serializable {
             });
             IntStream.range(1, expandedInstructions.size() + 1).forEach(i -> expandedInstructions.get(i - 1).setNumber(i));
             ExpandedSyntheticInstructionArguments expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
+
+            higesLabelId = Label.getHighestUnusedLabelNumber();
+            highestZVariableId = Variable.getHighestUnusedZId();
 
             wasExpanded = true;
             this.expandedProgram = new Program(this, expandedInstruction);
@@ -212,6 +220,8 @@ public class Program implements Serializable {
                 Variable.loadHighestUnusedZId();
                 throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
             }
+            highestZVariableId = Variable.getHighestUnusedZId();
+            higesLabelId = Label.getHighestUnusedLabelNumber();
 
         }
         else  {

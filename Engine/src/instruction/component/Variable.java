@@ -1,6 +1,7 @@
 package instruction.component;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Variable implements Serializable {
 
@@ -46,6 +47,26 @@ public class Variable implements Serializable {
         this.value = 0;
         this.name = "z"+ highestUnusedZId;
         highestUnusedZId++;
+    }
+
+    public static int getHighestUnusedZId() {
+        return highestUnusedZId;
+    }
+
+    public static void setHighestUnusedZId(int highestUnusedZId) {
+        Variable.highestUnusedZId = highestUnusedZId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Variable variable = (Variable) o;
+        return Objects.equals(name, variable.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
     }
 
     @Override
