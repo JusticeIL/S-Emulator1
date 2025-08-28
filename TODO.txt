@@ -1,3 +1,6 @@
 O.O.B:
 
 1. export the whole project to jars
+2. create 2 readme files
+    - one .md for github
+    - one .pdf or .docx for submission
