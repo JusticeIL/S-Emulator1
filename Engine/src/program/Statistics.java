@@ -10,7 +10,6 @@ public class Statistics implements Serializable {
     private final List<Run> history;
     private int runCounter = 1;
 
-
     public Statistics() {
         history = new ArrayList<>();
     }

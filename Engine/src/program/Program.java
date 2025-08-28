@@ -24,8 +24,8 @@ public class Program implements Serializable {
     private String programName;
     private final List<Instruction> instructionList = new LinkedList<>();
     private final Set<String> usedXVariableNames;
-    int currentCommandIndex; // Program Counter
-    int cycleCounter;
+    private int currentCommandIndex; // Program Counter
+    private int cycleCounter;
     private final int runCounter;
     private final int currentProgramLevel;
     private final int maxProgramLevel;
@@ -37,7 +37,6 @@ public class Program implements Serializable {
     private boolean wasExpanded = false;
     private Program expandedProgram = null;
     private final List<Instruction> runtimeExecutedInstructions = new ArrayList<>();
-
 
     public Set<Label> getLabels() {
         return Labels.keySet();
@@ -52,8 +51,6 @@ public class Program implements Serializable {
     public String getProgramName() {
         return programName;
     }
-
-
 
     private int calculateMaxProgramLevel() {
         // Calculate the maximum program level based on the instructions

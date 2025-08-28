@@ -41,12 +41,12 @@ public class ConsoleUI {
                     case 3 -> handleExpand();
                     case 4 -> handleRun();
                     case 5 -> handleShowHistory();
-                    case 6 -> {
+                    case 6 -> handleSaveState();
+                    case 7 -> handleLoadState();
+                    case 8 -> {
                         System.out.print("Exiting. Goodbye!");
                         exit = true;
                     }
-                    case 7 -> handleSaveState();
-                    case 8 -> handleLoadState();
                     default ->
                             System.out.println("Option does not exist in the menu. Please choose a number that exists in the menu.");
                 }
@@ -69,9 +69,9 @@ public class ConsoleUI {
         System.out.println("3) Expand program");
         System.out.println("4) Run program");
         System.out.println("5) Show run history / statistics");
-        System.out.println("6) Exit");
-        System.out.println("7) Save state");
-        System.out.println("8) Load state");
+        System.out.println("6) Save state");
+        System.out.println("7) Load state");
+        System.out.println("8) Exit");
     }
 
 
