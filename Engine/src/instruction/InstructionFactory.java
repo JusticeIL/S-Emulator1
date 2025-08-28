@@ -122,6 +122,7 @@ public class InstructionFactory {
     }
 
     Variable getVariable(String variableName) {
+        variableName = variableName.toLowerCase();
         try {
             if (variables.containsKey(variableName)) {
                 return variables.get(variableName);
