@@ -19,14 +19,14 @@ public class JumpEqualVariable extends SyntheticInstruction {
     public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable) {
         super(num, variable, CYCLES, label, destinationLabel);
         this.argumentVariable = argumentVariable;
-        command = command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();;
+        command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();
         super.level = 3;
     }
 
     public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable, Instruction parentInstruction) {
         super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         this.argumentVariable = argumentVariable;
-        command = command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();;
+        command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();
         super.level = 3;
     }
 
@@ -65,7 +65,7 @@ public class JumpEqualVariable extends SyntheticInstruction {
         Instruction L3Instruction = new JumpZero(instructionNumber++, z2, L3, destinationLabel, this);
         expandedLabels.put(L3, L3Instruction);
         expandedInstructions.add(L3Instruction);
-        Instruction L1Instruction = new Neutral(instructionNumber++, z1, L1, Program.EMPTY_LABEL, this);
+        Instruction L1Instruction = new Neutral(instructionNumber, z1, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
         expandedLabels.put(label, expandedInstructions.getFirst());

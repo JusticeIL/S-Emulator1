@@ -44,9 +44,7 @@ public class ConsoleUI {
                         System.out.print("Exiting. Goodbye!");
                         exit = true;
                     }
-                    default -> {
-                        System.out.println("Option does not exist in the menu. Please choose a number that exists in the menu.");
-                    }
+                    default -> System.out.println("Option does not exist in the menu. Please choose a number that exists in the menu.");
                 }
             } catch (NumberFormatException e) { // Case: user inputs a non-integer
                 System.out.println("Invalid input. Please enter a number between 1 and 6.");

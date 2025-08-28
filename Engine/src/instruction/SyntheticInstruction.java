@@ -45,7 +45,7 @@ abstract public class SyntheticInstruction extends Instruction {
     public List<String> getExpandedStringRepresentation() {
         List<String> result = new ArrayList<>();
         if (isExpanded) {
-            String prefix = "<<<" + this.toString() + " ";
+            String prefix = "<<<" + this + " ";
             for (Instruction instr : expandedInstruction.getInstructions()) {
                 List<String> subList = instr.getExpandedStringRepresentation();
                 subList.replaceAll(s -> s + prefix);

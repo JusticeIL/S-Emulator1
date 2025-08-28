@@ -47,7 +47,7 @@ public class JumpZero extends SyntheticInstruction {
         int instructionNumber = 1;
         expandedInstructions.add(new JumpNotZero(instructionNumber++, variable, label, L1, this));
         expandedInstructions.add(new GoToLabel(instructionNumber++, variable, Program.EMPTY_LABEL, destinationLabel, this));
-        Instruction L1Instruction = new Neutral(instructionNumber++, variable, L1, Program.EMPTY_LABEL, this);
+        Instruction L1Instruction = new Neutral(instructionNumber, variable, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
 

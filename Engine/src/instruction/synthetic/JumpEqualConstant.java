@@ -1,5 +1,4 @@
 package instruction.synthetic;
-
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
@@ -9,9 +8,7 @@ import instruction.basic.Neutral;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.Program;
-
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class JumpEqualConstant extends SyntheticInstruction {
 
@@ -57,7 +54,7 @@ public class JumpEqualConstant extends SyntheticInstruction {
             expandedInstructions.add(new Decrease(instructionNumber++, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
         }
         expandedInstructions.add(new JumpNotZero(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this));
-        Instruction L1Instruction = new Neutral(instructionNumber++, z1, L1, Program.EMPTY_LABEL, this);
+        Instruction L1Instruction = new Neutral(instructionNumber, z1, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
         isExpanded = true;

@@ -1,10 +1,7 @@
 package instruction;
 
 import instruction.component.Label;
-
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 abstract public class Instruction implements Executable, Expandable {
 
@@ -19,7 +16,6 @@ abstract public class Instruction implements Executable, Expandable {
     protected final String DELIMITER = ">>>";
 
     public abstract Label execute(); // Implementation of command execution logic
-    private final Map<String, Label> Labels = new TreeMap<>();
 
     public Label getLabel() {
         return label;
@@ -29,9 +25,6 @@ abstract public class Instruction implements Executable, Expandable {
         return destinationLabel;
     }
 
-    public Map<String, Label> getLabels() {
-        return Labels;
-    }
     public abstract ExpandedSyntheticInstructionArguments generateExpandedInstructions();
 
     public int getLevel() {
@@ -72,7 +65,7 @@ abstract public class Instruction implements Executable, Expandable {
     public String toString() {
         String thisInstructionString = "#" + number + " " + "(" + instructionType + ")" + " " + "[" + String.format(" %-4s", label) + "]" + " " + command + " " + "(" + cycles + ")";
         if(parentInstruction != null) {
-            thisInstructionString += " " + DELIMITER + " " + parentInstruction.toString();
+            thisInstructionString += " " + DELIMITER + " " + parentInstruction;
         }
         return thisInstructionString;
     }

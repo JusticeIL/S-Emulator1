@@ -43,9 +43,8 @@ public class ConstantAssignment extends SyntheticInstruction {
         Map<Label,Instruction> expandedLabels = new HashMap<>();
 
         expandedInstructions.add(new ZeroVariable(1, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
-        IntStream.range(0, constValue).forEach(i -> {
-            expandedInstructions.add(new Increase(i+2, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL,this));
-        });
+        IntStream.range(0, constValue).forEach(i ->
+                expandedInstructions.add(new Increase(i+2, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL,this)));
 
         expandedLabels.put(label, expandedInstructions.getFirst());
         isExpanded = true;

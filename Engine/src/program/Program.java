@@ -24,7 +24,7 @@ public class Program {
 
     private Instruction currentInstruction;
     private String programName;
-    private final List<Instruction> instructionList = new LinkedList<Instruction>();
+    private final List<Instruction> instructionList = new LinkedList<>();
     private final Set<String> usedXVariableNames;
     int currentCommandIndex; // Program Counter
     int cycleCounter;
@@ -109,15 +109,12 @@ public class Program {
                 .map(Map.Entry::getValue)
                 .forEach(v -> xVariables.put(v.getName(), v.getValue()));
 
-
-        Label nextLabel = null;
         int currentIndex = 0;
         Instruction currentInstruction = instructionList.get(currentIndex);
 
-
         while (currentIndex < instructionList.size()) {
             runtimeExecutedInstructions.add(currentInstruction);
-            nextLabel = currentInstruction.execute();
+            Label nextLabel = currentInstruction.execute();
             cycleCounter += currentInstruction.getCycles();
 
             if (nextLabel.equals(Program.EMPTY_LABEL)) {
@@ -175,7 +172,6 @@ public class Program {
             }
             variableCounter++;
         }
-        variableCounter--;
     }
 
     public void loadProgram(String filePath) throws FileNotFoundException, JAXBException {
@@ -248,7 +244,7 @@ public class Program {
         }
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
-        runtimeExecutedInstructions.clear(); ;
+        runtimeExecutedInstructions.clear();
     }
 
     public List<Instruction> getRuntimeExecutedInstructions() {

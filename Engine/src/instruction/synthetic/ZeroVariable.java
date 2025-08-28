@@ -40,7 +40,7 @@ public class ZeroVariable extends SyntheticInstruction {
         Instruction L1Instruction = new Decrease(instructionNumber++, variable, L1, Program.EMPTY_LABEL,this);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
-        expandedInstructions.add(new JumpNotZero(instructionNumber++, variable, Program.EMPTY_LABEL, L1,this));
+        expandedInstructions.add(new JumpNotZero(instructionNumber, variable, Program.EMPTY_LABEL, L1,this));
         expandedLabels.put(label, expandedInstructions.getFirst());
         isExpanded = true;
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);

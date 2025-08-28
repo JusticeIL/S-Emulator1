@@ -21,7 +21,7 @@ public class Decrease extends BasicInstruction {
 
     @Override
     protected BasicInstruction createCopy(){
-        return new Decrease(this.number, (Variable) this.variable, this.label, this.destinationLabel, this.parentInstruction);
+        return new Decrease(this.number, this.variable, this.label, this.destinationLabel, this.parentInstruction);
     }
 
     @Override
