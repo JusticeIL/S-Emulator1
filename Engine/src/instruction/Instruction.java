@@ -64,9 +64,6 @@ abstract public class Instruction implements Executable, Expandable {
         return number;
     }
 
-    protected void updateCycles(int cycles) {
-        this.cycles = cycles;
-    }
 
     public int getCycles() {
         return cycles;

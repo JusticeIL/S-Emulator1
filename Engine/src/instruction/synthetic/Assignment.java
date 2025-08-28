@@ -68,6 +68,7 @@ public class Assignment extends SyntheticInstruction {
         expandedInstructions.add(new JumpNotZero(10, z1, Program.EMPTY_LABEL, L2, this));
         expandedInstructions.add(L3Instruction);
         isExpanded = true;
+        expandedLabels.put(label, expandedInstructions.getFirst());
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
         return this.expandedInstruction;    }
 }

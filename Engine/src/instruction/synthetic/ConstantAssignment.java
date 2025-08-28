@@ -47,6 +47,7 @@ public class ConstantAssignment extends SyntheticInstruction {
             expandedInstructions.add(new Increase(i+2, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL,this));
         });
 
+        expandedLabels.put(label, expandedInstructions.getFirst());
         isExpanded = true;
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
         return this.expandedInstruction;

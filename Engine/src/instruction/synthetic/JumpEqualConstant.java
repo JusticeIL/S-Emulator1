@@ -61,7 +61,7 @@ public class JumpEqualConstant extends SyntheticInstruction {
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction); // z1 should be y
         isExpanded = true;
-
+        expandedLabels.put(label, expandedInstructions.getFirst());
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
         return this.expandedInstruction;
 

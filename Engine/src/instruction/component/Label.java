@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Label {
     private static int highestUnusedLabelNumber = 1;
-    private static int previoudHighestUnusedLabelNumber = 1;
+    private static int previousHighestUnusedLabelNumber = 1;
     private final String labelName;
 
     public Label(String labelName) {
@@ -15,11 +15,11 @@ public class Label {
     }
 
     public static void saveHighestUnusedLabelNumber() {
-        previoudHighestUnusedLabelNumber = highestUnusedLabelNumber;
+        previousHighestUnusedLabelNumber = highestUnusedLabelNumber;
     }
 
     public static  void loadHighestUnusedLabelNumber() {
-        highestUnusedLabelNumber = previoudHighestUnusedLabelNumber;
+        highestUnusedLabelNumber = previousHighestUnusedLabelNumber;
     }
 
     public static void resetHighestUnusedLabelNumber() {

@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static instruction.component.Variable.*;
 
 
 public class Program {
@@ -29,7 +28,7 @@ public class Program {
     private final Set<String> usedXVariableNames;
     int currentCommandIndex; // Program Counter
     int cycleCounter;
-    private int runCounter;
+    private final int runCounter;
     private final int currentProgramLevel;
     private final int maxProgramLevel;
     private final Statistics statistics;

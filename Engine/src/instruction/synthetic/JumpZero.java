@@ -52,6 +52,7 @@ public class JumpZero extends SyntheticInstruction {
         expandedInstructions.add(L1Instruction); // variable should be y
 
         isExpanded = true;
+        expandedLabels.put(label, expandedInstructions.getFirst());
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
         return this.expandedInstruction;
     }

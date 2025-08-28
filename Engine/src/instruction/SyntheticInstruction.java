@@ -2,8 +2,6 @@ package instruction;
 
 import instruction.component.Label;
 import instruction.component.Variable;
-import program.InstructionExecutioner;
-import program.Program;
 
 import java.util.*;
 

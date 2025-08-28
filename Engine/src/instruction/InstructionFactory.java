@@ -137,14 +137,6 @@ public class InstructionFactory {
         }
     }
 
-    public Set<Label> getDestinationLabelSet() {
-        return destinationLabelSet;
-    }
-
-    public Set<Label> getSourceLabelSet() {
-        return sourceLabelSet;
-    }
-
     public Set<Label> getMissingLabels() {
         return destinationLabelSet.stream().filter(label -> !sourceLabelSet.contains(label))
                 .filter(label -> !label.equals(Program.EXIT_LABEL)).collect(Collectors.toSet());

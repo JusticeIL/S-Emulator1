@@ -30,7 +30,6 @@ public class SingleProgramController implements Controller{
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
         }
-
     }
 
     @Override
@@ -60,8 +59,6 @@ public class SingleProgramController implements Controller{
             if(expandedProgram != null) {
                 ProgramExpansionsByLevel.put(level, expandedProgram);
                 activeProgram = expandedProgram;
-            } else {
-                return;
             }
         }
     }

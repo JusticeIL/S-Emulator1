@@ -68,7 +68,7 @@ public class JumpEqualVariable extends SyntheticInstruction {
         Instruction L1Instruction = new Neutral(instructionNumber++, z1, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction); // z1 should be y
-
+        expandedLabels.put(label, expandedInstructions.getFirst());
         isExpanded = true;
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
         return this.expandedInstruction;

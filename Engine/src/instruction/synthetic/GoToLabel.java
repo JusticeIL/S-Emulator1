@@ -43,7 +43,7 @@ public class GoToLabel extends SyntheticInstruction {
         expandedInstructions.add(new Increase(1, z1,  label, Program.EMPTY_LABEL, this));
         expandedInstructions.add(new JumpNotZero(2, z1, Program.EMPTY_LABEL, destinationLabel, this));
         isExpanded = true;
-
+        expandedLabels.put(label, expandedInstructions.getFirst());
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
         return this.expandedInstruction;
 
