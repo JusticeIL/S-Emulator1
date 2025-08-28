@@ -118,15 +118,19 @@ public class ConsoleUI {
             System.out.println("Load program first!");
             return;
         }
-        engine.Expand(0); //Reset current active program
+        engine.Expand(0); // Reset current active program
+
         if (engine.getProgramData().get().getMaxExpandLevel() == 0) { // Case: program cannot be expanded
             System.out.println("This program " + "(" + engine.getProgramData().get().getProgramName() +")" + " cannot be expanded.");
             return;
         }
 
+        Optional<ProgramData> programDataOpt = engine.getProgramData();
+        final int maxLevel = programDataOpt.get().getMaxExpandLevel();
+
         int level = -1;
         while (level <= 0) {
-            System.out.print("Enter expansion level (positive number): ");
+            System.out.print("Enter expansion level between 1 and " + maxLevel + " (positive number): ");
             String input = in.nextLine().trim();
             try {
                 level = Integer.parseInt(input);
