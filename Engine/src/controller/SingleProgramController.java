@@ -21,6 +21,7 @@ public class SingleProgramController implements Controller{
     @Override
     public void loadProgram(String path) throws FileNotFoundException, JAXBException {
         try {
+            ProgramExpansionsByLevel.clear();
             this.activeProgram = new Program(path);
             this.ProgramExpansionsByLevel.put(0, activeProgram);
             this.statistics = new Statistics();

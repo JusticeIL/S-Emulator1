@@ -3,6 +3,7 @@ package instruction.component;
 public class Variable {
 
     private static int highestUnusedZId = 1;
+    private static int previousHighestUnusedZId = 1;
     protected int value;
     protected final String name;
 
@@ -13,6 +14,19 @@ public class Variable {
         if(name.contains("z")) {
             highestUnusedZId++;
         }
+    }
+
+    public static void resetZIdCounter() {
+        highestUnusedZId = 1;
+    }
+
+
+    public static void saveHighestUnusedZId() {
+        previousHighestUnusedZId = highestUnusedZId;
+    }
+
+    public static void loadHighestUnusedZId() {
+        highestUnusedZId = previousHighestUnusedZId;
     }
 
     public String getName() {

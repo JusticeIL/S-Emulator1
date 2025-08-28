@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static instruction.component.Variable.*;
+
 
 public class Program {
 
@@ -190,6 +192,12 @@ public class Program {
             InstructionFactory instructionFactory = new InstructionFactory(Variables);
             int instructionCounter = 1;
             boolean containsExit = false;
+            Label.saveHighestUnusedLabelNumber();
+            Label.resetHighestUnusedLabelNumber();
+
+            Variable.saveHighestUnusedZId();
+            Variable.resetZIdCounter();
+
             for (SInstruction sInstr : sInstructions) {
                 Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
                 instructionList.add(newInstruction);
@@ -209,8 +217,11 @@ public class Program {
             programName = sProgram.getName();
             Set<Label> missingLabels = instructionFactory.getMissingLabels();
             if (!missingLabels.isEmpty()) {
+                Label.loadHighestUnusedLabelNumber();
+                Variable.loadHighestUnusedZId();
                 throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
             }
+
         }
         else  {
             throw new FileNotFoundException();
@@ -222,6 +233,7 @@ public class Program {
     }
 
     private void setUpNewRun(){
+
         if(Variables.containsKey("y")) {
             Variables.get("y").setValue(0);
         }else{

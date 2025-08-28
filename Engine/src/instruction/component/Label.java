@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Label {
     private static int highestUnusedLabelNumber = 1;
+    private static int previoudHighestUnusedLabelNumber = 1;
     private final String labelName;
 
     public Label(String labelName) {
@@ -11,6 +12,18 @@ public class Label {
         if (labelName.contains("L")) {
             highestUnusedLabelNumber++;
         }
+    }
+
+    public static void saveHighestUnusedLabelNumber() {
+        previoudHighestUnusedLabelNumber = highestUnusedLabelNumber;
+    }
+
+    public static  void loadHighestUnusedLabelNumber() {
+        highestUnusedLabelNumber = previoudHighestUnusedLabelNumber;
+    }
+
+    public static void resetHighestUnusedLabelNumber() {
+        highestUnusedLabelNumber = 1;
     }
 
     public String getLabelName() {
@@ -23,10 +36,14 @@ public class Label {
         return Objects.equals(labelName, label.labelName);
     }
 
+
+
     public Label() {
         this.labelName = "L"+ highestUnusedLabelNumber;
         highestUnusedLabelNumber++;
     }
+
+
 
     @Override
     public int hashCode() {
