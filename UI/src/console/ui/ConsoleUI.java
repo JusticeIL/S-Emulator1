@@ -99,6 +99,11 @@ public class ConsoleUI {
     }
 
     private void handleShowProgram() {
+        if (!engine.isProgramLoaded()) { // Case: no program was loaded
+            System.out.println("No program loaded.");
+            System.out.println("Load program first!");
+            return;
+        }
         engine.Expand(0);
         engine.getProgramData().ifPresentOrElse(programData -> {
             System.out.println("Current Program Name: " + programData.getProgramName());
@@ -163,7 +168,6 @@ public class ConsoleUI {
     }
 
     private void handleRun() {
-
         if (!engine.isProgramLoaded()) {
             System.out.println("No program loaded.");
             System.out.println("Load program first!");
