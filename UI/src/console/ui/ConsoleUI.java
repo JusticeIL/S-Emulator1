@@ -19,7 +19,7 @@ public class ConsoleUI {
     private final Scanner scanner = new Scanner(System.in);
     private Controller engine = new SingleProgramController();
     private final long WAIT = 1;
-    private final String serializationURL = "engine.ser";
+    private final String serializationFileType = ".ser";
 
     public static void main(String[] args) {
         new ConsoleUI().run();
@@ -249,10 +249,13 @@ public class ConsoleUI {
     }
 
     private void handleSaveState() {
+        System.out.print("Enter full path (including file name and excluding file type) to save the state: ");
+        String filePath = scanner.nextLine().trim();
         try {
+            filePath += serializationFileType;
             try (ObjectOutputStream out =
                          new ObjectOutputStream(
-                                 new FileOutputStream(serializationURL))) {
+                                 new FileOutputStream(filePath))) {
                 out.writeObject(engine);
                 out.flush();
                 System.out.println("State saved successfully!");
@@ -265,9 +268,12 @@ public class ConsoleUI {
     }
 
     private void handleLoadState() {
+        System.out.print("Enter full path to the load the state from the file (excluding file type): ");
+        String filePath = scanner.nextLine().trim();
+        filePath += serializationFileType;
         try (ObjectInputStream in =
                 new ObjectInputStream(
-                        new FileInputStream(serializationURL))) {
+                        new FileInputStream(filePath))) {
             engine = (Controller) in.readObject();
             System.out.println("State loaded successfully!");
         } catch (FileNotFoundException e) {
