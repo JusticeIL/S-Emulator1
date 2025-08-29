@@ -53,7 +53,9 @@ public class JumpEqualConstant extends SyntheticInstruction {
             expandedInstructions.add(new JumpZero(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this));
             expandedInstructions.add(new Decrease(instructionNumber++, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
         }
-        expandedInstructions.add(new JumpNotZero(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this));
+        expandedInstructions.add(new JumpNotZero(instructionNumber++, z1, Program.EMPTY_LABEL, L1, this));
+        expandedInstructions.add(new GoToLabel(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this));
+
         Instruction L1Instruction = new Neutral(instructionNumber, z1, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
