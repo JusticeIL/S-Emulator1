@@ -149,7 +149,7 @@ public class ConsoleUI {
                     continue;
                 }
                 engine.Expand(level);
-                engine.getProgramData().get().getExpandedProgramInstructions().forEach(System.out::println);
+                 engine.getProgramData().get().getProgramInstructions().forEach(System.out::println);
 
             } catch (NumberFormatException e) { // Case: user input was not a number
                 System.out.println("Invalid input. Please enter a positive number.");
