@@ -33,8 +33,6 @@ public class Program implements Serializable {
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL = new Label("    ");
     static public final Label EXIT_LABEL = new Label("EXIT");
-    private int highestZVariableId = Variable.getHighestUnusedZId();
-    private int higesLabelId = Label.getHighestUnusedLabelNumber();
 
     private boolean wasExpanded = false;
     private Program expandedProgram = null;
@@ -80,8 +78,6 @@ public class Program implements Serializable {
             Map<Label, Instruction> expandedLabels = new HashMap<>(Labels);
             Set<Variable> expandedVariables = new HashSet<>(Variables.values());
 
-            Label.setHighestUnusedLabelNumber(higesLabelId);
-            Variable.setHighestUnusedZId(highestZVariableId);
 
             instructionList.forEach(instruction -> {
                 ExpandedSyntheticInstructionArguments singleExpandedInstruction = instruction.generateExpandedInstructions();
@@ -94,8 +90,6 @@ public class Program implements Serializable {
             IntStream.range(1, expandedInstructions.size() + 1).forEach(i -> expandedInstructions.get(i - 1).setNumber(i));
             ExpandedSyntheticInstructionArguments expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
 
-            higesLabelId = Label.getHighestUnusedLabelNumber();
-            highestZVariableId = Variable.getHighestUnusedZId();
 
             wasExpanded = true;
             this.expandedProgram = new Program(this, expandedInstruction);
@@ -217,8 +211,6 @@ public class Program implements Serializable {
                 Variable.loadHighestUnusedZId();
                 throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
             }
-            highestZVariableId = Variable.getHighestUnusedZId();
-            higesLabelId = Label.getHighestUnusedLabelNumber();
 
         }
         else  {

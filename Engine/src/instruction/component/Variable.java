@@ -49,13 +49,7 @@ public class Variable implements Serializable {
         highestUnusedZId++;
     }
 
-    public static int getHighestUnusedZId() {
-        return highestUnusedZId;
-    }
 
-    public static void setHighestUnusedZId(int highestUnusedZId) {
-        Variable.highestUnusedZId = highestUnusedZId;
-    }
 
     @Override
     public boolean equals(Object o) {
