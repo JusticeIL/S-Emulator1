@@ -65,7 +65,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
 
     @Override
     public String toString() {
-        String thisInstructionString = "#" + number + " " + "(" + instructionType + ")" + " " + "[" + String.format(" %-4s", label) + "]" + " " + command + " " + "(" + cycles + ")";
+        String thisInstructionString = "#" + String.format("%-3s", number) + " " + "(" + instructionType + ")" + " " + "[" + String.format(" %-4s", label) + "]" + " " + String.format("%-24s", command) + " " + "(" + cycles + ")";
         if(parentInstruction != null) {
             thisInstructionString += " " + DELIMITER + " " + parentInstruction;
         }
