@@ -45,6 +45,7 @@ This project implements a small emulator for the S-language designed for a unive
    ```
 
 > 🔥 **Important:**  
+> This project requires Java 21 or later (Oracle JDK).  
 > The emulator only supports `.xml` program files that conform to a provided XML Schema (`.xsd`).
 
 ---
