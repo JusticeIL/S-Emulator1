@@ -24,20 +24,24 @@ This project implements a small emulator for the S-language designed for a unive
 1. **Clone the Repository**  
    ```bash
    git clone https://github.com/JusticeIL/S-Emulator1.git
-   cd S-Emulator1
    ```
 
-2. **Build the Project**  
-   Use the provided `Makefile`:
+2. **Copy .jar files**  
+   Copy the two jars (`Engine.jar` and `UI.jar`) into a new folder (named in English).
+
+3. **Copy essential dependencies**  
+   Copy the `mod` folder into the newly created folder.
+
+4. **Open the new folder**  
+   Open the newly created folder from the terminal:  
    ```bash
-   make
+   cd <newly-created-folder-name>
    ```
 
-3. **Run the Interactive Shell**  
-   You **must** run the shell from within the `./bin` directory:
+5. **Run the console S-Emulator program**  
+   Run the following command in the terminal:  
    ```bash
-   cd ./bin
-   ./bitcoinShell
+   java -jar UI.jar
    ```
 
 > 🔥 **Important:**  
