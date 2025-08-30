@@ -38,7 +38,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
-        this.level = 0; // TODO: Implement
+        this.level = 0;
         this.parentInstruction = null;
     }
 
@@ -48,7 +48,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
-        this.level = 0; // TODO: Implement
+        this.level = 0;
         this.parentInstruction = parentInstruction;
     }
 
