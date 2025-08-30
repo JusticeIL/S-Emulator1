@@ -16,10 +16,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ConsoleUI {
 
-    private final Scanner scanner = new Scanner(System.in);
     private Controller engine = new SingleProgramController();
-    private final long WAIT = 1;
+    private final Scanner scanner = new Scanner(System.in);
     private final String serializationFileType = ".ser";
+    private final long WAIT = 1;
 
     public static void main(String[] args) {
         new ConsoleUI().run();
@@ -51,7 +51,7 @@ public class ConsoleUI {
                             System.out.println("Option does not exist in the menu. Please choose a number that exists in the menu.");
                 }
             } catch (NumberFormatException e) { // Case: user inputs a non-integer
-                System.out.println("Invalid input. Please enter a number between 1 and 6.");
+                System.out.println("Invalid input. Please enter a number between 1 and 8.");
             }
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(WAIT));

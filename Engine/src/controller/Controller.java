@@ -10,9 +10,8 @@ import java.util.Optional;
 
 public interface Controller {
     void loadProgram(String path) throws JAXBException, FileNotFoundException;
+    boolean isProgramLoaded();
     Optional<ProgramData> getProgramData();
     void Expand(int level) throws IllegalArgumentException;
     Collection<Variable> runProgram(int ... args);
-    boolean isProgramLoaded();
-
 }

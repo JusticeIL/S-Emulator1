@@ -9,11 +9,11 @@ import java.util.Map;
 
 public class Run implements Serializable {
 
-    private final int runID;
     private final int expansionLevel;
     private final Map<String,Integer> inputArgs;
-    private final int yValue;
     private final int runCycles;
+    private final int runID;
+    private final int yValue;
 
     public Run(int runNumber, int runLevel, Map<String,Integer> inputArguments, int yValue, int runCycles) {
         this.inputArgs = new HashMap<>();

@@ -1,21 +1,20 @@
 package instruction;
 
 import instruction.component.Label;
-
 import java.io.Serializable;
 import java.util.List;
 
 abstract public class Instruction implements Executable, Expandable, Serializable {
 
-    protected int number;
-    protected Label label;
-    protected int cycles;
-    protected Label destinationLabel;
     protected String command;
+    protected int cycles;
+    protected Label label;
+    protected Label destinationLabel;
     protected int level;
+    protected int number;
+    protected final String DELIMITER = ">>>";
     protected final InstructionType instructionType;
     protected final Instruction parentInstruction;
-    protected final String DELIMITER = ">>>";
 
     public abstract Label execute(); // Implementation of command execution logic
 
@@ -53,11 +52,9 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.parentInstruction = parentInstruction;
     }
 
-
     public int getNumber() {
         return number;
     }
-
 
     public int getCycles() {
         return cycles;

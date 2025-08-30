@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class Statistics implements Serializable {
 
-    private final List<Run> history;
     private int runCounter = 1;
+    private final List<Run> history;
 
     public Statistics() {
         history = new ArrayList<>();

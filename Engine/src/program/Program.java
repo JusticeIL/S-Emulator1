@@ -20,36 +20,36 @@ import java.util.stream.IntStream;
 
 public class Program implements Serializable {
 
-    private Instruction currentInstruction;
-    private String programName;
-    private final List<Instruction> instructionList = new LinkedList<>();
-    private final Set<String> usedXVariableNames;
     private int currentCommandIndex; // Program Counter
+    private Instruction currentInstruction;
     private int cycleCounter;
-    private final int runCounter;
+    private Program expandedProgram = null;
+    private String programName;
+    private boolean wasExpanded = false;
     private final int currentProgramLevel;
+    private final List<Instruction> instructionList = new LinkedList<>();
+    private final Map<Label, Instruction> Labels = new HashMap<>();
     private final int maxProgramLevel;
+    private final int runCounter;
+    private final List<Instruction> runtimeExecutedInstructions = new ArrayList<>();
     private final Statistics statistics;
+    private final Set<String> usedXVariableNames;
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL = new Label("    ");
     static public final Label EXIT_LABEL = new Label("EXIT");
 
-    private boolean wasExpanded = false;
-    private Program expandedProgram = null;
-    private final List<Instruction> runtimeExecutedInstructions = new ArrayList<>();
-
-    public Set<Label> getLabels() {
-        return Labels.keySet();
-    }
-
-    private final Map<Label, Instruction> Labels = new HashMap<>();
-
-    public List<Instruction> getInstructionList() {
-        return instructionList;
-    }
-
-    public String getProgramName() {
-        return programName;
+    private void setArguments(int[] arguments) {
+        int variableCounter = 1;
+        for (int variable : arguments) {
+            String variableName = "x" + variableCounter; //The xs could also not be in order
+            if(Variables.containsKey(variableName)) {
+                Variables.get(variableName).setValue(variable);
+            }
+            else {
+                Variables.put(variableName, new Variable(variableName, variable));
+            }
+            variableCounter++;
+        }
     }
 
     private int calculateMaxProgramLevel() {
@@ -58,6 +58,40 @@ public class Program implements Serializable {
                 .mapToInt(Instruction::getLevel)
                 .max()
                 .orElse(0);
+    }
+
+    private void setUpNewRun(){
+
+        if(Variables.containsKey("y")) {
+            Variables.get("y").setValue(0);
+        }else{
+            Variables.put("y", new Variable("y", 0));
+        }
+        List<String> keysToRemove = Variables.keySet().stream()
+                .filter(v -> v.startsWith("x"))
+                .filter(v-> !usedXVariableNames.contains(v))
+                .toList();
+        for (String key : keysToRemove) {
+            Variables.remove(key);
+        }
+        for (Variable variable : Variables.values()) {
+            variable.setValue(0);
+        }
+        this.currentCommandIndex = 0;
+        this.cycleCounter = 0;
+        runtimeExecutedInstructions.clear();
+    }
+
+    public Set<Label> getLabels() {
+        return Labels.keySet();
+    }
+
+    public List<Instruction> getInstructionList() {
+        return instructionList;
+    }
+
+    public String getProgramName() {
+        return programName;
     }
 
     public List<String> getExpandedProgramStringRepresentation() {
@@ -71,13 +105,14 @@ public class Program implements Serializable {
     public Program expand(int level) {
         if (level == 0) {
             return this;
-        } else if (wasExpanded) {
+        }
+        else if (wasExpanded) {
             return this.expandedProgram.expand(level - 1);
-        } else {
+        }
+        else {
             List<Instruction> expandedInstructions = new ArrayList<>();
             Map<Label, Instruction> expandedLabels = new HashMap<>(Labels);
             Set<Variable> expandedVariables = new HashSet<>(Variables.values());
-
 
             instructionList.forEach(instruction -> {
                 ExpandedSyntheticInstructionArguments singleExpandedInstruction = instruction.generateExpandedInstructions();
@@ -89,7 +124,6 @@ public class Program implements Serializable {
             });
             IntStream.range(1, expandedInstructions.size() + 1).forEach(i -> expandedInstructions.get(i - 1).setNumber(i));
             ExpandedSyntheticInstructionArguments expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
-
 
             wasExpanded = true;
             this.expandedProgram = new Program(this, expandedInstruction);
@@ -158,19 +192,6 @@ public class Program implements Serializable {
         }
     }
 
-    private void setArguments(int[] arguments) {
-        int variableCounter = 1;
-        for (int variable : arguments) {
-            String variableName = "x" + variableCounter; //The xs could also not be in order
-            if(Variables.containsKey(variableName)) {
-                Variables.get(variableName).setValue(variable);
-            }else{
-                Variables.put(variableName, new Variable(variableName, variable));
-            }
-            variableCounter++;
-        }
-    }
-
     public void loadProgram(String filePath) throws FileNotFoundException, JAXBException {
         if (new File(filePath).exists()) {
             // Load JAXB
@@ -220,28 +241,6 @@ public class Program implements Serializable {
 
     public Collection<Variable> getVariables() {
         return Variables.values();
-    }
-
-    private void setUpNewRun(){
-
-        if(Variables.containsKey("y")) {
-            Variables.get("y").setValue(0);
-        }else{
-            Variables.put("y", new Variable("y", 0));
-        }
-        List<String> keysToRemove = Variables.keySet().stream()
-                .filter(v -> v.startsWith("x"))
-                .filter(v-> !usedXVariableNames.contains(v))
-                .toList();
-        for (String key : keysToRemove) {
-            Variables.remove(key);
-        }
-        for (Variable variable : Variables.values()) {
-            variable.setValue(0);
-        }
-        this.currentCommandIndex = 0;
-        this.cycleCounter = 0;
-        runtimeExecutedInstructions.clear();
     }
 
     public List<Instruction> getRuntimeExecutedInstructions() {

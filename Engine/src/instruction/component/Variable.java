@@ -7,8 +7,14 @@ public class Variable implements Serializable {
 
     private static int highestUnusedZId = 1;
     private static int previousHighestUnusedZId = 1;
-    protected int value;
     protected final String name;
+    protected int value;
+
+    public Variable() {
+        this.value = 0;
+        this.name = "z"+ highestUnusedZId;
+        highestUnusedZId++;
+    }
 
     public Variable(String name, int value) {
         this.value = value;
@@ -17,18 +23,6 @@ public class Variable implements Serializable {
         if(name.contains("z")) {
             highestUnusedZId++;
         }
-    }
-
-    public static void resetZIdCounter() {
-        highestUnusedZId = 1;
-    }
-
-    public static void saveHighestUnusedZId() {
-        previousHighestUnusedZId = highestUnusedZId;
-    }
-
-    public static void loadHighestUnusedZId() {
-        highestUnusedZId = previousHighestUnusedZId;
     }
 
     public String getName() {
@@ -43,13 +37,10 @@ public class Variable implements Serializable {
         this.value = value;
     }
 
-    public Variable() {
-        this.value = 0;
-        this.name = "z"+ highestUnusedZId;
-        highestUnusedZId++;
+    @Override
+    public String toString() {
+        return name + " = " + value;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -63,8 +54,15 @@ public class Variable implements Serializable {
         return Objects.hashCode(name);
     }
 
-    @Override
-    public String toString() {
-        return name + " = " + value;
+    public static void resetZIdCounter() {
+        highestUnusedZId = 1;
+    }
+
+    public static void saveHighestUnusedZId() {
+        previousHighestUnusedZId = highestUnusedZId;
+    }
+
+    public static void loadHighestUnusedZId() {
+        highestUnusedZId = previousHighestUnusedZId;
     }
 }

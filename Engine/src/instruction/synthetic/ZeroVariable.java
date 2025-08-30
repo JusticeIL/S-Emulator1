@@ -15,7 +15,6 @@ public class ZeroVariable extends SyntheticInstruction {
 
     static private final int CYCLES = 1;
 
-
     public ZeroVariable(int num, Variable variable, Label label, Label destinationLabel) {
         super(num, variable, CYCLES, label, destinationLabel);
         command = variable.getName() + " <- " + "0";
@@ -27,7 +26,6 @@ public class ZeroVariable extends SyntheticInstruction {
         command = variable.getName() + " <- " + "0";
         level = 1;
     }
-
 
     @Override
     public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
@@ -53,4 +51,3 @@ public class ZeroVariable extends SyntheticInstruction {
         return destinationLabel;
     }
 }
-

@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ProgramData implements Serializable {
-    private final String programName;
-    private final int maxExpandLevel;
+
     private final int currentCycles;
-    private final List<String> programXArguments = new ArrayList<>();
-    private final List<String> programVariablesCurrentState = new ArrayList<>();
-    private final List<String> programLabels = new ArrayList<>();
-    private final List<String> programInstructions = new ArrayList<>();
-    private final List<String> runtimeExecutedInstructions = new ArrayList<>();
     private final List<String> expandedProgramInstructions = new ArrayList<>();
+    private final int maxExpandLevel;
+    private final List<String> programInstructions = new ArrayList<>();
+    private final List<String> programLabels = new ArrayList<>();
+    private final String programName;
+    private final List<String> programVariablesCurrentState = new ArrayList<>();
+    private final List<String> programXArguments = new ArrayList<>();
+    private final List<String> runtimeExecutedInstructions = new ArrayList<>();
     private final Statistics statistics;
 
     public ProgramData(Program program) {

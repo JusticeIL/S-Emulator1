@@ -15,8 +15,8 @@ import java.util.Optional;
 
 public class SingleProgramController implements Controller, Serializable {
 
-    private final Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();
     private Program activeProgram;
+    private final Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();
     private Statistics statistics;
 
     @Override

@@ -36,7 +36,6 @@ public class JumpZero extends SyntheticInstruction {
         }
     }
 
-
     @Override
     public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
         List<Instruction> expandedInstructions = new ArrayList<>();

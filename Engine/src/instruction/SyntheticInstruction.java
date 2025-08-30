@@ -2,13 +2,13 @@ package instruction;
 
 import instruction.component.Label;
 import instruction.component.Variable;
-
 import java.util.*;
 
 abstract public class SyntheticInstruction extends Instruction {
-    protected Variable variable;
-    protected boolean isExpanded;
+
     protected ExpandedSyntheticInstructionArguments expandedInstruction;
+    protected boolean isExpanded;
+    protected Variable variable;
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles ,label, destinationLabel,InstructionType.S);
