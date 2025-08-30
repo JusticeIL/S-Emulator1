@@ -256,6 +256,11 @@ public class ConsoleUI {
             try (ObjectOutputStream out =
                          new ObjectOutputStream(
                                  new FileOutputStream(filePath))) {
+                Optional<ProgramData> programDataOpt = engine.getProgramData();
+                if(programDataOpt.isPresent()){
+                    engine.Expand(0); // Reset program to level 0 before saving
+                    engine.Expand(programDataOpt.get().getMaxExpandLevel());//Save as maximum expansion level
+                }
                 out.writeObject(engine);
                 out.flush();
                 System.out.println("State saved successfully!");
