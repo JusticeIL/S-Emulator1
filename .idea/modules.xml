@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Engine/Engine.iml" filepath="$PROJECT_DIR$/Engine/Engine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/S-Emulator 1.iml" filepath="$PROJECT_DIR$/S-Emulator 1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Engine/UI/UI.iml" filepath="$PROJECT_DIR$/Engine/UI/UI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/S-embly.iml" filepath="$PROJECT_DIR$/S-embly.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UI/UI.iml" filepath="$PROJECT_DIR$/UI/UI.iml" />
     </modules>
   </component>
 </project>
