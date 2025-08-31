@@ -9,13 +9,18 @@
 
 ## Overview
 
-This project implements a small emulator for the S-language designed for a university java programming assignment. It includes:
+This project is a simple emulator for the S-language, developed as part of a university Java programming assignment. It includes:
 
-- A **console UI module** that drives the program (menu, user input validation and printing).
+- A **console UI module** that provides the interactive menu, validates user input, and prints program output..
 - An **engine module** that holds the emulator logic:
-  - program model.
+  - program representation (model).
   - instruction expansion.
   - statistics.
+
+The architecture follows the **Model–View–Controller (MVC)** design pattern:
+  - Model → Program data, instructions, and statistics (engine).
+  - View → Console-based user interface (console UI).
+  - Controller → Connects user actions in the UI with the engine logic.
 
 ---
 
