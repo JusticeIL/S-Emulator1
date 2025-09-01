@@ -6,6 +6,7 @@ import instruction.basic.Increase;
 import instruction.basic.JumpNotZero;
 import instruction.basic.Neutral;
 import instruction.component.LabelFactory;
+import instruction.component.VariableFactory;
 import instruction.synthetic.*;
 import program.Program;
 import XMLandJaxB.SInstruction;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class InstructionFactory {
 
     private final LabelFactory labelFactory;
+    private final VariableFactory variableFactory;
     private final Set<Label> destinationLabelSet = new HashSet<>();
     private final Map<String, Label> labels = new HashMap<>();
     private final Set<Label> sourceLabelSet = new HashSet<>();
@@ -50,7 +52,7 @@ public class InstructionFactory {
         return argumentConstantName.map(Integer::parseInt).orElse(0);
     }
 
-    private Label getLabelFromSIndtruction(SInstruction sInstruction) {
+    private Label getLabelFromSInstruction(SInstruction sInstruction) {
         Label label = Program.EMPTY_LABEL;
         Optional<String> LabelName = Optional.ofNullable(sInstruction.getSLabel());
         return getLabel(label, LabelName);
@@ -87,24 +89,24 @@ public class InstructionFactory {
         Variable variable = getVariable(sInstr.getSVariable());
         Variable argumentVariable = getVariableFromArguments(sInstr.getSInstructionArguments());
         Instruction instruction;
-        Label label = getLabelFromSIndtruction(sInstr);
+        Label label = getLabelFromSInstruction(sInstr);
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
         destinationLabelSet.add(destinationLabel);
         sourceLabelSet.add(label);
         int constant = getConstantFromSInstruction(sInstr);
 
         instruction = switch (sInstr.getName().toUpperCase()) {
-            case ("INCREASE") -> new Increase(instructionCounter, variable, label, destinationLabel, labelFactory);
-            case ("DECREASE") -> new Decrease(instructionCounter, variable, label, destinationLabel, labelFactory);
-            case ("JUMP_NOT_ZERO") -> new JumpNotZero(instructionCounter, variable, label, destinationLabel, labelFactory);
-            case ("NEUTRAL") -> new Neutral(instructionCounter, variable, label, destinationLabel, labelFactory);
-            case("JUMP_ZERO") -> new JumpZero(instructionCounter, variable, label, destinationLabel, labelFactory);
-            case("ZERO_VARIABLE") -> new ZeroVariable(instructionCounter, variable, label, destinationLabel, labelFactory);
-            case ("JUMP_EQUAL_CONSTANT") -> new JumpEqualConstant(instructionCounter, variable, label, destinationLabel, constant, labelFactory);
-            case ("CONSTANT_ASSIGNMENT") -> new ConstantAssignment(instructionCounter, variable, label, destinationLabel, constant, labelFactory);
-            case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable, labelFactory);
-            case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable, labelFactory);
-            case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel, labelFactory);
+            case ("INCREASE") -> new Increase(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
+            case ("DECREASE") -> new Decrease(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
+            case ("JUMP_NOT_ZERO") -> new JumpNotZero(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
+            case ("NEUTRAL") -> new Neutral(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
+            case("JUMP_ZERO") -> new JumpZero(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
+            case("ZERO_VARIABLE") -> new ZeroVariable(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
+            case ("JUMP_EQUAL_CONSTANT") -> new JumpEqualConstant(instructionCounter, variable, label, destinationLabel, constant, labelFactory, variableFactory);
+            case ("CONSTANT_ASSIGNMENT") -> new ConstantAssignment(instructionCounter, variable, label, destinationLabel, constant, labelFactory, variableFactory);
+            case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable, labelFactory, variableFactory);
+            case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable, labelFactory, variableFactory);
+            case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };
@@ -112,9 +114,10 @@ public class InstructionFactory {
         return instruction;
     }
 
-    public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory) {
+    public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory) {
         this.variables = variables;
         this.labelFactory = labelFactory;
+        this.variableFactory = variableFactory;
     }
 
     Variable getVariable(String variableName) {
@@ -123,7 +126,7 @@ public class InstructionFactory {
             if (variables.containsKey(variableName)) {
                 return variables.get(variableName);
             } else {
-                Variable variable = new Variable(variableName, 0);
+                Variable variable = variableFactory.generateVariable(variableName, 0);
                 variables.put(variableName, variable);
                 return variable;
             }
@@ -138,6 +141,6 @@ public class InstructionFactory {
     }
 
     public Instruction GenerateExitInstruction(int size) {
-        return new Neutral(size + 1, new Variable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL, labelFactory);
+        return new Neutral(size + 1, variableFactory.generateVariable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL, labelFactory, variableFactory);
     }
 }

@@ -3,6 +3,7 @@ package instruction;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 
 import java.util.*;
 
@@ -22,13 +23,13 @@ abstract public class BasicInstruction extends Instruction {
 
     abstract protected BasicInstruction createCopy();
 
-    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, LabelFactory labelFactory) {
-        super(num, cycles, label, destinationLabel, InstructionType.B, labelFactory);
+    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, LabelFactory labelFactory, VariableFactory variableFactory) {
+        super(num, cycles, label, destinationLabel, InstructionType.B, labelFactory, variableFactory);
         this.variable = variable;
     }
 
-    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction, LabelFactory labelFactory) {
-        super(num, cycles, label, destinationLabel, InstructionType.B, parentInstruction, labelFactory);
+    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
+        super(num, cycles, label, destinationLabel, InstructionType.B, parentInstruction, labelFactory, variableFactory);
         this.variable = variable;
     }
 

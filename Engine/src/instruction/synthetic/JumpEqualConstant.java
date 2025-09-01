@@ -8,6 +8,7 @@ import instruction.basic.Neutral;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import program.Program;
 import java.util.*;
 
@@ -16,15 +17,15 @@ public class JumpEqualConstant extends SyntheticInstruction {
     static private final int CYCLES = 2;
     private final int constValue;
 
-    public JumpEqualConstant(int num, Variable variable, Label label, Label destinationLabel, int constValue, LabelFactory labelFactory) {
-        super(num, variable, CYCLES, label, destinationLabel, labelFactory);
+    public JumpEqualConstant(int num, Variable variable, Label label, Label destinationLabel, int constValue, LabelFactory labelFactory, VariableFactory variableFactory) {
+        super(num, variable, CYCLES, label, destinationLabel, labelFactory, variableFactory);
         command = "IF " + variable.getName() + " = " + constValue + " GOTO " + destinationLabel.getLabelName();
         this.constValue = constValue;
         super.level = 3;
     }
 
-    public JumpEqualConstant(int num, Variable variable, Label label, Label destinationLabel, int constValue, Instruction parentInstruction, LabelFactory labelFactory) {
-        super(num, variable, CYCLES, label, destinationLabel, parentInstruction, labelFactory);
+    public JumpEqualConstant(int num, Variable variable, Label label, Label destinationLabel, int constValue, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
+        super(num, variable, CYCLES, label, destinationLabel, parentInstruction, labelFactory, variableFactory);
         command = "IF " + variable.getName() + " = " + constValue + " GOTO " + destinationLabel.getLabelName();
         this.constValue = constValue;
         super.level = 3;
@@ -44,19 +45,19 @@ public class JumpEqualConstant extends SyntheticInstruction {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
-        Variable z1 = new Variable();
+        Variable z1 = variableFactory.createZVariable();
         Label L1 = labelFactory.createLabel();
         int instructionNumber = 1;
         expandedVariables.add(z1);
 
-        expandedInstructions.add(new Assignment(instructionNumber++, z1, label, Program.EMPTY_LABEL, variable, this, labelFactory));
+        expandedInstructions.add(new Assignment(instructionNumber++, z1, label, Program.EMPTY_LABEL, variable, this, labelFactory, variableFactory));
         for (int i = 0; i < constValue; i++) {
-            expandedInstructions.add(new JumpZero(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this, labelFactory));
-            expandedInstructions.add(new Decrease(instructionNumber++, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this, labelFactory));
+            expandedInstructions.add(new JumpZero(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this, labelFactory, variableFactory));
+            expandedInstructions.add(new Decrease(instructionNumber++, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this, labelFactory, variableFactory));
         }
-        expandedInstructions.add(new JumpNotZero(instructionNumber++, z1, Program.EMPTY_LABEL, L1, this, labelFactory));
-        expandedInstructions.add(new GoToLabel(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this, labelFactory));
-        Instruction L1Instruction = new Neutral(instructionNumber, z1, L1, Program.EMPTY_LABEL, this, labelFactory);
+        expandedInstructions.add(new JumpNotZero(instructionNumber++, z1, Program.EMPTY_LABEL, L1, this, labelFactory, variableFactory));
+        expandedInstructions.add(new GoToLabel(instructionNumber++, z1, Program.EMPTY_LABEL, destinationLabel, this, labelFactory, variableFactory));
+        Instruction L1Instruction = new Neutral(instructionNumber, z1, L1, Program.EMPTY_LABEL, this, labelFactory, variableFactory);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
         isExpanded = true;

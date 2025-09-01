@@ -11,6 +11,7 @@ import instruction.InstructionFactory;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -202,12 +203,10 @@ public class Program implements Serializable {
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
             // Load instructions
             final LabelFactory labelFactory = new LabelFactory();
-            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory);
+            final VariableFactory variableFactory = new VariableFactory();
+            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory);
             int instructionCounter = 1;
             boolean containsExit = false;
-
-            Variable.saveHighestUnusedZId();
-            Variable.resetZIdCounter();
 
             for (SInstruction sInstr : sInstructions) {
                 Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
@@ -228,10 +227,8 @@ public class Program implements Serializable {
             programName = sProgram.getName();
             Set<Label> missingLabels = instructionFactory.getMissingLabels();
             if (!missingLabels.isEmpty()) {
-                Variable.loadHighestUnusedZId();
                 throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
             }
-
         }
         else  {
             throw new FileNotFoundException();
