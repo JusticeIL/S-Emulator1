@@ -5,6 +5,7 @@ import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Increase;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
 import program.Program;
 
@@ -16,15 +17,15 @@ public class ConstantAssignment extends SyntheticInstruction {
     static private final int CYCLES = 2;
     private final int constValue;
 
-    public ConstantAssignment(int num, Variable variable, Label label, Label destinationLabel, int constValue) {
-        super(num, variable, CYCLES, label, destinationLabel);
+    public ConstantAssignment(int num, Variable variable, Label label, Label destinationLabel, int constValue, LabelFactory labelFactory) {
+        super(num, variable, CYCLES, label, destinationLabel, labelFactory);
         command = variable.getName() + " <- " + constValue;
         this.constValue = constValue;
         super.level = 2;
     }
 
-    public ConstantAssignment(int num, Variable variable, Label label, Label destinationLabel, int constValue, Instruction parentInstruction) {
-        super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
+    public ConstantAssignment(int num, Variable variable, Label label, Label destinationLabel, int constValue, Instruction parentInstruction, LabelFactory labelFactory) {
+        super(num, variable, CYCLES, label, destinationLabel, parentInstruction, labelFactory);
         command = variable.getName() + " <- " + constValue;
         this.constValue = constValue;
         super.level = 2;
@@ -42,9 +43,9 @@ public class ConstantAssignment extends SyntheticInstruction {
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
 
-        expandedInstructions.add(new ZeroVariable(1, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
+        expandedInstructions.add(new ZeroVariable(1, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this, labelFactory));
         IntStream.range(0, constValue).forEach(i ->
-                expandedInstructions.add(new Increase(i+2, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL,this)));
+                expandedInstructions.add(new Increase(i+2, variable, Program.EMPTY_LABEL, Program.EMPTY_LABEL,this, labelFactory)));
 
         expandedLabels.put(label, expandedInstructions.getFirst());
         isExpanded = true;

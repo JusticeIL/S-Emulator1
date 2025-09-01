@@ -1,6 +1,8 @@
 package instruction;
 
 import instruction.component.Label;
+import instruction.component.LabelFactory;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,6 +17,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     protected final String DELIMITER = ">>>";
     protected final InstructionType instructionType;
     protected final Instruction parentInstruction;
+    protected final LabelFactory labelFactory;
 
     public abstract Label execute(); // Implementation of command execution logic
 
@@ -32,7 +35,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         return level;
     }
 
-    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType) {
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, LabelFactory labelFactory) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
@@ -40,9 +43,10 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.instructionType = instructionType;
         this.level = 0;
         this.parentInstruction = null;
+        this.labelFactory = labelFactory;
     }
 
-    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Instruction parentInstruction) {
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Instruction parentInstruction, LabelFactory labelFactory) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
@@ -50,6 +54,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.instructionType = instructionType;
         this.level = 0;
         this.parentInstruction = parentInstruction;
+        this.labelFactory = labelFactory;
     }
 
     public int getNumber() {

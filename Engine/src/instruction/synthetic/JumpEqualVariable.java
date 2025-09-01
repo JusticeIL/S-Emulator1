@@ -6,6 +6,7 @@ import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
 import instruction.basic.Neutral;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
 import program.Program;
 
@@ -16,15 +17,15 @@ public class JumpEqualVariable extends SyntheticInstruction {
     static private final int CYCLES = 2;
     private final Variable argumentVariable;
 
-    public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable) {
-        super(num, variable, CYCLES, label, destinationLabel);
+    public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable, LabelFactory labelFactory) {
+        super(num, variable, CYCLES, label, destinationLabel, labelFactory);
         this.argumentVariable = argumentVariable;
         command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();
         super.level = 3;
     }
 
-    public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable, Instruction parentInstruction) {
-        super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
+    public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable, Instruction parentInstruction, LabelFactory labelFactory) {
+        super(num, variable, CYCLES, label, destinationLabel, parentInstruction, labelFactory);
         this.argumentVariable = argumentVariable;
         command = "IF " + variable.getName() + " = " + argumentVariable.getName() + " GOTO " + destinationLabel.getLabelName();
         super.level = 3;
@@ -45,27 +46,27 @@ public class JumpEqualVariable extends SyntheticInstruction {
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
         int instructionNumber = 1;
-        Label L1 = new Label();
-        Label L2 = new Label();
-        Label L3 = new Label();
+        Label L1 = labelFactory.createLabel();
+        Label L2 = labelFactory.createLabel();
+        Label L3 = labelFactory.createLabel();
         Variable z1 = new Variable();
         Variable z2 = new Variable();
         expandedVariables.add(z1);
         expandedVariables.add(z2);
 
-        expandedInstructions.add(new Assignment(instructionNumber++, z1, label, Program.EMPTY_LABEL, variable, this));
-        expandedInstructions.add(new Assignment(instructionNumber++, z2, Program.EMPTY_LABEL, Program.EMPTY_LABEL, argumentVariable, this));
-        Instruction L2Instruction = new JumpZero(instructionNumber++, z1, L2, L3, this);
+        expandedInstructions.add(new Assignment(instructionNumber++, z1, label, Program.EMPTY_LABEL, variable, this, labelFactory));
+        expandedInstructions.add(new Assignment(instructionNumber++, z2, Program.EMPTY_LABEL, Program.EMPTY_LABEL, argumentVariable, this, labelFactory));
+        Instruction L2Instruction = new JumpZero(instructionNumber++, z1, L2, L3, this, labelFactory);
         expandedLabels.put(L2, L2Instruction);
         expandedInstructions.add(L2Instruction);
-        expandedInstructions.add(new JumpZero(instructionNumber++, z2, Program.EMPTY_LABEL, L1, this));
-        expandedInstructions.add(new Decrease(instructionNumber++, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
-        expandedInstructions.add(new Decrease(instructionNumber++, z2, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this));
-        expandedInstructions.add(new GoToLabel(instructionNumber++, variable, Program.EMPTY_LABEL, L2, this));
-        Instruction L3Instruction = new JumpZero(instructionNumber++, z2, L3, destinationLabel, this);
+        expandedInstructions.add(new JumpZero(instructionNumber++, z2, Program.EMPTY_LABEL, L1, this, labelFactory));
+        expandedInstructions.add(new Decrease(instructionNumber++, z1, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this, labelFactory));
+        expandedInstructions.add(new Decrease(instructionNumber++, z2, Program.EMPTY_LABEL, Program.EMPTY_LABEL, this, labelFactory));
+        expandedInstructions.add(new GoToLabel(instructionNumber++, variable, Program.EMPTY_LABEL, L2, this, labelFactory));
+        Instruction L3Instruction = new JumpZero(instructionNumber++, z2, L3, destinationLabel, this, labelFactory);
         expandedLabels.put(L3, L3Instruction);
         expandedInstructions.add(L3Instruction);
-        Instruction L1Instruction = new Neutral(instructionNumber, z1, L1, Program.EMPTY_LABEL, this);
+        Instruction L1Instruction = new Neutral(instructionNumber, z1, L1, Program.EMPTY_LABEL, this, labelFactory);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
         expandedLabels.put(label, expandedInstructions.getFirst());

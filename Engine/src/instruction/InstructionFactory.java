@@ -5,6 +5,7 @@ import instruction.basic.Decrease;
 import instruction.basic.Increase;
 import instruction.basic.JumpNotZero;
 import instruction.basic.Neutral;
+import instruction.component.LabelFactory;
 import instruction.synthetic.*;
 import program.Program;
 import XMLandJaxB.SInstruction;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 public class InstructionFactory {
 
+    private final LabelFactory labelFactory;
     private final Set<Label> destinationLabelSet = new HashSet<>();
     private final Map<String, Label> labels = new HashMap<>();
     private final Set<Label> sourceLabelSet = new HashSet<>();
@@ -60,7 +62,7 @@ public class InstructionFactory {
             if (labels.containsKey(labelname)) {
                 label = labels.get(labelname);
             } else {
-                label = new Label(labelname);
+                label = labelFactory.readLabelFromXML(labelname);
                 labels.put(labelname, label);
             }
         }
@@ -76,7 +78,6 @@ public class InstructionFactory {
         }
         Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
                 .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("LABEL"))
-                //.filter(arg->!arg.getName().toUpperCase().contains(""))
                 .map(SInstructionArgument::getValue) // may still be null
                 .findFirst();
         return getLabel(destinationLabel, argumentVariableName);
@@ -90,21 +91,20 @@ public class InstructionFactory {
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
         destinationLabelSet.add(destinationLabel);
         sourceLabelSet.add(label);
-
         int constant = getConstantFromSInstruction(sInstr);
 
         instruction = switch (sInstr.getName().toUpperCase()) {
-            case ("INCREASE") -> new Increase(instructionCounter, variable, label, destinationLabel);
-            case ("DECREASE") -> new Decrease(instructionCounter, variable, label, destinationLabel);
-            case ("JUMP_NOT_ZERO") -> new JumpNotZero(instructionCounter, variable, label, destinationLabel);
-            case ("NEUTRAL") -> new Neutral(instructionCounter, variable, label, destinationLabel);
-            case("JUMP_ZERO") -> new JumpZero(instructionCounter, variable, label, destinationLabel);
-            case("ZERO_VARIABLE") -> new ZeroVariable(instructionCounter, variable, label, destinationLabel);
-            case ("JUMP_EQUAL_CONSTANT") -> new JumpEqualConstant(instructionCounter, variable, label, destinationLabel, constant);
-            case ("CONSTANT_ASSIGNMENT") -> new ConstantAssignment(instructionCounter, variable, label, destinationLabel, constant);
-            case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable);
-            case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
-            case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
+            case ("INCREASE") -> new Increase(instructionCounter, variable, label, destinationLabel, labelFactory);
+            case ("DECREASE") -> new Decrease(instructionCounter, variable, label, destinationLabel, labelFactory);
+            case ("JUMP_NOT_ZERO") -> new JumpNotZero(instructionCounter, variable, label, destinationLabel, labelFactory);
+            case ("NEUTRAL") -> new Neutral(instructionCounter, variable, label, destinationLabel, labelFactory);
+            case("JUMP_ZERO") -> new JumpZero(instructionCounter, variable, label, destinationLabel, labelFactory);
+            case("ZERO_VARIABLE") -> new ZeroVariable(instructionCounter, variable, label, destinationLabel, labelFactory);
+            case ("JUMP_EQUAL_CONSTANT") -> new JumpEqualConstant(instructionCounter, variable, label, destinationLabel, constant, labelFactory);
+            case ("CONSTANT_ASSIGNMENT") -> new ConstantAssignment(instructionCounter, variable, label, destinationLabel, constant, labelFactory);
+            case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable, labelFactory);
+            case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable, labelFactory);
+            case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel, labelFactory);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };
@@ -112,8 +112,9 @@ public class InstructionFactory {
         return instruction;
     }
 
-    public InstructionFactory(Map<String, Variable> variables) {
+    public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory) {
         this.variables = variables;
+        this.labelFactory = labelFactory;
     }
 
     Variable getVariable(String variableName) {
@@ -121,13 +122,12 @@ public class InstructionFactory {
         try {
             if (variables.containsKey(variableName)) {
                 return variables.get(variableName);
-            }else{
+            } else {
                 Variable variable = new Variable(variableName, 0);
                 variables.put(variableName, variable);
                 return variable;
             }
             } catch (NumberFormatException e) {
-            System.out.println("HARA AL HAROSH SHELI");
             return null;
         }
     }
@@ -138,6 +138,6 @@ public class InstructionFactory {
     }
 
     public Instruction GenerateExitInstruction(int size) {
-        return new Neutral(size + 1, new Variable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL);
+        return new Neutral(size + 1, new Variable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL, labelFactory);
     }
 }

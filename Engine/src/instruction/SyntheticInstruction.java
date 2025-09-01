@@ -1,6 +1,7 @@
 package instruction;
 
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
 import java.util.*;
 
@@ -10,14 +11,14 @@ abstract public class SyntheticInstruction extends Instruction {
     protected boolean isExpanded;
     protected Variable variable;
 
-    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S);
+    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, LabelFactory labelFactory) {
+        super(num, cycles ,label, destinationLabel,InstructionType.S, labelFactory);
         this.variable = variable;
         this.isExpanded = false;
     }
 
-    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S, parentInstruction);
+    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction, LabelFactory labelFactory) {
+        super(num, cycles ,label, destinationLabel,InstructionType.S, parentInstruction, labelFactory);
         this.variable = variable;
         this.isExpanded = false;
     }
@@ -45,7 +46,7 @@ abstract public class SyntheticInstruction extends Instruction {
     public List<String> getExpandedStringRepresentation() {
         List<String> result = new ArrayList<>();
         if (isExpanded) {
-            String prefix = "<<<" + this + " ";
+            String prefix = DELIMITER + this + " ";
             for (Instruction instr : expandedInstruction.getInstructions()) {
                 List<String> subList = instr.getExpandedStringRepresentation();
                 subList.replaceAll(s -> s + prefix);

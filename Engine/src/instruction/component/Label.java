@@ -6,19 +6,13 @@ import java.util.*;
 public class Label implements Serializable {
 
     private final String labelName;
-    private static int highestUnusedLabelNumber = 1;
-    private static int previousHighestUnusedLabelNumber = 1;
 
-    public Label() {
+    public Label(int highestUnusedLabelNumber) {
         this.labelName = "L"+ highestUnusedLabelNumber;
-        highestUnusedLabelNumber++;
     }
 
     public Label(String labelName) {
         this.labelName = labelName;
-        if (labelName.contains("L")) {
-            highestUnusedLabelNumber++;
-        }
     }
 
     @Override
@@ -39,17 +33,5 @@ public class Label implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(labelName);
-    }
-
-    public static void saveHighestUnusedLabelNumber() {
-        previousHighestUnusedLabelNumber = highestUnusedLabelNumber;
-    }
-
-    public static void loadHighestUnusedLabelNumber() {
-        highestUnusedLabelNumber = previousHighestUnusedLabelNumber;
-    }
-
-    public static void resetHighestUnusedLabelNumber() {
-        highestUnusedLabelNumber = 1;
     }
 }

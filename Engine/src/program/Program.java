@@ -9,6 +9,7 @@ import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -200,11 +201,10 @@ public class Program implements Serializable {
             SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
             // Load instructions
-            InstructionFactory instructionFactory = new InstructionFactory(Variables);
+            final LabelFactory labelFactory = new LabelFactory();
+            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory);
             int instructionCounter = 1;
             boolean containsExit = false;
-            Label.saveHighestUnusedLabelNumber();
-            Label.resetHighestUnusedLabelNumber();
 
             Variable.saveHighestUnusedZId();
             Variable.resetZIdCounter();
@@ -228,7 +228,6 @@ public class Program implements Serializable {
             programName = sProgram.getName();
             Set<Label> missingLabels = instructionFactory.getMissingLabels();
             if (!missingLabels.isEmpty()) {
-                Label.loadHighestUnusedLabelNumber();
                 Variable.loadHighestUnusedZId();
                 throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
             }
