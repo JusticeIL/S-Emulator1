@@ -18,7 +18,7 @@ import java.util.*;
 public class Assignment extends SyntheticInstruction {
 
     static private final int CYCLES = 4;
-    private Variable argumentVariable;
+    private final Variable argumentVariable;
 
     public Assignment(int num, Variable assignedVariable, Label label, Label destinationLabel, Variable argumentVariable, LabelFactory labelFactory, VariableFactory variableFactory) {
         super(num, assignedVariable, CYCLES, label, destinationLabel, labelFactory, variableFactory);

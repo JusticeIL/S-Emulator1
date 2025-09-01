@@ -19,7 +19,6 @@ abstract public class SyntheticInstruction extends Instruction {
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
         super(num, cycles ,label, destinationLabel,InstructionType.S, variable, parentInstruction, labelFactory, variableFactory);
-        this.variable = variable;
         this.isExpanded = false;
     }
 

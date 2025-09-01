@@ -33,8 +33,6 @@ public class InstructionDTO {
         return command;
     }
 
-
-
     public int getCycles() {
         return cycles;
     }
@@ -50,5 +48,4 @@ public class InstructionDTO {
     public String getDestinationLabel() {
         return destinationLabel;
     }
-
 }

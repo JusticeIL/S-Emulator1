@@ -284,7 +284,7 @@ public class ConsoleUI {
         } catch (FileNotFoundException e) {
             System.out.println("Error with creating the serialization file");
         } catch (IOException e) {
-            System.out.println("Potential I/O error happend: " + e.getMessage());
+            System.out.println("Potential I/O error happened: " + e.getMessage());
         }
     }
 
@@ -301,7 +301,7 @@ public class ConsoleUI {
             System.out.println("Could not find the serialization file.");
             System.out.println("Please save the state first.");
         } catch (IOException e) {
-            System.out.println("Potential I/O error happend: " + e.getMessage());
+            System.out.println("Potential I/O error happened: " + e.getMessage());
         } catch (ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }

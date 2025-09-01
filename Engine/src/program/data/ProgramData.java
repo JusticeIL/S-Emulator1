@@ -55,7 +55,6 @@ public final class ProgramData implements Serializable {
         this.statistics = program.getStatistics();
     }
 
-
     public String getProgramName() {
         return programName;
     }

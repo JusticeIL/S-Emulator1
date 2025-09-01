@@ -47,6 +47,8 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.level = 0;
         this.parentInstruction = null;
         this.variable = variable;
+        this.labelFactory = labelFactory;
+        this.variableFactory = variableFactory;
     }
 
     public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Variable variable, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
