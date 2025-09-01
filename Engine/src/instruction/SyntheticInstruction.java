@@ -1,7 +1,10 @@
 package instruction;
 
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
+
 import java.util.*;
 
 abstract public class SyntheticInstruction extends Instruction {
@@ -9,14 +12,14 @@ abstract public class SyntheticInstruction extends Instruction {
     protected ExpandedSyntheticInstructionArguments expandedInstruction;
     protected boolean isExpanded;
 
-    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S,variable);
-
+    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, LabelFactory labelFactory, VariableFactory variableFactory) {
+        super(num, cycles ,label, destinationLabel,InstructionType.S, variable, labelFactory, variableFactory);
         this.isExpanded = false;
     }
 
-    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S,variable, parentInstruction);
+    public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
+        super(num, cycles ,label, destinationLabel,InstructionType.S, variable, parentInstruction, labelFactory, variableFactory);
+        this.variable = variable;
         this.isExpanded = false;
     }
 
@@ -43,7 +46,7 @@ abstract public class SyntheticInstruction extends Instruction {
     public List<String> getExpandedStringRepresentation() {
         List<String> result = new ArrayList<>();
         if (isExpanded) {
-            String prefix = "<<<" + this + " ";
+            String prefix = DELIMITER + this + " ";
             for (Instruction instr : expandedInstruction.getInstructions()) {
                 List<String> subList = instr.getExpandedStringRepresentation();
                 subList.replaceAll(s -> s + prefix);
