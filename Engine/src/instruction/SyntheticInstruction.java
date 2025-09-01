@@ -11,16 +11,14 @@ abstract public class SyntheticInstruction extends Instruction {
 
     protected ExpandedSyntheticInstructionArguments expandedInstruction;
     protected boolean isExpanded;
-    protected Variable variable;
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, LabelFactory labelFactory, VariableFactory variableFactory) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S, labelFactory, variableFactory);
-        this.variable = variable;
+        super(num, cycles ,label, destinationLabel,InstructionType.S, variable, labelFactory, variableFactory);
         this.isExpanded = false;
     }
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S, parentInstruction, labelFactory, variableFactory);
+        super(num, cycles ,label, destinationLabel,InstructionType.S, variable, parentInstruction, labelFactory, variableFactory);
         this.variable = variable;
         this.isExpanded = false;
     }
