@@ -1,6 +1,8 @@
 package instruction;
 
 import instruction.component.Label;
+import instruction.component.Variable;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,6 +17,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     protected final String DELIMITER = ">>>";
     protected final InstructionType instructionType;
     protected final Instruction parentInstruction;
+    protected final Variable variable;
 
     public abstract Label execute(); // Implementation of command execution logic
 
@@ -32,7 +35,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         return level;
     }
 
-    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType) {
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType,Variable variable) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
@@ -40,15 +43,21 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.instructionType = instructionType;
         this.level = 0;
         this.parentInstruction = null;
+        this.variable = variable;
     }
 
-    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Instruction parentInstruction) {
+    public Variable getVariable() {
+        return variable;
+    }
+
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Variable variable, Instruction parentInstruction) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
         this.level = 0;
+        this.variable = variable;
         this.parentInstruction = parentInstruction;
     }
 
@@ -74,4 +83,6 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     public void setNumber(int number) {
         this.number = number;
     }
+
+
 }

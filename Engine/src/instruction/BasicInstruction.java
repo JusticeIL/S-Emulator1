@@ -7,8 +7,7 @@ import java.util.*;
 
 abstract public class BasicInstruction extends Instruction {
 
-    protected Variable variable;
-
+    @Override
     public ExpandedSyntheticInstructionArguments generateExpandedInstructions() {
         Set<Variable> newVariables = new HashSet<>();
         Map<Label,Instruction> newLabels = new HashMap<>();
@@ -22,13 +21,11 @@ abstract public class BasicInstruction extends Instruction {
     abstract protected BasicInstruction createCopy();
 
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
-        super(num, cycles, label, destinationLabel, InstructionType.B);
-        this.variable = variable;
+        super(num, cycles, label, destinationLabel, InstructionType.B,variable);
     }
 
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
-        super(num, cycles, label, destinationLabel, InstructionType.B, parentInstruction);
-        this.variable = variable;
+        super(num, cycles, label, destinationLabel, InstructionType.B, variable,parentInstruction);
     }
 
     @Override

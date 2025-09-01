@@ -8,17 +8,15 @@ abstract public class SyntheticInstruction extends Instruction {
 
     protected ExpandedSyntheticInstructionArguments expandedInstruction;
     protected boolean isExpanded;
-    protected Variable variable;
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S);
-        this.variable = variable;
+        super(num, cycles ,label, destinationLabel,InstructionType.S,variable);
+
         this.isExpanded = false;
     }
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S, parentInstruction);
-        this.variable = variable;
+        super(num, cycles ,label, destinationLabel,InstructionType.S,variable, parentInstruction);
         this.isExpanded = false;
     }
 

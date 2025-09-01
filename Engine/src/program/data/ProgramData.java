@@ -1,22 +1,24 @@
-package program;
+package program.data;
 
 import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
+import program.Program;
+import program.Statistics;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ProgramData implements Serializable {
 
     private final int currentCycles;
-    private final List<String> expandedProgramInstructions = new ArrayList<>();
     private final int maxExpandLevel;
-    private final List<String> programInstructions = new ArrayList<>();
+    private final List<InstructionDTO> programInstructions = new ArrayList<>();
     private final List<String> programLabels = new ArrayList<>();
     private final String programName;
-    private final List<String> programVariablesCurrentState = new ArrayList<>();
+    private final List<VariableDTO> programVariablesCurrentState = new ArrayList<>();
     private final List<String> programXArguments = new ArrayList<>();
     private final List<String> runtimeExecutedInstructions = new ArrayList<>();
     private final Statistics statistics;
@@ -24,23 +26,23 @@ public final class ProgramData implements Serializable {
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
         for (Instruction instruction : program.getInstructionList()) {
-            programInstructions.add(instruction.toString());
+            programInstructions.add(new InstructionDTO(instruction));
         }
         for(Instruction instruction: program.getRuntimeExecutedInstructions()){
             runtimeExecutedInstructions.add(instruction.toString());
         }
 
         for (Variable variable : program.getVariables()) {
-            programVariablesCurrentState.add(variable.toString());
+            programVariablesCurrentState.add(new VariableDTO(variable));
         }
         programVariablesCurrentState.sort((a, b) -> {
             // Assign priority: y=0, x=1, z=2, others=3
-            int priorityA = a.startsWith("y") ? 0 : (a.startsWith("x") ? 1 : (a.startsWith("z") ? 2 : 3));
-            int priorityB = b.startsWith("y") ? 0 : (b.startsWith("x") ? 1 : (b.startsWith("z") ? 2 : 3));
+            int priorityA = a.getName().startsWith("y") ? 0 : (a.getName().startsWith("x") ? 1 : (a.getName().startsWith("z") ? 2 : 3));
+            int priorityB = b.getName().startsWith("y") ? 0 : (b.getName().startsWith("x") ? 1 : (b.getName().startsWith("z") ? 2 : 3));
             if (priorityA != priorityB) {
                 return Integer.compare(priorityA, priorityB);
             }
-            return a.compareTo(b);
+            return a.getName().compareTo(b.getName());
         });
 
         this.programXArguments.addAll(program.getUsedXVariableNames());
@@ -48,15 +50,11 @@ public final class ProgramData implements Serializable {
         for (Label label : program.getLabels()) {
             programLabels.add(label.toString());
         }
-        expandedProgramInstructions.addAll(program.getExpandedProgramStringRepresentation());
         this.maxExpandLevel = program.getMaxProgramLevel();
         this.currentCycles = program.getProgramCycles();
         this.statistics = program.getStatistics();
     }
 
-    public List<String> getExpandedProgramInstructions() {
-        return expandedProgramInstructions;
-    }
 
     public String getProgramName() {
         return programName;
@@ -71,11 +69,11 @@ public final class ProgramData implements Serializable {
     }
 
     public List<String> getProgramVariablesCurrentState() {
-        return programVariablesCurrentState;
+        return programVariablesCurrentState.stream().map(VariableDTO::getStringRepresentationForConsole).collect(Collectors.toList());
     }
 
     public List<String> getProgramInstructions() {
-        return programInstructions;
+        return programInstructions.stream().map(InstructionDTO::getFullExpandedStringRepresentation).toList();
     }
 
     public int getMaxExpandLevel() {

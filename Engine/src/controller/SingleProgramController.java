@@ -3,7 +3,7 @@ package controller;
 import instruction.component.Variable;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
-import program.ProgramData;
+import program.data.ProgramData;
 import program.Statistics;
 
 import java.io.FileNotFoundException;
