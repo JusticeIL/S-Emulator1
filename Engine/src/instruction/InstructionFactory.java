@@ -96,17 +96,17 @@ public class InstructionFactory {
         int constant = getConstantFromSInstruction(sInstr);
 
         instruction = switch (sInstr.getName().toUpperCase()) {
-            case ("INCREASE") -> new Increase(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
-            case ("DECREASE") -> new Decrease(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
-            case ("JUMP_NOT_ZERO") -> new JumpNotZero(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
-            case ("NEUTRAL") -> new Neutral(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
-            case("JUMP_ZERO") -> new JumpZero(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
-            case("ZERO_VARIABLE") -> new ZeroVariable(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
-            case ("JUMP_EQUAL_CONSTANT") -> new JumpEqualConstant(instructionCounter, variable, label, destinationLabel, constant, labelFactory, variableFactory);
-            case ("CONSTANT_ASSIGNMENT") -> new ConstantAssignment(instructionCounter, variable, label, destinationLabel, constant, labelFactory, variableFactory);
-            case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable, labelFactory, variableFactory);
-            case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable, labelFactory, variableFactory);
-            case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel, labelFactory, variableFactory);
+            case ("INCREASE") -> new Increase(instructionCounter, variable, label, destinationLabel);
+            case ("DECREASE") -> new Decrease(instructionCounter, variable, label, destinationLabel);
+            case ("JUMP_NOT_ZERO") -> new JumpNotZero(instructionCounter, variable, label, destinationLabel);
+            case ("NEUTRAL") -> new Neutral(instructionCounter, variable, label, destinationLabel);
+            case("JUMP_ZERO") -> new JumpZero(instructionCounter, variable, label, destinationLabel);
+            case("ZERO_VARIABLE") -> new ZeroVariable(instructionCounter, variable, label, destinationLabel);
+            case ("JUMP_EQUAL_CONSTANT") -> new JumpEqualConstant(instructionCounter, variable, label, destinationLabel, constant);
+            case ("CONSTANT_ASSIGNMENT") -> new ConstantAssignment(instructionCounter, variable, label, destinationLabel, constant);
+            case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable);
+            case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
+            case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };
@@ -141,6 +141,6 @@ public class InstructionFactory {
     }
 
     public Instruction GenerateExitInstruction(int size) {
-        return new Neutral(size + 1, variableFactory.generateVariable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL, labelFactory, variableFactory);
+        return new Neutral(size + 1, variableFactory.generateVariable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL);
     }
 }

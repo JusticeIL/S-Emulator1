@@ -12,19 +12,19 @@ public class JumpNotZero extends BasicInstruction {
 
     static private final int CYCLES = 2;
 
-    public JumpNotZero(int num, Variable variable, Label label, Label destinationLabel, LabelFactory labelFactory, VariableFactory variableFactory) {
-        super(num, variable, CYCLES, label, destinationLabel, labelFactory, variableFactory);
+    public JumpNotZero(int num, Variable variable, Label label, Label destinationLabel) {
+        super(num, variable, CYCLES, label, destinationLabel);
         command = "IF " + variable.getName() + " !=0 " + " GOTO " + destinationLabel.getLabelName();
     }
 
-    public JumpNotZero(int num, Variable variable, Label label, Label destinationLabel, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
-        super(num, variable, CYCLES, label, destinationLabel, parentInstruction, labelFactory, variableFactory);
+    public JumpNotZero(int num, Variable variable, Label label, Label destinationLabel, Instruction parentInstruction) {
+        super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         command = "IF " + variable.getName() + " !=0 " + " GOTO " + destinationLabel.getLabelName();
     }
 
     @Override
     protected BasicInstruction createCopy() {
-        return new JumpNotZero(number, this.variable, this.label, this.destinationLabel, this.parentInstruction, this.labelFactory, this.variableFactory);
+        return new JumpNotZero(number, this.variable, this.label, this.destinationLabel, this.parentInstruction);
     }
 
     @Override

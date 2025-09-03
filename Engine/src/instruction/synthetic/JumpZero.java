@@ -17,14 +17,14 @@ public class JumpZero extends SyntheticInstruction {
 
     static private final int CYCLES = 2;
 
-    public JumpZero(int num, Variable variable, Label label, Label destinationLabel, LabelFactory labelFactory, VariableFactory variableFactory) {
-        super(num, variable, CYCLES, label, destinationLabel, labelFactory, variableFactory);
+    public JumpZero(int num, Variable variable, Label label, Label destinationLabel) {
+        super(num, variable, CYCLES, label, destinationLabel);
         command = "IF " + variable.getName() + " =0" + " GOTO " + destinationLabel.getLabelName();
         super.level = 2;
     }
 
-    public JumpZero(int num, Variable variable, Label label, Label destinationLabel, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
-        super(num, variable, CYCLES, label, destinationLabel, parentInstruction, labelFactory, variableFactory);
+    public JumpZero(int num, Variable variable, Label label, Label destinationLabel, Instruction parentInstruction) {
+        super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         command = "IF " + variable.getName() + " =0" + " GOTO " + destinationLabel.getLabelName();
         super.level = 2;
     }
@@ -39,16 +39,16 @@ public class JumpZero extends SyntheticInstruction {
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label, Instruction> expandedLabels = new HashMap<>();
         Label L1 = labelFactory.createLabel();
 
         int instructionNumber = 1;
-        expandedInstructions.add(new JumpNotZero(instructionNumber++, variable, label, L1, this, labelFactory, variableFactory));
-        expandedInstructions.add(new GoToLabel(instructionNumber++, variable, Program.EMPTY_LABEL, destinationLabel, this, labelFactory, variableFactory));
-        Instruction L1Instruction = new Neutral(instructionNumber, variable, L1, Program.EMPTY_LABEL, this, labelFactory, variableFactory);
+        expandedInstructions.add(new JumpNotZero(instructionNumber++, variable, label, L1, this));
+        expandedInstructions.add(new GoToLabel(instructionNumber++, variable, Program.EMPTY_LABEL, destinationLabel, this));
+        Instruction L1Instruction = new Neutral(instructionNumber, variable, L1, Program.EMPTY_LABEL, this);
         expandedLabels.put(L1, L1Instruction);
         expandedInstructions.add(L1Instruction);
 

@@ -39,6 +39,8 @@ public class Program implements Serializable {
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL = new Label("    ");
     static public final Label EXIT_LABEL = new Label("EXIT");
+    private final LabelFactory labelFactory;
+    private final VariableFactory variableFactory;
 
     private void setArguments(int[] arguments) {
         int variableCounter = 1;
@@ -117,7 +119,7 @@ public class Program implements Serializable {
             Set<Variable> expandedVariables = new HashSet<>(Variables.values());
 
             instructionList.forEach(instruction -> {
-                ExpandedSyntheticInstructionArguments singleExpandedInstruction = instruction.generateExpandedInstructions();
+                ExpandedSyntheticInstructionArguments singleExpandedInstruction = instruction.generateExpandedInstructions(labelFactory, variableFactory);
                 if (singleExpandedInstruction != null) {
                     expandedVariables.addAll(singleExpandedInstruction.getVariables());
                     expandedInstructions.addAll(singleExpandedInstruction.getInstructions());
@@ -172,6 +174,8 @@ public class Program implements Serializable {
         // Copy statistics and program name from the base program
         this.statistics = baseProgram.getStatistics();
         this.programName = baseProgram.getProgramName();
+        this.labelFactory = baseProgram.labelFactory;
+        this.variableFactory = baseProgram.variableFactory;
         this.instructionList.addAll(newInstructions.getInstructions());
 
         // Copy variables and labels from the base program
@@ -244,6 +248,8 @@ public class Program implements Serializable {
     }
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
+        this.labelFactory = new LabelFactory();
+        this.variableFactory = new VariableFactory();
         loadProgram(filePath);
         this.statistics = new Statistics();
         this.currentCommandIndex = 0;

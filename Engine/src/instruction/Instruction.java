@@ -19,8 +19,6 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     protected final InstructionType instructionType;
     protected final Instruction parentInstruction;
     protected final Variable variable;
-    protected final LabelFactory labelFactory;
-    protected final VariableFactory variableFactory;
 
     public abstract Label execute(); // Implementation of command execution logic
 
@@ -32,13 +30,13 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         return destinationLabel;
     }
 
-    public abstract ExpandedSyntheticInstructionArguments generateExpandedInstructions();
+    public abstract ExpandedSyntheticInstructionArguments generateExpandedInstructions(LabelFactory labelFactory, VariableFactory variableFactory);
 
     public int getLevel() {
         return level;
     }
 
-    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Variable variable, LabelFactory labelFactory, VariableFactory variableFactory) {
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Variable variable) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
@@ -47,11 +45,9 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.level = 0;
         this.parentInstruction = null;
         this.variable = variable;
-        this.labelFactory = labelFactory;
-        this.variableFactory = variableFactory;
     }
 
-    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Variable variable, Instruction parentInstruction, LabelFactory labelFactory, VariableFactory variableFactory) {
+    public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Variable variable, Instruction parentInstruction) {
         this.number = num;
         this.label = label;
         this.cycles = cycles;
@@ -60,8 +56,6 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.level = 0;
         this.variable = variable;
         this.parentInstruction = parentInstruction;
-        this.labelFactory = labelFactory;
-        this.variableFactory = variableFactory;
     }
 
     public int getNumber() {
