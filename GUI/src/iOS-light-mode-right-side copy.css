@@ -1,0 +1,189 @@
+.root {
+    -fx-background-color: linear-gradient(#fbfcfe 0%, #f7f9fb 100%);
+    -fx-font-family: "SF Pro Text", "SF Pro Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 15px; /* base iOS-like size */
+    -fx-text-fill: #1c1c1e; /* iOS label color */
+}
+
+/* --- Top toolbar / FlowPane --- */
+FlowPane {
+    -fx-background-color: transparent;
+    -fx-padding: 12 16 12 16;
+    -fx-hgap: 12;
+    -fx-vgap: 8;
+}
+
+/* --- Buttons (primary and secondary) --- */
+.button {
+    -fx-background-color: transparent; /* default transparent so specific variants can style */
+    -fx-text-fill: #007aff; /* iOS system blue */
+    -fx-font-weight: 600;
+    -fx-padding: 8 12 8 12;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+/* Primary filled button style (use by default for Run/primary actions) */
+.button:default, .button.default {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #007aff 0%, #006ae6 100%);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow( gaussian , rgba(0,122,255,0.18) , 8, 0.0 , 0 , 2 );
+}
+
+/* Secondary buttons: subtle rounded border */
+.button.secondary {
+    -fx-background-color: rgba(60,60,67,0.06);
+    -fx-border-color: rgba(60,60,67,0.12);
+    -fx-border-width: 1;
+    -fx-text-fill: #007aff;
+    -fx-font-weight: 600;
+}
+
+.button:hover {
+    -fx-opacity: 0.95;
+}
+.button:pressed {
+    -fx-opacity: 0.85;
+}
+
+/* Focus states similar to iOS subtle glow */
+.button:focused {
+    -fx-effect: innershadow(two-pass-box, rgba(0,122,255,0.12), 6, 0.0, 0, 2);
+}
+
+/* Compact small action buttons in bottom overlay */
+.AnchorPane .button, .anchor-pane .button {
+    -fx-pref-height: 30px;
+    -fx-pref-width: 84px;
+    -fx-font-size: 13px;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+/* --- Labels --- */
+.label {
+    -fx-text-fill: #1c1c1e;
+}
+.label.title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+}
+.label.subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #3c3c43;
+}
+
+/* --- TableView: grouped list look --- */
+.table-view {
+    -fx-background-color: transparent; /* let rows and container color show */
+    -fx-padding: 6;
+    -fx-border-color: transparent;
+}
+
+/* Emulate iOS grouped table background */
+.table-view .virtual-flow {
+    -fx-background-color: transparent;
+}
+.table-view .sheet {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow( gaussian , rgba(60,60,67,0.08) , 10, 0.0 , 0 , 2 );
+}
+
+/* Column header: minimal and subtle */
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+.table-view .column-header, .table-view .filler {
+    -fx-size: 32px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: #3c3c43;
+    -fx-font-weight: 600;
+    -fx-padding: 0 12 0 14;
+}
+
+/* Rows: grouped rounded cells with separators */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-padding: 10 12;
+}
+.table-row-cell:odd {
+    -fx-background-color: rgba(0,0,0,0); /* keep uniform white rows inside sheet */
+}
+.table-row-cell:selected {
+    -fx-background-color: rgba(0,122,255,0.12);
+    -fx-text-fill: #0b3a66;
+}
+
+.table-cell {
+    -fx-padding: 8 6 8 6;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Thin separators like iOS grouped list
+   We create a pseudo-separator via border on the bottom of each row cell */
+.table-row-cell {
+    -fx-border-color: transparent transparent rgba(60,60,67,0.06) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Make specific tables look like grouped cards by wrapping the table content in a white rounded sheet
+   This applies when the table is the direct child; in more complex scenes you might wrap it in a container instead */
+.TableView > .sheet > .viewport {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+}
+
+/* Right-to-left table alignment fix */
+.table-view[nodeOrientation="RIGHT_TO_LEFT"] .table-cell {
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* --- StackPane / AnchorPane overlay --- */
+.StackPane, .stack-pane, StackPane {
+    -fx-background-color: transparent;
+}
+.AnchorPane, .anchor-pane, AnchorPane {
+    -fx-background-color: transparent;
+}
+
+/* Ensure overlay buttons sit visually above the table with subtle shadow */
+.AnchorPane .button:default, .anchor-pane .button:default {
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.12) , 6, 0.0 , 0 , 2 );
+}
+
+/* --- Scrollbars --- */
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8;
+}
+.scroll-bar .thumb {
+    -fx-background-color: rgba(60,60,67,0.2);
+    -fx-background-radius: 6;
+}
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+/* --- Accessibility / contrast tweaks --- */
+/* Increase contrast for selected text/icons when focused */
+*:focused {
+    -fx-focus-color: rgba(0,122,255,0.35);
+    -fx-faint-focus-color: rgba(0,122,255,0.08);
+}
+
+/* --- Utility spacing classes --- */
+.hbox, .vbox {
+    -fx-padding: 12;
+    -fx-spacing: 12;
+}
+
+/* Small helper for the large "Cycles" label so it matches iOS scale */
+.label {
+    -fx-font-weight: 600;
+}
+
+/* End of iOS-inspired stylesheet */
