@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@light-mode-right-side.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="600.0" prefWidth="800.0" stylesheets="@light-mode-right-side.css" type="BorderPane" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RightSideController">
 
     <!-- TOP BAR -->
     <top>
@@ -22,13 +22,13 @@
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
          <children>
-            <Button mnemonicParsing="false" text="Run" />
+            <Button fx:id="RunProgramBtn" mnemonicParsing="false" onAction="#RunProgramPressed" text="Run" />
             <HBox alignment="CENTER" prefHeight="50.0" prefWidth="350.0" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" text="Debug" />
-                  <Button mnemonicParsing="false" text="Stop" />
-                  <Button mnemonicParsing="false" text="Resume" />
-                  <Button mnemonicParsing="false" text="Step Over" />
+                  <Button fx:id="StartDebugBtn" mnemonicParsing="false" onAction="#StartDebugPressed" text="Debug" />
+                  <Button fx:id="StopDebugBtn" mnemonicParsing="false" onAction="#StopDebugPressed" text="Stop" />
+                  <Button fx:id="ResumeDebugBtn" mnemonicParsing="false" onAction="#ResumeDebugPressed" text="Resume" />
+                  <Button fx:id="StepOverDebugBtn" mnemonicParsing="false" onAction="#StepOverDebugPressed" text="Step Over" />
                </children>
             </HBox>
          </children>
@@ -41,7 +41,7 @@
             <children>
 
                 <!-- Bottom TableView -->
-                <TableView>
+                <TableView fx:id="StatisticsTable">
                     <columns>
                         <TableColumn prefWidth="100.0" text="Run number" />
                         <TableColumn prefWidth="100.0" text="Expansion Level" />
@@ -56,8 +56,8 @@
                     <children>
                   <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                      <children>
-                              <Button prefHeight="30.0" prefWidth="80.0" text="Show" />
-                        <Button prefHeight="30.0" prefWidth="80.0" text="Rerun" />
+                              <Button fx:id="ShowStatisticsBtn" onAction="#ShowStatisticsPressed" prefHeight="30.0" prefWidth="80.0" text="Show" />
+                        <Button fx:id="RerunBtn" onAction="#RerunPressed" prefHeight="30.0" prefWidth="80.0" text="Rerun" />
                      </children>
                   </HBox>
                     </children>
@@ -71,7 +71,7 @@
          <children>
               <VBox alignment="TOP_CENTER" fillWidth="false" spacing="50.0" HBox.hgrow="SOMETIMES">
                <children>
-                  <TableView prefHeight="200.0" prefWidth="400.0">
+                  <TableView fx:id="VariableTable" prefHeight="200.0" prefWidth="400.0">
                     <columns>
                       <TableColumn prefWidth="150.0" text="Variable Name" />
                       <TableColumn prefWidth="250.0" text="Value" />
@@ -84,12 +84,21 @@
                   </Label>
                </children>
               </VBox>
-                <TableView nodeOrientation="RIGHT_TO_LEFT" prefHeight="300.0" prefWidth="250.0">
-                    <columns>
-                        <TableColumn prefWidth="100.0" text="Value" />
-                        <TableColumn prefWidth="150.0" text="Execution argument" />
-                    </columns>
-                </TableView>
+            <StackPane>
+               <children>
+                      <TableView fx:id="ExecutionArgumentInput" nodeOrientation="RIGHT_TO_LEFT" prefHeight="300.0" prefWidth="250.0">
+                          <columns>
+                              <TableColumn onEditCommit="#ExecutionArgumentUpdated" prefWidth="100.0" text="Value" />
+                              <TableColumn prefWidth="150.0" text="Execution argument" />
+                          </columns>
+                      </TableView>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="AddArgumentBtn" alignment="BOTTOM_RIGHT" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#AddArgumentPressed" prefHeight="0.0" prefWidth="100.0" text="Add Argument" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="220.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="250.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </StackPane>
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -97,4 +106,4 @@
       </HBox>
    </center>
 
-</BorderPane>
+</fx:root>
