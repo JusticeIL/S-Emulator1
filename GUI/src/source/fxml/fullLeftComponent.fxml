@@ -13,8 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 
-
-<BorderPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane stylesheets="@../css/light-mode-right-side.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <SplitPane dividerPositions="0.6681726907630522" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0">
         <items>
@@ -22,12 +21,14 @@
                <children>
                   <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
                      <children>
-                        <TableView maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+                        <TableView fx:id="instructionTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
                           <columns>
-                            <TableColumn prefWidth="-1.0" text="#" />
-                              <TableColumn prefWidth="-1.0" text="Label" />
-                            <TableColumn prefWidth="-1.0" text="Variable" />
+                            <TableColumn maxWidth="1000.0" minWidth="50.0" resizable="false" text="#" />
+                              <TableColumn prefWidth="120.0" resizable="false" text="Instruction Type" />
+                              <TableColumn resizable="false" text="Label" />
+                            <TableColumn resizable="false" text="Variable" />
                               <TableColumn maxWidth="1.7976931348623157E308" prefWidth="-1.0" text="Instruction" />
+                              <TableColumn maxWidth="1.7976931348623157E308" prefWidth="60.0" resizable="false" text="Cycles" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -35,7 +36,7 @@
                         </TableView>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <Label layoutX="286.0" layoutY="229.0" text="Label" />
+                              <Label fx:id="summaryLine" layoutX="286.0" layoutY="229.0" text="Label" />
                            </children>
                         </AnchorPane>
                      </children>
@@ -44,12 +45,14 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <TableView maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+                  <TableView fx:id="chosenInstructionHistoryTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
                     <columns>
-                      <TableColumn prefWidth="-1.0" text="#" />
-                        <TableColumn prefWidth="-1.0" text="Label" />
-                      <TableColumn prefWidth="-1.0" text="Variable" />
+                        <TableColumn maxWidth="1000.0" minWidth="50.0" resizable="false" text="#" />
+                      <TableColumn prefWidth="120.0" resizable="false" text="Instruction Type" />
+                        <TableColumn resizable="false" text="Label" />
+                      <TableColumn resizable="false" text="Variable" />
                         <TableColumn maxWidth="1.7976931348623157E308" prefWidth="-1.0" text="Instruction" />
+                        <TableColumn maxWidth="1.7976931348623157E308" prefWidth="60.0" resizable="false" text="Cycles" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -61,13 +64,13 @@
       </SplitPane>
    </center>
    <top>
-      <HBox spacing="15.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" spacing="15.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Program Something" />
-            <Button mnemonicParsing="false" text="Collapse" />
-            <Label text="Label" />
-            <Button mnemonicParsing="false" text="Level: Curr/Max" />
-            <MenuButton mnemonicParsing="false" text="Select Var/Label">
+            <Button fx:id="programAndFunctionBtn" mnemonicParsing="false" text="Program\Function" />
+            <Button fx:id="collapseBtn" mnemonicParsing="false" onAction="#collapseCurrentProgram" text="-" />
+            <Label fx:id="degreeRepresentationBtn" alignment="CENTER" text="Level: Curr/Max" />
+            <Button fx:id="expandBtn" mnemonicParsing="false" onAction="#expandCurrentProgram" text="+" />
+            <MenuButton fx:id="highlightSelection" mnemonicParsing="false" text="Select Var/Label">
               <items>
                 <MenuItem mnemonicParsing="false" text="Action 1" />
                 <MenuItem mnemonicParsing="false" text="Action 2" />
