@@ -8,6 +8,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 public class RightSideController extends  BorderPane {
 
+    private BorderPane mainController;
+
+    public void setMainController(BorderPane mainController) {
+        this.mainController = mainController;
+    }
+
     @FXML
     private Button AddArgumentBtn;
 
