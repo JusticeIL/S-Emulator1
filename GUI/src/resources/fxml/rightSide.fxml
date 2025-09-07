@@ -51,6 +51,10 @@
                         <TableColumn text="y" />
                         <TableColumn text="Cycles" />
                     </columns>
+
+                    <placeholder>
+                        <Label text="No program loaded." />
+                    </placeholder>
                 </TableView>
 
                 <AnchorPane>
@@ -78,6 +82,10 @@
                                 <TableColumn text="Name" />
                                 <TableColumn text="Value" />
                             </columns>
+
+                            <placeholder>
+                                <Label text="No program loaded." />
+                            </placeholder>
                         </TableView>
                         <Label text="Cycles: ---">
                             <font>
@@ -94,6 +102,10 @@
                                 <TableColumn onEditCommit="#ExecutionArgumentUpdated" text="Value" />
                                 <TableColumn text="Argument" />
                             </columns>
+
+                            <placeholder>
+                                <Label text="No program loaded." />
+                            </placeholder>
                         </TableView>
 
                         <AnchorPane>

@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 
 <TableView maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="250.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
-  <columns>
-    <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="40.0" resizable="false" text="#" />
-    <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Type" />
-      <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Label" />
-    <TableColumn maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Instruction" />
-    <TableColumn maxWidth="100.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Cycles" />
-  </columns>
-   <columnResizePolicy>
-      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-   </columnResizePolicy>
+    <columns>
+        <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="40.0" resizable="false" text="#" />
+        <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Type" />
+        <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Label" />
+        <TableColumn maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Instruction" />
+        <TableColumn maxWidth="100.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Cycles" />
+    </columns>
+
+    <placeholder>
+        <Label text="No program loaded.&#10;Load a program or click on an instruction." textAlignment="CENTER" wrapText="true" />
+    </placeholder>
+
+    <columnResizePolicy>
+        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+    </columnResizePolicy>
 </TableView>
