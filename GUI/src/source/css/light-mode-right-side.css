@@ -19,6 +19,7 @@ FlowPane {
 /* Buttons: subtle, modern, slightly rounded */
 .button {
     -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffffff 0%, #f0f2f5 100%);
+    -fx-font-size: 10px;
     -fx-border-color: #d7dbe0;
     -fx-border-width: 1;
     -fx-border-radius: 6;
@@ -104,11 +105,13 @@ FlowPane {
 /* Label styling (the big "Cycles: ---" label already has a font in FXML) */
 .label {
     -fx-text-fill: #1e2a33;
+    -fx-font-size: 10px;
 }
 
 /* Make the large cycle label more prominent without overriding the explicit FXML font-size */
 .label {
     -fx-font-weight: 600;
+    -fx-font-size: 10px;
 }
 
 /* ScrollPane / ScrollBar subtle theme should match the light mode */
