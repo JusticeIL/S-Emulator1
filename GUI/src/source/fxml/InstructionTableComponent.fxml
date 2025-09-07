@@ -7,8 +7,9 @@
   <columns>
     <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="40.0" resizable="false" text="#" />
     <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Type" />
-    <TableColumn maxWidth="100.0" minWidth="-Infinity" prefWidth="60.0" resizable="false" text="Cycles" />
+      <TableColumn maxWidth="80.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Label" />
     <TableColumn maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Instruction" />
+    <TableColumn maxWidth="100.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Cycles" />
   </columns>
    <columnResizePolicy>
       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
