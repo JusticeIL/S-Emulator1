@@ -6,8 +6,6 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -15,25 +13,12 @@
 
 <fx:root stylesheets="@../css/light-mode-right-side.css" type="BorderPane" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LeftSideController">
    <center>
-      <SplitPane dividerPositions="0.6681726907630522" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0">
+      <SplitPane dividerPositions="0.6681726907630522, 0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
                   <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
                      <children>
-                        <TableView fx:id="instructionTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
-                          <columns>
-                            <TableColumn maxWidth="1000.0" minWidth="50.0" resizable="false" text="#" />
-                              <TableColumn prefWidth="120.0" resizable="false" text="Instruction Type" />
-                              <TableColumn resizable="false" text="Label" />
-                            <TableColumn resizable="false" text="Variable" />
-                              <TableColumn maxWidth="1.7976931348623157E308" prefWidth="-1.0" text="Instruction" />
-                              <TableColumn maxWidth="1.7976931348623157E308" prefWidth="60.0" resizable="false" text="Cycles" />
-                          </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
                               <Label fx:id="summaryLine" layoutX="286.0" layoutY="229.0" text="Label" />
@@ -41,25 +26,11 @@
                         </AnchorPane>
                      </children>
                   </StackPane>
+                  <fx:include fx:id="InstructionTable" source="InstructionTableComponent.fxml" />
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-               <children>
-                  <TableView fx:id="chosenInstructionHistoryTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
-                    <columns>
-                        <TableColumn maxWidth="1000.0" minWidth="50.0" resizable="false" text="#" />
-                      <TableColumn prefWidth="120.0" resizable="false" text="Instruction Type" />
-                        <TableColumn resizable="false" text="Label" />
-                      <TableColumn resizable="false" text="Variable" />
-                        <TableColumn maxWidth="1.7976931348623157E308" prefWidth="-1.0" text="Instruction" />
-                        <TableColumn maxWidth="1.7976931348623157E308" prefWidth="60.0" resizable="false" text="Cycles" />
-                    </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
-               </children>
-            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+            <fx:include fx:id="ChosenInstructionHistoryTable" source="InstructionTableComponent.fxml" />
         </items>
       </SplitPane>
    </center>
