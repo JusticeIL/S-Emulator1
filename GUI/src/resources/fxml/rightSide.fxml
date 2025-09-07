@@ -13,7 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<fx:root prefHeight="500.0" prefWidth="300.0" stylesheets="@../css/light-mode-right-side.css" type="BorderPane" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RightSideController">
+<BorderPane prefHeight="500.0" prefWidth="300.0"
+            stylesheets="@../css/light-mode-right-side.css"
+            xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.RightSideController">
 
     <!-- TOP BAR -->
     <top>
@@ -106,4 +110,4 @@
         </HBox>
     </center>
 
-</fx:root>
+</BorderPane>

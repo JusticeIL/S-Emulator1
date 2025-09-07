@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<fx:root prefHeight="500.0" prefWidth="350.0" stylesheets="@../css/light-mode-right-side.css" type="BorderPane" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LeftSideController">
+<BorderPane prefHeight="500.0" prefWidth="350.0" stylesheets="@../css/light-mode-right-side.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LeftSideController">
 
     <center>
         <SplitPane dividerPositions="0.6" orientation="VERTICAL" prefHeight="450.0" prefWidth="375.0">
@@ -24,7 +24,7 @@
                             <children>
                                 <AnchorPane prefHeight="200.0" prefWidth="300.0" StackPane.alignment="BOTTOM_CENTER">
                                     <children>
-                                    <fx:include fx:id="InstructionTable" source="InstructionTableComponent.fxml" />
+                                        <fx:include fx:id="InstructionTable" source="InstructionTableComponent.fxml" />
                                         <Label fx:id="summaryLine" alignment="BOTTOM_CENTER" contentDisplay="CENTER" layoutX="120.0" layoutY="100.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </children>
                                 </AnchorPane>
@@ -32,11 +32,13 @@
                         </StackPane>
                     </children>
                 </AnchorPane>
-            <AnchorPane minHeight="150.0" prefHeight="200.0" prefWidth="200.0">
-               <children>
-                      <fx:include fx:id="ChosenInstructionHistoryTable" source="InstructionTableComponent.fxml" />
-               </children>
-            </AnchorPane>
+
+                <!-- Bottom half / history include -->
+                <AnchorPane minHeight="150.0" prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <fx:include fx:id="ChosenInstructionHistoryTable" source="InstructionTableComponent.fxml" />
+                    </children>
+                </AnchorPane>
             </items>
         </SplitPane>
     </center>
@@ -44,10 +46,15 @@
     <top>
         <HBox alignment="CENTER" prefHeight="50.0" spacing="5.0" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="programAndFunctionBtn" contentDisplay="CENTER" minWidth="80.0" prefWidth="105.0" text="Program\Function">
+            <MenuButton mnemonicParsing="false" text="Program\Functions">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
                <font>
-                  <Font size="10.0" />
-               </font></Button>
+                  <Font size="12.0" />
+               </font>
+            </MenuButton>
                 <Button fx:id="collapseBtn" onAction="#collapseCurrentProgram" text="-" />
                 <Label fx:id="degreeRepresentationBtn" alignment="CENTER" text="Level: Curr/Max" textAlignment="CENTER" />
                 <Button fx:id="expandBtn" onAction="#expandCurrentProgram" text="+" />
@@ -63,4 +70,4 @@
             </padding>
         </HBox>
     </top>
-</fx:root>
+</BorderPane>

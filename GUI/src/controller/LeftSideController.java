@@ -35,9 +35,6 @@ public class LeftSideController extends BorderPane {
     private TableView<?> instructionTable;
 
     @FXML
-    private Button programAndFunctionBtn;
-
-    @FXML
     private Label summaryLine;
 
     @FXML
