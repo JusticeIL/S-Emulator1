@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 public class SemblerGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("source/fxml/test.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("resources/fxml/test.fxml"));
         try {
             primaryStage.setTitle("S-embler");
             primaryStage.setScene(new javafx.scene.Scene(fxmlLoader.load(), 800, 600));
