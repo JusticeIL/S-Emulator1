@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SingleProgramController implements Controller, Serializable {
+public class SingleProgramController implements Model, Serializable {
 
     private Program activeProgram;
     private final Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();

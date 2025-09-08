@@ -1,6 +1,6 @@
 package console.ui;
 
-import controller.Controller;
+import controller.Model;
 import controller.SingleProgramController;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ConsoleUI {
 
-    private Controller engine = new SingleProgramController();
+    private Model engine = new SingleProgramController();
     private final Scanner scanner = new Scanner(System.in);
     private final String serializationFileType = ".ser";
     private final long WAIT = 1;
@@ -295,7 +295,7 @@ public class ConsoleUI {
         try (ObjectInputStream in =
                 new ObjectInputStream(
                         new FileInputStream(filePath))) {
-            engine = (Controller) in.readObject();
+            engine = (Model) in.readObject();
             System.out.println("State loaded successfully!");
         } catch (FileNotFoundException e) {
             System.out.println("Could not find the serialization file.");

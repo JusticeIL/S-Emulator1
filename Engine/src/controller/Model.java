@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface Controller {
+public interface Model {
     void loadProgram(String path) throws JAXBException, FileNotFoundException;
     boolean isProgramLoaded();
     Optional<ProgramData> getProgramData();

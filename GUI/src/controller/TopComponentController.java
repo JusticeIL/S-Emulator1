@@ -10,13 +10,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.concurrent.Task;
-import javafx.application.Platform;
 
 import java.io.File;
 import jakarta.xml.bind.JAXBException;
@@ -29,7 +27,7 @@ public class TopComponentController{
     private Stage primaryStage;
     private RightSideController rightController;
     private LeftSideController leftController;
-    private Controller controller = new SingleProgramController();
+    private Model model;
     private StringProperty absolutePathProperty;
 
     private Stage createLoadingDialog(Stage owner, Task<?> task) {
@@ -69,10 +67,6 @@ public class TopComponentController{
         this.primaryStage = primaryStage;
     }
 
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }
-
     @FXML
     private TextField currentLoadedProgramPath;
 
@@ -101,7 +95,7 @@ public class TopComponentController{
             protected Boolean call() {
                 updateProgress(0, 1);
                 try {
-                    controller.loadProgram(absolutePath);
+                    model.loadProgram(absolutePath);
                     // Simulate progress for UI feedback
                     for (int i = 1; i <= 40; i++) {
                         Thread.sleep(50);
@@ -109,7 +103,7 @@ public class TopComponentController{
                     }
 
                     updateMessage("Done.");
-                    return controller.isProgramLoaded();
+                    return model.isProgramLoaded();
                 } catch (JAXBException | FileNotFoundException | InterruptedException e) {
                     e.printStackTrace();
                     updateMessage("Error: " + e.getMessage());
