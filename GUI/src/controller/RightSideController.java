@@ -2,16 +2,21 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-public class RightSideController extends BorderPane {
 
-    private BorderPane mainController;
+public class RightSideController{
 
-    public void setMainController(BorderPane mainController) {
-        this.mainController = mainController;
+
+    private TopComponentController topController;
+    private LeftSideController leftController;
+
+    public void setTopController(TopComponentController topController) {
+        this.topController = topController;
+    }
+
+    public void setLeftController(LeftSideController leftController) {
+        this.leftController = leftController;
     }
 
     @FXML
