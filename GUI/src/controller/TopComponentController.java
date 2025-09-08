@@ -10,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -25,10 +24,11 @@ import javafx.stage.StageStyle;
 
 import java.io.FileNotFoundException;
 
-public class TopComponentController extends HBox {
+public class TopComponentController{
 
-    private BorderPane mainController;
     private Stage primaryStage;
+    private RightSideController rightController;
+    private LeftSideController leftController;
     private Controller controller = new SingleProgramController();
     private StringProperty absolutePathProperty;
 
@@ -53,8 +53,16 @@ public class TopComponentController extends HBox {
         return dlg;
     }
 
-    public void setMainController(BorderPane mainController) {
-        this.mainController = mainController;
+    public void setModel(SingleProgramController model) {
+        this.model = model;
+    }
+
+    public void setRightController(RightSideController rightController) {
+        this.rightController = rightController;
+    }
+
+    public void setLeftController(LeftSideController leftController) {
+        this.leftController = leftController;
     }
 
     public void setPrimaryStage(Stage primaryStage) {

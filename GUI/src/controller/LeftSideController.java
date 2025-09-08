@@ -8,12 +8,22 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 
-public class LeftSideController extends BorderPane {
+public class LeftSideController {
 
-    private BorderPane mainController;
+    private RightSideController rightController;
+    private TopComponentController topController;
+    private SingleProgramController model;
 
-    public void setMainController(BorderPane mainController) {
-        this.mainController = mainController;
+    public void setModel(SingleProgramController model) {
+        this.model = model;
+    }
+
+    public void setRightController(RightSideController rightController) {
+        this.rightController = rightController;
+    }
+
+    public void setTopController(TopComponentController topController) {
+        this.topController = topController;
     }
 
     @FXML

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
    <center>
       <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
@@ -16,7 +16,7 @@
                      <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                            <center>
-                              <fx:include source="leftSide.fxml" />
+                              <fx:include fx:id="leftSide" source="leftSide.fxml" />
                            </center></BorderPane>
                      </content>
                      <padding>
@@ -34,7 +34,7 @@
                      <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                            <center>
-                              <fx:include source="rightSide.fxml" />
+                              <fx:include fx:id="rightSide" source="rightSide.fxml" />
                            </center>
                         </BorderPane>
                      </content>
@@ -45,6 +45,6 @@
       </SplitPane>
    </center>
    <top>
-      <fx:include source="topComponent.fxml" BorderPane.alignment="CENTER_LEFT" />
+      <fx:include fx:id="topComponent" source="topComponent.fxml" BorderPane.alignment="CENTER_LEFT" />
    </top>
 </BorderPane>
