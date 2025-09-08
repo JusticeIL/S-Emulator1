@@ -12,6 +12,11 @@ public class LeftSideController {
 
     private RightSideController rightController;
     private TopComponentController topController;
+    private SingleProgramController model;
+
+    public void setModel(SingleProgramController model) {
+        this.model = model;
+    }
 
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;

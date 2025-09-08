@@ -15,6 +15,11 @@ public class TopComponentController{
     private Stage primaryStage;
     private RightSideController rightController;
     private LeftSideController leftController;
+    private SingleProgramController model;
+
+    public void setModel(SingleProgramController model) {
+        this.model = model;
+    }
 
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;

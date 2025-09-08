@@ -12,31 +12,18 @@ public class PrimaryController
     @FXML private RightSideController rightSideController;
     @FXML private TopComponentController topComponentController;
 
-    SingleProgramController model;
-    ProgramData lastLoadedProgramData;
 
-    public SingleProgramController getModel() {
-        return model;
-    }
-
-    public void setModel(SingleProgramController model) {
-        this.model = model;
-    }
-
-    public ProgramData getLastLoadedProgramData() {
-        return lastLoadedProgramData;
-    }
-
-    public void setLastLoadedProgramData(ProgramData lastLoadedProgramData) {
-        this.lastLoadedProgramData = lastLoadedProgramData;
-    }
 
     @FXML void initialize() {
+        SingleProgramController singleProgramController = new SingleProgramController();
         leftSideController.setRightController(rightSideController);
         leftSideController.setTopController(topComponentController);
         rightSideController.setLeftController(leftSideController);
         rightSideController.setTopController(topComponentController);
         topComponentController.setLeftController(leftSideController);
         topComponentController.setRightController(rightSideController);
+        leftSideController.setModel(singleProgramController);
+        rightSideController.setModel(singleProgramController);
+        topComponentController.setModel(singleProgramController);
     }
 }
