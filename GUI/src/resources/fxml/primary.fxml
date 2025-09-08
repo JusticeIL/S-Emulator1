@@ -16,7 +16,7 @@
                      <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                            <center>
-                              <fx:include source="leftSide.fxml" />
+                              <fx:include fx:id="leftSide" source="leftSide.fxml" />
                            </center></BorderPane>
                      </content>
                      <padding>
@@ -34,7 +34,7 @@
                      <content>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                            <center>
-                              <fx:include source="rightSide.fxml" />
+                              <fx:include fx:id="rightSide" source="rightSide.fxml" />
                            </center>
                         </BorderPane>
                      </content>
@@ -45,6 +45,6 @@
       </SplitPane>
    </center>
    <top>
-      <fx:include source="topComponent.fxml" BorderPane.alignment="CENTER_LEFT" />
+      <fx:include fx:id="topComponent" source="topComponent.fxml" BorderPane.alignment="CENTER_LEFT" />
    </top>
 </BorderPane>
