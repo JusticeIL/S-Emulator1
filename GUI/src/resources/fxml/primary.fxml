@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0"
-            xmlns="http://javafx.com/javafx/24.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.PrimaryController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
 
     <center>
         <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
@@ -15,11 +13,7 @@
                 <AnchorPane>
                     <children>
                         <!-- include left side; fx:id must match PrimaryController field name -->
-                        <fx:include fx:id="leftSideController" source="leftSide.fxml"
-                                    AnchorPane.topAnchor="0.0"
-                                    AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0"/>
+                        <fx:include fx:id="leftSide" source="leftSide.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
 
@@ -27,11 +21,7 @@
                 <AnchorPane>
                     <children>
                         <!-- include right side; fx:id must match PrimaryController field name -->
-                        <fx:include fx:id="rightSideController" source="rightSide.fxml"
-                                    AnchorPane.topAnchor="0.0"
-                                    AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0"/>
+                        <fx:include fx:id="rightSide" source="rightSide.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
             </items>
@@ -40,6 +30,6 @@
 
     <top>
         <!-- top bar included; fx:id optional but useful if you want the controller -->
-        <fx:include fx:id="topComponentController" source="topComponent.fxml" />
+        <fx:include fx:id="topComponent" source="topComponent.fxml" />
     </top>
 </BorderPane>
