@@ -1,50 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
-   <center>
-      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="90.0">
-               <children>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="28.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <content>
-                        <BorderPane prefHeight="200.0" prefWidth="200.0">
-                           <center>
-                              <fx:include fx:id="leftSide" source="leftSide.fxml" />
-                           </center></BorderPane>
-                     </content>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </ScrollPane>
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0">
-               <children>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="-1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                     <content>
-                        <BorderPane prefHeight="200.0" prefWidth="200.0">
-                           <center>
-                              <fx:include fx:id="rightSide" source="rightSide.fxml" />
-                           </center>
-                        </BorderPane>
-                     </content>
-                  </ScrollPane>
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </center>
-   <top>
-      <fx:include fx:id="topComponent" source="topComponent.fxml" BorderPane.alignment="CENTER_LEFT" />
-   </top>
+<BorderPane prefHeight="600.0" prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.PrimaryController">
+
+    <center>
+        <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
+            <items>
+                <!-- LEFT slot -->
+                <AnchorPane>
+                    <children>
+                        <!-- include left side; fx:id must match PrimaryController field name -->
+                        <fx:include fx:id="leftSideController" source="leftSide.fxml"
+                                    AnchorPane.topAnchor="0.0"
+                                    AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0"/>
+                    </children>
+                </AnchorPane>
+
+                <!-- RIGHT slot -->
+                <AnchorPane>
+                    <children>
+                        <!-- include right side; fx:id must match PrimaryController field name -->
+                        <fx:include fx:id="rightSideController" source="rightSide.fxml"
+                                    AnchorPane.topAnchor="0.0"
+                                    AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0"/>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </center>
+
+    <top>
+        <!-- top bar included; fx:id optional but useful if you want the controller -->
+        <fx:include fx:id="topComponentController" source="topComponent.fxml" />
+    </top>
 </BorderPane>

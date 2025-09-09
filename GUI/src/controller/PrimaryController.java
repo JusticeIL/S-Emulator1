@@ -5,14 +5,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
 import program.data.ProgramData;
 
-public class PrimaryController
-{
+public class PrimaryController {
 
-    @FXML private LeftSideController leftSideController;
-    @FXML private RightSideController rightSideController;
-    @FXML private TopComponentController topComponentController;
+    @FXML
+    private LeftSideController leftSideController;
 
+    @FXML
+    private RightSideController rightSideController;
 
+    @FXML
+    private TopComponentController topComponentController;
 
     @FXML void initialize() {
         SingleProgramController singleProgramController = new SingleProgramController();

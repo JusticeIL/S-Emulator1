@@ -30,6 +30,18 @@ public class TopComponentController{
     private Model model;
     private StringProperty absolutePathProperty;
 
+    @FXML
+    private Label currentLoadedProgramPath;
+
+    @FXML
+    private Button loadFileBtn;
+
+    @FXML
+    private void initialize() {
+        absolutePathProperty = new SimpleStringProperty("---");
+        currentLoadedProgramPath.textProperty().bind(absolutePathProperty);
+    }
+
     private Stage createLoadingDialog(Stage owner, Task<?> task) {
         Label msg = new Label();
         msg.textProperty().bind(task.messageProperty());
@@ -42,13 +54,13 @@ public class TopComponentController{
         root.setPadding(new Insets(14));
         root.setFillWidth(true);
 
-        Stage dlg = new Stage(StageStyle.UTILITY);
-        dlg.initOwner(owner);
-        dlg.initModality(Modality.APPLICATION_MODAL);
-        dlg.setResizable(false);
-        dlg.setTitle("Loading");
-        dlg.setScene(new Scene(root));
-        return dlg;
+        Stage dialog = new Stage(StageStyle.UTILITY);
+        dialog.initOwner(owner);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.setResizable(false);
+        dialog.setTitle("Loading");
+        dialog.setScene(new Scene(root));
+        return dialog;
     }
 
     public void setModel(SingleProgramController model) {
@@ -65,18 +77,6 @@ public class TopComponentController{
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-    }
-
-    @FXML
-    private TextField currentLoadedProgramPath;
-
-    @FXML
-    private Button loadFileBtn;
-
-    @FXML
-    private void initialize() {
-        absolutePathProperty = new SimpleStringProperty("---");
-        currentLoadedProgramPath.textProperty().bind(absolutePathProperty);
     }
 
     @FXML
@@ -112,20 +112,20 @@ public class TopComponentController{
             }
         };
         // Show modal loading dialog
-        Stage dlg = createLoadingDialog(primaryStage, loadTask);
+        Stage dialog = createLoadingDialog(primaryStage, loadTask);
         loadTask.setOnSucceeded(e -> {
-            dlg.close();
+            dialog.close();
             if (Boolean.TRUE.equals(loadTask.getValue())) {
                 absolutePathProperty.set(absolutePath);
             }
         });
-        loadTask.setOnFailed(e -> dlg.close());
-        loadTask.setOnCancelled(e -> dlg.close());
+        loadTask.setOnFailed(e -> dialog.close());
+        loadTask.setOnCancelled(e -> dialog.close());
 
         Thread thread = new Thread(loadTask);
         thread.setDaemon(true);
         thread.start();
 
-        dlg.showAndWait();
+        dialog.showAndWait();
     }
 }

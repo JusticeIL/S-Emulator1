@@ -8,7 +8,6 @@ public class SemblerGUI extends Application {
     public void start(Stage primaryStage) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("resources/fxml/primary.fxml"));
         try {
-
             primaryStage.setTitle("S-embler");
             primaryStage.setScene(new javafx.scene.Scene(fxmlLoader.load(), 800, 600));
             primaryStage.show();

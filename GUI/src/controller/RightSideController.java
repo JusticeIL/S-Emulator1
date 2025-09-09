@@ -2,11 +2,11 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 
 public class RightSideController{
-
 
     private TopComponentController topController;
     private LeftSideController leftController;
@@ -16,7 +16,6 @@ public class RightSideController{
         this.model = model;
     }
 
-
     public void setTopController(TopComponentController topController) {
         this.topController = topController;
     }
@@ -24,9 +23,6 @@ public class RightSideController{
     public void setLeftController(LeftSideController leftController) {
         this.leftController = leftController;
     }
-
-    @FXML
-    private Button AddArgumentBtn;
 
     @FXML
     private TableView<?> ExecutionArgumentInput;
@@ -59,9 +55,7 @@ public class RightSideController{
     private TableView<?> VariableTable;
 
     @FXML
-    void AddArgumentPressed(ActionEvent event) {
-
-    }
+    private Label cyclesLabel;
 
     @FXML
     void ExecutionArgumentUpdated(ActionEvent event) {
