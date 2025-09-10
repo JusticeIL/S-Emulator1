@@ -3,3 +3,4 @@ O.O.B:
 1. Sort the fxmls with conrtollers and css files accordingly.
 2. Add a popup on show history that shows all variables and their values.
 3. Implement executioner class *star* *star*
+4. Add scroll panes

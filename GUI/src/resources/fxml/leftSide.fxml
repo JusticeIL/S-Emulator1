@@ -14,7 +14,7 @@
 <BorderPane stylesheets="@../css/light-mode-right-side.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LeftSideController">
 
     <center>
-        <SplitPane dividerPositions="0.6" orientation="VERTICAL">
+        <SplitPane dividerPositions="0.7" orientation="VERTICAL">
             <items>
                 <!-- top area -->
                 <AnchorPane>
