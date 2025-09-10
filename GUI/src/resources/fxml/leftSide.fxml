@@ -59,7 +59,7 @@
               </items>
             </MenuButton>
                 <Button fx:id="collapseBtn" onAction="#collapseCurrentProgram" text="-" />
-                <Label fx:id="degreeRepresentationBtn" text="Level: Curr/Max" />
+                <Label fx:id="degreeRepresentationLabel" text="Level: Curr/Max" />
                 <Button fx:id="expandBtn" onAction="#expandCurrentProgram" text="+" />
                 <MenuButton fx:id="highlightSelection" text="Select Var/Label">
                     <items>

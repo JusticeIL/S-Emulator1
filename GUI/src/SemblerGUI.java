@@ -1,4 +1,3 @@
-import controller.PrimaryController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -17,7 +16,7 @@ public class SemblerGUI extends Application {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init() throws Exception { // TODO: implement?
         ;
     }
 

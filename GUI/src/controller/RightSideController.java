@@ -1,16 +1,22 @@
 package controller;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
+
+import java.util.List;
 
 public class RightSideController{
 
     private TopComponentController topController;
     private LeftSideController leftController;
     private SingleProgramController model;
+
 
     public void setModel(SingleProgramController model) {
         this.model = model;
@@ -26,6 +32,12 @@ public class RightSideController{
 
     @FXML
     private TableView<?> ExecutionArgumentInput;
+
+    @FXML
+    private TableColumn<String, String> valueColumn;
+
+    @FXML
+    private TableColumn<String, String> argumentColumn;
 
     @FXML
     private Button RerunBtn;
@@ -57,9 +69,18 @@ public class RightSideController{
     @FXML
     private Label cyclesLabel;
 
-    @FXML
-    void ExecutionArgumentUpdated(ActionEvent event) {
+    public void loadArguments(List<String> xArgumentsList) { // TODO: implement
+        ;
+    }
 
+    @FXML
+    public void initialize() { // TODO: initialize table columns and avoid NPE
+        ;
+    }
+
+    @FXML
+    void ExecutionArgumentUpdated(ActionEvent event) { // TODO: implement
+        ;
     }
 
     @FXML

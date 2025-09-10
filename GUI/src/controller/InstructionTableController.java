@@ -6,7 +6,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class InstructionTableController {
 
-    @FXML void initialize() {
+    @FXML void initialize() { // TODO: add access modifier
         LabelColumn.setCellValueFactory(new PropertyValueFactory<>("label"));
         TypeCollumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         cyclesCollumn.setCellValueFactory(new PropertyValueFactory<>("cycles"));

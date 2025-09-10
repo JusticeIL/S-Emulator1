@@ -1,3 +1,5 @@
 O.O.B:
 
-    export the whole project to jars
+1. Sort the fxmls with conrtollers and css files accordingly.
+2. Add a popup on show history that shows all variables and their values.
+3. Implement executioner class *star* *star*

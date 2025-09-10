@@ -1,15 +1,15 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -113,13 +113,43 @@ public class TopComponentController{
         };
         // Show modal loading dialog
         Stage dialog = createLoadingDialog(primaryStage, loadTask);
-        loadTask.setOnSucceeded(e -> {
+        loadTask.setOnSucceeded(successEvent -> {
             dialog.close();
             if (Boolean.TRUE.equals(loadTask.getValue())) {
-                absolutePathProperty.set(absolutePath);
+                Platform.runLater(() -> {
+                    absolutePathProperty.set(absolutePath);
+                    // Update main table after loading succeeded
+                    if (leftController != null) {
+                        leftController.updateMainInstructionTable();
+                        leftController.setCurrentLevel(0);
+                        leftController.updateExpansionLevels();
+
+                    }
+                });
             }
         });
-        loadTask.setOnFailed(e -> dialog.close());
+        loadTask.setOnFailed(failEvent -> {
+            try { dialog.close(); } catch (Exception ignored) {}
+
+            // Extract meaningful message from the thrown exception
+            Throwable exception = loadTask.getException();
+            String message = (exception == null) ? "Unknown error" : (exception.getMessage() != null ? exception.getMessage() : exception.toString());
+
+            // Show the error dialog on the FX thread
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.initOwner(primaryStage);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setTitle("Error");
+                alert.setHeaderText("Program Load Failed");
+                alert.setContentText(message);
+
+                // Ensure the dialog is focused
+                alert.setOnShown(dialogEvent -> alert.getDialogPane().requestFocus());
+
+                alert.showAndWait();
+            });
+        });
         loadTask.setOnCancelled(e -> dialog.close());
 
         Thread thread = new Thread(loadTask);
@@ -127,6 +157,5 @@ public class TopComponentController{
         thread.start();
 
         dialog.showAndWait();
-        leftController.updateMainInstructionTable();
     }
 }
