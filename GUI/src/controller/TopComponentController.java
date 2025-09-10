@@ -125,6 +125,9 @@ public class TopComponentController{
                         leftController.updateExpansionLevels();
 
                     }
+                    if (rightController != null) {
+                        rightController.updateArgumentTable();
+                    }
                 });
             }
         });

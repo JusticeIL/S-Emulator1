@@ -91,10 +91,10 @@
                         <Label fx:id="cyclesLabel" text="Cycles: ---" />
                     </children>
                 </VBox>
-                  <TableView fx:id="ExecutionArgumentInput" editable="true" nodeOrientation="LEFT_TO_RIGHT">
+                  <TableView fx:id="ExecutionArgumentInput" nodeOrientation="LEFT_TO_RIGHT">
                       <columns>
-                          <TableColumn maxWidth="1.7976931348623157E308" minWidth="100.0" onEditCommit="#ExecutionArgumentUpdated" prefWidth="-1.0" text="Value" />
-                          <TableColumn maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Argument" />
+                          <TableColumn fx:id="argumentNamesColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" sortable="false" text="Argument Name" />
+                          <TableColumn fx:id="argumentValuesColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" onEditCommit="#ExecutionArgumentUpdated" prefWidth="-1.0" sortable="false" text="Value" />
                       </columns>
                       <placeholder>
                           <Label text="No program loaded." />
