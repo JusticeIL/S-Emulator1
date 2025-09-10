@@ -20,6 +20,14 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     protected final Instruction parentInstruction;
     protected final Variable variable;
 
+    public InstructionType getInstructionType() {
+        return instructionType;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
     public abstract Label execute(); // Implementation of command execution logic
 
     public Label getLabel() {

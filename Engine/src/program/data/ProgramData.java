@@ -71,9 +71,14 @@ public final class ProgramData implements Serializable {
         return programVariablesCurrentState.stream().map(VariableDTO::getStringRepresentationForConsole).collect(Collectors.toList());
     }
 
-    public List<String> getProgramInstructions() {
+    public List<String> getProgramInstructionsForConsole() {
         return programInstructions.stream().map(InstructionDTO::getFullExpandedStringRepresentation).toList();
     }
+
+    public List<InstructionDTO> getProgramInstructions() {
+        return programInstructions;
+    }
+
 
     public int getMaxExpandLevel() {
         return maxExpandLevel;

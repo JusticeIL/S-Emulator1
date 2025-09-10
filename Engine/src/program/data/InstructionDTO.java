@@ -3,34 +3,40 @@ package program.data;
 import instruction.Instruction;
 
 public class InstructionDTO {
-    private final int number;
-    private final String command;
+    private final int id;
+    private final String instruction;
     private final int cycles;
     private final VariableDTO variable;
     private final String label;
     private final String destinationLabel;
     private final String fullExpandedStringRepresentation;
+    private final String type;
 
     public String getFullExpandedStringRepresentation() {
         return fullExpandedStringRepresentation;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public InstructionDTO(Instruction instruction) {
-        this.number = instruction.getNumber();
-        this.command = instruction.toString();
+        this.id = instruction.getNumber();
+        this.instruction = instruction.getCommand();
         this.cycles = instruction.getCycles();
         this.label = instruction.getLabel().getLabelName();
         this.destinationLabel = instruction.getDestinationLabel().getLabelName();
         this.variable = new VariableDTO(instruction.getVariable());
         this.fullExpandedStringRepresentation = instruction.toString();
+        this.type = instruction.getInstructionType().toString();
     }
 
-    public int getNumber() {
-        return number;
+    public int getId() {
+        return id;
     }
 
-    public String getCommand() {
-        return command;
+    public String getInstruction() {
+        return instruction;
     }
 
     public int getCycles() {

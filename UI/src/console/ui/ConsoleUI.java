@@ -115,7 +115,7 @@ public class ConsoleUI {
                         return a.compareTo(b);
                     }).toList());
             System.out.println("Instructions: ");
-            programData.getProgramInstructions().forEach(System.out::println);
+            programData.getProgramInstructionsForConsole().forEach(System.out::println);
         }, () -> {
             System.out.println("No program loaded.");
             System.out.println("Load program first!");
@@ -149,7 +149,7 @@ public class ConsoleUI {
                     continue;
                 }
                 engine.Expand(level);
-                 engine.getProgramData().get().getProgramInstructions().forEach(System.out::println);
+                 engine.getProgramData().get().getProgramInstructionsForConsole().forEach(System.out::println);
 
             } catch (NumberFormatException e) { // Case: user input was not a number
                 System.out.println("Invalid input. Please enter a positive number.");

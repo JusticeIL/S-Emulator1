@@ -127,5 +127,6 @@ public class TopComponentController{
         thread.start();
 
         dialog.showAndWait();
+        leftController.updateMainInstructionTable();
     }
 }
