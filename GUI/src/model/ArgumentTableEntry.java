@@ -15,6 +15,11 @@ public class ArgumentTableEntry {
         this.value = new SimpleIntegerProperty(0);
     }
 
+    public ArgumentTableEntry(VariableDTO variable) {
+        this.name = new SimpleStringProperty(variable.getName());
+        this.value = new SimpleIntegerProperty(variable.getValue());
+    }
+
     // getters and setters (needed by PropertyValueFactory)
     public String getName() { return name.get(); }
     public void setName(String n) { name.set(n); }

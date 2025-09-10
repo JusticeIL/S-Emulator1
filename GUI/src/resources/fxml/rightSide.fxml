@@ -77,8 +77,8 @@
                     <children>
                         <TableView fx:id="VariableTable" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn maxWidth="1.7976931348623157E308" minWidth="80.0" prefWidth="-1.0" text="Name" />
-                                <TableColumn maxWidth="1.7976931348623157E308" minWidth="80.0" prefWidth="-1.0" text="Value" />
+                                <TableColumn fx:id="resultVariableNameCollumn" maxWidth="1.7976931348623157E308" minWidth="80.0" prefWidth="-1.0" text="Name" />
+                                <TableColumn fx:id="resultVariableValueCollumn" maxWidth="1.7976931348623157E308" minWidth="80.0" prefWidth="-1.0" text="Value" />
                             </columns>
                             <placeholder>
                                 <Label text="No program loaded." />

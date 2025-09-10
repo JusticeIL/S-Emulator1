@@ -70,7 +70,7 @@ public class RightSideController{
     private Button StopDebugBtn;
 
     @FXML
-    private TableView<?> VariableTable;
+    private TableView<ArgumentTableEntry> VariableTable;
 
     @FXML
     private Label cyclesLabel;
@@ -83,6 +83,8 @@ public class RightSideController{
     public void initialize() { // TODO: initialize table columns and avoid NPE
         argumentNamesColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         argumentValuesColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
+        resultVariableNameCollumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        resultVariableValueCollumn.setCellValueFactory(new PropertyValueFactory<>("value"));
 
         argumentValuesColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         argumentValuesColumn.setCellFactory(TextFieldTableCell.forTableColumn(new javafx.util.converter.NumberStringConverter()));
@@ -109,6 +111,16 @@ public class RightSideController{
         ;
     }
 
+    public void updateResultVariableTable() {
+        model.getProgramData().ifPresent(programData -> {
+            List<ArgumentTableEntry> entries = programData.getProgramVariablesCurrentState().stream()
+                    .map(ArgumentTableEntry::new) // Convert VariableDTO -> ArgumentTableEntry
+                    .toList();
+            VariableTable.getItems().setAll(entries);// Replace items in the table
+        })
+        ;
+    }
+
     @FXML
     void ExecutionArgumentUpdated(ActionEvent event) { // TODO: implement
 
@@ -128,6 +140,13 @@ public class RightSideController{
     void RunProgramPressed(ActionEvent event) {
 
     }
+
+    @FXML
+    private TableColumn<ArgumentTableEntry, String> resultVariableNameCollumn;
+
+    @FXML
+    private TableColumn<ArgumentTableEntry,Number> resultVariableValueCollumn;
+
 
     @FXML
     void ShowStatisticsPressed(ActionEvent event) {
