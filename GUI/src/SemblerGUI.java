@@ -15,11 +15,6 @@ public class SemblerGUI extends Application {
         }
     }
 
-    @Override
-    public void init() throws Exception { // TODO: implement?
-        ;
-    }
-
     public static void main(String[] args) {
         launch();
     }

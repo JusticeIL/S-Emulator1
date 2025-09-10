@@ -5,3 +5,4 @@ O.O.B:
 3. Implement executioner class *star* *star*
 4. Add scroll panes
 5. Change the collapse and expand mechanism to a textual one
+6. Switch the plus and minus to a menu button
