@@ -22,9 +22,9 @@
                         <!-- include the instruction table; anchors make it stretch to the anchorpane -->
                         <fx:include fx:id="instructionsTable" source="InstructionTableComponent.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         <!-- summary label overlayed (keeps natural layout) -->
-                        <StackPane alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <StackPane alignment="BOTTOM_CENTER" mouseTransparent="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <Label fx:id="summaryLine" text="Summary Line">
+                                <Label fx:id="summaryLine" mouseTransparent="true" text="Summary Line">
                            <StackPane.margin>
                               <Insets />
                            </StackPane.margin>
@@ -37,7 +37,7 @@
                 </AnchorPane>
 
                 <!-- bottom area: history include -->
-                <AnchorPane>
+                <AnchorPane mouseTransparent="true">
                     <children>
                         <fx:include fx:id="ChosenInstructionHistoryTable" source="InstructionTableComponent.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
