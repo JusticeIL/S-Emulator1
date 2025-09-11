@@ -141,7 +141,9 @@ public class RightSideController{
         RerunBtn.disableProperty().bind(
                 Bindings.isEmpty(StatisticsTable.getItems())
         );
-
+        ShowStatisticsBtn.disableProperty().bind(
+                Bindings.isEmpty(StatisticsTable.getItems())
+        );
     }
 
     public void updateArgumentTable() {
@@ -214,6 +216,9 @@ public class RightSideController{
             }
         }
         executionArgumentInput.getItems().setAll(argsList);
+        model.Expand(StatisticsTable.getSelectionModel().getSelectedItem().getLevel());
+        leftController.updateMainInstructionTable();
+        leftController.setCurrentLevel(StatisticsTable.getSelectionModel().getSelectedItem().getLevel());
     }
 
     @FXML
