@@ -18,15 +18,15 @@ public class InstructionTableController {
     private TableColumn<?, ?> LabelColumn;
 
     @FXML
-    private TableColumn<?, ?> TypeCollumn;
+    private TableColumn<?, ?> TypeCollumn; // TODO: typo
 
     @FXML
-    private TableColumn<?, ?> cyclesCollumn;
+    private TableColumn<?, ?> cyclesCollumn; // TODO: typo
 
     @FXML
-    private TableColumn<?, ?> idCollumn;
+    private TableColumn<?, ?> idCollumn; // TODO: typo
 
     @FXML
-    private TableColumn<?, ?> instructionCollumn;
+    private TableColumn<?, ?> instructionCollumn; // TODO: typo
 
 }

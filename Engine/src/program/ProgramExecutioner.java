@@ -6,6 +6,7 @@ import instruction.component.Variable;
 import program.data.VariableDTO;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,10 +27,22 @@ public class ProgramExecutioner {
         }
         setUpNewRun(args);
 
+        Map<String,Integer> xInitializedVariables = program.getVariables().stream()
+                .filter(var -> var.getName().startsWith("x"))
+                .collect(Collectors.toMap(Variable::getName, Variable::getValue));
+        int currentRunLevel = program.getCurrentProgramLevel();
 
         while (currentCommandIndex < program.getInstructionList().size()) {
             executeSingleInstruction();
         }
+
+        int yOutputValue = program.getVariables().stream()
+                .filter(v -> "y".equals(v.getName()))
+                .findFirst()
+                .map(Variable::getValue)
+                .orElse(0);
+
+        program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, yOutputValue, cycleCounter);
     }
 
     private void setUpNewRun(Set<VariableDTO> args){
@@ -76,8 +89,6 @@ public class ProgramExecutioner {
             currentInstruction = program.getInstructionList().get(currentCommandIndex);
         }
     }
-
-
 
     public void stepOver() {
         executeSingleInstruction();

@@ -229,4 +229,8 @@ public class Program implements Serializable {
     public Statistics getStatistics() {
         return statistics;
     }
+
+    public int getCurrentProgramLevel() {
+        return currentProgramLevel;
+    }
 }
