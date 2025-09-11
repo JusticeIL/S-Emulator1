@@ -138,7 +138,19 @@ public class RightSideController{
 
     @FXML
     void RunProgramPressed(ActionEvent event) {
+        List<Integer> argumentValues = ExecutionArgumentInput.getItems().stream()
+                .map(ArgumentTableEntry::getValue)
+                .toList();
 
+        // Convert List<Integer> -> int[]
+        int[] args = argumentValues.stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
+
+        // Pass them to runProgram
+        model.runProgram(args);
+
+        updateResultVariableTable();
     }
 
     @FXML

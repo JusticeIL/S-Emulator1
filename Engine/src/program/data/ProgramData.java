@@ -67,8 +67,8 @@ public final class ProgramData implements Serializable {
         return programLabels;
     }
 
-    public List<String> getProgramVariablesCurrentState() {
-        return programVariablesCurrentState.stream().map(VariableDTO::getStringRepresentationForConsole).collect(Collectors.toList());
+    public List<VariableDTO> getProgramVariablesCurrentState() {
+        return programVariablesCurrentState;
     }
 
     public List<String> getProgramInstructionsForConsole() {
