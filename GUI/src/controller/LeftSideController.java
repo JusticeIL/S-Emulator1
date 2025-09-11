@@ -5,10 +5,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import model.InstructionTableEntry;
 
 import java.util.List;
@@ -95,6 +93,14 @@ public class LeftSideController {
         // Initialize button enabled/disabled state
         collapseBtn.disableProperty().bind(currentLevel.lessThanOrEqualTo(0));
         expandBtn.disableProperty().bind(currentLevel.greaterThanOrEqualTo(maxLevel));
+
+        instructionsTable.setRowFactory(tv -> {
+            TableRow<InstructionTableEntry> row = new TableRow<>();
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> e.consume());
+            row.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> e.consume());
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> e.consume());
+            return row;
+        });
     }
 
     @FXML

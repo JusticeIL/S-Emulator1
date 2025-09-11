@@ -53,9 +53,9 @@
                </columnResizePolicy>
                 </TableView>
 
-                <AnchorPane>
+                <AnchorPane mouseTransparent="true">
                     <children>
-                        <HBox alignment="BOTTOM_RIGHT" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="BOTTOM_RIGHT" mouseTransparent="true" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                             <children>
                                 <Button fx:id="ShowStatisticsBtn" onAction="#ShowStatisticsPressed" text="Show" />
                                 <Button fx:id="RerunBtn" onAction="#RerunPressed" text="Rerun" />
