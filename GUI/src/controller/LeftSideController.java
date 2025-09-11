@@ -19,8 +19,11 @@ public class LeftSideController {
     private final IntegerProperty currentLevel = new SimpleIntegerProperty(-1);
     private final IntegerProperty maxLevel = new SimpleIntegerProperty(-1);
 
-    @FXML InstructionTableController chosenInstructionHistoryTableController; // TODO: add access modifier
-    @FXML InstructionTableController instructionTableController; // TODO: add access modifier
+    @FXML
+    private InstructionTableController chosenInstructionHistoryTableController;
+
+    @FXML
+    private InstructionTableController instructionTableController;
 
     @FXML
     private TableView<InstructionTableEntry> ChosenInstructionHistoryTable;
@@ -75,7 +78,7 @@ public class LeftSideController {
     }
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         // Binding depends on currentLevel and maxLevel.
         degreeRepresentationLabel.textProperty().bind(
                 Bindings.createStringBinding(

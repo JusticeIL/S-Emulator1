@@ -37,7 +37,7 @@ public class TopComponentController{
     private Button loadFileBtn;
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         absolutePathProperty = new SimpleStringProperty("---");
         currentLoadedProgramPath.textProperty().bind(absolutePathProperty);
     }

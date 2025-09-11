@@ -110,7 +110,7 @@ public class RightSideController{
     }
 
     @FXML
-    public void initialize() { // TODO: initialize table columns and avoid NPE
+    public void initialize() {
         argumentNamesColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         argumentValuesColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         resultVariableNameCollumn.setCellValueFactory(new PropertyValueFactory<>("name"));

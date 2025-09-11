@@ -16,7 +16,8 @@ public class PrimaryController {
     @FXML
     private TopComponentController topComponentController;
 
-    @FXML void initialize() {
+    @FXML
+    public void initialize() {
         SingleProgramController singleProgramController = new SingleProgramController();
         leftSideController.setRightController(rightSideController);
         leftSideController.setTopController(topComponentController);
