@@ -158,8 +158,7 @@ public class Program implements Serializable {
             SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
             // Load instructions
-            final LabelFactory labelFactory = new LabelFactory();
-            final VariableFactory variableFactory = new VariableFactory();
+
             InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory);
             int instructionCounter = 1;
             boolean containsExit = false;

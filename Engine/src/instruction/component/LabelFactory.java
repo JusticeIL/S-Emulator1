@@ -21,7 +21,7 @@ public class LabelFactory implements Serializable {
     }
 
     public Label readLabelFromXML(String labelName) {
-        if (labelName.contains(LABEL_PREFIX)) {
+        if (labelName.startsWith(LABEL_PREFIX)) {
             labelCounter++;
         }
         return generateLabel(labelName);
