@@ -1,23 +1,25 @@
 package controller;
 
+import instruction.Instruction;
 import instruction.component.Variable;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
+import program.ProgramExecutioner;
 import program.data.ProgramData;
 import program.Statistics;
+import program.data.VariableDTO;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class SingleProgramController implements Model, Serializable {
 
     private Program activeProgram;
     private final Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();
     private Statistics statistics;
+    private final ProgramExecutioner programExecutioner = new ProgramExecutioner();
+    private boolean isCurrentlyInDebugMode = false;
 
     @Override
     public void loadProgram(String path) throws FileNotFoundException, JAXBException {
@@ -64,9 +66,25 @@ public class SingleProgramController implements Model, Serializable {
         }
     }
 
+
+
     @Override
-    public Collection<Variable> runProgram(int... args) {
-        activeProgram.runProgram(args);
-        return activeProgram.getVariables();
+    public void runProgram(Set<VariableDTO> args) {
+        programExecutioner.setProgram(activeProgram);
+        programExecutioner.executeProgram(args);
+    }
+
+    @Override
+    public void stepOver() {
+        if(isCurrentlyInDebugMode) {
+            programExecutioner.stepOver();
+        }
+    }
+
+    @Override
+    public void startDebug(Set<VariableDTO> args) {
+        programExecutioner.setProgram(activeProgram);
+        programExecutioner.setUpDebugRun(args);
+        isCurrentlyInDebugMode = true;
     }
 }

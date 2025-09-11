@@ -9,7 +9,6 @@ import program.Statistics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class ProgramData implements Serializable {
 
@@ -22,6 +21,7 @@ public final class ProgramData implements Serializable {
     private final List<String> programXArguments = new ArrayList<>();
     private final List<String> runtimeExecutedInstructions = new ArrayList<>();
     private final Statistics statistics;
+    private final int nextInstructionIdForDebug;
 
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
@@ -47,16 +47,21 @@ public final class ProgramData implements Serializable {
 
         this.programXArguments.addAll(program.getUsedXVariableNames());
 
-        for (Label label : program.getLabels()) {
+        for (Label label : program.getLabelNames()) {
             programLabels.add(label.toString());
         }
         this.maxExpandLevel = program.getMaxProgramLevel();
         this.currentCycles = program.getProgramCycles();
         this.statistics = program.getStatistics();
+        this.nextInstructionIdForDebug = program.getNextInstructionIdForDebug();
     }
 
     public String getProgramName() {
         return programName;
+    }
+
+    public int getNextInstructionIdForDebug() {
+        return nextInstructionIdForDebug;
     }
 
     public List<String> getProgramXArguments() {

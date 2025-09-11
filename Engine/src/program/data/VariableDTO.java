@@ -11,6 +11,11 @@ public class VariableDTO {
         this.value = variable.getValue();
     }
 
+    public VariableDTO(String name, int value) {
+        this.name = name;
+        this.value = value;
+    }
+
     public String getName() {
         return name;
     }

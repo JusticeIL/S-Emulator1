@@ -12,8 +12,11 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import model.ArgumentTableEntry;
 import model.InstructionTableEntry;
+import program.data.VariableDTO;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RightSideController{
 
@@ -21,10 +24,13 @@ public class RightSideController{
     private LeftSideController leftController;
     private SingleProgramController model;
 
+    private final SimpleIntegerProperty nextInstructionIdForDebug = new SimpleIntegerProperty(0);
 
     public void setModel(SingleProgramController model) {
         this.model = model;
     }
+
+
 
     public void setTopController(TopComponentController topController) {
         this.topController = topController;
@@ -99,6 +105,8 @@ public class RightSideController{
         ExecutionArgumentInput.setEditable(true);
         ExecutionArgumentInput.getSelectionModel().setCellSelectionEnabled(true);
 
+
+
     }
 
     public void updateArgumentTable() {
@@ -138,17 +146,11 @@ public class RightSideController{
 
     @FXML
     void RunProgramPressed(ActionEvent event) {
-        List<Integer> argumentValues = ExecutionArgumentInput.getItems().stream()
-                .map(ArgumentTableEntry::getValue)
-                .toList();
-
-        // Convert List<Integer> -> int[]
-        int[] args = argumentValues.stream()
-                .mapToInt(Integer::intValue)
-                .toArray();
-
+        Set<VariableDTO> argumentValues = ExecutionArgumentInput.getItems().stream()
+                .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
+                .collect(Collectors.toSet());
         // Pass them to runProgram
-        model.runProgram(args);
+        model.runProgram(argumentValues);
 
         updateResultVariableTable();
     }
@@ -167,12 +169,20 @@ public class RightSideController{
 
     @FXML
     void StartDebugPressed(ActionEvent event) {
-
+        Set<VariableDTO> argumentValues = ExecutionArgumentInput.getItems().stream()
+                .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
+                .collect(Collectors.toSet());
+        model.startDebug(argumentValues);
+        model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
+        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
     }
 
     @FXML
     void StepOverDebugPressed(ActionEvent event) {
-
+        model.stepOver();
+        model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
+        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+        updateResultVariableTable();
     }
 
     @FXML

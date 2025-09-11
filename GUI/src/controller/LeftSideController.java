@@ -114,4 +114,11 @@ public class LeftSideController {
         model.Expand(currentLevel.get());
         updateMainInstructionTable();
     }
+
+    public void markEntryInInstructionTable(int entryId) {
+
+        instructionsTable.getSelectionModel().clearAndSelect(entryId);
+        instructionsTable.getFocusModel().focus(entryId);
+        instructionsTable.scrollTo(entryId);
+    }
 }

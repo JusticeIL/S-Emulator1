@@ -41,19 +41,14 @@ public class Program implements Serializable {
     static public final Label EXIT_LABEL = new Label("EXIT");
     private final LabelFactory labelFactory;
     private final VariableFactory variableFactory;
+    private int nextInstructionIdForDebug;
 
-    private void setArguments(int[] arguments) {
-        int variableCounter = 1;
-        for (int variable : arguments) {
-            String variableName = "x" + variableCounter; //The xs could also not be in order
-            if(Variables.containsKey(variableName)) {
-                Variables.get(variableName).setValue(variable);
-            }
-            else {
-                Variables.put(variableName, new Variable(variableName, variable));
-            }
-            variableCounter++;
-        }
+    public void setNextInstructionIdForDebug(int nextInstructionIdForDebug) {
+        this.nextInstructionIdForDebug = nextInstructionIdForDebug;
+    }
+
+    public int getNextInstructionIdForDebug() {
+        return nextInstructionIdForDebug;
     }
 
     private int calculateMaxProgramLevel() {
@@ -64,30 +59,19 @@ public class Program implements Serializable {
                 .orElse(0);
     }
 
-    private void setUpNewRun(){
-
-        if(Variables.containsKey("y")) {
-            Variables.get("y").setValue(0);
-        }else{
+    public void AddYVariableIfNotExists() {
+        if (!Variables.containsKey("y")) {
             Variables.put("y", new Variable("y", 0));
         }
-        List<String> keysToRemove = Variables.keySet().stream()
-                .filter(v -> v.startsWith("x"))
-                .filter(v-> !usedXVariableNames.contains(v))
-                .toList();
-        for (String key : keysToRemove) {
-            Variables.remove(key);
-        }
-        for (Variable variable : Variables.values()) {
-            variable.setValue(0);
-        }
-        this.currentCommandIndex = 0;
-        this.cycleCounter = 0;
-        runtimeExecutedInstructions.clear();
     }
 
-    public Set<Label> getLabels() {
+
+    public Set<Label> getLabelNames() {
         return Labels.keySet();
+    }
+
+    public Map<Label, Instruction> getLabels() {
+        return Labels;
     }
 
     public List<Instruction> getInstructionList() {
@@ -135,40 +119,7 @@ public class Program implements Serializable {
         }
     }
 
-    public void runProgram(int ...variables) {
-        setUpNewRun();
-        setArguments(variables);
-        Map<String,Integer> xVariables = new HashMap<>();
-        Variables.entrySet().stream()
-                .filter(entry -> entry.getKey().contains("x"))
-                .map(Map.Entry::getValue)
-                .forEach(v -> xVariables.put(v.getName(), v.getValue()));
 
-        int currentIndex = 0;
-        Instruction currentInstruction = instructionList.get(currentIndex);
-
-        while (currentIndex < instructionList.size()) {
-            runtimeExecutedInstructions.add(currentInstruction);
-            Label nextLabel = currentInstruction.execute();
-            cycleCounter += currentInstruction.getCycles();
-
-            if (nextLabel.equals(Program.EMPTY_LABEL)) {
-                currentIndex++;
-            } else if (nextLabel.equals(Program.EXIT_LABEL)) {
-                currentIndex = instructionList.size(); // Exit the loop
-            } else {
-                currentInstruction = Labels.get(nextLabel);
-                currentIndex = currentInstruction.getNumber() - 1;
-            }
-
-            if (currentIndex < instructionList.size()) {
-                currentInstruction = instructionList.get(currentIndex);
-            }
-        }
-
-        int yValue = Variables.get("y").getValue();
-        statistics.addRunToHistory(currentProgramLevel, xVariables, yValue, cycleCounter);
-    }
 
     public Program(Program baseProgram, ExpandedSyntheticInstructionArguments newInstructions) {
         // Copy statistics and program name from the base program
@@ -177,6 +128,7 @@ public class Program implements Serializable {
         this.labelFactory = baseProgram.labelFactory;
         this.variableFactory = baseProgram.variableFactory;
         this.instructionList.addAll(newInstructions.getInstructions());
+        this.Variables.putAll(baseProgram.Variables);
 
         // Copy variables and labels from the base program
         this.Variables.putAll(newInstructions.getVariables().stream().
