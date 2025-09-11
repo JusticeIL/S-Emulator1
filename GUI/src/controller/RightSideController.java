@@ -1,7 +1,7 @@
 package controller;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,12 +10,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.BorderPane;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
 import model.InstructionTableEntry;
 import program.data.VariableDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +43,7 @@ public class RightSideController{
     }
 
     @FXML
-    private TableView<ArgumentTableEntry> ExecutionArgumentInput;
+    private TableView<ArgumentTableEntry> executionArgumentInput;
 
     @FXML
     private Button RerunBtn;
@@ -88,10 +88,13 @@ public class RightSideController{
     private Button StepOverDebugBtn;
 
     @FXML
+    private Button SetUpRunBtn;
+
+    @FXML
     private Button StopDebugBtn;
 
     @FXML
-    private TableView<ArgumentTableEntry> VariableTable;
+    private TableView<ArgumentTableEntry> variableTable;
 
     @FXML
     private TableColumn<ArgumentTableEntry, String> resultVariableNameCollumn;
@@ -123,8 +126,8 @@ public class RightSideController{
         });
 
         // Allow editing only on values
-        ExecutionArgumentInput.setEditable(true);
-        ExecutionArgumentInput.getSelectionModel().setCellSelectionEnabled(true);
+        executionArgumentInput.setEditable(true);
+        executionArgumentInput.getSelectionModel().setCellSelectionEnabled(true);
 
         // Statistics Table columns initializing
         runNumberColumn.setCellValueFactory(new PropertyValueFactory<>("run"));
@@ -134,6 +137,11 @@ public class RightSideController{
         cyclesConsumedColumn.setCellValueFactory(new PropertyValueFactory<>("cycles"));
 
         historySizeProperty.addListener((obs, oldSize, newSize) -> updateStatisticsTable());
+
+        RerunBtn.disableProperty().bind(
+                Bindings.isEmpty(StatisticsTable.getItems())
+        );
+
     }
 
     public void updateArgumentTable() {
@@ -141,7 +149,7 @@ public class RightSideController{
             List<ArgumentTableEntry> entries = programData.getProgramXArguments().stream()
                     .map(ArgumentTableEntry::new) // Convert ArgumentDTO -> ArgumentTableEntry
                     .toList();
-            ExecutionArgumentInput.getItems().setAll(entries);// Replace items in the table
+            executionArgumentInput.getItems().setAll(entries);// Replace items in the table
         })
         ;
     }
@@ -151,7 +159,7 @@ public class RightSideController{
             List<ArgumentTableEntry> entries = programData.getProgramVariablesCurrentState().stream()
                     .map(ArgumentTableEntry::new) // Convert VariableDTO -> ArgumentTableEntry
                     .toList();
-            VariableTable.getItems().setAll(entries);// Replace items in the table
+            variableTable.getItems().setAll(entries);// Replace items in the table
         })
         ;
     }
@@ -187,7 +195,25 @@ public class RightSideController{
 
     @FXML
     void RerunPressed(ActionEvent event) {
+        List<ArgumentTableEntry> argsList = new ArrayList<>();
 
+        String argsString = StatisticsTable.getSelectionModel().getSelectedItem().getArgs();
+        if (argsString.startsWith("[") && argsString.endsWith("]")) {
+            argsString = argsString.substring(1, argsString.length() - 1); // strip [ ]
+        }
+
+        String[] pairs = argsString.split(", ");
+        for (String pair : pairs) {
+            String[] kv = pair.split(" = ");
+            if (kv.length == 2) {
+                String name = kv[0].trim();
+                int value = Integer.parseInt(kv[1].trim());
+                argsList.add(new ArgumentTableEntry(name) {{
+                    setValue(value);
+                }});
+            }
+        }
+        executionArgumentInput.getItems().setAll(argsList);
     }
 
     @FXML
@@ -197,7 +223,7 @@ public class RightSideController{
 
     @FXML
     void RunProgramPressed(ActionEvent event) {
-        Set<VariableDTO> argumentValues = ExecutionArgumentInput.getItems().stream()
+        Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
                 .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
                 .collect(Collectors.toSet());
         // Pass them to runProgram
@@ -215,7 +241,7 @@ public class RightSideController{
 
     @FXML
     void StartDebugPressed(ActionEvent event) {
-        Set<VariableDTO> argumentValues = ExecutionArgumentInput.getItems().stream()
+        Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
                 .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
                 .collect(Collectors.toSet());
         model.startDebug(argumentValues);
@@ -234,6 +260,12 @@ public class RightSideController{
     @FXML
     void StopDebugPressed(ActionEvent event) {
 
+    }
+
+    @FXML
+    void SetupNewRunPressed(ActionEvent event) {
+        variableTable.getItems().clear();
+        executionArgumentInput.getItems().forEach(entry->{entry.valueProperty().set(0);});
     }
 
 }

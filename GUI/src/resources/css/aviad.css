@@ -215,7 +215,7 @@
     -fx-font-family: "Calibri";
 }
 
-#ExecutionArgumentInput {
+#executionArgumentInput {
     -fx-background-color: #5B9BD5;
     -fx-font-family: "Calibri";
 }
@@ -225,7 +225,7 @@
     -fx-font-family: "Calibri";
 }
 
-#VariableTable {
+#variableTable {
     -fx-background-color: #F103E6;
     -fx-font-family: "Calibri";
 }
