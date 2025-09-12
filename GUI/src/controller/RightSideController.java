@@ -29,7 +29,7 @@ public class RightSideController{
     private final IntegerProperty historySizeProperty = new SimpleIntegerProperty(0);
     private final BooleanProperty isDebugMode = new SimpleBooleanProperty(false);
     private final BooleanProperty isProgramLoaded = new SimpleBooleanProperty(false);
-
+    private final IntegerProperty currentCycles = new SimpleIntegerProperty(-1);
     private final SimpleIntegerProperty nextInstructionIdForDebug = new SimpleIntegerProperty(0);
 
     public void setModel(SingleProgramController model) {
@@ -168,6 +168,12 @@ public class RightSideController{
                 isProgramLoaded.not().or(isDebugMode)
         );
 
+        // Initialize the cycles label
+        cyclesLabel.textProperty().bind(Bindings.createStringBinding(
+                () -> (currentCycles.get() < 0) ? "Cycles: ---" : "Cycles: " + currentCycles.get(),
+                currentCycles
+        ));
+
 
 
 
@@ -264,6 +270,8 @@ public class RightSideController{
         updateResultVariableTable();
 
         refreshHistorySize();
+        model.getProgramData().ifPresent(programData ->
+                currentCycles.set(programData.getCurrentCycles()));
     }
 
 
@@ -282,6 +290,8 @@ public class RightSideController{
         leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         updateResultVariableTable();
         updateIsDebugProperty();
+        model.getProgramData().ifPresent(programData ->
+                currentCycles.set(programData.getCurrentCycles()));
     }
 
     @FXML
@@ -298,6 +308,8 @@ public class RightSideController{
         });
         updateResultVariableTable();
         updateIsDebugProperty();
+        model.getProgramData().ifPresent(programData ->
+                currentCycles.set(programData.getCurrentCycles()));
     }
 
     @FXML

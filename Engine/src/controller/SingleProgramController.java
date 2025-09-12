@@ -74,8 +74,6 @@ public class SingleProgramController implements Model, Serializable {
         }
     }
 
-
-
     @Override
     public void runProgram(Set<VariableDTO> args) {
         programExecutioner.setProgram(activeProgram);

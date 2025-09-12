@@ -16,7 +16,7 @@ public class ProgramExecutioner {
     private int cycleCounter;
     private int currentCommandIndex;
     private boolean isDebugMode = false;
-    Map<String,Integer> xInitializedVariablesForDebug;
+    private Map<String,Integer> xInitializedVariablesForDebug;
     int currentRunLevelForDebug;
 
     public boolean isDebugMode() {
@@ -82,6 +82,7 @@ public class ProgramExecutioner {
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
         currentRunLevelForDebug = program.getCurrentProgramLevel();
         program.setInDebugMode(true);
+        program.setCycleCounter(cycleCounter);
     }
 
     private void executeSingleInstruction() {
