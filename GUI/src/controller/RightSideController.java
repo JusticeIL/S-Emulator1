@@ -26,9 +26,8 @@ public class RightSideController{
     private LeftSideController leftController;
     private SingleProgramController model;
     private final IntegerProperty historySizeProperty = new SimpleIntegerProperty(0);
-
-
     private final SimpleIntegerProperty nextInstructionIdForDebug = new SimpleIntegerProperty(0);
+    private final IntegerProperty currentCycles = new SimpleIntegerProperty(-1);
 
     public void setModel(SingleProgramController model) {
         this.model = model;
@@ -144,6 +143,12 @@ public class RightSideController{
         ShowStatisticsBtn.disableProperty().bind(
                 Bindings.isEmpty(StatisticsTable.getItems())
         );
+
+        // Initialize the cycles label
+        cyclesLabel.textProperty().bind(Bindings.createStringBinding(
+                () -> (currentCycles.get() < 0) ? "Cycles: ---" : "Cycles: " + currentCycles.get(),
+                currentCycles
+        ));
     }
 
     public void updateArgumentTable() {
@@ -235,8 +240,8 @@ public class RightSideController{
         // Pass them to runProgram
         model.runProgram(argumentValues);
         updateResultVariableTable();
-
         refreshHistorySize();
+        model.getProgramData().ifPresent(programData -> currentCycles.set(programData.getCurrentCycles()));
     }
 
 
@@ -261,6 +266,7 @@ public class RightSideController{
         model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
         leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         updateResultVariableTable();
+        model.getProgramData().ifPresent(programData -> currentCycles.set(programData.getCurrentCycles()));
     }
 
     @FXML
