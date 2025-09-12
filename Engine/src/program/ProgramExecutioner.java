@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class ProgramExecutioner {
     private Program program;
-    Instruction currentInstruction;
+    private Instruction currentInstruction;
     private int cycleCounter;
     private int currentCommandIndex;
 
@@ -64,7 +64,6 @@ public class ProgramExecutioner {
         }
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
-
     }
 
     public void setUpDebugRun(Set<VariableDTO> args){
@@ -88,6 +87,8 @@ public class ProgramExecutioner {
         if (currentCommandIndex < program.getInstructionList().size()) {
             currentInstruction = program.getInstructionList().get(currentCommandIndex);
         }
+
+        program.setCycleCounter(cycleCounter);
     }
 
     public void stepOver() {
