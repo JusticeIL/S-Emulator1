@@ -1,5 +1,4 @@
 O.O.B:
 
-1. Update run to include a map of all variables and their values
-2. Add a popup on show history that shows all variables and their values on a tableview.
-3. Switch the plus and minus to a menu button
+1. Add a popup on show history that shows all variables and their values on a tableview.
+2. Switch the plus and minus to a menu button

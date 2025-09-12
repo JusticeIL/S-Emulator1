@@ -219,6 +219,7 @@ public class RightSideController{
         model.Expand(StatisticsTable.getSelectionModel().getSelectedItem().getLevel());
         leftController.updateMainInstructionTable();
         leftController.setCurrentLevel(StatisticsTable.getSelectionModel().getSelectedItem().getLevel());
+        variableTable.getItems().clear();
     }
 
     @FXML
