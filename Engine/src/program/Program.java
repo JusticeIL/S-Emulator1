@@ -242,4 +242,8 @@ public class Program implements Serializable {
     public int getCurrentProgramLevel() {
         return currentProgramLevel;
     }
+
+    public void setCycleCounter(int cycleCounter) {
+        this.cycleCounter = cycleCounter;
+    }
 }
