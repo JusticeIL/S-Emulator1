@@ -124,6 +124,7 @@ public class TopComponentController{
                         leftController.updateMainInstructionTable();
                         leftController.setCurrentLevel(0);
                         leftController.updateExpansionLevels();
+                        leftController.resetLevelExpansionButtonText();
 
                     }
                     if (rightController != null) {

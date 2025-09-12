@@ -134,4 +134,8 @@ public class LeftSideController {
                 })
                 .forEach(expansionLevelMenu.getItems()::add);
     }
+
+    public void resetLevelExpansionButtonText() {
+        expansionLevelMenu.setText("0");
+    }
 }
