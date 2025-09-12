@@ -6,7 +6,6 @@ import instruction.component.Variable;
 import program.data.VariableDTO;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -109,12 +108,16 @@ public class ProgramExecutioner {
         executeSingleInstruction();
         program.setNextInstructionIdForDebug(currentInstruction.getNumber());
         if(currentCommandIndex >= program.getInstructionList().size() && isDebugMode) {
-            program.setInDebugMode(false);
-            isDebugMode = false;
-            Map<String,Integer> finalStateOfAllVariables = program.getVariables().stream()
-                    .collect(Collectors.toMap(Variable::getName, Variable::getValue));
-
-            program.getStatistics().addRunToHistory(currentRunLevelForDebug, xInitializedVariablesForDebug, finalStateOfAllVariables, cycleCounter);
+            stopDebug();
         }
+    }
+
+    public void stopDebug() {
+        program.setInDebugMode(false);
+        isDebugMode = false;
+        Map<String,Integer> finalStateOfAllVariables = program.getVariables().stream()
+                .collect(Collectors.toMap(Variable::getName, Variable::getValue));
+
+        program.getStatistics().addRunToHistory(currentRunLevelForDebug, xInitializedVariablesForDebug, finalStateOfAllVariables, cycleCounter);
     }
 }

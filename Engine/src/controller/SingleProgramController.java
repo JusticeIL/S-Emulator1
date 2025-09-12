@@ -1,7 +1,5 @@
 package controller;
 
-import instruction.Instruction;
-import instruction.component.Variable;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
 import program.ProgramExecutioner;
@@ -49,6 +47,7 @@ public class SingleProgramController implements Model, Serializable {
     @Override
     public void StopDebug() {
         if(isCurrentlyInDebugMode) {
+            programExecutioner.stopDebug();
             programExecutioner.setDebugMode(false);
             isCurrentlyInDebugMode = false;
         }

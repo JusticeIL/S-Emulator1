@@ -304,6 +304,7 @@ public class RightSideController{
                 nextInstructionIdForDebug.set(0);
                 leftController.clearMarkInInstructionTable();
             }
+            updateStatisticsTable();
             leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         });
         updateResultVariableTable();
@@ -316,6 +317,8 @@ public class RightSideController{
     void StopDebugPressed(ActionEvent event) {
         model.StopDebug();
         updateIsDebugProperty();
+        updateStatisticsTable();
+        leftController.clearMarkInInstructionTable();
     }
 
     private void updateIsDebugProperty(){
