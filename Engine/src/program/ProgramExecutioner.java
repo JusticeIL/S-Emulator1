@@ -36,13 +36,10 @@ public class ProgramExecutioner {
             executeSingleInstruction();
         }
 
-        int yOutputValue = program.getVariables().stream()
-                .filter(v -> "y".equals(v.getName()))
-                .findFirst()
-                .map(Variable::getValue)
-                .orElse(0);
+        Map<String,Integer> finalStateOfAllVariables = program.getVariables().stream()
+                .collect(Collectors.toMap(Variable::getName, Variable::getValue));
 
-        program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, yOutputValue, cycleCounter);
+        program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
     }
 
     private void setUpNewRun(Set<VariableDTO> args){

@@ -1,26 +1,27 @@
 package program;
 
-import instruction.component.Variable;
-
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Run implements Serializable {
 
     private final int expansionLevel;
     private final Map<String,Integer> inputArgs;
+    private final Map<String,Integer> finalStateOfAllVariables;
+
     private final int runCycles;
     private final int runID;
     private final int yValue;
 
-    public Run(int runNumber, int runLevel, Map<String,Integer> inputArguments, int yValue, int runCycles) {
+    public Run(int runNumber, int runLevel, Map<String,Integer> inputArguments, Map<String,Integer> finalStateOfAllVariables, int runCycles) {
+        this.finalStateOfAllVariables = new HashMap<>();
+        this.finalStateOfAllVariables.putAll(finalStateOfAllVariables);
         this.inputArgs = new HashMap<>();
         inputArgs.putAll(inputArguments);
         this.runID = runNumber;
         this.expansionLevel = runLevel;
-        this.yValue = yValue;
+        this.yValue = finalStateOfAllVariables.get("y");
         this.runCycles = runCycles;
     }
 
