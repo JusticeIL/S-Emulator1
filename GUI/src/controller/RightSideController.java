@@ -6,10 +6,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,11 +19,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
-import model.VariableEntry;
 import program.data.VariableDTO;
 
 import java.util.ArrayList;
@@ -396,7 +392,7 @@ public class RightSideController{
         colValue.setMinWidth(50);
         tableView.getColumns().addAll(colName, colValue);
 
-        List<VariableEntry> sortedEntries = allEntryVariables.keySet().stream()
+        List<ArgumentTableEntry> sortedEntries = allEntryVariables.keySet().stream()
                 .sorted((a, b) -> {
                     if (a.equals("y")) return -1;
                     if (b.equals("y")) return 1;
@@ -422,7 +418,7 @@ public class RightSideController{
                     if (bIsZ) return 1;
                     return a.compareTo(b);
                 })
-                .map(key -> new VariableEntry(key, allEntryVariables.get(key)))
+                .map(key -> new ArgumentTableEntry(new VariableDTO(key, allEntryVariables.get(key))))
                 .toList();
         tableView.getItems().setAll(sortedEntries);
 
