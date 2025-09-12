@@ -10,6 +10,7 @@ import javafx.scene.input.MouseEvent;
 import model.InstructionTableEntry;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class LeftSideController {
 
@@ -17,7 +18,7 @@ public class LeftSideController {
     private TopComponentController topController;
     private SingleProgramController model;
     private final IntegerProperty currentLevel = new SimpleIntegerProperty(-1);
-    private final IntegerProperty maxLevel = new SimpleIntegerProperty(-1);
+    private IntegerProperty maxLevel = new SimpleIntegerProperty(-1);
 
     @FXML
     private InstructionTableController chosenInstructionHistoryTableController;
@@ -29,13 +30,10 @@ public class LeftSideController {
     private TableView<InstructionTableEntry> ChosenInstructionHistoryTable;
 
     @FXML
-    private Button collapseBtn;
+    private MenuButton functionChooser;
 
     @FXML
-    private Label degreeRepresentationLabel;
-
-    @FXML
-    private Button expandBtn;
+    private MenuButton expansionLevelMenu;
 
     @FXML
     private MenuButton highlightSelection;
@@ -52,6 +50,11 @@ public class LeftSideController {
 
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;
+
+        expansionLevelMenu.disableProperty().bind(
+                Bindings.isEmpty(expansionLevelMenu.getItems())
+                        .or(rightController.isInDebugModeProperty())
+        );
     }
 
     public void updateMainInstructionTable(){
@@ -79,23 +82,6 @@ public class LeftSideController {
 
     @FXML
     public void initialize() {
-        // Binding depends on currentLevel and maxLevel.
-        degreeRepresentationLabel.textProperty().bind(
-                Bindings.createStringBinding(
-                        () -> {
-                            if (model == null || !model.isProgramLoaded()) {
-                                return "Level: Curr/Max";
-                            } else {
-                                return "Level: " + currentLevel.get() + "/" + maxLevel.get();
-                            }
-                        },
-                        currentLevel, maxLevel
-                )
-        );
-
-        // Initialize button enabled/disabled state
-        collapseBtn.disableProperty().bind(currentLevel.lessThanOrEqualTo(0));
-        expandBtn.disableProperty().bind(currentLevel.greaterThanOrEqualTo(maxLevel));
 
         instructionsTable.setRowFactory(tv -> {
             TableRow<InstructionTableEntry> row = new TableRow<>();
@@ -104,24 +90,20 @@ public class LeftSideController {
             row.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> e.consume());
             return row;
         });
-    }
 
-    @FXML
-    void collapseCurrentProgram(ActionEvent event) {
-        if (currentLevel.get() > 0) {
-            currentLevel.set(currentLevel.get() - 1);
-        }
-        model.Expand(currentLevel.get());
-        updateMainInstructionTable();
-    }
+        // Initialize the menu button of the expansion levels
+        expansionLevelMenu.getItems().clear();
+        maxLevel.addListener((obs, oldValue, newValue) -> {
+            updateAvailableExpansionLevels(newValue.intValue());
+        });
 
-    @FXML
-    void expandCurrentProgram(ActionEvent event) {
-        if (currentLevel.get() < maxLevel.get()) {
-            currentLevel.set(currentLevel.get() + 1);
-        }
-        model.Expand(currentLevel.get());
-        updateMainInstructionTable();
+        // Initialize the highlight selection menu button
+        highlightSelection.getItems().clear();
+        highlightSelection.disableProperty().bind(Bindings.isEmpty(highlightSelection.getItems()));
+
+        // Initialize the program or function selectin menu button
+        functionChooser.getItems().clear();
+        functionChooser.disableProperty().bind(Bindings.isEmpty(functionChooser.getItems()));
     }
 
     public void markEntryInInstructionTable(int entryId) {
@@ -133,5 +115,23 @@ public class LeftSideController {
 
     public void clearMarkInInstructionTable() {
         instructionsTable.getSelectionModel().clearSelection();
+    }
+
+    public void updateAvailableExpansionLevels(int maxLevel) {
+        expansionLevelMenu.getItems().clear();
+        IntStream.rangeClosed(0, maxLevel)
+                .mapToObj(i -> {
+                    MenuItem menuItem = new MenuItem(String.valueOf(i));
+                    menuItem.setUserData(i);
+                    menuItem.setOnAction((ActionEvent event) -> {
+                        int selectedLevel = (int) menuItem.getUserData();
+                        setCurrentLevel(selectedLevel);
+                        expansionLevelMenu.setText(String.valueOf(i));
+                        model.Expand(currentLevel.get());
+                        updateMainInstructionTable();
+                    });
+                    return menuItem;
+                })
+                .forEach(expansionLevelMenu.getItems()::add);
     }
 }
