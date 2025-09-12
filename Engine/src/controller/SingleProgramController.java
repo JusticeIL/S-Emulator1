@@ -47,6 +47,14 @@ public class SingleProgramController implements Model, Serializable {
     }
 
     @Override
+    public void StopDebug() {
+        if(isCurrentlyInDebugMode) {
+            programExecutioner.setDebugMode(false);
+            isCurrentlyInDebugMode = false;
+        }
+    }
+
+    @Override
     public void Expand(int level) {
         int maxLevel = ProgramExpansionsByLevel.get(0).getMaxProgramLevel();
         if(level > maxLevel) {
@@ -83,6 +91,7 @@ public class SingleProgramController implements Model, Serializable {
 
     @Override
     public void startDebug(Set<VariableDTO> args) {
+        programExecutioner.setDebugMode(true);
         programExecutioner.setProgram(activeProgram);
         programExecutioner.setUpDebugRun(args);
         isCurrentlyInDebugMode = true;

@@ -42,6 +42,15 @@ public class Program implements Serializable {
     private final LabelFactory labelFactory;
     private final VariableFactory variableFactory;
     private int nextInstructionIdForDebug;
+    private boolean isInDebugMode = false;
+
+    public boolean isInDebugMode() {
+        return isInDebugMode;
+    }
+
+    public void setInDebugMode(boolean inDebugMode) {
+        isInDebugMode = inDebugMode;
+    }
 
     public void setNextInstructionIdForDebug(int nextInstructionIdForDebug) {
         this.nextInstructionIdForDebug = nextInstructionIdForDebug;

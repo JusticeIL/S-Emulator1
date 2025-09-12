@@ -18,4 +18,5 @@ public interface Model {
     void runProgram(Set<VariableDTO> args);
     void startDebug(Set<VariableDTO> args);
     void stepOver();
+    void StopDebug();
 }

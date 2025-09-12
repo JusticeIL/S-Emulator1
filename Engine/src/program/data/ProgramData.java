@@ -22,6 +22,11 @@ public final class ProgramData implements Serializable {
     private final List<String> runtimeExecutedInstructions = new ArrayList<>();
     private final Statistics statistics;
     private final int nextInstructionIdForDebug;
+    private final boolean isDebugmode;
+
+    public boolean isDebugmode() {
+        return isDebugmode;
+    }
 
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
@@ -54,6 +59,7 @@ public final class ProgramData implements Serializable {
         this.currentCycles = program.getProgramCycles();
         this.statistics = program.getStatistics();
         this.nextInstructionIdForDebug = program.getNextInstructionIdForDebug();
+        this.isDebugmode = program.isInDebugMode();
     }
 
     public String getProgramName() {

@@ -40,6 +40,7 @@ public class TopComponentController{
     public void initialize() {
         absolutePathProperty = new SimpleStringProperty("---");
         currentLoadedProgramPath.textProperty().bind(absolutePathProperty);
+
     }
 
     private Stage createLoadingDialog(Stage owner, Task<?> task) {
@@ -128,6 +129,7 @@ public class TopComponentController{
                     if (rightController != null) {
                         rightController.updateArgumentTable();
                         rightController.clearStatisticsTable();
+                        rightController.OnProgramLoaded();
                     }
                 });
             }

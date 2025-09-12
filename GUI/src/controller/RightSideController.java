@@ -1,6 +1,8 @@
 package controller;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +14,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
-import model.InstructionTableEntry;
 import program.data.VariableDTO;
 
 import java.util.ArrayList;
@@ -26,12 +27,19 @@ public class RightSideController{
     private LeftSideController leftController;
     private SingleProgramController model;
     private final IntegerProperty historySizeProperty = new SimpleIntegerProperty(0);
-
+    private final BooleanProperty isDebugMode = new SimpleBooleanProperty(false);
+    private final BooleanProperty isProgramLoaded = new SimpleBooleanProperty(false);
 
     private final SimpleIntegerProperty nextInstructionIdForDebug = new SimpleIntegerProperty(0);
 
     public void setModel(SingleProgramController model) {
+
         this.model = model;
+        isProgramLoaded.set(model.isProgramLoaded());
+    }
+
+    public void OnProgramLoaded() {
+        isProgramLoaded.set(true);
     }
 
     public void setTopController(TopComponentController topController) {
@@ -144,6 +152,25 @@ public class RightSideController{
         ShowStatisticsBtn.disableProperty().bind(
                 Bindings.isEmpty(StatisticsTable.getItems())
         );
+        StepOverDebugBtn.disableProperty().bind(isDebugMode.not());
+        ResumeDebugBtn.disableProperty().bind(isDebugMode.not());
+        StopDebugBtn.disableProperty().bind(isDebugMode.not());
+
+        StartDebugBtn.disableProperty().bind(
+                isProgramLoaded.not().or(isDebugMode)
+        );
+
+        SetUpRunBtn.disableProperty().bind(
+                isProgramLoaded.not().or(isDebugMode)
+        );
+
+        RunProgramBtn.disableProperty().bind(
+                isProgramLoaded.not().or(isDebugMode)
+        );
+
+
+
+
     }
 
     public void updateArgumentTable() {
@@ -253,19 +280,40 @@ public class RightSideController{
         model.startDebug(argumentValues);
         model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
         leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+        updateResultVariableTable();
+        updateIsDebugProperty();
     }
 
     @FXML
     void StepOverDebugPressed(ActionEvent event) {
         model.stepOver();
-        model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
-        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+        model.getProgramData().ifPresent(model-> {
+            nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug());
+            if(!model.isDebugmode()){
+                // Debugging finished
+                nextInstructionIdForDebug.set(0);
+                leftController.clearMarkInInstructionTable();
+            }
+            leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+        });
         updateResultVariableTable();
+        updateIsDebugProperty();
     }
 
     @FXML
     void StopDebugPressed(ActionEvent event) {
+        model.StopDebug();
+        updateIsDebugProperty();
+    }
 
+    private void updateIsDebugProperty(){
+        if ( model.isProgramLoaded()) {
+            model.getProgramData().ifPresent(data ->
+                    isDebugMode.set(data.isDebugmode())
+            );
+        } else {
+            isDebugMode.set(false);
+        }
     }
 
     @FXML

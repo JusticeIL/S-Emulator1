@@ -15,6 +15,17 @@ public class ProgramExecutioner {
     Instruction currentInstruction;
     private int cycleCounter;
     private int currentCommandIndex;
+    private boolean isDebugMode = false;
+    Map<String,Integer> xInitializedVariablesForDebug;
+    int currentRunLevelForDebug;
+
+    public boolean isDebugMode() {
+        return isDebugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        isDebugMode = debugMode;
+    }
 
     public void setProgram(Program program) {
         this.program = program;
@@ -67,6 +78,11 @@ public class ProgramExecutioner {
     public void setUpDebugRun(Set<VariableDTO> args){
         setUpNewRun(args);
         program.setNextInstructionIdForDebug(currentInstruction.getNumber());
+        xInitializedVariablesForDebug = program.getVariables().stream()
+                .filter(var -> var.getName().startsWith("x"))
+                .collect(Collectors.toMap(Variable::getName, Variable::getValue));
+        currentRunLevelForDebug = program.getCurrentProgramLevel();
+        program.setInDebugMode(true);
     }
 
     private void executeSingleInstruction() {
@@ -90,5 +106,13 @@ public class ProgramExecutioner {
     public void stepOver() {
         executeSingleInstruction();
         program.setNextInstructionIdForDebug(currentInstruction.getNumber());
+        if(currentCommandIndex >= program.getInstructionList().size() && isDebugMode) {
+            program.setInDebugMode(false);
+            isDebugMode = false;
+            Map<String,Integer> finalStateOfAllVariables = program.getVariables().stream()
+                    .collect(Collectors.toMap(Variable::getName, Variable::getValue));
+
+            program.getStatistics().addRunToHistory(currentRunLevelForDebug, xInitializedVariablesForDebug, finalStateOfAllVariables, cycleCounter);
+        }
     }
 }

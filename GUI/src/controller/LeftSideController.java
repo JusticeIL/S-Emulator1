@@ -130,4 +130,8 @@ public class LeftSideController {
         instructionsTable.getFocusModel().focus(entryId);
         instructionsTable.scrollTo(entryId);
     }
+
+    public void clearMarkInInstructionTable() {
+        instructionsTable.getSelectionModel().clearSelection();
+    }
 }
