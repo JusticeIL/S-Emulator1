@@ -337,4 +337,7 @@ public class RightSideController{
         executionArgumentInput.getItems().forEach(entry->{entry.valueProperty().set(0);});
     }
 
+    public BooleanProperty isInDebugModeProperty() {
+        return isDebugMode;
+    }
 }
