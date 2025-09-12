@@ -53,7 +53,7 @@
                 <MenuItem mnemonicParsing="false" text="Action 2" />
               </items>
             </MenuButton>
-            <MenuButton fx:id="expansionLevelMenu" mnemonicParsing="false" text="Select expansion level">
+            <MenuButton fx:id="expansionLevelMenu" minWidth="50.0" mnemonicParsing="false" text="Select expansion level">
               <items>
                 <MenuItem mnemonicParsing="false" text="Action 1" />
                 <MenuItem mnemonicParsing="false" text="Action 2" />

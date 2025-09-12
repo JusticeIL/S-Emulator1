@@ -44,4 +44,8 @@ public class Run implements Serializable {
     public int getRunCycles() {
         return runCycles;
     }
+
+    public Map<String, Integer> getFinalStateOfAllVariables() {
+        return finalStateOfAllVariables;
+    }
 }

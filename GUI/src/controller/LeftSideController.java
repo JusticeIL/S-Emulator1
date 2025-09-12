@@ -121,8 +121,12 @@ public class LeftSideController {
         expansionLevelMenu.getItems().clear();
         IntStream.rangeClosed(0, maxLevel)
                 .mapToObj(i -> {
-                    MenuItem menuItem = new MenuItem(String.valueOf(i));
+                    Label label = new Label(String.valueOf(i));
+                    label.setMaxWidth(Double.MAX_VALUE);
+                    label.setStyle("-fx-alignment: center;");
+                    CustomMenuItem menuItem = new CustomMenuItem(label, true);
                     menuItem.setUserData(i);
+                    label.prefWidthProperty().bind(expansionLevelMenu.widthProperty());
                     menuItem.setOnAction((ActionEvent event) -> {
                         int selectedLevel = (int) menuItem.getUserData();
                         setCurrentLevel(selectedLevel);

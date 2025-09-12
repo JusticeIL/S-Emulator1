@@ -6,6 +6,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import program.Run;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class HistoryTableEntry {
@@ -14,6 +17,7 @@ public class HistoryTableEntry {
     private final StringProperty args;
     private final IntegerProperty y;
     private final IntegerProperty cycles;
+    private final Map<String, Integer> allVariables;
 
     public HistoryTableEntry(Run run) {
         this.run = new SimpleIntegerProperty(run.getRunID());
@@ -23,6 +27,8 @@ public class HistoryTableEntry {
                 .collect(Collectors.joining(", ", "[", "]")));
         this.y = new SimpleIntegerProperty(run.getyValue());
         this.cycles = new SimpleIntegerProperty(run.getRunCycles());
+        this.allVariables = new HashMap<>();
+        allVariables.putAll(run.getFinalStateOfAllVariables());
     }
 
     // getters and setters (needed by PropertyValueFactory)
@@ -45,4 +51,8 @@ public class HistoryTableEntry {
     public int getCycles() { return cycles.get(); }
     public void setCycles(int newCycles) { cycles.set(newCycles); }
     public IntegerProperty cyclesProperty() { return cycles; }
+
+    public Map<String, Integer> getAllVariables() {
+        return allVariables;
+    }
 }

@@ -6,18 +6,31 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
+import model.VariableEntry;
 import program.data.VariableDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +39,7 @@ public class RightSideController{
     private TopComponentController topController;
     private LeftSideController leftController;
     private SingleProgramController model;
+    private boolean isShowHistoryDialogOpen = false;
     private final IntegerProperty historySizeProperty = new SimpleIntegerProperty(0);
     private final BooleanProperty isDebugMode = new SimpleBooleanProperty(false);
     private final BooleanProperty isProgramLoaded = new SimpleBooleanProperty(false);
@@ -173,10 +187,6 @@ public class RightSideController{
                 () -> (currentCycles.get() < 0) ? "Cycles: ---" : "Cycles: " + currentCycles.get(),
                 currentCycles
         ));
-
-
-
-
     }
 
     public void updateArgumentTable() {
@@ -277,7 +287,14 @@ public class RightSideController{
 
     @FXML
     void ShowStatisticsPressed(ActionEvent event) {
-
+        if (!isShowHistoryDialogOpen && !StatisticsTable.getSelectionModel().isEmpty()) {
+            isShowHistoryDialogOpen = true;
+            HistoryTableEntry entry = StatisticsTable.getSelectionModel().getSelectedItem();
+            Map<String, Integer> allEntryVariables = entry.getAllVariables();
+            Stage dialogStage = createVariablesTableDialog(allEntryVariables);
+            dialogStage.setOnCloseRequest(closeEvent -> isShowHistoryDialogOpen = false);
+            dialogStage.show();
+        }
     }
 
     @FXML
@@ -340,4 +357,99 @@ public class RightSideController{
     public BooleanProperty isInDebugModeProperty() {
         return isDebugMode;
     }
+
+    public Stage createVariablesTableDialog(Map<String, Integer> allEntryVariables) {
+        BorderPane root = new BorderPane();
+        root.setPrefSize(600, 400);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.BOTTOM_RIGHT);
+
+        ColumnConstraints col = new ColumnConstraints();
+        col.setHalignment(javafx.geometry.HPos.RIGHT);
+        col.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
+        col.setMinWidth(10);
+        col.setPrefWidth(100);
+        grid.getColumnConstraints().add(col);
+
+        RowConstraints row1 = new RowConstraints();
+        row1.setMinHeight(10);
+        row1.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
+        RowConstraints row2 = new RowConstraints();
+        row2.setMinHeight(50);
+        row2.setMaxHeight(100);
+        row2.setValignment(javafx.geometry.VPos.BOTTOM);
+        row2.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
+        grid.getRowConstraints().addAll(row1, row2);
+
+        TableView<Object> tableView = new TableView<>();
+        tableView.setEditable(true);
+        tableView.setPrefSize(200, 200);
+        tableView.setPadding(new Insets(20, 20, 50, 20));
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        TableColumn<Object, String> colName = new TableColumn<>("Variable Name");
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colName.setMinWidth(50);
+        TableColumn<Object, String> colValue = new TableColumn<>("Variable Value");
+        colValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        colValue.setMinWidth(50);
+        tableView.getColumns().addAll(colName, colValue);
+
+        List<VariableEntry> sortedEntries = allEntryVariables.keySet().stream()
+                .sorted((a, b) -> {
+                    if (a.equals("y")) return -1;
+                    if (b.equals("y")) return 1;
+                    boolean aIsX = a.startsWith("x");
+                    boolean bIsX = b.startsWith("x");
+                    boolean aIsZ = a.startsWith("z");
+                    boolean bIsZ = b.startsWith("z");
+                    if (aIsX && bIsX) {
+                        return Integer.compare(
+                                Integer.parseInt(a.substring(1)),
+                                Integer.parseInt(b.substring(1))
+                        );
+                    }
+                    if (aIsZ && bIsZ) {
+                        return Integer.compare(
+                                Integer.parseInt(a.substring(1)),
+                                Integer.parseInt(b.substring(1))
+                        );
+                    }
+                    if (aIsX) return -1;
+                    if (bIsX) return 1;
+                    if (aIsZ) return -1;
+                    if (bIsZ) return 1;
+                    return a.compareTo(b);
+                })
+                .map(key -> new VariableEntry(key, allEntryVariables.get(key)))
+                .toList();
+        tableView.getItems().setAll(sortedEntries);
+
+        Button closeBtn = new Button("✖ Close");
+        closeBtn.setId("closeBtn");
+        closeBtn.setAlignment(Pos.CENTER);
+        GridPane.setMargin(closeBtn, new Insets(0, 20, 20, 0));
+        GridPane.setRowIndex(closeBtn, 1);
+
+        closeBtn.setOnAction(e -> {
+            isShowHistoryDialogOpen = false;
+            ((Stage) closeBtn.getScene().getWindow()).close();
+        });
+
+        grid.add(tableView, 0, 0);
+        grid.add(closeBtn, 0, 1);
+
+        root.setCenter(grid);
+
+        Scene scene = new Scene(root, 600, 400);
+        scene.getStylesheets().add(getClass().getResource("/resources/css/popupAllVariablesTable.css").toExternalForm());
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Variables table");
+        dialogStage.setScene(scene);
+
+        return dialogStage;
+    }
+
 }
