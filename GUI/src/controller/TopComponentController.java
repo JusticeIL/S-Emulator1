@@ -6,10 +6,8 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -125,6 +123,7 @@ public class TopComponentController{
                         leftController.setCurrentLevel(0);
                         leftController.updateExpansionLevels();
                         leftController.resetLevelExpansionButtonText();
+                        leftController.updateVariablesOrLabelSelectionMenu();
 
                     }
                     if (rightController != null) {

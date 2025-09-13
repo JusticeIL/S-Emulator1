@@ -2,7 +2,9 @@ package program.data;
 
 import instruction.component.Variable;
 
-public class VariableDTO {
+import java.util.Objects;
+
+public class VariableDTO implements Searchable {
     private final String name;
     private final int value;
 
@@ -16,6 +18,7 @@ public class VariableDTO {
         this.value = value;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -26,5 +29,17 @@ public class VariableDTO {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        VariableDTO that = (VariableDTO) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
     }
 }

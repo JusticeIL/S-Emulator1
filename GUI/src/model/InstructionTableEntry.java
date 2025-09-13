@@ -5,6 +5,10 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import program.data.InstructionDTO;
+import program.data.Searchable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class InstructionTableEntry {
     private final SimpleStringProperty type;
@@ -13,12 +17,19 @@ public class InstructionTableEntry {
     private final SimpleStringProperty label;
     private final SimpleIntegerProperty cycles;
 
+    private final Set<Searchable> searchables;
+
 
     public InstructionTableEntry(InstructionDTO instruction) {
+        searchables = new HashSet<>();
+        searchables.add(instruction.getLabel());
+        searchables.add(instruction.getVariable());
+        searchables.add(instruction.getDestinationLabel());
+
         this.type = new SimpleStringProperty(instruction.getType());
         this.id = new SimpleStringProperty(String.valueOf(instruction.getId()));
         this.instruction = new SimpleStringProperty(instruction.getInstruction());
-        this.label = new SimpleStringProperty(instruction.getLabel());
+        this.label = new SimpleStringProperty(instruction.getLabelName());
         this.cycles = new SimpleIntegerProperty(instruction.getCycles());
 
     }
@@ -37,5 +48,8 @@ public class InstructionTableEntry {
     public StringProperty labelProperty() { return label; }
     public IntegerProperty cyclesProperty() { return cycles; }
 
+    public Set<Searchable> getSearchables() {
+        return searchables;
+    }
 
 }

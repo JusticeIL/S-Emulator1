@@ -8,8 +8,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import model.InstructionTableEntry;
+import program.data.Searchable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class LeftSideController {
@@ -80,6 +85,8 @@ public class LeftSideController {
         this.topController = topController;
     }
 
+
+
     @FXML
     public void initialize() {
 
@@ -90,6 +97,8 @@ public class LeftSideController {
             row.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> e.consume());
             return row;
         });
+
+
 
         // Initialize the menu button of the expansion levels
         expansionLevelMenu.getItems().clear();
@@ -133,6 +142,7 @@ public class LeftSideController {
                         expansionLevelMenu.setText(String.valueOf(i));
                         model.Expand(currentLevel.get());
                         updateMainInstructionTable();
+                        updateVariablesOrLabelSelectionMenu();
                     });
                     return menuItem;
                 })
@@ -141,5 +151,32 @@ public class LeftSideController {
 
     public void resetLevelExpansionButtonText() {
         expansionLevelMenu.setText("0");
+    }
+
+
+    public void updateVariablesOrLabelSelectionMenu(){
+        Set<Searchable> searchables = new HashSet<>();
+        highlightSelection.getItems().clear();
+        instructionsTable.getItems().forEach(entry -> {
+            searchables.addAll(entry.getSearchables().stream().filter(searchable -> !Objects.equals(searchable.getName(), "    ")).collect(Collectors.toSet()));
+        });
+        searchables.forEach(searchable -> {
+            Label label = new Label(searchable.getName());
+            label.setMaxWidth(Double.MAX_VALUE);
+            label.setStyle("-fx-alignment: center;");
+            CustomMenuItem Choice = new CustomMenuItem(label, true);
+            Choice.setUserData(searchable.getName());
+            label.prefWidthProperty().bind(highlightSelection.widthProperty());
+            Choice.setOnAction((ActionEvent event) -> {
+                instructionsTable.getSelectionModel().clearSelection();
+                instructionsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                instructionsTable.getItems().stream().filter(inst->inst.getSearchables().stream()
+                        .anyMatch(s -> s.getName().equals(searchable.getName()))
+                ).forEach(inst -> {
+                            instructionsTable.getSelectionModel().select(inst);
+                        });
+            });
+            highlightSelection.getItems().add(Choice);
+        });
     }
 }
