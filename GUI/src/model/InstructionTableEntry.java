@@ -25,6 +25,7 @@ public class InstructionTableEntry {
         searchables.add(instruction.getLabel());
         searchables.add(instruction.getVariable());
         searchables.add(instruction.getDestinationLabel());
+        searchables.add(instruction.getArgumentVariable());
 
         this.type = new SimpleStringProperty(instruction.getType());
         this.id = new SimpleStringProperty(String.valueOf(instruction.getId()));
