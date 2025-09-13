@@ -53,6 +53,11 @@ public class LeftSideController {
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;
 
+        highlightSelection.disableProperty().bind(
+                Bindings.isEmpty(highlightSelection.getItems())
+                        .or(rightController.isInDebugModeProperty())
+        );
+
         expansionLevelMenu.disableProperty().bind(
                 Bindings.isEmpty(expansionLevelMenu.getItems())
                         .or(rightController.isInDebugModeProperty())
@@ -105,11 +110,11 @@ public class LeftSideController {
 
         // Initialize the highlight selection menu button
         highlightSelection.getItems().clear();
-        highlightSelection.disableProperty().bind(Bindings.isEmpty(highlightSelection.getItems()));
 
         // Initialize the program or function selectin menu button
         functionChooser.getItems().clear();
         functionChooser.disableProperty().bind(Bindings.isEmpty(functionChooser.getItems()));
+
     }
 
     public void markEntryInInstructionTable(int entryId) {
@@ -151,7 +156,7 @@ public class LeftSideController {
     }
 
 
-    public void updateVariablesOrLabelSelectionMenu(){
+    public void updateVariablesOrLabelSelectionMenu() {
         Set<Searchable> searchables = new HashSet<>();
         highlightSelection.getItems().clear();
         instructionsTable.getItems().forEach(entry -> {
@@ -190,11 +195,11 @@ public class LeftSideController {
             Choice.setOnAction((ActionEvent event) -> {
                 instructionsTable.getSelectionModel().clearSelection();
                 instructionsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                instructionsTable.getItems().stream().filter(inst->inst.getSearchables().stream()
+                instructionsTable.getItems().stream().filter(inst -> inst.getSearchables().stream()
                         .anyMatch(s -> s.getName().equals(searchable.getName()))
                 ).forEach(inst -> {
-                            instructionsTable.getSelectionModel().select(inst);
-                        });
+                    instructionsTable.getSelectionModel().select(inst);
+                });
             });
             highlightSelection.getItems().add(Choice);
         });
