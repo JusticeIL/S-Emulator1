@@ -10,10 +10,7 @@ import javafx.scene.input.MouseEvent;
 import model.InstructionTableEntry;
 import program.data.Searchable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -160,7 +157,30 @@ public class LeftSideController {
         instructionsTable.getItems().forEach(entry -> {
             searchables.addAll(entry.getSearchables().stream().filter(searchable -> !Objects.equals(searchable.getName(), "    ")).collect(Collectors.toSet()));
         });
-        searchables.forEach(searchable -> {
+
+        List<Searchable> sortedSearchables = searchables.stream()
+                .sorted(Comparator
+                        .comparingInt((Searchable s) -> {
+                            String name = s.getName();
+                            if (name.startsWith("y")) return 1;
+                            if (name.startsWith("x")) return 2;
+                            if (name.startsWith("z")) return 3;
+                            if (name.startsWith("L")) return 4;
+                            return 5; // everything else goes last
+                        })
+                        .thenComparingInt(s -> {
+                            String name = s.getName().substring(1); // drop prefix
+                            try {
+                                return Integer.parseInt(name);
+                            } catch (NumberFormatException e) {
+                                return Integer.MAX_VALUE; // non-numeric goes last
+                            }
+                        })
+                )
+                .toList();
+
+
+        sortedSearchables.forEach(searchable -> {
             Label label = new Label(searchable.getName());
             label.setMaxWidth(Double.MAX_VALUE);
             label.setStyle("-fx-alignment: center;");
