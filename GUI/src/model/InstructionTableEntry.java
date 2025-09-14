@@ -16,9 +16,8 @@ public class InstructionTableEntry {
     private final SimpleStringProperty instruction;
     private final SimpleStringProperty label;
     private final SimpleIntegerProperty cycles;
-
     private final Set<Searchable> searchables;
-
+    private final InstructionDTO instructionDTO;
 
     public InstructionTableEntry(InstructionDTO instruction) {
         searchables = new HashSet<>();
@@ -33,6 +32,7 @@ public class InstructionTableEntry {
         this.label = new SimpleStringProperty(instruction.getLabelName());
         this.cycles = new SimpleIntegerProperty(instruction.getCycles());
 
+        this.instructionDTO = instruction;
     }
 
     // --- getters for table ---
@@ -41,6 +41,7 @@ public class InstructionTableEntry {
     public String getInstruction() { return instruction.get(); }
     public String getLabel() { return label.get(); }
     public int getCycles() { return cycles.get(); }
+    public InstructionDTO getInstructionDTO() { return instructionDTO; }
 
     // --- properties for table ---
     public StringProperty typeProperty() { return type; }
@@ -52,5 +53,4 @@ public class InstructionTableEntry {
     public Set<Searchable> getSearchables() {
         return searchables;
     }
-
 }

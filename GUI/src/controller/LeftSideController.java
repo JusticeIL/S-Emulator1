@@ -1,14 +1,22 @@
 package controller;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
 import model.InstructionTableEntry;
+import program.data.InstructionDTO;
 import program.data.Searchable;
 
 import java.util.*;
@@ -22,6 +30,7 @@ public class LeftSideController {
     private SingleProgramController model;
     private final IntegerProperty currentLevel = new SimpleIntegerProperty(-1);
     private IntegerProperty maxLevel = new SimpleIntegerProperty(-1);
+    private final int HISTORY_CHAIN_EFFECT_DURATION = 300; // milliseconds
 
     @FXML
     private InstructionTableController chosenInstructionHistoryTableController;
@@ -72,7 +81,7 @@ public class LeftSideController {
         });
     }
 
-    public void updateMainInstructionTable(){
+    public void updateMainInstructionTable() {
         model.getProgramData().ifPresent(programData -> {
             List<InstructionTableEntry> entries = programData.getProgramInstructions().stream()
                     .map(InstructionTableEntry::new) // Convert InstructionDTO -> InstructionTableEntry
@@ -100,6 +109,11 @@ public class LeftSideController {
 
         instructionsTable.setRowFactory(tv -> {
             TableRow<InstructionTableEntry> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    updateHistoryInstructionTable(row.getItem().getInstructionDTO());
+                }
+            });
             return row;
         });
 
@@ -115,6 +129,14 @@ public class LeftSideController {
         // Initialize the program or function selectin menu button
         functionChooser.getItems().clear();
         functionChooser.disableProperty().bind(Bindings.isEmpty(functionChooser.getItems()));
+
+        // Initialize the history chain table and disable mouse interaction
+        ChosenInstructionHistoryTable.setRowFactory(tv -> {
+            TableRow<InstructionTableEntry> row = new TableRow<>() {};
+            row.addEventFilter(MouseEvent.ANY, Event::consume);
+            return row;
+        });
+
     }
 
     public void markEntryInInstructionTable(int entryId) {
@@ -201,6 +223,37 @@ public class LeftSideController {
                 });
             });
             highlightSelection.getItems().add(Choice);
+        });
+    }
+
+    public void updateHistoryInstructionTable(InstructionDTO instruction) {
+        List<InstructionTableEntry> historyEntries = new ArrayList<>();
+        InstructionDTO parent = instruction.getParentInstruction();
+        while (parent != null) {
+            historyEntries.add(new InstructionTableEntry(parent));
+            parent = parent.getParentInstruction();
+        }
+        // Clear the table first
+        ChosenInstructionHistoryTable.getItems().clear();
+        ChosenInstructionHistoryTable.getItems().addAll(historyEntries);
+
+        // Run after layout to ensure rows are created
+        Platform.runLater(() -> {
+            List<Node> rows = new ArrayList<>(ChosenInstructionHistoryTable.lookupAll(".table-row-cell"));
+            rows.forEach(row -> row.setOpacity(0));
+
+            int delay = 0;
+            for (Node row : rows) {
+                PauseTransition pause = new PauseTransition(Duration.millis(delay));
+                pause.setOnFinished(e -> {
+                    FadeTransition fade = new FadeTransition(Duration.millis(200), row);
+                    fade.setFromValue(0);
+                    fade.setToValue(1);
+                    fade.play();
+                });
+                pause.play();
+                delay += HISTORY_CHAIN_EFFECT_DURATION;
+            }
         });
     }
 }

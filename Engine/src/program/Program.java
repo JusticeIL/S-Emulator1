@@ -91,14 +91,6 @@ public class Program implements Serializable {
         return programName;
     }
 
-    public List<String> getExpandedProgramStringRepresentation() {
-        List<String> result = new ArrayList<>();
-        for (instruction.Instruction instruction : instructionList) {
-            result.addAll(instruction.getExpandedStringRepresentation());
-        }
-        return result;
-    }
-
     public Program expand(int level) {
         if (level == 0) {
             return this;

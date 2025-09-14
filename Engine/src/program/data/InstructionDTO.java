@@ -13,6 +13,7 @@ public class InstructionDTO {
     private final LabelDTO destinationLabel;
     private final String fullExpandedStringRepresentation;
     private final String type;
+    private final InstructionDTO parentInstruction;
 
     public VariableDTO getArgumentVariable() {
         return argumentVariable;
@@ -37,14 +38,22 @@ public class InstructionDTO {
         if (instruction instanceof HasSecondArgument hasSecond) {
             this.argumentVariable = new VariableDTO(hasSecond.getArgumentVariable());
         } else {
-            this.argumentVariable = this.variable; // or null, depending on your semantics
+            this.argumentVariable = this.variable;
         }
 
         this.fullExpandedStringRepresentation = instruction.toString();
         this.type = instruction.getInstructionType().toString();
+        if (instruction.getParentInstruction() != null) {
+            this.parentInstruction = new InstructionDTO(instruction.getParentInstruction());
+        }
+        else {
+            this.parentInstruction = null;
+        }
     }
 
-
+    public InstructionDTO getParentInstruction() {
+        return parentInstruction;
+    }
 
     public int getId() {
         return id;

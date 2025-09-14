@@ -91,5 +91,9 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         return thisInstructionString;
     }
 
+    public Instruction getParentInstruction() {
+        return parentInstruction;
+    }
+
     public abstract List<String> getExpandedStringRepresentation();
 }
