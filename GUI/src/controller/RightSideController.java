@@ -158,10 +158,10 @@ public class RightSideController{
         historySizeProperty.addListener((obs, oldSize, newSize) -> updateStatisticsTable());
 
         RerunBtn.disableProperty().bind(
-                Bindings.isEmpty(StatisticsTable.getItems())
+                Bindings.isEmpty(StatisticsTable.getItems()).or(Bindings.isEmpty(StatisticsTable.getSelectionModel().getSelectedItems()))
         );
         ShowStatisticsBtn.disableProperty().bind(
-                Bindings.isEmpty(StatisticsTable.getItems())
+                Bindings.isEmpty(StatisticsTable.getItems()).or(Bindings.isEmpty(StatisticsTable.getSelectionModel().getSelectedItems()))
         );
         StepOverDebugBtn.disableProperty().bind(isDebugMode.not());
         ResumeDebugBtn.disableProperty().bind(isDebugMode.not());
@@ -178,6 +178,8 @@ public class RightSideController{
         RunProgramBtn.disableProperty().bind(
                 isProgramLoaded.not().or(isDebugMode)
         );
+
+
 
         // Initialize the cycles label
         cyclesLabel.textProperty().bind(Bindings.createStringBinding(
