@@ -1,10 +1,9 @@
 O.O.B:
 
-1. Update run to include a map of all variables and their values
-2. Add a popup on show history that shows all variables and their values on a tableview.
-3. Switch the plus and minus to a menu button
-4. Make new JAXB classes for exercise 2
-5. Make the rerun button on the history go disable if there is no run selected in the tableview
-6. Export the lambda from the "setup new run" to a method so it can be reused in the history "rerun" button (and afterwards we do the assignment of the variables)
-7. Fix debug to stop when finished
-8. Add Cycles: --- on "setup new run" onAction and "Cycles: 0" when debug or run are pressed
+1. Make new JAXB classes for exercise 2
+2. Make the rerun button on the history go disable if there is no run selected in the tableview
+3. Implement resume functionality in the debug
+4. Verify that "Cycles: ---" changes to "Cycles: 0" when a new program is loaded
+5. Verify that "Cycles: 0" changes to "Cycles: X" when the debug or run button is pressed and correctly counts up
+6. Verify that "Cycles: X" stops counting when the stop button is pressed
+7. Verify that "Cycles: X" resets to "Cycles: 0" when a new program is loaded
