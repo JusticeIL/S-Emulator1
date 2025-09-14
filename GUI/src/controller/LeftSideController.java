@@ -77,6 +77,19 @@ public class LeftSideController {
                 event.consume();
             }
         });
+
+        summaryLine.textProperty().bind(
+                Bindings.when(rightController.isProgramLoaded())
+                        .then(Bindings.createStringBinding(() ->
+                                        "Program contains " +
+                                                instructionsTable.getItems().stream().filter(entry -> "B".equals(entry.getType())).count() +
+                                                " Basic Instructions, and " +
+                                                instructionsTable.getItems().stream().filter(entry -> "S".equals(entry.getType())).count() +
+                                                " Synthetic Instructions",
+                                instructionsTable.getItems()
+                        ))
+                        .otherwise("")
+        );
     }
 
     public void updateMainInstructionTable() {

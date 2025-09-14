@@ -4,6 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -216,6 +217,14 @@ public class RightSideController{
             StatisticsTable.getItems().setAll(entries);// Replace items in the table
         })
         ;
+    }
+
+    public ObservableBooleanValue isProgramLoaded() {
+        return isProgramLoaded;
+    }
+
+    public BooleanProperty isProgramLoadedProperty() {
+        return isProgramLoaded;
     }
 
     public void clearStatisticsTable() {
