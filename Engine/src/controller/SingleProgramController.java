@@ -14,23 +14,36 @@ import java.util.*;
 public class SingleProgramController implements Model, Serializable {
 
     private Program activeProgram;
-    private final Map<Integer, Program> ProgramExpansionsByLevel = new HashMap<>();
-    private Statistics statistics;
+    private Map<Integer, Program> activeProgramExpansionsByLevel;
+    private final Map<String,Map<Integer,Program>> programsAndFunctionsByName = new  HashMap<>();
     private final ProgramExecutioner programExecutioner = new ProgramExecutioner();
     private boolean isCurrentlyInDebugMode = false;
 
     @Override
     public void loadProgram(String path) throws FileNotFoundException, JAXBException {
         try {
-            ProgramExpansionsByLevel.clear();
+            programsAndFunctionsByName.clear();
+            activeProgramExpansionsByLevel= new HashMap<>();
             this.activeProgram = new Program(path);
-            this.ProgramExpansionsByLevel.put(0, activeProgram);
-            this.statistics = new Statistics();
+            this.activeProgramExpansionsByLevel.put(0, activeProgram);
+            this.programsAndFunctionsByName.put(activeProgram.getProgramName(), activeProgramExpansionsByLevel);
+            fillFunctionsTable();//TODO: implement upon inclusion of Functions
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("File not found at path: " + path);
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
         }
+    }
+
+    @Override
+    public void switchFunction(String functionName) {
+            activeProgramExpansionsByLevel = programsAndFunctionsByName.get(functionName);
+            activeProgram = activeProgramExpansionsByLevel.get(0);
+    }//TODO: Change upon inclusion of Functions
+
+    private void fillFunctionsTable(){
+        //scan program for functions it holds
+        //for each function -> create new entry in main DataStructure
     }
 
     @Override
@@ -60,19 +73,19 @@ public class SingleProgramController implements Model, Serializable {
 
     @Override
     public void Expand(int level) {
-        int maxLevel = ProgramExpansionsByLevel.get(0).getMaxProgramLevel();
+        int maxLevel = activeProgramExpansionsByLevel.get(0).getMaxProgramLevel();
         if(level > maxLevel) {
             throw new IllegalArgumentException("Level exceeds maximum program level of " + maxLevel);
         }
         else if (level < 0) {
             throw new IllegalArgumentException("Level is a negative number! the level number should be between 0 and " + activeProgram.getMaxProgramLevel());
         }
-        if(ProgramExpansionsByLevel.containsKey(level)) {
-            activeProgram = ProgramExpansionsByLevel.get(level);
+        if(activeProgramExpansionsByLevel.containsKey(level)) {
+            activeProgram = activeProgramExpansionsByLevel.get(level);
         } else {
-            Program expandedProgram = ProgramExpansionsByLevel.get(0).expand(level);
+            Program expandedProgram = activeProgramExpansionsByLevel.get(0).expand(level);
             if(expandedProgram != null) {
-                ProgramExpansionsByLevel.put(level, expandedProgram);
+                activeProgramExpansionsByLevel.put(level, expandedProgram);
                 activeProgram = expandedProgram;
             }
         }

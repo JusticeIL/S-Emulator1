@@ -18,4 +18,5 @@ public interface Model {
     void stepOver();
     void stopDebug();
     void resumeDebug();
+    void switchFunction(String functionName);
 }
