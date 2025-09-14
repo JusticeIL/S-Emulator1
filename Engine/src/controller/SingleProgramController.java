@@ -45,12 +45,17 @@ public class SingleProgramController implements Model, Serializable {
     }
 
     @Override
-    public void StopDebug() {
+    public void stopDebug() {
         if(isCurrentlyInDebugMode) {
             programExecutioner.stopDebug();
             programExecutioner.setDebugMode(false);
             isCurrentlyInDebugMode = false;
         }
+    }
+
+    @Override
+    public void resumeDebug() {
+        programExecutioner.resumeDebug();
     }
 
     @Override

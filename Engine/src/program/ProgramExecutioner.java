@@ -120,4 +120,11 @@ public class ProgramExecutioner {
 
         program.getStatistics().addRunToHistory(currentRunLevelForDebug, xInitializedVariablesForDebug, finalStateOfAllVariables, cycleCounter);
     }
+
+    public void resumeDebug() {
+        while (currentCommandIndex < program.getInstructionList().size()) {
+            executeSingleInstruction();
+        }
+        stopDebug();
+    }
 }

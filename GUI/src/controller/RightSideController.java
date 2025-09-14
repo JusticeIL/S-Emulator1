@@ -263,7 +263,13 @@ public class RightSideController{
 
     @FXML
     void ResumeDebugPressed(ActionEvent event) {
-
+        model.resumeDebug();
+        updateResultVariableTable();
+        updateStatisticsTable();
+        updateIsDebugProperty();
+        leftController.clearMarkInInstructionTable();
+        model.getProgramData().ifPresent(programData ->
+                currentCycles.set(programData.getCurrentCycles()));
     }
 
     @FXML
@@ -328,7 +334,7 @@ public class RightSideController{
 
     @FXML
     void StopDebugPressed(ActionEvent event) {
-        model.StopDebug();
+        model.stopDebug();
         updateIsDebugProperty();
         updateStatisticsTable();
         leftController.clearMarkInInstructionTable();
