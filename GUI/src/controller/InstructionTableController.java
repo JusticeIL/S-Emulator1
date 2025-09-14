@@ -29,5 +29,4 @@ public class InstructionTableController {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         instructionColumn.setCellValueFactory(new PropertyValueFactory<>("instruction"));
     }
-
 }
