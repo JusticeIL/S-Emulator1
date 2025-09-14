@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -62,6 +63,13 @@ public class LeftSideController {
                 Bindings.isEmpty(expansionLevelMenu.getItems())
                         .or(rightController.isInDebugModeProperty())
         );
+
+        // Bind the selection of an instruction in the left table to "if in debug mode" in right controller
+        instructionsTable.addEventFilter(MouseEvent.ANY, event -> {
+            if (rightController.isInDebugModeProperty().get()) {
+                event.consume();
+            }
+        });
     }
 
     public void updateMainInstructionTable(){
@@ -87,20 +95,13 @@ public class LeftSideController {
         this.topController = topController;
     }
 
-
-
     @FXML
     public void initialize() {
 
         instructionsTable.setRowFactory(tv -> {
             TableRow<InstructionTableEntry> row = new TableRow<>();
-            row.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> e.consume());
-            row.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> e.consume());
-            row.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> e.consume());
             return row;
         });
-
-
 
         // Initialize the menu button of the expansion levels
         expansionLevelMenu.getItems().clear();
@@ -114,7 +115,6 @@ public class LeftSideController {
         // Initialize the program or function selectin menu button
         functionChooser.getItems().clear();
         functionChooser.disableProperty().bind(Bindings.isEmpty(functionChooser.getItems()));
-
     }
 
     public void markEntryInInstructionTable(int entryId) {
@@ -183,7 +183,6 @@ public class LeftSideController {
                         })
                 )
                 .toList();
-
 
         sortedSearchables.forEach(searchable -> {
             Label label = new Label(searchable.getName());
