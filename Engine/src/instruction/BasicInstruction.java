@@ -24,7 +24,10 @@ abstract public class BasicInstruction extends Instruction {
 
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles, label, destinationLabel, InstructionType.B, variable);
+
     }
+
+
 
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
         super(num, cycles, label, destinationLabel, InstructionType.B, variable, parentInstruction);

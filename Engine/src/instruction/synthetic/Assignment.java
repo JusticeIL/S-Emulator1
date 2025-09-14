@@ -1,7 +1,6 @@
 package instruction.synthetic;
 
 import instruction.ExpandedSyntheticInstructionArguments;
-import instruction.HasSecondArgument;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
@@ -16,15 +15,9 @@ import program.Program;
 
 import java.util.*;
 
-public class Assignment extends SyntheticInstruction implements HasSecondArgument {
+public class Assignment extends SyntheticInstruction  {
 
     static private final int CYCLES = 4;
-    private final Variable argumentVariable;
-
-    @Override
-    public Variable getArgumentVariable() {
-        return argumentVariable;
-    }
 
     public Assignment(int num, Variable assignedVariable, Label label, Label destinationLabel, Variable argumentVariable) {
         super(num, assignedVariable, CYCLES, label, destinationLabel);

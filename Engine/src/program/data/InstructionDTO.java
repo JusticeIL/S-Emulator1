@@ -1,6 +1,5 @@
 package program.data;
 
-import instruction.HasSecondArgument;
 import instruction.Instruction;
 
 public class InstructionDTO {
@@ -34,13 +33,7 @@ public class InstructionDTO {
         this.label = new LabelDTO(instruction.getLabel().getLabelName());
         this.destinationLabel = new LabelDTO(instruction.getDestinationLabel().getLabelName());
         this.variable = new VariableDTO(instruction.getVariable());
-
-        if (instruction instanceof HasSecondArgument hasSecond) {
-            this.argumentVariable = new VariableDTO(hasSecond.getArgumentVariable());
-        } else {
-            this.argumentVariable = this.variable;
-        }
-
+        this.argumentVariable = new VariableDTO(instruction.getArgumentVariable());
         this.fullExpandedStringRepresentation = instruction.toString();
         this.type = instruction.getInstructionType().toString();
         if (instruction.getParentInstruction() != null) {
