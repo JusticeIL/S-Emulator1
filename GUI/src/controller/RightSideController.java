@@ -327,6 +327,7 @@ public class RightSideController{
         updateIsDebugProperty();
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
+        leftController.updateParentInstructionTableForCurrentInstruction();
     }
 
     @FXML
@@ -346,6 +347,7 @@ public class RightSideController{
         updateIsDebugProperty();
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
+        leftController.updateParentInstructionTableForCurrentInstruction();
     }
 
     @FXML

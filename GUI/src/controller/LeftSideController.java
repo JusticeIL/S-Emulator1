@@ -237,7 +237,12 @@ public class LeftSideController {
         });
     }
 
-    public void updateParentInstructionTable(InstructionDTO instruction) {
+    public void updateParentInstructionTableForCurrentInstruction(){
+        updateParentInstructionTable(instructionsTable.getSelectionModel().getSelectedItem().getInstructionDTO());
+    }
+
+
+    private void updateParentInstructionTable(InstructionDTO instruction) {
         List<InstructionTableEntry> historyEntries = new ArrayList<>();
         historyEntries.add(new InstructionTableEntry(instruction));
         InstructionDTO parent = instruction.getParentInstruction();
