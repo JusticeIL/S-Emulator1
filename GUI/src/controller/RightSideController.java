@@ -49,6 +49,7 @@ public class RightSideController{
     }
 
     public void OnProgramLoaded() {
+        updateCycles();
         isProgramLoaded.set(true);
     }
 
@@ -268,6 +269,10 @@ public class RightSideController{
         updateStatisticsTable();
         updateIsDebugProperty();
         leftController.clearMarkInInstructionTable();
+        updateCycles();
+    }
+
+    public void updateCycles(){
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
     }
@@ -340,7 +345,7 @@ public class RightSideController{
         leftController.clearMarkInInstructionTable();
     }
 
-    private void updateIsDebugProperty(){
+    public void updateIsDebugProperty(){
         if ( model.isProgramLoaded()) {
             model.getProgramData().ifPresent(data ->
                     isDebugMode.set(data.isDebugmode())

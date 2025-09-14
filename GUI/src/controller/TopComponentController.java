@@ -128,7 +128,9 @@ public class TopComponentController{
                     if (rightController != null) {
                         rightController.updateArgumentTable();
                         rightController.clearStatisticsTable();
+                        rightController.updateIsDebugProperty();
                         rightController.OnProgramLoaded();
+
                     }
                 });
             }
