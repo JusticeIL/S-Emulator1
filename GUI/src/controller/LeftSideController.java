@@ -1,9 +1,7 @@
 package controller;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
@@ -111,7 +109,7 @@ public class LeftSideController {
             TableRow<InstructionTableEntry> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty()) {
-                    updateHistoryInstructionTable(row.getItem().getInstructionDTO());
+                    updateParentInstructionTable(row.getItem().getInstructionDTO());
                 }
             });
             return row;
@@ -226,8 +224,9 @@ public class LeftSideController {
         });
     }
 
-    public void updateHistoryInstructionTable(InstructionDTO instruction) {
+    public void updateParentInstructionTable(InstructionDTO instruction) {
         List<InstructionTableEntry> historyEntries = new ArrayList<>();
+        historyEntries.add(new InstructionTableEntry(instruction));
         InstructionDTO parent = instruction.getParentInstruction();
         while (parent != null) {
             historyEntries.add(new InstructionTableEntry(parent));

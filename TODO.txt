@@ -2,6 +2,3 @@ O.O.B:
 
 1. Make new JAXB classes for exercise 2
 2. Make the rerun button on the history go disable if there is no run selected in the tableview
-3. Implement resume functionality in the debug
-4. Verify that "Cycles: ---" changes to "Cycles: 0" when a new program is loaded -- prefer it like this until run
-7. Verify that "Cycles: X" resets to "Cycles: 0" when a new program is loaded
