@@ -29,6 +29,9 @@ FlowPane, StackPane, AnchorPane {
     -fx-text-fill: #e6e6e6;
 }
 .table-row-cell:odd {
+    -fx-background-color: #1e1f22;
+}
+.table-row-cell:even {
     -fx-background-color: #232428;
 }
 .table-row-cell:selected {
@@ -39,6 +42,38 @@ FlowPane, StackPane, AnchorPane {
     -fx-padding: 8 10;
     -fx-text-fill: #e6e6e6;
 }
+
+/* Color for loaded (non-empty) rows */
+.table-row-cell:filled {
+    -fx-background-color: #232428;
+}
+
+/* Color for loaded (non-empty) cells */
+.table-cell:filled {
+    -fx-background-color: #232428;
+}
+
+.table-row-cell {
+    -fx-background-insets: 0;
+    -fx-border-color: transparent transparent #404144 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Table header hover */
+.table-view .column-header .label:hover {
+    -fx-text-fill: #72aa6c;
+}
+
+/* Color empty rows */
+.table-row-cell:empty {
+    -fx-background-color: #1e1f22;
+}
+
+.table-view .placeholder .label {
+    -fx-text-fill: #7b7e84;
+    -fx-font-style: italic;
+}
+
 
 /* Buttons: green text */
 .button {
@@ -53,6 +88,7 @@ FlowPane, StackPane, AnchorPane {
     -fx-font-weight: 600;
     -fx-cursor: hand;
 }
+
 .button:hover {
     -fx-background-color: #404144;
 }
@@ -61,6 +97,11 @@ FlowPane, StackPane, AnchorPane {
 }
 .button:focused {
     -fx-effect: innershadow(two-pass-box, rgba(30,92,155,0.12), 6, 0.0, 0, 2);
+}
+
+.button:disabled {
+    -fx-background-color: #7b7e84;
+    -fx-text-fill: #bcbec3;
 }
 
 /* Stop button */
@@ -73,11 +114,43 @@ FlowPane, StackPane, AnchorPane {
     -fx-padding: 6 12;
 }
 
+#loadFileBtn {
+    -fx-background-color: #72aa6c;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-padding: 6 12;
+}
+
+#stop_icon {
+    -fx-text-fill: transparent;
+    -fx-stroke: white;
+}
+
 /* Label styling */
 .label {
     -fx-text-fill: #e6e6e6;
     -fx-font-size: 10px;
     -fx-font-weight: 600;
+}
+
+#RunProgramBtn, #StartDebugBtn, #ResumeDebugBtn, #StepOverDebugBtn {
+    -fx-background-color: #2b2d30 !important;
+    -fx-text-fill: #72aa6c !important;
+    -fx-border-color: #72aa6c !important;
+}
+
+#currentLoadedProgramPath {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+}
+
+#summaryLine {
+    -fx-text-fill: #232428;
+    -fx-font-size: 12px;
+    -fx-font-weight: 300;
 }
 
 /* ScrollPane / ScrollBar subtle theme */
@@ -98,9 +171,4 @@ FlowPane, StackPane, AnchorPane {
 *:focused {
     -fx-focus-color: #739eea;
     -fx-faint-focus-color: rgba(115,158,234,0.18);
-}
-
-/* Table header hover */
-.table-view .column-header .label:hover {
-    -fx-text-fill: #72aa6c;
 }
