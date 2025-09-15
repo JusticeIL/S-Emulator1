@@ -3,14 +3,28 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox alignment="CENTER_LEFT" spacing="20.0" stylesheets="@../css/light-mode-right-side.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TopComponentController">
+<HBox alignment="CENTER_LEFT" fillHeight="true" spacing="20.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TopComponentController">
     <children>
-        <Button fx:id="loadFileBtn" mnemonicParsing="false" onAction="#loadProgramPressed" text="Load program" />
-      <Label fx:id="currentLoadedProgramPath" text="---" />
+        <!-- Left side: load button + label -->
+        <HBox alignment="CENTER_LEFT" spacing="20.0" HBox.hgrow="ALWAYS">
+            <children>
+                <Button fx:id="loadFileBtn" maxWidth="Infinity" mnemonicParsing="false" onAction="#loadProgramPressed" text="Load program" />
+                <Label fx:id="currentLoadedProgramPath" maxWidth="Infinity" minWidth="100.0" style="-fx-alignment: CENTER_LEFT;" text="---" />
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+        </HBox>
+
+        <!-- Right side: MenuButton stays aligned to the right -->
+        <MenuButton fx:id="skinMenu" maxWidth="Infinity" mnemonicParsing="false" text="No Available Skin">
+        </MenuButton>
     </children>
     <padding>
-        <Insets bottom="30.0" left="50.0" right="30.0" top="30.0" />
+        <Insets left="20.0" right="20.0" />
     </padding>
 </HBox>

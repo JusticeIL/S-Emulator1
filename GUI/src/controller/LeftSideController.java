@@ -237,40 +237,36 @@ public class LeftSideController {
         });
     }
 
-    public void updateParentInstructionTableForCurrentInstruction(){
-        updateParentInstructionTable(instructionsTable.getSelectionModel().getSelectedItem().getInstructionDTO());
-    }
-
-
     private void updateParentInstructionTable(InstructionDTO instruction) {
         List<InstructionTableEntry> historyEntries = new ArrayList<>();
-        historyEntries.add(new InstructionTableEntry(instruction));
         InstructionDTO parent = instruction.getParentInstruction();
         while (parent != null) {
             historyEntries.add(new InstructionTableEntry(parent));
             parent = parent.getParentInstruction();
         }
+
         // Clear the table first
         ChosenInstructionHistoryTable.getItems().clear();
         ChosenInstructionHistoryTable.getItems().addAll(historyEntries);
 
         // Run after layout to ensure rows are created
-        Platform.runLater(() -> {
-            List<Node> rows = new ArrayList<>(ChosenInstructionHistoryTable.lookupAll(".table-row-cell"));
-            rows.forEach(row -> row.setOpacity(0));
+        List<Node> rows = new ArrayList<>(ChosenInstructionHistoryTable.lookupAll(".table-row-cell"));
+        rows.forEach(row -> row.setOpacity(0));
+        int delay = 0;
+        for (Node row : rows) {
+            PauseTransition pause = new PauseTransition(Duration.millis(delay));
+            pause.setOnFinished(e -> {
+                FadeTransition fade = new FadeTransition(Duration.millis(200), row);
+                fade.setFromValue(0);
+                fade.setToValue(1);
+                fade.play();
+            });
+            pause.play();
+            delay += HISTORY_CHAIN_EFFECT_DURATION;
+        }
+    }
 
-            int delay = 0;
-            for (Node row : rows) {
-                PauseTransition pause = new PauseTransition(Duration.millis(delay));
-                pause.setOnFinished(e -> {
-                    FadeTransition fade = new FadeTransition(Duration.millis(200), row);
-                    fade.setFromValue(0);
-                    fade.setToValue(1);
-                    fade.play();
-                });
-                pause.play();
-                delay += HISTORY_CHAIN_EFFECT_DURATION;
-            }
-        });
+    public void clearHistoryChainTable() {
+        ChosenInstructionHistoryTable.getItems().clear();
     }
 }

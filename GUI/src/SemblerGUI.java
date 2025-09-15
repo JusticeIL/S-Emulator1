@@ -1,14 +1,19 @@
+import controller.PrimaryController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 public class SemblerGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("resources/fxml/primary.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("resources/fxml/primary.fxml"));;
         try {
+            Parent root = fxmlLoader.load();
+            PrimaryController primaryController = fxmlLoader.getController();
             primaryStage.setTitle("S-embler");
-            primaryStage.setScene(new javafx.scene.Scene(fxmlLoader.load(), 800, 600));
+            primaryStage.setScene(new javafx.scene.Scene(root, 800, 600));
+            primaryController.getTopComponentController().setPrimaryStage(primaryStage);
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();

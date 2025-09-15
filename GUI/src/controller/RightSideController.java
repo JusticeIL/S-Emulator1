@@ -327,7 +327,7 @@ public class RightSideController{
         updateIsDebugProperty();
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
-        leftController.updateParentInstructionTableForCurrentInstruction();
+        leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
     }
 
     @FXML
@@ -347,7 +347,6 @@ public class RightSideController{
         updateIsDebugProperty();
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
-        leftController.updateParentInstructionTableForCurrentInstruction();
     }
 
     @FXML
@@ -470,6 +469,10 @@ public class RightSideController{
         dialogStage.setScene(scene);
 
         return dialogStage;
+    }
+
+    public void clearVariableTable() {
+        variableTable.getItems().clear();
     }
 
 }

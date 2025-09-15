@@ -1,9 +1,6 @@
 package controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.layout.BorderPane;
-import program.data.ProgramData;
 
 public class PrimaryController {
 
@@ -28,5 +25,9 @@ public class PrimaryController {
         leftSideController.setModel(singleProgramController);
         rightSideController.setModel(singleProgramController);
         topComponentController.setModel(singleProgramController);
+    }
+
+    public TopComponentController getTopComponentController() {
+        return topComponentController;
     }
 }

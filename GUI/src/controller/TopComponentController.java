@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -19,6 +20,14 @@ import jakarta.xml.bind.JAXBException;
 import javafx.stage.StageStyle;
 
 import java.io.FileNotFoundException;
+import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class TopComponentController{
 
@@ -27,6 +36,7 @@ public class TopComponentController{
     private LeftSideController leftController;
     private Model model;
     private StringProperty absolutePathProperty;
+    private List<String> availableCSSFileNames;
 
     @FXML
     private Label currentLoadedProgramPath;
@@ -35,9 +45,13 @@ public class TopComponentController{
     private Button loadFileBtn;
 
     @FXML
+    private MenuButton skinMenu;
+
+    @FXML
     public void initialize() {
         absolutePathProperty = new SimpleStringProperty("---");
         currentLoadedProgramPath.textProperty().bind(absolutePathProperty);
+        availableCSSFileNames = listCssFiles();
     }
 
     private Stage createLoadingDialog(Stage owner, Task<?> task) {
@@ -67,6 +81,28 @@ public class TopComponentController{
 
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;
+
+        // Initialize the skin chooser menu
+        skinMenu.getItems().clear();
+        skinMenu.disableProperty().bind(
+                Bindings.isEmpty(skinMenu.getItems())
+                        .or(rightController.isInDebugModeProperty())
+        );
+        availableCSSFileNames.stream().forEach(fileName -> {
+            MenuItem menuItem = new MenuItem(fileName);
+            menuItem.setOnAction(event -> {
+                primaryStage.getScene().getStylesheets().clear();
+                primaryStage.getScene().getStylesheets().add(getClass().getResource("../resources/css/" + fileName + ".css").toExternalForm());
+            });
+            skinMenu.getItems().add(menuItem);
+        });
+
+        // Bind the text property based on whether items are empty or not
+        skinMenu.textProperty().bind(
+                Bindings.when(Bindings.isEmpty(skinMenu.getItems()))
+                        .then("No Available Skin")
+                        .otherwise("Choose a Skin")
+        );
     }
 
     public void setLeftController(LeftSideController leftController) {
@@ -123,6 +159,7 @@ public class TopComponentController{
                         leftController.updateExpansionLevels();
                         leftController.resetLevelExpansionButtonText();
                         leftController.updateVariablesOrLabelSelectionMenu();
+                        leftController.clearHistoryChainTable(); // Clear history chain table on new loaded program
 
                     }
                     if (rightController != null) {
@@ -130,6 +167,7 @@ public class TopComponentController{
                         rightController.clearStatisticsTable();
                         rightController.updateIsDebugProperty();
                         rightController.OnProgramLoaded();
+                        rightController.clearVariableTable(); // Clear variable table on new loaded program
 
                     }
                 });
@@ -164,5 +202,34 @@ public class TopComponentController{
         thread.start();
 
         dialog.showAndWait();
+    }
+
+    public List<String> listCssFiles() {
+        List<String> cssFiles = new ArrayList<>();
+        try {
+            URL folderUrl = Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResource("resources/css");
+            if (folderUrl != null) {
+                Path folderPath = Paths.get(folderUrl.toURI());
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath, "*.css")) {
+                    for (Path entry : stream) {
+                        cssFiles.add(removeExtension(entry.getFileName().toString()));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Collections.sort(cssFiles);
+        return cssFiles.reversed();
+    }
+
+    public static String removeExtension(String fileName) {
+        int lastDot = fileName.lastIndexOf('.');
+        if (lastDot == -1) {
+            return fileName; // Case: no extension found
+        }
+        return fileName.substring(0, lastDot);
     }
 }
