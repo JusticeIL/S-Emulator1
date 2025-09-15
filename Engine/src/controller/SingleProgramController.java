@@ -27,7 +27,13 @@ public class SingleProgramController implements Model, Serializable {
             this.activeProgram = new Program(path);
             this.activeProgramExpansionsByLevel.put(0, activeProgram);
             this.programsAndFunctionsByName.put(activeProgram.getProgramName(), activeProgramExpansionsByLevel);
-            fillFunctionsTable();//TODO: implement upon inclusion of Functions
+
+            activeProgram.getFunctions().forEach(function -> {
+                HashMap<Integer,Program> functionExpansionMap = new HashMap<>();
+                functionExpansionMap.put(0,function);
+                programsAndFunctionsByName.put(function.getProgramName(), functionExpansionMap);
+            });
+
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("File not found at path: " + path);
         } catch (JAXBException e) {
@@ -41,10 +47,7 @@ public class SingleProgramController implements Model, Serializable {
             activeProgram = activeProgramExpansionsByLevel.get(0);
     }//TODO: Change upon inclusion of Functions
 
-    private void fillFunctionsTable(){
-        //scan program for functions it holds
-        //for each function -> create new entry in main DataStructure
-    }
+
 
     @Override
     public boolean isProgramLoaded() {

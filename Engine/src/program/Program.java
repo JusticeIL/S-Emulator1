@@ -3,8 +3,8 @@ package program;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.*;
-import XMLandJaxB.SInstruction;
-import XMLandJaxB.SProgram;
+
+import XMLandJaxB.*;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;
@@ -23,6 +23,7 @@ import java.util.stream.IntStream;
 public class Program implements Serializable {
 
     private int currentCommandIndex; // Program Counter
+    private final Set<Function> functions = new HashSet<>();
     private Instruction currentInstruction;
     private int cycleCounter;
     private Program expandedProgram = null;
@@ -46,6 +47,10 @@ public class Program implements Serializable {
 
     public boolean isInDebugMode() {
         return isInDebugMode;
+    }
+
+    public Set<Function> getFunctions() {
+        return functions;
     }
 
     public void setInDebugMode(boolean inDebugMode) {
@@ -94,11 +99,9 @@ public class Program implements Serializable {
     public Program expand(int level) {
         if (level == 0) {
             return this;
-        }
-        else if (wasExpanded) {
+        } else if (wasExpanded) {
             return this.expandedProgram.expand(level - 1);
-        }
-        else {
+        } else {
             List<Instruction> expandedInstructions = new ArrayList<>();
             Map<Label, Instruction> expandedLabels = new HashMap<>(Labels);
             Set<Variable> expandedVariables = new HashSet<>(Variables.values());
@@ -121,7 +124,6 @@ public class Program implements Serializable {
     }
 
 
-
     public Program(Program baseProgram, ExpandedSyntheticInstructionArguments newInstructions) {
         // Copy statistics and program name from the base program
         this.statistics = baseProgram.getStatistics();
@@ -142,7 +144,7 @@ public class Program implements Serializable {
         this.cycleCounter = 0;
         this.runCounter = baseProgram.runCounter;
         this.currentProgramLevel = baseProgram.currentProgramLevel + 1;
-        this.maxProgramLevel = baseProgram.maxProgramLevel-1;
+        this.maxProgramLevel = baseProgram.maxProgramLevel - 1;
         this.usedXVariableNames = baseProgram.usedXVariableNames;
 
         // Set the current instruction if the list is not empty
@@ -170,23 +172,31 @@ public class Program implements Serializable {
                 if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
                     Labels.put(newInstruction.getLabel(), newInstruction);
                 }
-                if(newInstruction.getDestinationLabel().equals(EXIT_LABEL)){
+                if (newInstruction.getDestinationLabel().equals(EXIT_LABEL)) {
                     containsExit = true;
                 }
                 instructionCounter++;
             }
-            if(containsExit){
+            if (containsExit) {
                 Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
                 Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
             }
             // Load program name
             programName = sProgram.getName();
             Set<Label> missingLabels = instructionFactory.getMissingLabels();
+
+            List<SFunction> sFunctions = sProgram.getSFunctions().getSFunction();
+            sFunctions.forEach(sFunction -> {
+                try {
+                    functions.add(new Function(sFunction));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
             if (!missingLabels.isEmpty()) {
                 throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
             }
-        }
-        else  {
+        } else {
             throw new FileNotFoundException();
         }
     }
@@ -237,5 +247,50 @@ public class Program implements Serializable {
 
     public void setCycleCounter(int cycleCounter) {
         this.cycleCounter = cycleCounter;
+    }
+
+    public Program(SInstructions sInstructions, String programName) throws FileNotFoundException {
+        this.labelFactory = new LabelFactory();
+        this.variableFactory = new VariableFactory();
+
+        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory);
+        int instructionCounter = 1;
+        boolean containsExit = false;
+
+        for (SInstruction sInstr : sInstructions.getSInstruction()) {
+            Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
+            instructionList.add(newInstruction);
+            if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
+                Labels.put(newInstruction.getLabel(), newInstruction);
+            }
+            if (newInstruction.getDestinationLabel().equals(EXIT_LABEL)) {
+                containsExit = true;
+            }
+            instructionCounter++;
+        }
+        if (containsExit) {
+            Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
+            Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
+        }
+        // Load program name
+        this.programName = programName;
+        Set<Label> missingLabels = instructionFactory.getMissingLabels();
+
+        //this is for functions (their set is empty)
+        this.statistics = new Statistics();
+        this.currentCommandIndex = 0;
+        this.cycleCounter = 0;
+        this.currentInstruction = instructionList.getFirst();
+        this.runCounter = 1;
+        this.currentProgramLevel = 0;
+        this.maxProgramLevel = calculateMaxProgramLevel();
+        this.usedXVariableNames = Variables.keySet().stream()
+                .filter(name -> name.startsWith("x"))
+                .collect(Collectors.toSet());
+        if (!missingLabels.isEmpty()) {
+            throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
+        } else {
+            throw new FileNotFoundException();
+        }
     }
 }
