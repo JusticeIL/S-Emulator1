@@ -1,142 +1,106 @@
-.root {
+/* Main backgrounds */
+.root, BorderPane {
     -fx-background-color: #2b2d30;
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 13px;
-    -fx-text-fill: white;
+    -fx-text-fill: #e6e6e6;
 }
 
-/* FlowPane (top toolbar) */
-FlowPane {
+/* Transparent containers */
+FlowPane, StackPane, AnchorPane {
     -fx-background-color: transparent;
-}
-
-/* Generic containers spacing / padding fallbacks */
-.hbox, .vbox, .flow-pane {
-    -fx-padding: 8 12 8 12; /* top right bottom left */
-    -fx-spacing: 8;
-}
-
-/* Buttons: subtle, modern, slightly rounded */
-.button {
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffffff 0%, #f0f2f5 100%);
-    -fx-font-size: 10px;
-    -fx-border-color: #d7dbe0;
-    -fx-border-width: 1;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-text-fill: #1f2d3d;
-    -fx-padding: 6 12 6 12;
-    -fx-font-weight: 600;
-    -fx-cursor: hand;
-}
-.button:hover {
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #ffffff 0%, #eaeef4 100%);
-}
-.button:pressed {
-    -fx-background-color: #e0e6ec;
-}
-/* Slightly smaller buttons used in the bottom overlay will inherit this and look compact */
-.button:focused {
-    -fx-effect: innershadow(two-pass-box, rgba(30,92,155,0.12), 6, 0.0, 0, 2);
 }
 
 /* TableView styling */
 .table-view {
     -fx-background-color: #1e1f22;
-    -fx-border-color: #e1e4ea;
+    -fx-border-color: #232428;
     -fx-border-width: 1;
-    -fx-table-cell-border-color: transparent; /* rely on row backgrounds */
+    -fx-table-cell-border-color: transparent;
+}
+.table-view .placeholder {
+    -fx-background-color: #1e1f22;
 }
 
-/* Header */
-.table-view .column-header-background {
-    -fx-background-color: linear-gradient(#f3f5f7, #eef1f4);
-    -fx-border-color: transparent;
-}
-.table-view .column-header, .table-view .filler {
-    -fx-size: 34px; /* header height */
-    -fx-alignment: CENTER_LEFT;
-    -fx-font-weight: 700;
-    -fx-text-fill: #2b3948;
-    -fx-padding: 0 8 0 12;
-}
-
-/* Row styling: alternating and selection */
+/* Table rows and cells */
 .table-row-cell {
-    -fx-background-color: white;
+    -fx-background-color: #1e1f22;
     -fx-padding: 6 8;
+    -fx-text-fill: #e6e6e6;
 }
 .table-row-cell:odd {
-    -fx-background-color: #fbfcfd;
+    -fx-background-color: #232428;
 }
 .table-row-cell:selected {
-    -fx-background-color: #d9eefe; /* gentle blue selection */
-    -fx-text-fill: #071224;
+    -fx-background-color: #404144;
+    -fx-text-fill: #72aa6c;
 }
-
 .table-cell {
     -fx-padding: 8 10;
+    -fx-text-fill: #e6e6e6;
 }
 
-/* Right-to-left table visual fix: keep alignment natural */
-.table-view[nodeOrientation="RIGHT_TO_LEFT"] .table-cell {
-    -fx-alignment: CENTER_RIGHT;
-}
-
-/* StackPane (bottom area): transparent background so overlay sits on top of table */
-.StackPane, .stack-pane {
-    -fx-background-color: transparent;
-}
-
-/* AnchorPane overlay: keep transparent so bottom table is visible */
-.AnchorPane, .anchor-pane {
-    -fx-background-color: transparent;
-}
-
-/* Bottom overlay buttons (kept compact) */
-.AnchorPane .button, .anchor-pane .button {
-    -fx-pref-height: 30px;
-    -fx-pref-width: 80px;
-    -fx-font-size: 12px;
+/* Buttons: green text */
+.button {
+    -fx-background-color: #2b2d30;
+    -fx-font-size: 10px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
-}
-
-/* Label styling (the big "Cycles: ---" label already has a font in FXML) */
-.label {
-    -fx-text-fill: #1e2a33;
-    -fx-font-size: 10px;
-}
-
-/* Make the large cycle label more prominent without overriding the explicit FXML font-size */
-.label {
+    -fx-text-fill: #72aa6c;
+    -fx-padding: 6 12;
     -fx-font-weight: 600;
-    -fx-font-size: 10px;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: #404144;
+}
+.button:pressed {
+    -fx-background-color: #232428;
+}
+.button:focused {
+    -fx-effect: innershadow(two-pass-box, rgba(30,92,155,0.12), 6, 0.0, 0, 2);
 }
 
-/* ScrollPane / ScrollBar subtle theme should match the light mode */
+/* Stop button */
+#StopDebugBtn, .stop-button {
+    -fx-background-color: #ff0000;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 10px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-padding: 6 12;
+}
+
+/* Label styling */
+.label {
+    -fx-text-fill: #e6e6e6;
+    -fx-font-size: 10px;
+    -fx-font-weight: 600;
+}
+
+/* ScrollPane / ScrollBar subtle theme */
 .scroll-bar:vertical, .scroll-bar:horizontal {
     -fx-background-color: transparent;
 }
 .scroll-bar .thumb {
-    -fx-background-color: #d0d6de;
+    -fx-background-color: #404144;
     -fx-background-radius: 6;
 }
 
-/* Small utility: subtle separators if needed */
+/* Separator */
 .separator {
-    -fx-background-color: #e9edf3;
+    -fx-background-color: #404144;
 }
 
-/* Focus ring cleanup for inputs / buttons */
+/* Focus ring for inputs / buttons */
 *:focused {
     -fx-focus-color: #739eea;
     -fx-faint-focus-color: rgba(115,158,234,0.18);
 }
 
-/* Make sure table headers visually separate columns on hover */
+/* Table header hover */
 .table-view .column-header .label:hover {
-    -fx-text-fill: #0b3a66;
+    -fx-text-fill: #72aa6c;
 }
-
-/* End of stylesheet */

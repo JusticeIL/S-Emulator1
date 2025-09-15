@@ -35,7 +35,6 @@ FlowPane {
 .button:pressed {
     -fx-background-color: #e0e6ec;
 }
-/* Slightly smaller buttons used in the bottom overlay will inherit this and look compact */
 .button:focused {
     -fx-effect: innershadow(two-pass-box, rgba(30,92,155,0.12), 6, 0.0, 0, 2);
 }
@@ -106,12 +105,7 @@ FlowPane {
 .label {
     -fx-text-fill: #1e2a33;
     -fx-font-size: 10px;
-}
-
-/* Make the large cycle label more prominent without overriding the explicit FXML font-size */
-.label {
     -fx-font-weight: 600;
-    -fx-font-size: 10px;
 }
 
 /* ScrollPane / ScrollBar subtle theme should match the light mode */
