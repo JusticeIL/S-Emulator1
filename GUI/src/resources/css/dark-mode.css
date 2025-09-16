@@ -15,6 +15,9 @@ FlowPane, StackPane, AnchorPane {
 /* TableView styling */
 .table-view {
     -fx-background-color: transparent;
+    -fx-border-color: #2b2d30 !important;
+    -fx-border-width: 5px;
+    -fx-border-style: solid;
 }
 
 .table-view .column-header, .table-view .filter {
