@@ -4,6 +4,7 @@ import instruction.BasicInstruction;
 import instruction.Instruction;
 import instruction.component.LabelFactory;
 import instruction.component.VariableFactory;
+import instruction.synthetic.JumpZero;
 import program.Program;
 import instruction.component.Label;
 import instruction.component.Variable;
@@ -34,5 +35,10 @@ public class JumpNotZero extends BasicInstruction {
         }
         else
             return Program.EMPTY_LABEL;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new JumpNotZero(number,newVariable,newLabel, newDestinationLabel);
     }
 }

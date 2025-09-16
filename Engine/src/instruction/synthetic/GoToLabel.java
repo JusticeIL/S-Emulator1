@@ -49,4 +49,9 @@ public class GoToLabel extends SyntheticInstruction {
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
         return this.expandedInstruction;
     }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new GoToLabel(number,newVariable,newLabel, newDestinationLabel);
+    }
 }

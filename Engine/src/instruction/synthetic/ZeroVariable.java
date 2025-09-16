@@ -52,4 +52,9 @@ public class ZeroVariable extends SyntheticInstruction {
         variable.setValue(0);
         return destinationLabel;
     }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new ZeroVariable(number,newVariable,newLabel, newDestinationLabel);
+    }
 }

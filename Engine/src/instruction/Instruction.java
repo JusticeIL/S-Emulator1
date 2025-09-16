@@ -104,6 +104,5 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
 
     public abstract List<String> getExpandedStringRepresentation();
 
-    public Instruction duplicate() {
-    }
+    abstract public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel);
 }

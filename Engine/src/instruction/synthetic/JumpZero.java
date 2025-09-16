@@ -57,4 +57,9 @@ public class JumpZero extends SyntheticInstruction {
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
         return this.expandedInstruction;
     }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new JumpZero(number,newVariable,newLabel, newDestinationLabel);
+    }
 }

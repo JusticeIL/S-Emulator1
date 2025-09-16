@@ -6,6 +6,7 @@ import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;
 import instruction.component.VariableFactory;
+import instruction.synthetic.Assignment;
 
 public class Decrease extends BasicInstruction {
 
@@ -34,5 +35,10 @@ public class Decrease extends BasicInstruction {
             variable.setValue(tmp);
         }
         return destinationLabel;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new Decrease(number,newVariable,newLabel, newDestinationLabel);
     }
 }
