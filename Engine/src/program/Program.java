@@ -164,7 +164,7 @@ public class Program implements Serializable {
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
             // Load instructions
 
-            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory);
+            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory,functions);
             int instructionCounter = 1;
             boolean containsExit = false;
 
@@ -255,7 +255,7 @@ public class Program implements Serializable {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
 
-        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory);
+        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory,functions);
         int instructionCounter = 1;
         boolean containsExit = false;
 

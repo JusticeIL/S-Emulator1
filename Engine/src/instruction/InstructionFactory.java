@@ -13,6 +13,8 @@ import XMLandJaxB.SInstruction;
 import XMLandJaxB.SInstructionArguments;
 import instruction.component.Label;
 import instruction.component.Variable;
+import program.function.Function;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,7 @@ public class InstructionFactory {
     private final Map<String, Label> labels = new HashMap<>();
     private final Set<Label> sourceLabelSet = new HashSet<>();
     private final Map<String, Variable> variables;
+    private final Map<String, Function> functions;
 
     private Variable getVariableFromArguments(SInstructionArguments sInstrArg) {
         if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) {
@@ -91,6 +94,9 @@ public class InstructionFactory {
         Instruction instruction;
         Label label = getLabelFromSInstruction(sInstr);
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
+        Function function = getFunctionFromSInstruction(sInstr);
+        List<Variable> functionArguments = getFunctionArguments(sInstr);
+
         destinationLabelSet.add(destinationLabel);
         sourceLabelSet.add(label);
         int constant = getConstantFromSInstruction(sInstr);
@@ -107,6 +113,7 @@ public class InstructionFactory {
             case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
+            case("QUOTE") -> new Quotation(instructionCounter,variable,label,function,functionArguments);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };
@@ -114,10 +121,19 @@ public class InstructionFactory {
         return instruction;
     }
 
-    public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory) {
+    private List<Variable> getFunctionArguments(SInstruction sInstr) {
+        //TODO
+    }
+
+    private Function getFunctionFromSInstruction(SInstruction sInstr) {
+        //TODO
+    }
+
+    public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory, Map<String, Function> functions) {
         this.variables = variables;
         this.labelFactory = labelFactory;
         this.variableFactory = variableFactory;
+        this.functions = functions;
     }
 
     Variable getVariable(String variableName) {
