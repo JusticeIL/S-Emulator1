@@ -15,6 +15,8 @@ import instruction.component.VariableFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import program.function.Function;
+
 import java.io.File;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,7 +25,7 @@ import java.util.stream.IntStream;
 public class Program implements Serializable {
 
     private int currentCommandIndex; // Program Counter
-    private final Set<Function> functions = new HashSet<>();
+    private final Map<String, Function> functions = new HashMap<>();
     private Instruction currentInstruction;
     private int cycleCounter;
     private Program expandedProgram = null;
@@ -50,7 +52,7 @@ public class Program implements Serializable {
     }
 
     public Set<Function> getFunctions() {
-        return functions;
+        return new HashSet<>(functions.values());
     }
 
     public void setInDebugMode(boolean inDebugMode) {
@@ -188,7 +190,7 @@ public class Program implements Serializable {
             Optional<SFunctions> sFunctions = Optional.ofNullable(sProgram.getSFunctions());
             sFunctions.ifPresent(list->list.getSFunction().forEach(sFunction -> {
                 try {
-                    functions.add(new Function(sFunction));
+                    functions.put(sFunction.getUserString(),new Function(sFunction));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 };
