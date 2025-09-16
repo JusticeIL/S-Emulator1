@@ -185,14 +185,14 @@ public class Program implements Serializable {
             programName = sProgram.getName();
             Set<Label> missingLabels = instructionFactory.getMissingLabels();
 
-            List<SFunction> sFunctions = sProgram.getSFunctions().getSFunction();
-            sFunctions.forEach(sFunction -> {
+            Optional<SFunctions> sFunctions = Optional.ofNullable(sProgram.getSFunctions());
+            sFunctions.ifPresent(list->list.getSFunction().forEach(sFunction -> {
                 try {
                     functions.add(new Function(sFunction));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
-                }
-            });
+                };
+            }));
             if (!missingLabels.isEmpty()) {
                 throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
             }
