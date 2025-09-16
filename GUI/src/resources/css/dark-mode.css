@@ -1,9 +1,10 @@
 /* Main backgrounds */
 .root, BorderPane {
-    -fx-background-color: #2b2d30;
+    -fx-base: #2b2d30; /* Page bg */
+    -fx-background-color: #2b2d30; /* Page bg */
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 13px;
-    -fx-text-fill: #e6e6e6;
+    -fx-text-fill: white;
 }
 
 /* Transparent containers */
@@ -13,60 +14,54 @@ FlowPane, StackPane, AnchorPane {
 
 /* TableView styling */
 .table-view {
-    -fx-background-color: #1e1f22;
-    -fx-border-color: #232428;
+    -fx-background-color: transparent;
+    -fx-border-color: #444444;
     -fx-border-width: 1;
-    -fx-table-cell-border-color: transparent;
 }
+
+.table-view .column-header, .table-view .filter {
+    -fx-pref-height: 28px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-view > .sheet > .viewport {
+    -fx-background-color: #1e1f22;
+}
+
+.table-view .sheet {
+    -fx-background-color: transparent;
+}
+
 .table-view .placeholder {
     -fx-background-color: #1e1f22;
 }
 
-/* Table rows and cells */
-.table-row-cell {
-    -fx-background-color: #1e1f22;
-    -fx-padding: 6 8;
-    -fx-text-fill: #e6e6e6;
+.table-view .table-row-cell:odd {
+    -fx-background-color: #2b2d30;
 }
-.table-row-cell:odd {
+
+.table-view .table-row-cell:even {
     -fx-background-color: #1e1f22;
 }
-.table-row-cell:even {
-    -fx-background-color: #232428;
-}
-.table-row-cell:selected {
-    -fx-background-color: #404144;
-    -fx-text-fill: #72aa6c;
-}
-.table-cell {
-    -fx-padding: 8 10;
-    -fx-text-fill: #e6e6e6;
-}
 
-/* Color for loaded (non-empty) rows */
-.table-row-cell:filled {
-    -fx-background-color: #232428;
-}
-
-/* Color for loaded (non-empty) cells */
-.table-cell:filled {
-    -fx-background-color: #232428;
-}
-
-.table-row-cell {
-    -fx-background-insets: 0;
-    -fx-border-color: transparent transparent #404144 transparent;
-    -fx-border-width: 0 0 1 0;
-}
-
-/* Table header hover */
-.table-view .column-header .label:hover {
-    -fx-text-fill: #72aa6c;
-}
-
-/* Color empty rows */
-.table-row-cell:empty {
+.table-view .column-header-background {
     -fx-background-color: #1e1f22;
+}
+
+/* Column headers text */
+.table-view .column-header, .table-view .column-header .label {
+    -fx-text-fill: white;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-view .column-header:hover .label {
+    -fx-text-fill: #72aa6c !important;
 }
 
 .table-view .placeholder .label {
@@ -74,101 +69,206 @@ FlowPane, StackPane, AnchorPane {
     -fx-font-style: italic;
 }
 
+.table-view .table-row-cell:selected {
+    -fx-background-color: #404144;
+    -fx-text-fill: #cd9d72;
+}
+
+.table-view .table-row-cell:selected .table-cell {
+    -fx-background-color: #404144;
+    -fx-text-fill: #cd9d72;
+}
+
+/* Table rows and cells */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 1 0; /* bottom border */
+    -fx-text-fill: white;
+}
+
+/* Selected row should have a brighter dark bg and readable color*/
+.table-row-cell:selected {
+    -fx-background-color: #404144;
+    -fx-text-fill: #cd9d72;
+}
+
+.table-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-cell:selected {
+    -fx-background-color: #404144;
+    -fx-text-fill: #cd9d72;
+    -fx-alignment: CENTER_LEFT;
+}
 
 /* Buttons: green text */
 .button {
-    -fx-background-color: #2b2d30;
-    -fx-font-size: 10px;
+    -fx-background-color: transparent;
+    -fx-text-fill: #72aa6c; /* Green text for primary icons */
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
     -fx-border-color: transparent;
     -fx-border-width: 0;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-text-fill: #72aa6c;
-    -fx-padding: 6 12;
-    -fx-font-weight: 600;
-    -fx-cursor: hand;
 }
 
 .button:hover {
     -fx-background-color: #404144;
 }
 .button:pressed {
-    -fx-background-color: #232428;
-}
-.button:focused {
-    -fx-effect: innershadow(two-pass-box, rgba(30,92,155,0.12), 6, 0.0, 0, 2);
+    -fx-background-color: #2b2d30;
 }
 
 .button:disabled {
     -fx-background-color: #7b7e84;
     -fx-text-fill: #bcbec3;
+    -fx-opacity: 0.9;
 }
 
 /* Stop button */
 #StopDebugBtn, .stop-button {
-    -fx-background-color: #ff0000;
-    -fx-text-fill: #ffffff;
-    -fx-font-size: 10px;
+    -fx-background-color: #bb5753;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 12;
     -fx-border-color: transparent;
     -fx-border-radius: 6;
-    -fx-padding: 6 12;
 }
 
-#loadFileBtn {
+#StopDebugBtn:disabled, .stop-button:disabled {
+    -fx-background-color: #a36d6c;
+    -fx-text-fill: #bcbec3;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 12;
+    -fx-border-width: 0;
+    -fx-border-radius: 6;
+}
+
+#loadFileBtn, #ShowStatisticsBtn, #RerunBtn {
     -fx-background-color: #72aa6c;
     -fx-text-fill: white;
-    -fx-font-size: 10px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
     -fx-border-color: transparent;
     -fx-border-radius: 6;
     -fx-padding: 6 12;
 }
 
-#stop_icon {
+#ShowStatisticsBtn:disabled, #RerunBtn:disabled {
+    -fx-background-color: #869484;
+    -fx-text-fill: #bcbec3;
+}
+
+#stop_icon{
     -fx-text-fill: transparent;
     -fx-stroke: white;
+}
+
+#run_icon {
+    -fx-stroke: #72aa6c;
+}
+
+#run_icon:disabled {
+    -fx-stroke: #bcbec3;
+}
+
+#debug_icon, #resume_icon, #stepover_icon {
+    -fx-text-fill: transparent;
+    -fx-fill: #72aa6c;
+    -fx-stroke: transparent;
+}
+
+#debug_icon:disabled, #resume_icon:disabled, #stepover_icon:disabled {
+    -fx-text-fill: transparent;
+    -fx-fill: #bcbec3;
+    -fx-stroke: transparent;
+}
+
+#RunProgramBtn, #StartDebugBtn, #ResumeDebugBtn, #StepOverDebugBtn, #SetUpRunBtn {
+    -fx-background-color: #404144 !important;
+    -fx-text-fill: #72aa6c !important;
+    -fx-border-color: #72aa6c !important;
+}
+
+#RunProgramBtn:disabled, #StartDebugBtn:disabled, #ResumeDebugBtn:disabled, #StepOverDebugBtn:disabled, #SetUpRunBtn:disabled {
+    -fx-background-color: #7b7e84 !important;
+    -fx-text-fill: #bcbec3 !important;
+    -fx-border-color: #bcbec3 !important;
+}
+
+/* Menu buttons styling */
+.menu-button, .menu-button > .label {
+    -fx-background-color: #72aa6c;
+    -fx-text-fill: white;
+    -fx-padding: 5 5;
+    -fx-font-weight: 600;
+    -fx-alignment: CENTER;
+}
+
+.menu-item {
+    -fx-background-color: #2b2d30;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+}
+
+/* Color the arrow of the menu button */
+.menu-button .arrow {
+    -fx-background-color: white;
+}
+
+.menu-item:hover {
+    -fx-background-color: #404144;
+    -fx-alignment: CENTER;
+}
+
+/* Color the text on the menu options */
+.menu-item .label {
+    -fx-text-fill: white;
 }
 
 /* Label styling */
 .label {
     -fx-text-fill: #e6e6e6;
-    -fx-font-size: 10px;
+    -fx-font-size: 11px;
     -fx-font-weight: 600;
-}
-
-#RunProgramBtn, #StartDebugBtn, #ResumeDebugBtn, #StepOverDebugBtn {
-    -fx-background-color: #2b2d30 !important;
-    -fx-text-fill: #72aa6c !important;
-    -fx-border-color: #72aa6c !important;
 }
 
 #currentLoadedProgramPath {
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
+    -fx-background-color: transparent;
 }
 
 #summaryLine {
-    -fx-text-fill: #232428;
+    -fx-text-fill: #cfcfcf;
     -fx-font-size: 12px;
-    -fx-font-weight: 300;
+    -fx-font-weight: 400;
 }
 
 /* ScrollPane / ScrollBar subtle theme */
 .scroll-bar:vertical, .scroll-bar:horizontal {
     -fx-background-color: transparent;
+    -fx-pref-width: 8;
 }
 .scroll-bar .thumb {
     -fx-background-color: #404144;
     -fx-background-radius: 6;
 }
 
-/* Separator */
-.separator {
-    -fx-background-color: #404144;
+.scroll-bar .track {
+    -fx-background-color: transparent;
 }
 
 /* Focus ring for inputs / buttons */
 *:focused {
-    -fx-focus-color: #739eea;
-    -fx-faint-focus-color: rgba(115,158,234,0.18);
+    -fx-focus-color: #72aa6c;
+    -fx-faint-focus-color: #72aa6c;
 }
