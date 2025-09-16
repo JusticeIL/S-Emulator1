@@ -87,7 +87,6 @@
                     <columns>
                         <TableColumn fx:id="runNumberColumn" text="Run" />
                         <TableColumn fx:id="expansionLevelColumn" text="Level" />
-                        <TableColumn text="Args" fx:id="xInputArgumentsColumn" />
                         <TableColumn fx:id="yOutputColumn" text="y" />
                         <TableColumn fx:id="cyclesConsumedColumn" text="Cycles" />
                     </columns>

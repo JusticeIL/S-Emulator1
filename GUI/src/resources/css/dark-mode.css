@@ -15,8 +15,6 @@ FlowPane, StackPane, AnchorPane {
 /* TableView styling */
 .table-view {
     -fx-background-color: transparent;
-    -fx-border-color: #444444;
-    -fx-border-width: 1;
 }
 
 .table-view .column-header, .table-view .filter {
@@ -24,14 +22,6 @@ FlowPane, StackPane, AnchorPane {
     -fx-alignment: CENTER_LEFT;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-}
-
-.table-view > .sheet > .viewport {
-    -fx-background-color: #1e1f22;
-}
-
-.table-view .sheet {
-    -fx-background-color: transparent;
 }
 
 .table-view .placeholder {
