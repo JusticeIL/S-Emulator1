@@ -86,7 +86,6 @@ public class TopComponentController{
         skinMenu.getItems().clear();
         skinMenu.disableProperty().bind(
                 Bindings.isEmpty(skinMenu.getItems())
-                        .or(rightController.isInDebugModeProperty())
         );
         availableCSSFileNames.stream().forEach(fileName -> {
             MenuItem menuItem = new MenuItem(fileName);

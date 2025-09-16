@@ -93,9 +93,6 @@ public class RightSideController{
     private TableColumn<HistoryTableEntry, Number> expansionLevelColumn;
 
     @FXML
-    private TableColumn<HistoryTableEntry, String> xInputArgumentsColumn;
-
-    @FXML
     private TableColumn<HistoryTableEntry, Number> yOutputColumn;
 
     @FXML
@@ -152,15 +149,17 @@ public class RightSideController{
         // Statistics Table columns initializing
         runNumberColumn.setCellValueFactory(new PropertyValueFactory<>("run"));
         expansionLevelColumn.setCellValueFactory(new PropertyValueFactory<>("level"));
-        xInputArgumentsColumn.setCellValueFactory(new PropertyValueFactory<>("args"));
         yOutputColumn.setCellValueFactory(new PropertyValueFactory<>("y"));
         cyclesConsumedColumn.setCellValueFactory(new PropertyValueFactory<>("cycles"));
 
         historySizeProperty.addListener((obs, oldSize, newSize) -> updateStatisticsTable());
 
         RerunBtn.disableProperty().bind(
-                Bindings.isEmpty(StatisticsTable.getItems()).or(Bindings.isEmpty(StatisticsTable.getSelectionModel().getSelectedItems()))
+                Bindings.isEmpty(StatisticsTable.getItems())
+                        .or(Bindings.isEmpty(StatisticsTable.getSelectionModel().getSelectedItems()))
+                        .or(isDebugMode)
         );
+
         ShowStatisticsBtn.disableProperty().bind(
                 Bindings.isEmpty(StatisticsTable.getItems()).or(Bindings.isEmpty(StatisticsTable.getSelectionModel().getSelectedItems()))
         );

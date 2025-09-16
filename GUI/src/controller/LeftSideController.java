@@ -88,7 +88,7 @@ public class LeftSideController {
                                                 " Synthetic Instructions",
                                 instructionsTable.getItems()
                         ))
-                        .otherwise("")
+                        .otherwise("No program loaded.")
         );
     }
 
