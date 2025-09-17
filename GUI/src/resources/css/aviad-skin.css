@@ -26,6 +26,7 @@ FlowPane, StackPane, AnchorPane {
 /* TableView styling */
 .table-view {
     -fx-background-color: transparent;
+    -fx-border-width: 0px !important;
 }
 
 .table-view .column-header, .table-view .filter {
@@ -96,7 +97,7 @@ FlowPane, StackPane, AnchorPane {
 
 .table-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: black;
+    -fx-text-fill: black !important;
     -fx-alignment: CENTER_LEFT;
 }
 
@@ -135,7 +136,7 @@ FlowPane, StackPane, AnchorPane {
 }
 
 #variableTable .placeholder .label {
-    -fx-text-fill: black;
+    -fx-text-fill: black !important;
     -fx-font-style: italic;
 }
 
@@ -150,7 +151,7 @@ FlowPane, StackPane, AnchorPane {
 
 /* ---------- Buttons (primary) ---------- */
 .button {
-    -fx-background-color: #ffff00; /* yellow like the flowpane bg */
+    -fx-background-color: #ffff00 !important; /* yellow like the flowpane bg */
     -fx-text-fill: black; /* black text for primary icons */
     -fx-font-size: 14px;
     -fx-font-weight: 600;
@@ -179,7 +180,7 @@ FlowPane, StackPane, AnchorPane {
 }
 
 #loadFileBtn {
-    -fx-background-color: #507e32;
+    -fx-background-color: #507e32 !important;
     -fx-border-width: 1px;
     -fx-font-size: 18px;
     -fx-font-family: "Calibri";
@@ -191,8 +192,8 @@ FlowPane, StackPane, AnchorPane {
 }
 
 #ShowStatisticsBtn, #RerunBtn {
-    -fx-background-color: #e7e6e6;
-    -fx-text-fill: black;
+    -fx-background-color: #e7e6e6 !important;
+    -fx-text-fill: black !important;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-border-color: transparent;
@@ -202,8 +203,8 @@ FlowPane, StackPane, AnchorPane {
 }
 
 #ShowStatisticsBtn:disabled, #RerunBtn:disabled {
-    -fx-background-color: #7b7e84;
-    -fx-text-fill: #bcbec3;
+    -fx-background-color: #7b7e84 !important;
+    -fx-text-fill: #bcbec3 !important;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
     -fx-border-color: transparent;
@@ -318,16 +319,20 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-color: black;
 }
 
+#skinMenu .label {
+    -fx-text-fill: white !important;
+}
+
 /* ---------- Labels ---------- */
 .label {
-    -fx-text-fill: black;
+    -fx-text-fill: black !important;
     -fx-font-weight: 600;
 }
 
 #currentLoadedProgramPath {
-    -fx-padding: 5 500 5 10;          /* inner padding */
-    -fx-background-color: #FBE5D6;   /* fill color inside border */
-    -fx-border-color: #2f528f;
+    -fx-padding: 5 500 5 10 !important;          /* inner padding */
+    -fx-background-color: #FBE5D6 !important;   /* fill color inside border */
+    -fx-border-color: #2f528f !important;
     -fx-border-width: 5px;
     -fx-border-style: solid;
     -fx-font-size: 18px;
