@@ -186,6 +186,8 @@ public class TopComponentController{
             // Show the error dialog on the FX thread
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
+                Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK); // Helps access and style the ok button
+                okButton.setId("ok-button");
                 alert.initOwner(primaryStage);
                 alert.initModality(Modality.APPLICATION_MODAL);
                 alert.setTitle("Error");
