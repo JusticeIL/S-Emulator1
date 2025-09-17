@@ -13,7 +13,10 @@ public class SemblerGUI extends Application {
             Parent root = fxmlLoader.load();
             PrimaryController primaryController = fxmlLoader.getController();
             primaryStage.setTitle("S-embler");
-            primaryStage.setScene(new Scene(root, 800, 600));
+            Scene primaryScene = new Scene(root, 800, 600);
+            primaryScene.getStylesheets().clear();
+            primaryScene.getStylesheets().add(getClass().getResource("resources/css/dark-mode.css").toExternalForm());
+            primaryStage.setScene(primaryScene);
             primaryController.getTopComponentController().setPrimaryStage(primaryStage);
             primaryStage.show();
         } catch (Exception e) {

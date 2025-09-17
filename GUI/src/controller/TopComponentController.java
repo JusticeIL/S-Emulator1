@@ -72,7 +72,7 @@ public class TopComponentController{
         dialog.setResizable(false);
         dialog.setTitle("Loading");
         dialog.setScene(new Scene(root));
-        // dialog.getScene().getStylesheets().add(owner.getScene().getStylesheets().getFirst());
+        dialog.getScene().getStylesheets().add(owner.getScene().getStylesheets().getFirst());
         return dialog;
     }
 
@@ -111,6 +111,9 @@ public class TopComponentController{
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        if (rightController != null) {
+            rightController.setPrimaryStage(primaryStage);
+        }
     }
 
     @FXML

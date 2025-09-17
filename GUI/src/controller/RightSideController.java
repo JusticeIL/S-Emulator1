@@ -35,6 +35,7 @@ public class RightSideController{
 
     private TopComponentController topController;
     private LeftSideController leftController;
+    private Stage primaryStage;
     private SingleProgramController model;
     private boolean isShowHistoryDialogOpen = false;
     private final IntegerProperty historySizeProperty = new SimpleIntegerProperty(0);
@@ -56,6 +57,10 @@ public class RightSideController{
 
     public void setTopController(TopComponentController topController) {
         this.topController = topController;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     public void setLeftController(LeftSideController leftController) {
@@ -415,6 +420,7 @@ public class RightSideController{
         tableView.setPrefSize(200, 200);
         tableView.setPadding(new Insets(20, 20, 50, 20));
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.setId("runAllVariablesTable");
 
         TableColumn<Object, String> colName = new TableColumn<>("Variable Name");
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -471,7 +477,7 @@ public class RightSideController{
         root.setCenter(grid);
 
         Scene scene = new Scene(root, 600, 400);
-        scene.getStylesheets().add(getClass().getResource("/resources/css/popupAllVariablesTable.css").toExternalForm());
+        scene.getStylesheets().add(primaryStage.getScene().getStylesheets().getFirst());
 
         Stage dialogStage = new Stage();
         dialogStage.setTitle("Variables table");
