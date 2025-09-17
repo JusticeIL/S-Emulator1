@@ -266,7 +266,7 @@ FlowPane, StackPane, AnchorPane {
 /* ---------- MenuButton (match primary buttons) ---------- */
 .menu-button, .menu-button > .label {
     -fx-background-color: #70ad47;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
     -fx-padding: 6 10;
     -fx-font-weight: 600;
     -fx-alignment: CENTER;
@@ -280,7 +280,7 @@ FlowPane, StackPane, AnchorPane {
 
 /* Color the arrow of the menu button */
 .menu-button .arrow {
-    -fx-background-color: white;
+    -fx-background-color: black;
 }
 
 .menu-item:hover {
@@ -290,7 +290,7 @@ FlowPane, StackPane, AnchorPane {
 
 /* Color the text on the menu options */
 .menu-item .label {
-    -fx-text-fill: white;
+    -fx-text-fill: black;
 }
 
 #functionChooser {
@@ -328,15 +328,14 @@ FlowPane, StackPane, AnchorPane {
 
 #highlightSelection > .label {
     -fx-background-color: transparent;
-    -fx-text-fill: black;
-}
-
-#highlightSelection .arrow {
-    -fx-background-color: black;
 }
 
 #skinMenu .label {
     -fx-text-fill: white !important;
+}
+
+#skinMenu .arrow {
+    -fx-background-color: white;
 }
 
 /* ---------- Labels ---------- */
