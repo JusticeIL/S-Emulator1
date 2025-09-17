@@ -72,6 +72,7 @@ public class TopComponentController{
         dialog.setResizable(false);
         dialog.setTitle("Loading");
         dialog.setScene(new Scene(root));
+        // dialog.getScene().getStylesheets().add(owner.getScene().getStylesheets().getFirst());
         return dialog;
     }
 

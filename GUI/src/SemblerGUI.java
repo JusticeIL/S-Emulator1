@@ -2,6 +2,7 @@ import controller.PrimaryController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class SemblerGUI extends Application {
@@ -12,7 +13,7 @@ public class SemblerGUI extends Application {
             Parent root = fxmlLoader.load();
             PrimaryController primaryController = fxmlLoader.getController();
             primaryStage.setTitle("S-embler");
-            primaryStage.setScene(new javafx.scene.Scene(root, 800, 600));
+            primaryStage.setScene(new Scene(root, 800, 600));
             primaryController.getTopComponentController().setPrimaryStage(primaryStage);
             primaryStage.show();
         } catch (Exception e) {

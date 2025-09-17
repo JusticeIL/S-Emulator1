@@ -263,6 +263,10 @@ FlowPane, StackPane, AnchorPane {
 .scroll-bar .track {
     -fx-background-color: transparent;
 }
+/* Progress Bar */
+.progress-bar {
+    -fx-accent: green;
+}
 
 /* Focus ring for inputs / buttons */
 *:focused {
