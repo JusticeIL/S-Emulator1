@@ -28,6 +28,5 @@ public class Function extends Program {
         programExecutioner.setProgram(this);
         programExecutioner.executeProgram(arguments.stream().map(VariableDTO::new).collect(Collectors.toSet()));
         return getVariables().stream().filter(var->var.getName().equals("y")).toList().getFirst().getValue();
-
     }
 }

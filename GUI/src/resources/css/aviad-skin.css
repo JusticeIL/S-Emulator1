@@ -1,7 +1,7 @@
 /* Main backgrounds */
 .root, BorderPane {
-    -fx-base: white; /* Page bg */
-    -fx-background-color: white; /* Page bg */
+    -fx-base: white !important; /* Page bg */
+    -fx-background-color: white !important; /* Page bg */
     -fx-font-family: "Calibri";
     -fx-font-size: 16px;
     -fx-text-fill: black;
@@ -36,19 +36,19 @@ FlowPane, StackPane, AnchorPane {
 }
 
 .table-view .placeholder {
-    -fx-background-color: #fff2cc;
+    -fx-background-color: #fff2cc !important;
 }
 
 .table-view .table-row-cell:odd {
-    -fx-background-color: #fff2cc;
+    -fx-background-color: #fff2cc !important;
 }
 
 .table-view .table-row-cell:even {
-    -fx-background-color: #ffe699;
+    -fx-background-color: #ffe699 !important;
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #fff2cc;
+    -fx-background-color: #fff2cc !important;
 }
 
 /*!* Column headers text *!*/
@@ -107,12 +107,12 @@ FlowPane, StackPane, AnchorPane {
 }
 
 #executionArgumentInput {
-    -fx-background-color: #5b9bd5;
+    -fx-background-color: #5b9bd5 !important;
     -fx-font-family: "Calibri";
 }
 
 #executionArgumentInput .placeholder, #executionArgumentInput .table-row-cell:odd, #executionArgumentInput .table-row-cell:even {
-    -fx-background-color: #5b9bd5;
+    -fx-background-color: #5b9bd5 !important;
 }
 
 #executionArgumentInput .placeholder .label {
@@ -121,17 +121,17 @@ FlowPane, StackPane, AnchorPane {
 }
 
 #leftSideInstructionTables {
-    -fx-background-color: #fff2cc;
+    -fx-background-color: #fff2cc !important;
     -fx-font-family: "Calibri";
 }
 
 #variableTable {
-    -fx-background-color: #f103e6;
+    -fx-background-color: #f103e6 !important;
     -fx-font-family: "Calibri";
 }
 
 #variableTable .placeholder, #variableTable .table-row-cell:odd, #variableTable .table-row-cell:even {
-    -fx-background-color: #f103e6;
+    -fx-background-color: #f103e6 !important;
 }
 
 #variableTable .placeholder .label {
@@ -140,7 +140,7 @@ FlowPane, StackPane, AnchorPane {
 }
 
 #StatisticsTable {
-    -fx-background-color: #fff2cc;
+    -fx-background-color: #fff2cc !important;
     -fx-font-family: "Calibri";
 }
 

@@ -28,7 +28,7 @@ public class Quotation extends SyntheticInstruction {
     protected ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
         Map<Label,Label> LabelTransitionsOldToNew = new HashMap<>();
         Map<Variable,Variable> VariableTransitionsOldToNew = new HashMap<>();
-        List<Instruction> instructions  =new ArrayList<>();
+        List<Instruction> instructions = new ArrayList<>();
 
         Map<Label,Instruction> labelMap = new  HashMap<>();
         for (Instruction instruction : function.getInstructionList()) {
@@ -59,11 +59,11 @@ public class Quotation extends SyntheticInstruction {
     @Override
     protected Label executeUnExpandedInstruction() {
         variable.setValue(function.execute(arguments));
-        return Program.EMPTY_LABEL;
+        return destinationLabel;
     }
 
     @Override
     public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
-        return  new Quotation(number,newVariable,newLabel,function ,arguments);
+        return new Quotation(number,newVariable,newLabel,function ,arguments);
     }
 }
