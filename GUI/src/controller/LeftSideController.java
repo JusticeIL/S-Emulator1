@@ -101,6 +101,19 @@ public class LeftSideController {
                         ))
                         .otherwise("No program loaded.")
         );
+
+        // Add this in setRightController or appropriate initialization method
+        ChosenInstructionHistoryTable.placeholderProperty().bind(
+                Bindings.createObjectBinding(() -> {
+                    if (!rightController.isProgramLoadedProperty().get()) {
+                        return new Label("No program loaded.");
+                    } else if (instructionsTable.getSelectionModel().getSelectedItem() == null) {
+                        return new Label("Choose an instruction from the table above to present its history.");
+                    } else {
+                        return new Label("This instruction has no history");
+                    }
+                }, rightController.isProgramLoadedProperty(), instructionsTable.getSelectionModel().selectedItemProperty())
+        );
     }
 
     public void updateMainInstructionTable() {
@@ -158,7 +171,6 @@ public class LeftSideController {
             row.addEventFilter(MouseEvent.ANY, Event::consume);
             return row;
         });
-
     }
 
     public void markEntryInInstructionTable(int entryId) {

@@ -14,7 +14,7 @@
     </columns>
 
     <placeholder>
-        <Label text="No program loaded.&#10;Load a program or click on an instruction." textAlignment="CENTER" wrapText="true" />
+        <Label text="No program loaded." textAlignment="CENTER" wrapText="true" />
     </placeholder>
 
     <columnResizePolicy>

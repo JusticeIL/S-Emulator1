@@ -1,19 +1,20 @@
 package controller;
+
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
@@ -24,7 +25,6 @@ import javafx.stage.Stage;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
 import program.data.VariableDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -114,10 +114,10 @@ public class RightSideController{
     private TableView<ArgumentTableEntry> variableTable;
 
     @FXML
-    private TableColumn<ArgumentTableEntry, String> resultVariableNameCollumn;
+    private TableColumn<ArgumentTableEntry, String> resultVariableNameColumn;
 
     @FXML
-    private TableColumn<ArgumentTableEntry,Number> resultVariableValueCollumn;
+    private TableColumn<ArgumentTableEntry,Number> resultVariableValueColumn;
 
     @FXML
     private Label cyclesLabel;
@@ -130,8 +130,8 @@ public class RightSideController{
     public void initialize() {
         argumentNamesColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         argumentValuesColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
-        resultVariableNameCollumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        resultVariableValueCollumn.setCellValueFactory(new PropertyValueFactory<>("value"));
+        resultVariableNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        resultVariableValueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
 
         argumentValuesColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         argumentValuesColumn.setCellFactory(TextFieldTableCell.forTableColumn(new javafx.util.converter.NumberStringConverter()));
@@ -179,13 +179,23 @@ public class RightSideController{
                 isProgramLoaded.not().or(isDebugMode)
         );
 
-
-
         // Initialize the cycles label
         cyclesLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> (currentCycles.get() < 0) ? "Cycles: ---" : "Cycles: " + currentCycles.get(),
                 currentCycles
         ));
+
+        variableTable.placeholderProperty().bind(
+                Bindings.when(isProgramLoaded.not())
+                        .then(new Label("No program loaded."))
+                        .otherwise(new Label("No variables state to present"))
+        );
+
+        StatisticsTable.placeholderProperty().bind(
+                Bindings.when(isProgramLoaded.not())
+                        .then(new Label("No program loaded."))
+                        .otherwise(new Label("No runs have been executed for this program."))
+        );
     }
 
     public void updateArgumentTable() {
