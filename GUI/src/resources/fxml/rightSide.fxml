@@ -16,7 +16,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RightSideController">
 
     <top>
-        <FlowPane alignment="CENTER" hgap="30.0" vgap="5" BorderPane.alignment="CENTER">
+        <FlowPane fx:id="runConfigFlowPane" alignment="CENTER" hgap="30.0" vgap="5" BorderPane.alignment="CENTER">
             <children>
             <Button fx:id="SetUpRunBtn" mnemonicParsing="false" onAction="#SetupNewRunPressed" text="Setup New Run" />
                 <Button fx:id="RunProgramBtn" graphicTextGap="10" onAction="#RunProgramPressed" text="Run">

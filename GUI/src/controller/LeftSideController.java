@@ -54,12 +54,23 @@ public class LeftSideController {
     @FXML
     private Label summaryLine;
 
+    @FXML
+    private Label maxExpandLevel;
+
     public void setModel(SingleProgramController model) {
         this.model = model;
     }
 
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;
+
+        // Initialize the max label
+        maxExpandLevel.textProperty().bind(
+                Bindings.when(rightController.isProgramLoaded())
+                        .then(Bindings.createStringBinding(() -> "/" + maxLevel.get(), maxLevel
+                        ))
+                        .otherwise("/Max")
+        );
 
         highlightSelection.disableProperty().bind(
                 Bindings.isEmpty(highlightSelection.getItems())

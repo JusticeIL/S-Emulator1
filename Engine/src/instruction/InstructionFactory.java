@@ -123,10 +123,12 @@ public class InstructionFactory {
 
     private List<Variable> getFunctionArguments(SInstruction sInstr) {
         //TODO
+        return null;
     }
 
     private Function getFunctionFromSInstruction(SInstruction sInstr) {
         //TODO
+        return null;
     }
 
     public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory, Map<String, Function> functions) {
