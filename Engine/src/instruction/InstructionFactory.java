@@ -113,7 +113,7 @@ public class InstructionFactory {
             case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
-            case("QUOTE") -> new Quotation(instructionCounter,variable,label,function,functionArguments);
+            case("QUOTE") -> new Quotation(instructionCounter,variable,label, function, functionArguments);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };
@@ -130,7 +130,7 @@ public class InstructionFactory {
         return sInstrArg.getSInstructionArgument().stream()
                 .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("FUNCTIONARGUMENTS"))
                 .map(SInstructionArgument::getValue)
-                .filter(Objects::nonNull)
+                .filter(value -> value != null && !value.isBlank())
                 .flatMap(value -> Arrays.stream(value.split(",")))
                 .map(this::getVariable)
                 .collect(Collectors.toList());
