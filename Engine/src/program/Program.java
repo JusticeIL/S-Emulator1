@@ -163,8 +163,18 @@ public class Program implements Serializable {
             SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
 
+            // Load functions
+            Optional<SFunctions> sFunctions = Optional.ofNullable(sProgram.getSFunctions());
+            sFunctions.ifPresent(list->list.getSFunction().forEach(sFunction -> {
+                try {
+                    functions.put(sFunction.getName(),new Function(sFunction));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                };
+            }));
+
             // Load instructions
-            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory,functions);
+            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functions);
             int instructionCounter = 1;
             boolean containsExit = false;
 
@@ -186,15 +196,6 @@ public class Program implements Serializable {
             // Load program name
             programName = sProgram.getName();
             Set<Label> missingLabels = instructionFactory.getMissingLabels();
-
-            Optional<SFunctions> sFunctions = Optional.ofNullable(sProgram.getSFunctions());
-            sFunctions.ifPresent(list->list.getSFunction().forEach(sFunction -> {
-                try {
-                    functions.put(sFunction.getUserString(),new Function(sFunction));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                };
-            }));
             if (!missingLabels.isEmpty()) {
                 throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
             }
@@ -255,7 +256,7 @@ public class Program implements Serializable {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
 
-        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory,functions);
+        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functions);
         int instructionCounter = 1;
         boolean containsExit = false;
 

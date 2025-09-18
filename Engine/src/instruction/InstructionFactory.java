@@ -122,13 +122,33 @@ public class InstructionFactory {
     }
 
     private List<Variable> getFunctionArguments(SInstruction sInstr) {
-        //TODO
-        return null;
+        SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+        if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) { // Case: instruction has no arguments
+            return Collections.emptyList();
+        }
+
+        return sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("FUNCTIONARGUMENTS"))
+                .map(SInstructionArgument::getValue)
+                .filter(Objects::nonNull)
+                .flatMap(value -> Arrays.stream(value.split(",")))
+                .map(this::getVariable)
+                .collect(Collectors.toList());
     }
 
     private Function getFunctionFromSInstruction(SInstruction sInstr) {
-        //TODO
-        return null;
+        SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+        if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) { // Case: instruction has no arguments
+            return null;
+        }
+
+        return sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("FUNCTIONNAME"))
+                .map(SInstructionArgument::getValue)
+                .filter(Objects::nonNull)
+                .map(functions::get)
+                .findFirst()
+                .orElse(null);
     }
 
     public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory, Map<String, Function> functions) {
