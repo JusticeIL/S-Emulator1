@@ -8,6 +8,8 @@ import instruction.basic.Neutral;
 import instruction.component.LabelFactory;
 import instruction.component.VariableFactory;
 import instruction.synthetic.*;
+import instruction.synthetic.quoting.JumpEqualFunction;
+import instruction.synthetic.quoting.Quotation;
 import program.Program;
 import XMLandJaxB.SInstruction;
 import XMLandJaxB.SInstructionArguments;
@@ -114,6 +116,7 @@ public class InstructionFactory {
             case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
             case("QUOTE") -> new Quotation(instructionCounter,variable,label,function,functionArguments);
+            case ("JUMP_EQUAL_FUNCTION") -> new JumpEqualFunction(instructionCounter,variable,label,destinationLabel,function,functionArguments);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };

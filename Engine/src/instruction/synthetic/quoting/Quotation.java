@@ -1,0 +1,56 @@
+package instruction.synthetic.quoting;
+
+import instruction.ExpandedSyntheticInstructionArguments;
+import instruction.Instruction;
+import instruction.SyntheticInstruction;
+import instruction.basic.Neutral;
+import instruction.component.Label;
+import instruction.component.LabelFactory;
+import instruction.component.Variable;
+import instruction.component.VariableFactory;
+import instruction.synthetic.Assignment;
+import program.Program;
+import program.function.Function;
+
+import java.util.*;
+
+public class Quotation extends FunctionInvokingInstruction{
+
+
+    public Quotation(int num, Variable variable, Label label,Function function,List<Variable> arguments) {
+        super(num, variable,label,Program.EMPTY_LABEL,function,arguments);
+    }
+
+    @Override
+    protected ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
+        Map<Label,Label> LabelTransitionsOldToNew = new HashMap<>();
+        Map<String,Variable> VariableTransitionsOldToNew = new HashMap<>();
+        Variable functionAssignmentArgument = variableFactory.createZVariable();
+        Label exitLabelForFunction = Program.EMPTY_LABEL;
+        if(function.getLabelNames().contains(Program.EXIT_LABEL)) {
+            exitLabelForFunction = labelFactory.createLabel();
+            LabelTransitionsOldToNew.put(Program.EXIT_LABEL, exitLabelForFunction);
+        }
+
+        VariableTransitionsOldToNew.put("y",functionAssignmentArgument);
+        Instruction assimentInstruction = new Assignment(number,variable,exitLabelForFunction,Program.EMPTY_LABEL,functionAssignmentArgument);
+        Instruction originalLabelPlaceHolder = new Neutral(number,variable,label,Program.EMPTY_LABEL);
+        ExpandedSyntheticInstructionArguments expandedInstruction = function.open(labelFactory, variableFactory, LabelTransitionsOldToNew, VariableTransitionsOldToNew);
+
+        expandedInstruction.getInstructions().addFirst(originalLabelPlaceHolder);
+        expandedInstruction.getInstructions().addLast(assimentInstruction);
+
+        return expandedInstruction;
+    }
+
+    @Override
+    protected Label executeUnExpandedInstruction() {
+        variable.setValue(function.execute(arguments));
+        return destinationLabel;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new Quotation(number,newVariable,newLabel,function ,arguments);
+    }
+}

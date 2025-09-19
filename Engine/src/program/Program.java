@@ -292,8 +292,6 @@ public class Program implements Serializable {
                 .collect(Collectors.toSet());
         if (!missingLabels.isEmpty()) {
             throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
-        } else {
-            throw new FileNotFoundException();
         }
     }
 }

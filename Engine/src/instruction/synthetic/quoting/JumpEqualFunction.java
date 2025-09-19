@@ -1,0 +1,63 @@
+package instruction.synthetic.quoting;
+
+import instruction.ExpandedSyntheticInstructionArguments;
+import instruction.Instruction;
+import instruction.SyntheticInstruction;
+import instruction.basic.Neutral;
+import instruction.component.Label;
+import instruction.component.LabelFactory;
+import instruction.component.Variable;
+import instruction.component.VariableFactory;
+import instruction.synthetic.Assignment;
+import instruction.synthetic.JumpEqualVariable;
+import program.Program;
+import program.function.Function;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class JumpEqualFunction extends FunctionInvokingInstruction {
+
+
+    public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<Variable> arguments) {
+        super(num, variable,label,destinationLabel,function,arguments);
+    }
+
+    @Override
+    protected Label executeUnExpandedInstruction() {
+        if(function.execute(arguments)==variable.getValue()){
+            return destinationLabel;
+        }
+        return Program.EMPTY_LABEL;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new JumpEqualFunction(number,newVariable,newLabel,destinationLabel,function ,arguments);
+    }
+
+    @Override
+    protected ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
+        Map<Label,Label> LabelTransitionsOldToNew = new HashMap<>();
+        Map<String,Variable> VariableTransitionsOldToNew = new HashMap<>();
+        Variable functionYValue = variableFactory.createZVariable();
+        Label exitLabelForFunction = Program.EMPTY_LABEL;
+        if(function.getLabelNames().contains(Program.EXIT_LABEL)) {
+            exitLabelForFunction = labelFactory.createLabel();
+            LabelTransitionsOldToNew.put(Program.EXIT_LABEL, exitLabelForFunction);
+        }
+
+        VariableTransitionsOldToNew.put("y",functionYValue);
+        Instruction assimentInstruction = new JumpEqualVariable(number,variable,exitLabelForFunction,Program.EMPTY_LABEL,functionYValue);
+        Instruction originalLabelPlaceHolder = new Neutral(number,variable,label,Program.EMPTY_LABEL);
+        ExpandedSyntheticInstructionArguments expandedInstruction = function.open(labelFactory, variableFactory, LabelTransitionsOldToNew, VariableTransitionsOldToNew);
+
+        expandedInstruction.getInstructions().addFirst(originalLabelPlaceHolder);
+        expandedInstruction.getInstructions().addLast(assimentInstruction);
+
+        return expandedInstruction;
+    }
+
+}
