@@ -22,6 +22,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
 import program.data.VariableDTO;
@@ -139,7 +140,7 @@ public class RightSideController{
         resultVariableValueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
 
         argumentValuesColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
-        argumentValuesColumn.setCellFactory(TextFieldTableCell.forTableColumn(new javafx.util.converter.NumberStringConverter()));
+        argumentValuesColumn.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
 
         // Update underlying model when editing finishes
         argumentValuesColumn.setOnEditCommit(event -> {
@@ -218,9 +219,8 @@ public class RightSideController{
             List<ArgumentTableEntry> entries = programData.getProgramVariablesCurrentState().stream()
                     .map(ArgumentTableEntry::new) // Convert VariableDTO -> ArgumentTableEntry
                     .toList();
-            variableTable.getItems().setAll(entries);// Replace items in the table
-        })
-        ;
+            variableTable.getItems().setAll(entries); // Replace items in the table
+        });
     }
 
     public void updateStatisticsTable() {
@@ -349,12 +349,11 @@ public class RightSideController{
         model.stepOver();
         model.getProgramData().ifPresent(model-> {
             nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug());
-            if(!model.isDebugmode()){
-                // Debugging finished
+            if (!model.isDebugmode()){ // Debugging finished
                 nextInstructionIdForDebug.set(0);
                 leftController.clearMarkInInstructionTable();
             }
-            updateStatisticsTable();
+            updateStatisticsTable(); //TODO: maybe update only in the if section?
             leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         });
         updateResultVariableTable();

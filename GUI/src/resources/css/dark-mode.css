@@ -295,6 +295,10 @@ FlowPane, StackPane, AnchorPane {
     -fx-font-weight: 600;
 }
 
+.highlight-color {
+    -fx-text-fill: #b2ae6a !important;
+}
+
 #currentLoadedProgramPath {
     -fx-text-fill: white;
     -fx-font-size: 14px;

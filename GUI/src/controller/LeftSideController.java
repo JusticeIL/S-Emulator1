@@ -211,7 +211,6 @@ public class LeftSideController {
         expansionLevelMenu.setText("0");
     }
 
-
     public void updateVariablesOrLabelSelectionMenu() {
         Set<Searchable> searchables = new HashSet<>();
         highlightSelection.getItems().clear();
