@@ -13,12 +13,18 @@ import program.Program;
 import program.function.Function;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Quotation extends FunctionInvokingInstruction{
 
 
     public Quotation(int num, Variable variable, Label label,Function function,List<Variable> arguments) {
         super(num, variable,label,Program.EMPTY_LABEL,function,arguments);
+
+        String joinedVariableNames = arguments.stream()
+                .map(Variable::getName)
+                .collect(Collectors.joining(","));
+        command = variable.getName() + " = " + "(" + function.getProgramName() + "," + joinedVariableNames + ")";
     }
 
     @Override
@@ -40,6 +46,7 @@ public class Quotation extends FunctionInvokingInstruction{
         expandedInstruction.getInstructions().addFirst(originalLabelPlaceHolder);
         expandedInstruction.getInstructions().addLast(assimentInstruction);
 
+        expandedInstruction.getInstructions().forEach(instruction -> {instruction.setParentInstruction(this);});
         return expandedInstruction;
     }
 

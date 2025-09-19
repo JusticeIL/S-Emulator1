@@ -17,7 +17,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     protected int number;
     protected final String DELIMITER = ">>>";
     protected final InstructionType instructionType;
-    protected final Instruction parentInstruction;
+    protected Instruction parentInstruction;
     protected final Variable variable;
     protected Variable argumentVariable;
 
@@ -66,6 +66,10 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.level = 0; // Gets updated in inherited instructions
         this.variable = variable;
         this.argumentVariable = variable;
+        this.parentInstruction = parentInstruction;
+    }
+
+    public void setParentInstruction(Instruction parentInstruction) {
         this.parentInstruction = parentInstruction;
     }
 
