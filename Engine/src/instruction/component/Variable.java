@@ -1,9 +1,11 @@
 package instruction.component;
 
+import program.function.HasValue;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Variable implements Serializable {
+public class Variable implements Serializable, HasValue {
 
     protected final String name;
     protected int value;
@@ -18,10 +20,12 @@ public class Variable implements Serializable {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public int getValue() {
         return value;
     }

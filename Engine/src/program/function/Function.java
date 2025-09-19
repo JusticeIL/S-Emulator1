@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Function extends Program {
+public class Function extends Program implements HasValue {
 
     private final String userString;
 
@@ -63,5 +63,15 @@ public class Function extends Program {
         Set<Variable> newVariables = new HashSet<>(VariableTransitionsOldToNew.values());
 
         return new ExpandedSyntheticInstructionArguments(newVariables,labelMap,instructions);
+    }
+
+    @Override
+    public int getValue() {
+        return execute(getVariables().stream().toList());
+    }
+
+    @Override
+    public String getName() {
+        return getUserString();
     }
 }
