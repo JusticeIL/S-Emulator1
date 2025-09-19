@@ -38,6 +38,7 @@ public class Function extends Program {
     public ExpandedSyntheticInstructionArguments open(LabelFactory labelFactory, VariableFactory variableFactory, Map<Label,Label> LabelTransitionsOldToNew , Map<String, Variable> VariableTransitionsOldToNew){
         List<Instruction> instructions = new ArrayList<>();
         Map<Label,Instruction> labelMap = new  HashMap<>();
+        LabelTransitionsOldToNew.put(Program.EMPTY_LABEL,Program.EMPTY_LABEL);
 
         for (Instruction instruction : getInstructionList()) {
             if(!LabelTransitionsOldToNew.containsKey(instruction.getLabel())) {
