@@ -90,6 +90,27 @@ public class InstructionFactory {
         return getLabel(destinationLabel, argumentVariableName);
     }
 
+    private List<String> splitArguments(String input) {
+        List<String> result = new ArrayList<>();
+        int parens = 0;
+        StringBuilder current = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            if (c == '(') parens++;
+            if (c == ')') parens--;
+            if (c == ',' && parens == 0) {
+                result.add(current.toString().trim());
+                current.setLength(0);
+            } else {
+                current.append(c);
+            }
+        }
+        if (current.length() > 0) {
+            result.add(current.toString().trim());
+        }
+        return result;
+    }
+
+
     public Instruction GenerateInstruction(SInstruction sInstr, int instructionCounter) {
         Variable variable = getVariable(sInstr.getSVariable());
         Variable argumentVariable = getVariableFromArguments(sInstr.getSInstructionArguments());
@@ -131,10 +152,10 @@ public class InstructionFactory {
         }
 
         return sInstrArg.getSInstructionArgument().stream()
-                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("FUNCTIONARGUMENTS"))
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().equalsIgnoreCase("FUNCTIONARGUMENTS"))
                 .map(SInstructionArgument::getValue)
                 .filter(value -> value != null && !value.isBlank())
-                .flatMap(value -> Arrays.stream(value.split(",")))
+                .flatMap(value -> splitArguments(value).stream())
                 .map(this::getVariable)
                 .collect(Collectors.toList());
     }
@@ -146,7 +167,7 @@ public class InstructionFactory {
         }
 
         return sInstrArg.getSInstructionArgument().stream()
-                .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("FUNCTIONNAME"))
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().equalsIgnoreCase("FUNCTIONNAME"))
                 .map(SInstructionArgument::getValue)
                 .filter(Objects::nonNull)
                 .map(functions::get)

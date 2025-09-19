@@ -24,7 +24,8 @@ public class Quotation extends FunctionInvokingInstruction{
         String joinedVariableNames = arguments.stream()
                 .map(Variable::getName)
                 .collect(Collectors.joining(","));
-        command = variable.getName() + " = " + "(" + function.getProgramName() + "," + joinedVariableNames + ")";
+        command = variable.getName() + " = " + "(" + function.getProgramName() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")";
+        super.level = 0; // TODO: implement level correctly
     }
 
     @Override

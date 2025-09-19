@@ -1,3 +1,4 @@
 O.O.B:
 
-1. Make new JAXB classes for exercise 2
+1. implement calculation of expansion level for quotation
+2. make light mode great again

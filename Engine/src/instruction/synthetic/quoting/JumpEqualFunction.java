@@ -21,14 +21,13 @@ import java.util.stream.Collectors;
 
 public class JumpEqualFunction extends FunctionInvokingInstruction {
 
-
     public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<Variable> arguments) {
         super(num, variable,label,destinationLabel,function,arguments);
 
         String joinedVariableNames = arguments.stream()
                 .map(Variable::getName)
                 .collect(Collectors.joining(","));
-        command = "IF " + variable.getName() + " = " + "(" + function.getProgramName() + "," + joinedVariableNames + ")"
+        command = "IF " + variable.getName() + " = " + "(" + function.getProgramName() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")"
         + " GOTO " + destinationLabel.getLabelName();
         super.level = function.getMaxProgramLevel() + 1; // +1 because expansion of this instruction into the functions' instructions
     }
