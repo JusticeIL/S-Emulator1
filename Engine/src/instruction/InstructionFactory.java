@@ -133,7 +133,7 @@ public class InstructionFactory {
         return sInstrArg.getSInstructionArgument().stream()
                 .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("FUNCTIONARGUMENTS"))
                 .map(SInstructionArgument::getValue)
-                .filter(Objects::nonNull)
+                .filter(value -> value != null && !value.isBlank())
                 .flatMap(value -> Arrays.stream(value.split(",")))
                 .map(this::getVariable)
                 .collect(Collectors.toList());
