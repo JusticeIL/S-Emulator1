@@ -111,12 +111,14 @@ FlowPane, StackPane, AnchorPane {
     -fx-font-weight: 600;
     -fx-padding: 6 12;
     -fx-cursor: hand;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
+    -fx-border-color: #72aa6c;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
 }
 
 .button:hover {
-    -fx-background-color: #404144;
+    -fx-background-color: transparent;
 }
 .button:pressed {
     -fx-background-color: #2b2d30;
@@ -136,6 +138,14 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-radius: 6;
 }
 
+#ok-button:hover {
+    -fx-background-color: #404144;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6;
+    -fx-border-color: #72aa6c;
+    -fx-background-radius: 6;
+}
+
 /* Stop button */
 #StopDebugBtn, .stop-button {
     -fx-background-color: #bb5753;
@@ -145,6 +155,7 @@ FlowPane, StackPane, AnchorPane {
     -fx-padding: 6 12;
     -fx-border-color: transparent;
     -fx-border-radius: 6;
+    -fx-background-radius: 6;
 }
 
 #StopDebugBtn:disabled, .stop-button:disabled {
@@ -155,6 +166,8 @@ FlowPane, StackPane, AnchorPane {
     -fx-padding: 6 12;
     -fx-border-width: 0;
     -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
 }
 
 #loadFileBtn, #ShowStatisticsBtn, #RerunBtn {
@@ -164,12 +177,20 @@ FlowPane, StackPane, AnchorPane {
     -fx-font-weight: bold;
     -fx-border-color: transparent;
     -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-padding: 6 12;
+}
+
+#ShowStatisticsBtn:hover, #RerunBtn:hover {
+    -fx-background-color: #404144;
+    -fx-text-fill: #72aa6c;
+    -fx-border-color: transparent;
 }
 
 #ShowStatisticsBtn:disabled, #RerunBtn:disabled {
     -fx-background-color: #869484;
     -fx-text-fill: #bcbec3;
+    -fx-border-color: transparent;
 }
 
 #stop_icon{
@@ -198,15 +219,23 @@ FlowPane, StackPane, AnchorPane {
 }
 
 #RunProgramBtn, #StartDebugBtn, #ResumeDebugBtn, #StepOverDebugBtn, #SetUpRunBtn {
-    -fx-background-color: #404144 !important;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-background-color: transparent !important;
     -fx-text-fill: #72aa6c !important;
     -fx-border-color: #72aa6c !important;
 }
 
+#RunProgramBtn:hover, #StartDebugBtn:hover, #ResumeDebugBtn:hover, #StepOverDebugBtn:hover, #SetUpRunBtn:hover {
+    -fx-background-color: #404144 !important;
+}
+
 #RunProgramBtn:disabled, #StartDebugBtn:disabled, #ResumeDebugBtn:disabled, #StepOverDebugBtn:disabled, #SetUpRunBtn:disabled {
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-background-color: #7b7e84 !important;
     -fx-text-fill: #bcbec3 !important;
-    -fx-border-color: #bcbec3 !important;
+    -fx-border-color: transparent !important;
 }
 
 #closeBtn {
@@ -217,13 +246,19 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-radius: 8;
     -fx-padding: 8 24 8 24;
     -fx-cursor: hand;
+    -fx-border-color: transparent;
 }
 
 #closeBtn:hover {
     -fx-background-color: #b71c1c;
+    -fx-border-color: transparent;
 }
 
 /* Menu buttons styling */
+.menu-button {
+    -fx-background-radius: 6;
+}
+
 .menu-button, .menu-button > .label {
     -fx-background-color: #72aa6c;
     -fx-text-fill: white;
@@ -286,6 +321,7 @@ FlowPane, StackPane, AnchorPane {
 .scroll-bar .track {
     -fx-background-color: transparent;
 }
+
 /* Progress Bar */
 .progress-bar {
     -fx-background-color: #404144;
