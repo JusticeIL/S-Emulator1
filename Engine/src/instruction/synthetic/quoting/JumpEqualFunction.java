@@ -17,13 +17,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JumpEqualFunction extends FunctionInvokingInstruction {
 
 
     public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<Variable> arguments) {
         super(num, variable,label,destinationLabel,function,arguments);
-        super.level = function.getMaxProgramLevel();
+        String joinedVariableNames = arguments.stream()
+                .map(Variable::getName)
+                .collect(Collectors.joining(","));
+        command = "IF " + variable.getName() + " = " + "(" + function.getProgramName() + "," + joinedVariableNames + ")";
+        super.level = function.getMaxProgramLevel() + 1; // +1 because expansion of this instruction into the functions' instructions
     }
 
     @Override
