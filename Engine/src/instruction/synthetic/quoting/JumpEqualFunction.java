@@ -23,6 +23,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
 
     public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<Variable> arguments) {
         super(num, variable,label,destinationLabel,function,arguments);
+        super.level = function.getMaxProgramLevel();
     }
 
     @Override

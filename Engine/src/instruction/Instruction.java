@@ -51,7 +51,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
-        this.level = 0;
+        this.level = 0; // Gets updated in inherited instructions
         this.parentInstruction = null;
         this.variable = variable;
         this.argumentVariable = variable;
@@ -63,7 +63,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.cycles = cycles;
         this.destinationLabel = destinationLabel;
         this.instructionType = instructionType;
-        this.level = 0;
+        this.level = 0; // Gets updated in inherited instructions
         this.variable = variable;
         this.argumentVariable = variable;
         this.parentInstruction = parentInstruction;
