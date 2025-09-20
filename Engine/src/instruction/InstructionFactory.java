@@ -16,6 +16,7 @@ import XMLandJaxB.SInstructionArguments;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.function.Function;
+import program.function.HasValue;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -118,7 +119,7 @@ public class InstructionFactory {
         Label label = getLabelFromSInstruction(sInstr);
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
         Function function = getFunctionFromSInstruction(sInstr);
-        List<Variable> functionArguments = getFunctionArguments(sInstr);
+        List<HasValue> functionArguments = getFunctionArguments(sInstr);
 
         destinationLabelSet.add(destinationLabel);
         sourceLabelSet.add(label);
@@ -145,7 +146,7 @@ public class InstructionFactory {
         return instruction;
     }
 
-    private List<Variable> getFunctionArguments(SInstruction sInstr) {
+    private List<HasValue> getFunctionArguments(SInstruction sInstr) {
         SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
         if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) { // Case: instruction has no arguments
             return Collections.emptyList();
@@ -205,4 +206,11 @@ public class InstructionFactory {
     public Instruction GenerateExitInstruction(int size) {
         return new Neutral(size + 1, variableFactory.generateVariable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL);
     }
+
+    public HasValue generateHasValue(String name){
+        if(name.contains("(")){
+            return generateFunctionInstance(name);
+        }
+        return getVariable(name);
+    }//TODO GENERATE FUNCTION INSTANCE
 }

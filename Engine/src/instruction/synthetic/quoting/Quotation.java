@@ -2,7 +2,6 @@ package instruction.synthetic.quoting;
 
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
-import instruction.SyntheticInstruction;
 import instruction.basic.Neutral;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
@@ -11,6 +10,7 @@ import instruction.component.VariableFactory;
 import instruction.synthetic.Assignment;
 import program.Program;
 import program.function.Function;
+import program.function.HasValue;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 public class Quotation extends FunctionInvokingInstruction{
 
 
-    public Quotation(int num, Variable variable, Label label,Function function,List<Variable> arguments) {
+    public Quotation(int num, Variable variable, Label label, Function function, List<HasValue> arguments) {
         super(num, variable,label,Program.EMPTY_LABEL,function,arguments);
 
         String joinedVariableNames = arguments.stream()
-                .map(Variable::getName)
+                .map(HasValue::getName)
                 .collect(Collectors.joining(","));
         command = variable.getName() + " = " + "(" + function.getProgramName() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")";
         super.level = 0; // TODO: implement level correctly
@@ -34,7 +34,7 @@ public class Quotation extends FunctionInvokingInstruction{
         Map<String,Variable> VariableTransitionsOldToNew = new HashMap<>();
         Variable functionAssignmentArgument = variableFactory.createZVariable();
         Label exitLabelForFunction = Program.EMPTY_LABEL;
-        if(function.getLabelNames().contains(Program.EXIT_LABEL)) {
+        if(function.getFunction().getLabelNames().contains(Program.EXIT_LABEL)) {
             exitLabelForFunction = labelFactory.createLabel();
             LabelTransitionsOldToNew.put(Program.EXIT_LABEL, exitLabelForFunction);
         }
@@ -53,12 +53,12 @@ public class Quotation extends FunctionInvokingInstruction{
 
     @Override
     protected Label executeUnExpandedInstruction() {
-        variable.setValue(function.execute(arguments));
+        variable.setValue(function.getValue());
         return destinationLabel;
     }
 
     @Override
     public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
-        return new Quotation(number,newVariable,newLabel,function ,arguments);
+        return new Quotation(number,newVariable,newLabel,function.getFunction() ,function.getArguments());
     }
 }

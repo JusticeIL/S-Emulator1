@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Function extends Program implements HasValue {
+public class Function extends Program {
 
     private final String userString;
 
@@ -28,7 +28,7 @@ public class Function extends Program implements HasValue {
         return userString;
     }
 
-    public int execute(List<Variable> arguments) {
+    public int execute(List<HasValue> arguments) {
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setProgram(this);
         programExecutioner.executeProgram(arguments.stream().map(VariableDTO::new).collect(Collectors.toSet()));
@@ -65,12 +65,6 @@ public class Function extends Program implements HasValue {
         return new ExpandedSyntheticInstructionArguments(newVariables,labelMap,instructions);
     }
 
-    @Override
-    public int getValue() {
-        return execute(getVariables().stream().toList());
-    }
-
-    @Override
     public String getName() {
         return getUserString();
     }

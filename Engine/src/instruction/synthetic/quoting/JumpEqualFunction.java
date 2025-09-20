@@ -12,6 +12,7 @@ import instruction.synthetic.Assignment;
 import instruction.synthetic.JumpEqualVariable;
 import program.Program;
 import program.function.Function;
+import program.function.HasValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,11 +22,11 @@ import java.util.stream.Collectors;
 
 public class JumpEqualFunction extends FunctionInvokingInstruction {
 
-    public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<Variable> arguments) {
+    public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<HasValue> arguments) {
         super(num, variable,label,destinationLabel,function,arguments);
 
         String joinedVariableNames = arguments.stream()
-                .map(Variable::getName)
+                .map(HasValue::getName)
                 .collect(Collectors.joining(","));
         command = "IF " + variable.getName() + " = " + "(" + function.getProgramName() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")"
         + " GOTO " + destinationLabel.getLabelName();
@@ -34,7 +35,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
 
     @Override
     protected Label executeUnExpandedInstruction() {
-        if(function.execute(arguments)==variable.getValue()){
+        if(function.getValue() == variable.getValue()){
             return destinationLabel;
         }
         return Program.EMPTY_LABEL;
@@ -42,7 +43,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
 
     @Override
     public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
-        return new JumpEqualFunction(number,newVariable,newLabel,destinationLabel,function ,arguments);
+        return new JumpEqualFunction(number,newVariable,newLabel,destinationLabel,function.getFunction() ,function.getArguments());
     }
 
     @Override
@@ -51,7 +52,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
         Map<String,Variable> VariableTransitionsOldToNew = new HashMap<>();
         Variable functionYValue = variableFactory.createZVariable();
         Label exitLabelForFunction = Program.EMPTY_LABEL;
-        if(function.getLabelNames().contains(Program.EXIT_LABEL)) {
+        if(function.getFunction().getLabelNames().contains(Program.EXIT_LABEL)) {
             exitLabelForFunction = labelFactory.createLabel();
             LabelTransitionsOldToNew.put(Program.EXIT_LABEL, exitLabelForFunction);
         }

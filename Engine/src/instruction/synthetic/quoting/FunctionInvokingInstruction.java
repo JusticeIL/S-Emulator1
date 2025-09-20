@@ -11,6 +11,8 @@ import instruction.component.VariableFactory;
 import instruction.synthetic.Assignment;
 import program.Program;
 import program.function.Function;
+import program.function.FunctionInstance;
+import program.function.HasValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,14 +21,11 @@ import java.util.Map;
 
 public abstract class FunctionInvokingInstruction extends SyntheticInstruction {
 
-    protected final Function function;
-    protected final List<Variable> arguments = new ArrayList<>();
+    protected final FunctionInstance function;
 
-    public FunctionInvokingInstruction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<Variable> arguments) {
+
+    public FunctionInvokingInstruction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<HasValue> arguments) {
         super(num, variable, function.getProgramCycles(), label, destinationLabel);
-        this.function = function;
-        this.arguments.addAll(arguments);
+        this.function = new FunctionInstance(function,arguments);
     }
-
-
 }
