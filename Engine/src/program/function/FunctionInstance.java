@@ -37,7 +37,7 @@ public class FunctionInstance implements HasValue {
 
     @Override
     public String getName() {
-        return function.getUserString();
+        return "(" + function.getUserString() + (arguments.isEmpty() ? "" : "," + arguments.stream().map(HasValue::getName).collect(Collectors.joining(","))) + ")";
     }
 
     public ExpandedSyntheticInstructionArguments open(LabelFactory labelFactory, VariableFactory variableFactory, Map<Label, Label> labelTransitionsOldToNew, Map<String, Variable> variableTransitionsOldToNew) {

@@ -16,6 +16,7 @@ import XMLandJaxB.SInstructionArguments;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.function.Function;
+import program.function.FunctionInstance;
 import program.function.HasValue;
 
 import java.util.*;
@@ -95,22 +96,24 @@ public class InstructionFactory {
         List<String> result = new ArrayList<>();
         int parens = 0;
         StringBuilder current = new StringBuilder();
-        for (char c : input.toCharArray()) {
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
             if (c == '(') parens++;
             if (c == ')') parens--;
             if (c == ',' && parens == 0) {
-                result.add(current.toString().trim());
-                current.setLength(0);
+                if (!current.isEmpty()) {
+                    result.add(current.toString().trim());
+                    current.setLength(0);
+                }
             } else {
                 current.append(c);
             }
         }
-        if (current.length() > 0) {
+        if (!current.isEmpty()) {
             result.add(current.toString().trim());
         }
         return result;
     }
-
 
     public Instruction GenerateInstruction(SInstruction sInstr, int instructionCounter) {
         Variable variable = getVariable(sInstr.getSVariable());
@@ -157,7 +160,7 @@ public class InstructionFactory {
                 .map(SInstructionArgument::getValue)
                 .filter(value -> value != null && !value.isBlank())
                 .flatMap(value -> splitArguments(value).stream())
-                .map(this::getVariable)
+                .map(this::generateHasValue)
                 .collect(Collectors.toList());
     }
 
@@ -183,7 +186,7 @@ public class InstructionFactory {
         this.functions = functions;
     }
 
-    Variable getVariable(String variableName) {
+    private Variable getVariable(String variableName) {
         variableName = variableName.toLowerCase();
         try {
             if (variables.containsKey(variableName)) {
@@ -196,6 +199,33 @@ public class InstructionFactory {
             } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    private HasValue generateFunctionInstance(String input) {
+        // Remove outer parentheses
+        if (input.startsWith("(") && input.endsWith(")")) {
+            input = input.substring(1, input.length() - 1);
+        }
+        // Split into function name and arguments
+        List<String> parts = splitArguments(input);
+        if (parts.isEmpty()) { // Case: parsing of function arguments failed due to invalid input
+            throw new IllegalArgumentException("Invalid function instance: " + input);
+        }
+        String functionName = parts.getFirst(); // Assuming function name is ALWAYS the first part
+        if (!functions.containsKey(functionName)) { // Case: function not found in map
+            throw new IllegalArgumentException("Function " + functionName + " not found");
+        }
+        Function func = functions.get(functionName);
+        List<HasValue> args = new ArrayList<>();
+        for (int i = 1; i < parts.size(); i++) {
+            String arg = parts.get(i);
+            if (arg.startsWith("(")) {
+                args.add(generateFunctionInstance(arg)); // Recursive call
+            } else {
+                args.add(getVariable(arg)); // Base case: every part is a variable
+            }
+        }
+        return new FunctionInstance(func, args);
     }
 
     public Set<Label> getMissingLabels() {
@@ -212,5 +242,5 @@ public class InstructionFactory {
             return generateFunctionInstance(name);
         }
         return getVariable(name);
-    }//TODO GENERATE FUNCTION INSTANCE
+    }
 }
