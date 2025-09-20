@@ -1,3 +1,7 @@
 O.O.B:
 
 1. implement calculation of expansion level for quotation
+2. Find a way to mark the text in a row with a changed value in a cell
+3. Implement parsing methods
+4. Implement better parsing to variables are known to parent program
+5. Each function / program should have its own history of runs
