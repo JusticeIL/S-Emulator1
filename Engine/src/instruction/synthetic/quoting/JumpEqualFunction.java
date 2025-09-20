@@ -28,7 +28,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
         String joinedVariableNames = arguments.stream()
                 .map(HasValue::getName)
                 .collect(Collectors.joining(","));
-        command = "IF " + variable.getName() + " = " + "(" + function.getProgramName() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")"
+        command = "IF " + variable.getName() + " = " + "(" + function.getUserString() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")"
         + " GOTO " + destinationLabel.getLabelName();
         super.level = function.getMaxProgramLevel() + 1; // +1 because expansion of this instruction into the functions' instructions
     }
