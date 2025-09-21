@@ -35,9 +35,7 @@ public class Function extends Program {
         for (FunctionArgument argument : arguments) {
             int argumentCounter = 1;
             VariableDTO functionArgument = new VariableDTO(argument);
-            if(functionArgument.getName().contains("(")){
                 functionArgument.setName("x"+argumentCounter);
-            }
             verifiedArgumentList.add(functionArgument);
             argumentCounter++;
         }

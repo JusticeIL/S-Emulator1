@@ -33,10 +33,7 @@ public class FunctionInstance implements FunctionArgument {
 
     @Override
     public int getValue() {
-        if (value == null) {
-            value = function.execute(arguments);
-        }
-        return value;
+        return function.execute(arguments);
     }
 
     @Override
