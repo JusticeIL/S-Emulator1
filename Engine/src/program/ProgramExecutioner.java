@@ -63,10 +63,12 @@ public class ProgramExecutioner {
             variable.setValue(0);
         }
         for (VariableDTO arg : args) {
-            if (Variables.containsKey(arg.getName())) {
+            if (Variables.containsKey(arg.getName())) { // Case: variable argument
                 Variables.get(arg.getName()).setValue(arg.getValue());
+            } else if (arg.getName().startsWith("(") && arg.getName().endsWith(")")) { // Case: function argument
+                // Ignore setup a function argument
             } else {
-                throw new IllegalArgumentException("Argument " + arg.getName() + " not found in program variables.");
+                throw new IllegalArgumentException("Argument " + arg.getName() + " not found in program variables and is not a function invoke.");
             }
         }
         this.currentCommandIndex = 0;
