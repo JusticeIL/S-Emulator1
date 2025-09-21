@@ -5,6 +5,7 @@ import instruction.component.Label;
 import instruction.component.Variable;
 import program.data.VariableDTO;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,6 +57,8 @@ public class ProgramExecutioner {
         cycleCounter = 0;
         currentCommandIndex = 0;
         currentInstruction = program.getInstructionList().get(currentCommandIndex);
+
+
 
         Map<String,Variable> Variables = program.getVariables().stream().collect(Collectors.toMap(Variable::getName, Variable -> Variable));
         program.AddYVariableIfNotExists();

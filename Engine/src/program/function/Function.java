@@ -31,7 +31,18 @@ public class Function extends Program {
     public int execute(List<FunctionArgument> arguments) {
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setProgram(this);
-        programExecutioner.executeProgram(arguments.stream().map(VariableDTO::new).collect(Collectors.toSet()));
+        List<VariableDTO> verifiedArgumentList = new ArrayList<>();
+        for (FunctionArgument argument : arguments) {
+            int argumentCounter = 1;
+            VariableDTO functionArgument = new VariableDTO(argument);
+            if(functionArgument.getName().contains("(")){
+                functionArgument.setName("x"+argumentCounter);
+            }
+            verifiedArgumentList.add(functionArgument);
+            argumentCounter++;
+        }
+
+        programExecutioner.executeProgram(new HashSet<>(verifiedArgumentList));
         return getVariables().stream().filter(var->var.getName().equals("y")).toList().getFirst().getValue();
     }
 

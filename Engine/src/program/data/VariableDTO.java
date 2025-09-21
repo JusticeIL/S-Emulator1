@@ -5,12 +5,16 @@ import program.function.FunctionArgument;
 import java.util.Objects;
 
 public class VariableDTO implements Searchable {
-    private final String name;
+    private String name;
     private final int value;
 
     public VariableDTO(FunctionArgument variable) {
         this.name = variable.getName();
         this.value = variable.getValue();
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public VariableDTO(String name, int value) {

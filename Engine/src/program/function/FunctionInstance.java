@@ -1,6 +1,7 @@
 package program.function;
 
 import instruction.ExpandedSyntheticInstructionArguments;
+import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;
@@ -15,6 +16,7 @@ public class FunctionInstance implements FunctionArgument {
 
     private final Function function;
     private final List<FunctionArgument> arguments;
+    private Integer value = null;
 
     public FunctionInstance(Function function, List<FunctionArgument> arguments) {
         this.function = function;
@@ -31,8 +33,10 @@ public class FunctionInstance implements FunctionArgument {
 
     @Override
     public int getValue() {
-
-        return function.execute(arguments);
+        if (value == null) {
+            value = function.execute(arguments);
+        }
+        return value;
     }
 
     @Override
