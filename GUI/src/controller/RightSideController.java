@@ -10,6 +10,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -196,7 +197,7 @@ public class RightSideController{
                         .then(new Label("No program loaded."))
                         .otherwise(new Label("No variables state to present"))
         );
-        variableTable.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> event.consume()); // Disable selection from user only
+        variableTable.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, Event::consume); // Disable selection from user only
 
         StatisticsTable.placeholderProperty().bind(
                 Bindings.when(isProgramLoaded.not())
