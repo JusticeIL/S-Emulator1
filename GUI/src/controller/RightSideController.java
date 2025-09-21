@@ -196,6 +196,7 @@ public class RightSideController{
                         .then(new Label("No program loaded."))
                         .otherwise(new Label("No variables state to present"))
         );
+        variableTable.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> event.consume()); // Disable selection from user only
 
         StatisticsTable.placeholderProperty().bind(
                 Bindings.when(isProgramLoaded.not())
@@ -216,10 +217,25 @@ public class RightSideController{
 
     public void updateResultVariableTable() {
         model.getProgramData().ifPresent(programData -> {
+            List<ArgumentTableEntry> previousEntries = new ArrayList<>(variableTable.getItems());
             List<ArgumentTableEntry> entries = programData.getProgramVariablesCurrentState().stream()
                     .map(ArgumentTableEntry::new) // Convert VariableDTO -> ArgumentTableEntry
                     .toList();
             variableTable.getItems().setAll(entries); // Replace items in the table
+
+            for (int i = 0; i < entries.size(); i++) {
+                ArgumentTableEntry newEntry = entries.get(i);
+                if (i < previousEntries.size()) {
+                    ArgumentTableEntry oldEntry = previousEntries.get(i);
+                    // Compare by value
+                    if (newEntry.getValue() != oldEntry.getValue()) {
+                        variableTable.getSelectionModel().select(i);
+                    }
+                    else {
+                        variableTable.getSelectionModel().clearSelection(i);
+                    }
+                }
+            }
         });
     }
 

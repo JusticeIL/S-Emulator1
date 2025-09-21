@@ -97,6 +97,19 @@ FlowPane, StackPane, AnchorPane {
     -fx-alignment: CENTER;
 }
 
+#variableTable .table-row-cell:selected .table-cell {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: #b2ae6a;
+}
+
+#variableTable .table-row-cell:odd:selected {
+    -fx-background-color: #2b2d30;
+}
+
+#variableTable .table-row-cell:even:selected {
+    -fx-background-color: #1e1f22;
+}
+
 .table-cell:selected {
     -fx-background-color: #404144;
     -fx-text-fill: #cd9d72;
