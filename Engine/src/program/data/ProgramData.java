@@ -23,6 +23,7 @@ public final class ProgramData implements Serializable {
     private final Statistics statistics;
     private final int nextInstructionIdForDebug;
     private final boolean isDebugmode;
+    private final List<String> functionNames;
 
     public boolean isDebugmode() {
         return isDebugmode;
@@ -60,6 +61,9 @@ public final class ProgramData implements Serializable {
         this.statistics = program.getStatistics();
         this.nextInstructionIdForDebug = program.getNextInstructionIdForDebug();
         this.isDebugmode = program.isInDebugMode();
+        this.functionNames = new ArrayList<>();
+        functionNames.add(program.getProgramName()); // Add primary program name
+        program.getFunctions().forEach(function -> functionNames.add(function.getUserString())); // Add all function user-representation strings
     }
 
     public String getProgramName() {
@@ -90,7 +94,6 @@ public final class ProgramData implements Serializable {
         return programInstructions;
     }
 
-
     public int getMaxExpandLevel() {
         return maxExpandLevel;
     }
@@ -105,5 +108,9 @@ public final class ProgramData implements Serializable {
 
     public Statistics getStatistics() {
         return statistics;
+    }
+
+    public List<String> getAllFunctionNames() {
+        return functionNames;
     }
 }

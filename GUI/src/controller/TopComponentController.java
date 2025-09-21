@@ -163,7 +163,8 @@ public class TopComponentController{
                         leftController.resetLevelExpansionButtonText();
                         leftController.updateVariablesOrLabelSelectionMenu();
                         leftController.clearHistoryChainTable(); // Clear history chain table on new loaded program
-
+                        leftController.updateFunctionOrProgramSelectionMenu();
+                        leftController.setProgramNameInChooser();
                     }
                     if (rightController != null) {
                         rightController.updateArgumentTable();

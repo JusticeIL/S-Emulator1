@@ -72,6 +72,11 @@ public class LeftSideController {
                         .otherwise("/Max")
         );
 
+        functionChooser.disableProperty().bind(
+                Bindings.isEmpty(highlightSelection.getItems())
+                        .or(rightController.isInDebugModeProperty())
+        );
+
         highlightSelection.disableProperty().bind(
                 Bindings.isEmpty(highlightSelection.getItems())
                         .or(rightController.isInDebugModeProperty())
@@ -163,7 +168,6 @@ public class LeftSideController {
 
         // Initialize the program or function selectin menu button
         functionChooser.getItems().clear();
-        functionChooser.disableProperty().bind(Bindings.isEmpty(functionChooser.getItems()));
 
         // Initialize the history chain table and disable mouse interaction
         ChosenInstructionHistoryTable.setRowFactory(tv -> {
@@ -209,6 +213,36 @@ public class LeftSideController {
 
     public void resetLevelExpansionButtonText() {
         expansionLevelMenu.setText("0");
+    }
+
+    public void updateFunctionOrProgramSelectionMenu() {
+        model.getProgramData().ifPresent(programData -> {
+            List<String> functionNames = programData.getAllFunctionNames();
+            // Clear existing items
+            functionChooser.getItems().clear();
+
+            // Sort function names alphabetically, keeping the first (main program) at the top
+            List<String> sortedFunctionNames = new ArrayList<>(functionNames);
+            if (sortedFunctionNames.size() > 1) {
+                List<String> toSort = sortedFunctionNames.subList(1, sortedFunctionNames.size());
+                toSort.sort(String::compareTo);
+            }
+
+            // Create item entry for each function name
+            sortedFunctionNames.forEach(functionName -> {
+                Label label = new Label(functionName);
+                label.setMaxWidth(Double.MAX_VALUE);
+                label.setStyle("-fx-alignment: center;");
+                CustomMenuItem choice = new CustomMenuItem(label, true);
+                choice.setUserData(functionName);
+                label.prefWidthProperty().bind(functionChooser.widthProperty());
+                choice.setOnAction((ActionEvent event) -> {
+                    model.switchFunction(functionName);
+                    functionChooser.setText(functionName);
+                });
+                functionChooser.getItems().add(choice);
+            });
+        });
     }
 
     public void updateVariablesOrLabelSelectionMenu() {
@@ -290,5 +324,11 @@ public class LeftSideController {
 
     public void clearHistoryChainTable() {
         ChosenInstructionHistoryTable.getItems().clear();
+    }
+
+    public void setProgramNameInChooser() {
+        model.getProgramData().ifPresent(programData -> {
+            functionChooser.setText(programData.getAllFunctionNames().getFirst());
+        });
     }
 }
