@@ -1,7 +1,8 @@
 O.O.B:
 
 1. implement calculation of expansion level for quotation
-2. Find a way to mark the text in a row with a changed value in a cell
-3. Implement parsing methods
-4. Implement better parsing to variables are known to parent program
-5. Each function / program should have its own history of runs
+2. Each function / program should have its own history of runs
+3. Update functions as menu items
+4. Check that there's no function call in usage to a function that does not exist (from main program and also from other functions)
+5. print the cycles in the quotation and JEF instructions as 5+ and 6+ accordingly
+6. Switch button between debug and run mode (?)
