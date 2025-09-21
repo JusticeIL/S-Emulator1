@@ -10,7 +10,7 @@ import instruction.component.VariableFactory;
 import instruction.synthetic.Assignment;
 import program.Program;
 import program.function.Function;
-import program.function.HasValue;
+import program.function.FunctionArgument;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 public class Quotation extends FunctionInvokingInstruction{
 
 
-    public Quotation(int num, Variable variable, Label label, Function function, List<HasValue> arguments) {
+    public Quotation(int num, Variable variable, Label label, Function function, List<FunctionArgument> arguments) {
         super(num, variable,label,Program.EMPTY_LABEL,function,arguments);
 
         String joinedVariableNames = arguments.stream()
-                .map(HasValue::getName)
+                .map(FunctionArgument::getName)
                 .collect(Collectors.joining(","));
         command = variable.getName() + " <- " + "(" + function.getUserString() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")";
         super.level = 0; // TODO: implement level correctly

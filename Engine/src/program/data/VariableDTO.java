@@ -1,6 +1,6 @@
 package program.data;
 
-import program.function.HasValue;
+import program.function.FunctionArgument;
 
 import java.util.Objects;
 
@@ -8,7 +8,7 @@ public class VariableDTO implements Searchable {
     private final String name;
     private final int value;
 
-    public VariableDTO(HasValue variable) {
+    public VariableDTO(FunctionArgument variable) {
         this.name = variable.getName();
         this.value = variable.getValue();
     }

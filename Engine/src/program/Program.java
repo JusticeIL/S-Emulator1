@@ -16,6 +16,7 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import program.function.Function;
+import program.function.FunctionsContainer;
 
 import java.io.File;
 import java.util.Map;
@@ -25,7 +26,7 @@ import java.util.stream.IntStream;
 public class Program implements Serializable {
 
     private int currentCommandIndex; // Program Counter
-    private final Map<String, Function> functions = new HashMap<>();
+    private final FunctionsContainer functionsContainer;
     private Instruction currentInstruction;
     private int cycleCounter;
     private Program expandedProgram = null;
@@ -52,7 +53,7 @@ public class Program implements Serializable {
     }
 
     public Set<Function> getFunctions() {
-        return new HashSet<>(functions.values());
+        return new HashSet<>(functionsContainer.getFunctions().values());
     }
 
     public void setInDebugMode(boolean inDebugMode) {
@@ -134,6 +135,7 @@ public class Program implements Serializable {
         this.variableFactory = baseProgram.variableFactory;
         this.instructionList.addAll(newInstructions.getInstructions());
         this.Variables.putAll(baseProgram.Variables);
+        this.functionsContainer = baseProgram.functionsContainer;
 
         // Copy variables and labels from the base program
         this.Variables.putAll(newInstructions.getVariables().stream().
@@ -155,7 +157,7 @@ public class Program implements Serializable {
         }
     }
 
-    public void loadProgram(String filePath) throws FileNotFoundException, JAXBException {
+    public void loadProgram(String filePath) throws FileNotFoundException, JAXBException{
         if (new File(filePath).exists()) {
             // Load JAXB
             JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
@@ -163,18 +165,32 @@ public class Program implements Serializable {
             SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
             List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
 
-            // Load functions
-            Optional<SFunctions> sFunctions = Optional.ofNullable(sProgram.getSFunctions());
-            sFunctions.ifPresent(list->list.getSFunction().forEach(sFunction -> {
-                try {
-                    functions.put(sFunction.getName(),new Function(sFunction));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                };
-            }));
+
+            // Load functions;
+
+            Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
+            sFunctionsOpt.ifPresent(sFunctions -> {
+                functionsContainer.setup(sFunctions.getSFunction());
+                functionsContainer.getFunctionNames().forEach(functionName -> {
+                    try {
+                        functionsContainer.tryGetFunction(functionName);
+                    } catch (Exception e) {//TODO: MAYBE CHANGE EXCEPTION TYPE
+                        throw new RuntimeException(e);
+                    }
+                });
+            });
+
+
+//            sFunctions.ifPresent(list->list.getSFunction().forEach(sFunction -> {
+//                try {
+//                    functions.put(sFunction.getName(),new Function(sFunction));
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                };
+//            }));
 
             // Load instructions
-            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functions);
+            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
             int instructionCounter = 1;
             boolean containsExit = false;
 
@@ -215,6 +231,7 @@ public class Program implements Serializable {
     public Program(String filePath) throws FileNotFoundException, JAXBException {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
+        this.functionsContainer = new FunctionsContainer();
         loadProgram(filePath);
         this.statistics = new Statistics();
         this.currentCommandIndex = 0;
@@ -252,11 +269,12 @@ public class Program implements Serializable {
         this.cycleCounter = cycleCounter;
     }
 
-    public Program(SInstructions sInstructions, String programName) throws FileNotFoundException {
+    public Program(SInstructions sInstructions, String programName, FunctionsContainer functionsContainer) throws FileNotFoundException {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
+        this.functionsContainer = functionsContainer;
 
-        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functions);
+        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
         int instructionCounter = 1;
         boolean containsExit = false;
 

@@ -2,19 +2,16 @@ package instruction.synthetic.quoting;
 
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
-import instruction.SyntheticInstruction;
 import instruction.basic.Neutral;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;
 import instruction.component.VariableFactory;
-import instruction.synthetic.Assignment;
 import instruction.synthetic.JumpEqualVariable;
 import program.Program;
 import program.function.Function;
-import program.function.HasValue;
+import program.function.FunctionArgument;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +19,11 @@ import java.util.stream.Collectors;
 
 public class JumpEqualFunction extends FunctionInvokingInstruction {
 
-    public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<HasValue> arguments) {
+    public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<FunctionArgument> arguments) {
         super(num, variable,label,destinationLabel,function,arguments);
 
         String joinedVariableNames = arguments.stream()
-                .map(HasValue::getName)
+                .map(FunctionArgument::getName)
                 .collect(Collectors.joining(","));
         command = "IF " + variable.getName() + " = " + "(" + function.getUserString() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")"
         + " GOTO " + destinationLabel.getLabelName();

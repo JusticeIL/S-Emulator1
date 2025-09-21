@@ -1,6 +1,6 @@
 package program.function;
 
-public interface HasValue {
+public interface FunctionArgument {
 
     int getValue();
 

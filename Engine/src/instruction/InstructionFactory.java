@@ -17,8 +17,10 @@ import instruction.component.Label;
 import instruction.component.Variable;
 import program.function.Function;
 import program.function.FunctionInstance;
-import program.function.HasValue;
+import program.function.FunctionArgument;
+import program.function.FunctionsContainer;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,7 @@ public class InstructionFactory {
     private final Map<String, Label> labels = new HashMap<>();
     private final Set<Label> sourceLabelSet = new HashSet<>();
     private final Map<String, Variable> variables;
-    private final Map<String, Function> functions;
+    private final FunctionsContainer functions;
 
     private Variable getVariableFromArguments(SInstructionArguments sInstrArg) {
         if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) {
@@ -122,7 +124,7 @@ public class InstructionFactory {
         Label label = getLabelFromSInstruction(sInstr);
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
         Function function = getFunctionFromSInstruction(sInstr);
-        List<HasValue> functionArguments = getFunctionArguments(sInstr);
+        List<FunctionArgument> functionArguments = getFunctionArguments(sInstr);
 
         destinationLabelSet.add(destinationLabel);
         sourceLabelSet.add(label);
@@ -149,7 +151,7 @@ public class InstructionFactory {
         return instruction;
     }
 
-    private List<HasValue> getFunctionArguments(SInstruction sInstr) {
+    private List<FunctionArgument> getFunctionArguments(SInstruction sInstr) {
         SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
         if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) { // Case: instruction has no arguments
             return Collections.emptyList();
@@ -170,16 +172,25 @@ public class InstructionFactory {
             return null;
         }
 
-        return sInstrArg.getSInstructionArgument().stream()
+        String functionName =  sInstrArg.getSInstructionArgument().stream()
                 .filter(arg -> arg != null && arg.getName() != null && arg.getName().equalsIgnoreCase("FUNCTIONNAME"))
                 .map(SInstructionArgument::getValue)
                 .filter(Objects::nonNull)
-                .map(functions::get)
                 .findFirst()
                 .orElse(null);
+
+        if (functionName == null) {
+            return null;
+        }
+        try {
+            return functions.tryGetFunction(functionName);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);//TODO CHANGE EXCEPTION TYPES
+        }
+
     }
 
-    public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory, Map<String, Function> functions) {
+    public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory, FunctionsContainer functions) {
         this.variables = variables;
         this.labelFactory = labelFactory;
         this.variableFactory = variableFactory;
@@ -201,7 +212,7 @@ public class InstructionFactory {
         }
     }
 
-    private HasValue generateFunctionInstance(String input) {
+    private FunctionArgument generateFunctionInstance(String input) {
         // Remove outer parentheses
         if (input.startsWith("(") && input.endsWith(")")) {
             input = input.substring(1, input.length() - 1);
@@ -212,11 +223,14 @@ public class InstructionFactory {
             throw new IllegalArgumentException("Invalid function instance: " + input);
         }
         String functionName = parts.getFirst(); // Assuming function name is ALWAYS the first part
-        if (!functions.containsKey(functionName)) { // Case: function not found in map
-            throw new IllegalArgumentException("Function " + functionName + " not found");
+
+        Function func = null;
+        try {
+            func = functions.tryGetFunction(functionName);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        Function func = functions.get(functionName);
-        List<HasValue> args = new ArrayList<>();
+        List<FunctionArgument> args = new ArrayList<>();
         for (int i = 1; i < parts.size(); i++) {
             String arg = parts.get(i);
             if (arg.startsWith("(")) {
@@ -237,7 +251,7 @@ public class InstructionFactory {
         return new Neutral(size + 1, variableFactory.generateVariable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL);
     }
 
-    public HasValue generateHasValue(String name){
+    public FunctionArgument generateHasValue(String name){
         if(name.contains("(")){
             return generateFunctionInstance(name);
         }

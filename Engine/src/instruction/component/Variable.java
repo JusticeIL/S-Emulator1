@@ -1,11 +1,11 @@
 package instruction.component;
 
-import program.function.HasValue;
+import program.function.FunctionArgument;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Variable implements Serializable, HasValue {
+public class Variable implements Serializable, FunctionArgument {
 
     protected final String name;
     protected int value;

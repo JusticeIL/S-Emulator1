@@ -11,17 +11,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class FunctionInstance implements HasValue {
+public class FunctionInstance implements FunctionArgument {
 
     private final Function function;
-    private final List<HasValue> arguments;
+    private final List<FunctionArgument> arguments;
 
-    public FunctionInstance(Function function, List<HasValue> arguments) {
+    public FunctionInstance(Function function, List<FunctionArgument> arguments) {
         this.function = function;
-        this.arguments = new ArrayList<HasValue>(arguments);
+        this.arguments = new ArrayList<FunctionArgument>(arguments);
     }
 
-    public List<HasValue> getArguments() {
+    public List<FunctionArgument> getArguments() {
         return arguments;
     }
 
@@ -37,7 +37,7 @@ public class FunctionInstance implements HasValue {
 
     @Override
     public String getName() {
-        return "(" + function.getUserString() + (arguments.isEmpty() ? "" : "," + arguments.stream().map(HasValue::getName).collect(Collectors.joining(","))) + ")";
+        return "(" + function.getUserString() + (arguments.isEmpty() ? "" : "," + arguments.stream().map(FunctionArgument::getName).collect(Collectors.joining(","))) + ")";
     }
 
     public ExpandedSyntheticInstructionArguments open(LabelFactory labelFactory, VariableFactory variableFactory, Map<Label, Label> labelTransitionsOldToNew, Map<String, Variable> variableTransitionsOldToNew) {

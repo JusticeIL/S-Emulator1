@@ -4,7 +4,7 @@ import instruction.component.Label;
 import instruction.component.Variable;
 import instruction.component.LabelFactory;
 import instruction.component.VariableFactory;
-import program.function.HasValue;
+import program.function.FunctionArgument;
 
 import java.io.Serializable;
 import java.util.List;
@@ -75,7 +75,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.parentInstruction = parentInstruction;
     }
 
-    public HasValue getArgumentVariable() {
+    public FunctionArgument getArgumentVariable() {
         return argumentVariable;
     }
 

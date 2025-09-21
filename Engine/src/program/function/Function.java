@@ -19,8 +19,8 @@ public class Function extends Program {
 
     private final String userString;
 
-    public Function(SFunction sFunction) throws FileNotFoundException {
-        super(sFunction.getSInstructions(), sFunction.getName());
+    public Function(SFunction sFunction,FunctionsContainer functionsContainer) throws FileNotFoundException {
+        super(sFunction.getSInstructions(), sFunction.getName(),functionsContainer);
         this.userString = sFunction.getUserString();
     }
 
@@ -28,7 +28,7 @@ public class Function extends Program {
         return userString;
     }
 
-    public int execute(List<HasValue> arguments) {
+    public int execute(List<FunctionArgument> arguments) {
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setProgram(this);
         programExecutioner.executeProgram(arguments.stream().map(VariableDTO::new).collect(Collectors.toSet()));
