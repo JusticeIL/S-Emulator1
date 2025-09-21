@@ -154,6 +154,15 @@ FlowPane, StackPane, AnchorPane {
     -fx-alignment: CENTER;
 }
 
+#variableTable .table-row-cell:selected .table-cell {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: white !important;
+}
+
+#variableTable .table-row-cell:selected {
+    -fx-background-color: #f103e6;
+}
+
 /* ---------- Buttons (primary) ---------- */
 .button {
     -fx-background-color: #ffff00 !important; /* yellow like the flowpane bg */
