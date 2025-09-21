@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.animation.FadeTransition;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -23,6 +24,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.converter.NumberStringConverter;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
@@ -410,6 +412,7 @@ public class RightSideController{
     public Stage createVariablesTableDialog(Map<String, Integer> allEntryVariables) {
         BorderPane root = new BorderPane();
         root.setPrefSize(600, 400);
+        root.setOpacity(0);
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.BOTTOM_RIGHT);
@@ -482,11 +485,6 @@ public class RightSideController{
         GridPane.setMargin(closeBtn, new Insets(0, 20, 20, 0));
         GridPane.setRowIndex(closeBtn, 1);
 
-        closeBtn.setOnAction(e -> {
-            isShowHistoryDialogOpen = false;
-            ((Stage) closeBtn.getScene().getWindow()).close();
-        });
-
         grid.add(tableView, 0, 0);
         grid.add(closeBtn, 0, 1);
 
@@ -498,6 +496,24 @@ public class RightSideController{
         Stage dialogStage = new Stage();
         dialogStage.setTitle("Variables table");
         dialogStage.setScene(scene);
+
+        // Fade-in transition
+        dialogStage.setOnShown(e -> {
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(250), root);
+            fadeIn.setFromValue(0);
+            fadeIn.setToValue(1);
+            fadeIn.play();
+        });
+
+        // Fade-out transition on close
+        closeBtn.setOnAction(e -> {
+            isShowHistoryDialogOpen = false;
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(250), root);
+            fadeOut.setFromValue(1);
+            fadeOut.setToValue(0);
+            fadeOut.setOnFinished(ev -> dialogStage.close());
+            fadeOut.play();
+        });
 
         return dialogStage;
     }
