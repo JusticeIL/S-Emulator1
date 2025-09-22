@@ -5,5 +5,4 @@ O.O.B:
 3. Check that there's no function call in usage to a function that does not exist (from main program and also from other functions)
 4. print the cycles in the quotation and JEF instructions as 5+ and 6+ accordingly
 5. Switch button between debug and run mode (?)
-6. Add a button to disable animations
-7. Cycles are not updated well between different program expansions
+6. Cycles are not updated well between different program expansions
