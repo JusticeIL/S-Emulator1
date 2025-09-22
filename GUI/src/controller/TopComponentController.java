@@ -2,6 +2,7 @@ package controller;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -43,6 +44,9 @@ public class TopComponentController{
 
     @FXML
     private Button loadFileBtn;
+
+    @FXML
+    private CheckBox allowAnimationBox;
 
     @FXML
     private MenuButton skinMenu;
@@ -237,5 +241,9 @@ public class TopComponentController{
             return fileName; // Case: no extension found
         }
         return fileName.substring(0, lastDot);
+    }
+
+    public BooleanProperty isAnimationAllowedProperty() {
+        return allowAnimationBox.selectedProperty();
     }
 }

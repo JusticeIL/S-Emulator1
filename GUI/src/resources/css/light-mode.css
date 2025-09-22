@@ -356,6 +356,18 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-color: #484b6a; /* Dark purple fill */
 }
 
+/* Check box*/
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-effect: innershadow(gaussian, #404144, 4, 0.3, 0, 1);
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #484b6a; /* Color the v mark inside */
+}
+
 /* Focus ring for inputs / buttons */
 *:focused {
     -fx-focus-color: #484b6a;

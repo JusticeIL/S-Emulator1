@@ -315,7 +315,15 @@ public class LeftSideController {
         ChosenInstructionHistoryTable.getItems().clear();
         ChosenInstructionHistoryTable.getItems().addAll(historyEntries);
 
-        // Run after layout to ensure rows are created
+        if (topController.isAnimationAllowedProperty().get()) { // Case: animation allowed
+            playHistoryChainAnimation();
+        } else { // Case: user requests no animations
+            List<Node> rows = new ArrayList<>(ChosenInstructionHistoryTable.lookupAll(".table-row-cell"));
+            rows.forEach(row -> row.setOpacity(1));
+        }
+    }
+
+    private void playHistoryChainAnimation() {
         List<Node> rows = new ArrayList<>(ChosenInstructionHistoryTable.lookupAll(".table-row-cell"));
         rows.forEach(row -> row.setOpacity(0));
         int delay = 0;

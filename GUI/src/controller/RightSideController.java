@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -15,6 +16,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -499,20 +501,28 @@ public class RightSideController{
 
         // Fade-in transition
         dialogStage.setOnShown(e -> {
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(250), root);
-            fadeIn.setFromValue(0);
-            fadeIn.setToValue(1);
-            fadeIn.play();
+            if (topController.isAnimationAllowedProperty().get()) { // Case: animation allowed
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(250), root);
+                fadeIn.setFromValue(0);
+                fadeIn.setToValue(1);
+                fadeIn.play();
+            } else { // Case: user requests no animations
+                root.setOpacity(1);
+            }
         });
 
         // Fade-out transition on close
         closeBtn.setOnAction(e -> {
             isShowHistoryDialogOpen = false;
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(250), root);
-            fadeOut.setFromValue(1);
-            fadeOut.setToValue(0);
-            fadeOut.setOnFinished(ev -> dialogStage.close());
-            fadeOut.play();
+            if (topController.isAnimationAllowedProperty().get()) { // Case: animation allowed
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(250), root);
+                fadeOut.setFromValue(1);
+                fadeOut.setToValue(0);
+                fadeOut.setOnFinished(ev -> dialogStage.close());
+                fadeOut.play();
+            } else { // Case: user requests no animations
+                dialogStage.close();
+            }
         });
 
         return dialogStage;

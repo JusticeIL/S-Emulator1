@@ -429,6 +429,17 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-color: #79c6e0; /* Default fill */
 }
 
+/* Check box*/
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-radius: 0;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: black; /* Color the v mark inside */
+}
+
 /* ---------- Focus / accessibility tweaks ---------- */
 *:focused {
     -fx-focus-color: rgba(0,122,255,0.22);
