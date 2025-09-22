@@ -32,8 +32,8 @@ public class Function extends Program {
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setProgram(this);
         List<VariableDTO> verifiedArgumentList = new ArrayList<>();
+        int argumentCounter = 1;
         for (FunctionArgument argument : arguments) {
-            int argumentCounter = 1;
             VariableDTO functionArgument = new VariableDTO(argument);
                 functionArgument.setName("x"+argumentCounter);
             verifiedArgumentList.add(functionArgument);
