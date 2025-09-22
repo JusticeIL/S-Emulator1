@@ -1,8 +1,10 @@
 package instruction.component;
 
+import program.function.Function;
 import program.function.FunctionArgument;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class Variable implements Serializable, FunctionArgument {
@@ -23,6 +25,16 @@ public class Variable implements Serializable, FunctionArgument {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Function tryGetFunction() {
+        return null;
+    }
+
+    @Override
+    public List<FunctionArgument> tryGetFunctionArguments() {
+        return null;
     }
 
     @Override

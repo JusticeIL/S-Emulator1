@@ -12,6 +12,7 @@ import instruction.component.LabelFactory;
 import instruction.component.Variable;
 import instruction.component.VariableFactory;
 import program.Program;
+import program.function.FunctionArgument;
 
 import java.util.*;
 
@@ -32,6 +33,8 @@ public class Assignment extends SyntheticInstruction  {
         command = assignedVariable.getName() + " <- " + argumentVariable.getName();
         super.level = 2;
     }
+
+
 
     @Override
     protected Label executeUnExpandedInstruction() {

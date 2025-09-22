@@ -42,7 +42,7 @@ public class Quotation extends FunctionInvokingInstruction{
         VariableTransitionsOldToNew.put("y",functionAssignmentArgument);
         Instruction assimentInstruction = new Assignment(number,variable,exitLabelForFunction,Program.EMPTY_LABEL,functionAssignmentArgument);
         Instruction originalLabelPlaceHolder = new Neutral(number,variable,label,Program.EMPTY_LABEL);
-        ExpandedSyntheticInstructionArguments expandedInstruction = function.open(labelFactory, variableFactory, LabelTransitionsOldToNew, VariableTransitionsOldToNew);
+        ExpandedSyntheticInstructionArguments expandedInstruction = function.open(labelFactory, variableFactory, LabelTransitionsOldToNew, VariableTransitionsOldToNew,this);
 
         expandedInstruction.getInstructions().addFirst(originalLabelPlaceHolder);
         expandedInstruction.getInstructions().addLast(assimentInstruction);

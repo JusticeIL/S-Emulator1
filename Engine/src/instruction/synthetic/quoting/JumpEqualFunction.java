@@ -57,7 +57,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
         VariableTransitionsOldToNew.put("y",functionYValue);
         Instruction jumpEqualVariableInstruction = new JumpEqualVariable(number,variable,destinationLabel,Program.EMPTY_LABEL,functionYValue);
         Instruction originalLabelPlaceHolder = new Neutral(number,variable,label,Program.EMPTY_LABEL);
-        ExpandedSyntheticInstructionArguments expandedInstruction = function.open(labelFactory, variableFactory, LabelTransitionsOldToNew, VariableTransitionsOldToNew);
+        ExpandedSyntheticInstructionArguments expandedInstruction = function.open(labelFactory, variableFactory, LabelTransitionsOldToNew, VariableTransitionsOldToNew,this);
 
         expandedInstruction.getInstructions().addFirst(originalLabelPlaceHolder);
         expandedInstruction.getInstructions().addLast(jumpEqualVariableInstruction);
