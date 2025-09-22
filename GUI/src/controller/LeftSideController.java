@@ -239,6 +239,16 @@ public class LeftSideController {
                 choice.setOnAction((ActionEvent event) -> {
                     model.switchFunction(functionName);
                     functionChooser.setText(functionName);
+                    updateMainInstructionTable();
+                    updateExpansionLevels();
+                    updateAvailableExpansionLevels(maxLevel.get());
+                    updateVariablesOrLabelSelectionMenu();
+                    clearHistoryChainTable();
+                    clearMarkInInstructionTable();
+                    rightController.updateCycles();
+                    rightController.updateArgumentTable();
+                    rightController.updateResultVariableTable();
+                    rightController.updateStatisticsTable();
                 });
                 functionChooser.getItems().add(choice);
             });

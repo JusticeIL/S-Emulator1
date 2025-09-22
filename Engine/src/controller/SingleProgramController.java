@@ -15,7 +15,7 @@ public class SingleProgramController implements Model, Serializable {
 
     private Program activeProgram;
     private Map<Integer, Program> activeProgramExpansionsByLevel;
-    private final Map<String,Map<Integer,Program>> programsAndFunctionsByName = new  HashMap<>();
+    private final Map<String,Map<Integer,Program>> programsAndFunctionsByName = new HashMap<>();
     private final ProgramExecutioner programExecutioner = new ProgramExecutioner();
     private boolean isCurrentlyInDebugMode = false;
 
@@ -43,11 +43,22 @@ public class SingleProgramController implements Model, Serializable {
 
     @Override
     public void switchFunction(String functionName) {
+
+        if (programsAndFunctionsByName.containsKey(functionName)) { // Case: the function name belongs to the main program
             activeProgramExpansionsByLevel = programsAndFunctionsByName.get(functionName);
             activeProgram = activeProgramExpansionsByLevel.get(0);
-    }//TODO: Change upon inclusion of Functions
+            return;
+        }
 
-
+        // Case: the function name belongs to a function
+        activeProgram.getFunctions().stream()
+                        .filter(function -> function.getUserString().equals(functionName))
+                        .findFirst()
+                        .ifPresent(function -> {
+                            activeProgramExpansionsByLevel = programsAndFunctionsByName.get(function.getProgramName());
+                            activeProgram = activeProgramExpansionsByLevel.get(0);
+                        });
+    }
 
     @Override
     public boolean isProgramLoaded() {

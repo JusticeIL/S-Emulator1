@@ -10,7 +10,6 @@ public class FunctionsContainer {
     private final Set<String> functionNames = new HashSet<>();
     private final Map<String, SFunction> sFunctions = new HashMap<>();
 
-
     public void setup(Collection<SFunction> sFunctions){
         sFunctions.forEach(sFunction -> {
             this.functionNames.add(sFunction.getName());
