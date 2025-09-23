@@ -50,6 +50,11 @@ public class Quotation extends FunctionInvokingInstruction{
         expandedInstruction.getInstructions().addFirst(originalLabelPlaceHolder);
         expandedInstruction.getInstructions().addLast(assimentInstruction);
 
+        if(!exitLabelForFunction.equals(Program.EMPTY_LABEL)) {
+            expandedInstruction.getLabels().put(exitLabelForFunction, assimentInstruction);
+        }
+        expandedInstruction.getLabels().put(label, originalLabelPlaceHolder);
+
         expandedInstruction.getInstructions().forEach(instruction -> {instruction.setParentInstruction(this);});
         return expandedInstruction;
     }

@@ -52,7 +52,6 @@ public class Function extends Program {
         for (Instruction instruction : getInstructionList()) {
             if(!LabelTransitionsOldToNew.containsKey(instruction.getLabel())) {
                 LabelTransitionsOldToNew.put(instruction.getLabel(), labelFactory.createLabel());
-                labelMap.put(LabelTransitionsOldToNew.get(instruction.getLabel()), instruction);
             }
             if(!LabelTransitionsOldToNew.containsKey(instruction.getDestinationLabel())) {
                 LabelTransitionsOldToNew.put(instruction.getDestinationLabel(), labelFactory.createLabel());
@@ -69,6 +68,13 @@ public class Function extends Program {
             Label newDestinationLabel = LabelTransitionsOldToNew.get(instruction.getDestinationLabel());
             instructions.add(instruction.duplicate(newVariable,newArgumentVariable,newLabel,newDestinationLabel));
         }
+
+        for(Instruction instruction : instructions){
+            if(!instruction.getLabel().equals(Program.EMPTY_LABEL)){
+                labelMap.put(instruction.getLabel(),instruction);
+            }
+        }
+
         Set<Variable> newVariables = new HashSet<>(VariableTransitionsOldToNew.values());
 
         return new ExpandedSyntheticInstructionArguments(newVariables,labelMap,instructions);
