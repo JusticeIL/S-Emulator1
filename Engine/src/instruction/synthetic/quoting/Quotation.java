@@ -23,7 +23,6 @@ public class Quotation extends FunctionInvokingInstruction{
                 .map(FunctionArgument::getName)
                 .collect(Collectors.joining(","));
         command = variable.getName() + " <- " + "(" + function.getUserString() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")";
-        super.level = function.getMaxProgramLevel() + 1; // +1 because expansion of this instruction into the functions' instructions
     }
 
     @Override

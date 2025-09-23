@@ -88,4 +88,13 @@ public class FunctionInstance implements FunctionArgument {
 
         return newArgumentSetupQuoteInstructions;
     }
+
+    @Override
+    public int getMaxExpansionLevel() {
+        int maxArgExpansion = arguments.stream()
+                .mapToInt(FunctionArgument::getMaxExpansionLevel)
+                .max()
+                .orElse(0);
+        return Math.max(function.getMaxProgramLevel(), maxArgExpansion);
+    }
 }

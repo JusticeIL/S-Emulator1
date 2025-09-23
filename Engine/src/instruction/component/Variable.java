@@ -62,4 +62,9 @@ public class Variable implements Serializable, FunctionArgument {
     public int hashCode() {
         return Objects.hashCode(name);
     }
+
+    @Override
+    public int getMaxExpansionLevel() {
+        return 0;
+    }
 }

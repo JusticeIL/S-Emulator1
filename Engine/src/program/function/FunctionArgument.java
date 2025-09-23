@@ -8,4 +8,5 @@ public interface FunctionArgument {
     String getName();
     Function tryGetFunction();
     List<FunctionArgument> tryGetFunctionArguments();
+    int getMaxExpansionLevel();
 }
