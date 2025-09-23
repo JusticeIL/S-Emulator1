@@ -26,6 +26,12 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
                 .collect(Collectors.joining(","));
         command = "IF " + variable.getName() + " = " + "(" + function.getUserString() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")"
         + " GOTO " + destinationLabel.getLabelName();
+
+        int maxArgExpansion = arguments.stream()
+                .mapToInt(FunctionArgument::getMaxExpansionLevel)
+                .max()
+                .orElse(0);
+        super.level = Math.max(function.getMaxProgramLevel(), maxArgExpansion) + 1; // +1 because expansion of this instruction into the functions' instructions
     }
 
     @Override

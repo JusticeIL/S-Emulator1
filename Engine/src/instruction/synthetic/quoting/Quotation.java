@@ -23,6 +23,12 @@ public class Quotation extends FunctionInvokingInstruction{
                 .map(FunctionArgument::getName)
                 .collect(Collectors.joining(","));
         command = variable.getName() + " <- " + "(" + function.getUserString() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")";
+
+        int maxArgExpansion = arguments.stream()
+                .mapToInt(FunctionArgument::getMaxExpansionLevel)
+                .max()
+                .orElse(0);
+        super.level = Math.max(function.getMaxProgramLevel(), Math.max(maxArgExpansion, 2)) + 1; // +1 because expansion of this instruction into the functions' instructions; max with 2 because at least one assignment will be added
     }
 
     @Override
