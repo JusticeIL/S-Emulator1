@@ -11,6 +11,8 @@ import instruction.synthetic.JumpEqualVariable;
 import program.Program;
 import program.function.Function;
 import program.function.FunctionArgument;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,22 +51,18 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
 
     @Override
     protected ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
-        Map<Label,Label> LabelTransitionsOldToNew = new HashMap<>();
-        Map<String,Variable> VariableTransitionsOldToNew = new HashMap<>();
-        Variable functionYValue = variableFactory.createZVariable();
-        Label exitLabelForFunction = Program.EMPTY_LABEL;
-        if(function.getFunction().getLabelNames().contains(Program.EXIT_LABEL)) {
-            exitLabelForFunction = labelFactory.createLabel();
-            LabelTransitionsOldToNew.put(Program.EXIT_LABEL, exitLabelForFunction);
-        }
+        List<Instruction> instructions = new ArrayList<>();
+        Variable z1 = variableFactory.createZVariable();
+        Instruction quotingInstruction = new Quotation(number, z1, label, function.getFunction(), function.getArguments());
+        Instruction jumpEqualVariableInstruction = new JumpEqualVariable(number,variable,Program.EMPTY_LABEL,destinationLabel,z1);
 
-        VariableTransitionsOldToNew.put("y",functionYValue);
-        Instruction jumpEqualVariableInstruction = new JumpEqualVariable(number,variable,destinationLabel,Program.EMPTY_LABEL,functionYValue);
-        Instruction originalLabelPlaceHolder = new Neutral(number,variable,label,Program.EMPTY_LABEL);
-        ExpandedSyntheticInstructionArguments expandedInstruction = function.open(labelFactory, variableFactory, LabelTransitionsOldToNew, VariableTransitionsOldToNew,this);
+        instructions.add(quotingInstruction);
+        instructions.add(jumpEqualVariableInstruction);
 
-        expandedInstruction.getInstructions().addFirst(originalLabelPlaceHolder);
-        expandedInstruction.getInstructions().addLast(jumpEqualVariableInstruction);
+        ExpandedSyntheticInstructionArguments expandedInstruction = new ExpandedSyntheticInstructionArguments();
+        expandedInstruction.getInstructions().addAll(instructions);
+        expandedInstruction.getVariables().add(z1);
+
         expandedInstruction.getInstructions().forEach(instruction -> {instruction.setParentInstruction(this);});
 
         return expandedInstruction;
