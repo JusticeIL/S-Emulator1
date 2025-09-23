@@ -15,11 +15,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.concurrent.Task;
-
 import java.io.File;
 import jakarta.xml.bind.JAXBException;
 import javafx.stage.StageStyle;
-
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
@@ -163,8 +161,7 @@ public class TopComponentController{
                     if (leftController != null) {
                         leftController.updateMainInstructionTable();
                         leftController.setCurrentLevel(0);
-                        leftController.updateExpansionLevels();
-                        leftController.resetLevelExpansionButtonText();
+                        leftController.updateMaxExpansionLevel();
                         leftController.updateVariablesOrLabelSelectionMenu();
                         leftController.clearHistoryChainTable(); // Clear history chain table on new loaded program
                         leftController.updateFunctionOrProgramSelectionMenu();

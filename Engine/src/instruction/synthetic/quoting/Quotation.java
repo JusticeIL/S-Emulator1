@@ -11,15 +11,13 @@ import instruction.synthetic.Assignment;
 import program.Program;
 import program.function.Function;
 import program.function.FunctionArgument;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Quotation extends FunctionInvokingInstruction{
 
-
     public Quotation(int num, Variable variable, Label label, Function function, List<FunctionArgument> arguments) {
-        super(num, variable,label,Program.EMPTY_LABEL,function,arguments);
+        super(num, variable, label, Program.EMPTY_LABEL, function, arguments);
 
         String joinedVariableNames = arguments.stream()
                 .map(FunctionArgument::getName)
@@ -40,8 +38,8 @@ public class Quotation extends FunctionInvokingInstruction{
         }
 
         VariableTransitionsOldToNew.put("y",functionAssignmentArgument);
-        Instruction assimentInstruction = new Assignment(number,variable,exitLabelForFunction,Program.EMPTY_LABEL,functionAssignmentArgument);
-        Instruction originalLabelPlaceHolder = new Neutral(number,variable,label,Program.EMPTY_LABEL);
+        Instruction assimentInstruction = new Assignment(number, variable, exitLabelForFunction, Program.EMPTY_LABEL, functionAssignmentArgument);
+        Instruction originalLabelPlaceHolder = new Neutral(number, variable, label, Program.EMPTY_LABEL);
         ExpandedSyntheticInstructionArguments expandedInstruction = function.open(labelFactory, variableFactory, LabelTransitionsOldToNew, VariableTransitionsOldToNew,this);
 
         expandedInstruction.getInstructions().addFirst(originalLabelPlaceHolder);
@@ -59,6 +57,6 @@ public class Quotation extends FunctionInvokingInstruction{
 
     @Override
     public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
-        return new Quotation(number,newVariable,newLabel,function.getFunction() ,function.getArguments());
+        return new Quotation(number, newVariable, newLabel, function.getFunction(), function.getArguments());
     }
 }

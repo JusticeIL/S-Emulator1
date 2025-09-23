@@ -11,7 +11,6 @@ import instruction.synthetic.JumpEqualVariable;
 import program.Program;
 import program.function.Function;
 import program.function.FunctionArgument;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 public class JumpEqualFunction extends FunctionInvokingInstruction {
 
     public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<FunctionArgument> arguments) {
-        super(num, variable,label,destinationLabel,function,arguments);
+        super(num, variable, label, destinationLabel, function, arguments);
 
         String joinedVariableNames = arguments.stream()
                 .map(FunctionArgument::getName)
@@ -40,7 +39,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
 
     @Override
     public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
-        return new JumpEqualFunction(number,newVariable,newLabel,destinationLabel,function.getFunction() ,function.getArguments());
+        return new JumpEqualFunction(number, newVariable, newLabel, destinationLabel, function.getFunction(), function.getArguments());
     }
 
     @Override
@@ -65,5 +64,4 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
 
         return expandedInstruction;
     }
-
 }

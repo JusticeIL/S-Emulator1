@@ -2,7 +2,6 @@ package controller;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -130,7 +129,7 @@ public class LeftSideController {
         });
     }
 
-    public void updateExpansionLevels() {
+    public void updateMaxExpansionLevel() {
         model.getProgramData().ifPresent(programData -> {
             maxLevel.set(programData.getMaxExpandLevel());
         });
@@ -138,6 +137,7 @@ public class LeftSideController {
 
     public void setCurrentLevel(int level) {
         currentLevel.set(level);
+        expansionLevelMenu.setText(String.valueOf(level));
     }
 
     public void setTopController(TopComponentController topController) {
@@ -201,7 +201,6 @@ public class LeftSideController {
                     menuItem.setOnAction((ActionEvent event) -> {
                         int selectedLevel = (int) menuItem.getUserData();
                         setCurrentLevel(selectedLevel);
-                        expansionLevelMenu.setText(String.valueOf(i));
                         model.Expand(currentLevel.get());
                         updateMainInstructionTable();
                         updateVariablesOrLabelSelectionMenu();
@@ -209,10 +208,6 @@ public class LeftSideController {
                     return menuItem;
                 })
                 .forEach(expansionLevelMenu.getItems()::add);
-    }
-
-    public void resetLevelExpansionButtonText() {
-        expansionLevelMenu.setText("0");
     }
 
     public void updateFunctionOrProgramSelectionMenu() {
@@ -240,7 +235,8 @@ public class LeftSideController {
                     model.switchFunction(functionName);
                     functionChooser.setText(functionName);
                     updateMainInstructionTable();
-                    updateExpansionLevels();
+                    updateMaxExpansionLevel();
+                    setCurrentLevel(0);
                     updateAvailableExpansionLevels(maxLevel.get());
                     updateVariablesOrLabelSelectionMenu();
                     clearHistoryChainTable();
