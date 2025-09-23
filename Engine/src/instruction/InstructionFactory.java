@@ -143,7 +143,7 @@ public class InstructionFactory {
             case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
             case("QUOTE") -> new Quotation(instructionCounter,variable,label,function,functionArguments);
-            case ("JUMP_EQUAL_FUNCTION") -> new JumpEqualFunction(instructionCounter,variable,label,destinationLabel,function,functionArguments);
+            case ("JUMP_EQUAL_FUNCTION") -> new JumpEqualFunction(instructionCounter, variable, label, destinationLabel, function, functionArguments, variableFactory);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };

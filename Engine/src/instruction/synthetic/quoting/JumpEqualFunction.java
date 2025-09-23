@@ -12,16 +12,18 @@ import program.Program;
 import program.function.Function;
 import program.function.FunctionArgument;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JumpEqualFunction extends FunctionInvokingInstruction {
 
-    public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<FunctionArgument> arguments) {
+    private ExpandedSyntheticInstructionArguments expandedInstructions;
+    private VariableFactory variableFactory;
+
+    public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<FunctionArgument> arguments, VariableFactory variableFactory) {
         super(num, variable, label, destinationLabel, function, arguments);
+        this.variableFactory = variableFactory;
+        this.expandedInstructions = createExpandedInstructions();
 
         String joinedVariableNames = arguments.stream()
                 .map(FunctionArgument::getName)
@@ -29,28 +31,12 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
         command = "IF " + variable.getName() + " = " + "(" + function.getUserString() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")"
         + " GOTO " + destinationLabel.getLabelName();
 
-        int maxArgExpansion = arguments.stream()
-                .mapToInt(FunctionArgument::getMaxExpansionLevel)
-                .max()
-                .orElse(0);
-        super.level = Math.max(function.getMaxProgramLevel(), maxArgExpansion) + 1; // +1 because expansion of this instruction into the functions' instructions
+        int quotationExpansionLevel = expandedInstructions.getInstructions().getFirst().getLevel(); // Assuming the first instruction is the Quotation
+
+        super.level = quotationExpansionLevel + 1; // +1 because expansion of this instruction into the functions' instructions
     }
 
-    @Override
-    protected Label executeUnExpandedInstruction() {
-        if(function.getValue() == variable.getValue()){
-            return destinationLabel;
-        }
-        return Program.EMPTY_LABEL;
-    }
-
-    @Override
-    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
-        return new JumpEqualFunction(number, newVariable, newLabel, destinationLabel, function.getFunction(), function.getArguments());
-    }
-
-    @Override
-    protected ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
+    private ExpandedSyntheticInstructionArguments createExpandedInstructions() {
         List<Instruction> instructions = new ArrayList<>();
         Variable z1 = variableFactory.createZVariable();
         Instruction quotingInstruction = new Quotation(number, z1, label, function.getFunction(), function.getArguments());
@@ -66,5 +52,23 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
         expandedInstruction.getInstructions().forEach(instruction -> {instruction.setParentInstruction(this);});
 
         return expandedInstruction;
+    }
+
+    @Override
+    protected Label executeUnExpandedInstruction() {
+        if(function.getValue() == variable.getValue()){
+            return destinationLabel;
+        }
+        return Program.EMPTY_LABEL;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new JumpEqualFunction(number, newVariable, newLabel, destinationLabel, function.getFunction(), function.getArguments(), variableFactory);
+    }
+
+    @Override
+    protected ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
+        return expandedInstructions;
     }
 }

@@ -20,7 +20,7 @@ public class Function extends Program {
     private final String userString;
 
     public Function(SFunction sFunction,FunctionsContainer functionsContainer) throws FileNotFoundException {
-        super(sFunction.getSInstructions(), sFunction.getName(),functionsContainer);
+        super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer);
         this.userString = sFunction.getUserString();
     }
 

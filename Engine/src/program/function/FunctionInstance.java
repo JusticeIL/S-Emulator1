@@ -95,6 +95,7 @@ public class FunctionInstance implements FunctionArgument {
                 .mapToInt(FunctionArgument::getMaxExpansionLevel)
                 .max()
                 .orElse(0);
-        return Math.max(function.getMaxProgramLevel(), maxArgExpansion);
+
+        return Math.max(function.getMaxProgramLevel(), maxArgExpansion + 2);
     }
 }
