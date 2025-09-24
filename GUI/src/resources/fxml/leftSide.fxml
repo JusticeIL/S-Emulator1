@@ -32,9 +32,9 @@
                 </AnchorPane>
 
                 <!-- bottom area: history include -->
-                <AnchorPane mouseTransparent="true">
+                <AnchorPane>
                     <children>
-                        <fx:include fx:id="ChosenInstructionHistoryTable" source="InstructionTableComponent.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <fx:include fx:id="chosenInstructionHistoryTable" source="InstructionTableComponent.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
             </items>

@@ -6,7 +6,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -36,7 +35,7 @@ public class LeftSideController {
     private InstructionTableController instructionTableController;
 
     @FXML
-    private TableView<InstructionTableEntry> ChosenInstructionHistoryTable;
+    private TableView<InstructionTableEntry> chosenInstructionHistoryTable;
 
     @FXML
     private MenuButton functionChooser;
@@ -107,7 +106,7 @@ public class LeftSideController {
         );
 
         // Add this in setRightController or appropriate initialization method
-        ChosenInstructionHistoryTable.placeholderProperty().bind(
+        chosenInstructionHistoryTable.placeholderProperty().bind(
                 Bindings.createObjectBinding(() -> {
                     if (!rightController.isProgramLoadedProperty().get()) {
                         return new Label("No program loaded.");
@@ -169,16 +168,11 @@ public class LeftSideController {
         // Initialize the program or function selectin menu button
         functionChooser.getItems().clear();
 
-        // Initialize the history chain table and disable mouse interaction
-        ChosenInstructionHistoryTable.setRowFactory(tv -> {
-            TableRow<InstructionTableEntry> row = new TableRow<>() {};
-            row.addEventFilter(MouseEvent.ANY, Event::consume);
-            return row;
-        });
+        // Initialize the history chain table and disable row selection
+        chosenInstructionHistoryTable.setSelectionModel(null);
     }
 
     public void markEntryInInstructionTable(int entryId) {
-
         instructionsTable.getSelectionModel().clearAndSelect(entryId);
         instructionsTable.getFocusModel().focus(entryId);
         instructionsTable.scrollTo(entryId);
@@ -308,19 +302,19 @@ public class LeftSideController {
         }
 
         // Clear the table first
-        ChosenInstructionHistoryTable.getItems().clear();
-        ChosenInstructionHistoryTable.getItems().addAll(historyEntries);
+        chosenInstructionHistoryTable.getItems().clear();
+        chosenInstructionHistoryTable.getItems().addAll(historyEntries);
 
         if (topController.isAnimationAllowedProperty().get()) { // Case: animation allowed
             playHistoryChainAnimation();
         } else { // Case: user requests no animations
-            List<Node> rows = new ArrayList<>(ChosenInstructionHistoryTable.lookupAll(".table-row-cell"));
+            List<Node> rows = new ArrayList<>(chosenInstructionHistoryTable.lookupAll(".table-row-cell"));
             rows.forEach(row -> row.setOpacity(1));
         }
     }
 
     private void playHistoryChainAnimation() {
-        List<Node> rows = new ArrayList<>(ChosenInstructionHistoryTable.lookupAll(".table-row-cell"));
+        List<Node> rows = new ArrayList<>(chosenInstructionHistoryTable.lookupAll(".table-row-cell"));
         rows.forEach(row -> row.setOpacity(0));
         int delay = 0;
         for (Node row : rows) {
@@ -337,7 +331,7 @@ public class LeftSideController {
     }
 
     public void clearHistoryChainTable() {
-        ChosenInstructionHistoryTable.getItems().clear();
+        chosenInstructionHistoryTable.getItems().clear();
     }
 
     public void setProgramNameInChooser() {
