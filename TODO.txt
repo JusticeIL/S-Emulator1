@@ -6,3 +6,4 @@ O.O.B:
 4. print the cycles in the quotation and JEF instructions as 5+ and 6+ accordingly
 5. Switch button between debug and run mode (?)
 6. Cycles are not updated well between different program expansions
+7. Remove the option to click the columns in the instructions table (aka remove sort option on a column)

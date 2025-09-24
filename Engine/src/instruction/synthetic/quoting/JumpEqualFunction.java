@@ -31,8 +31,10 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
         command = "IF " + variable.getName() + " = " + "(" + function.getUserString() + (joinedVariableNames.isEmpty() ? "" : "," + joinedVariableNames) + ")"
         + " GOTO " + destinationLabel.getLabelName();
 
-        int quotationExpansionLevel = Math.max(expandedInstructions.getInstructions().getFirst().getLevel(),expandedInstructions.getInstructions().getLast().getLevel()); // Assuming the first instruction is the Quotation
-
+        int quotationExpansionLevel = expandedInstructions.getInstructions().stream()
+                .mapToInt(Instruction::getLevel)
+                .max()
+                .orElse(0);
         super.level = quotationExpansionLevel + 1; // +1 because expansion of this instruction into the functions' instructions
     }
 
