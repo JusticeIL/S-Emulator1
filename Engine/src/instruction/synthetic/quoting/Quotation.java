@@ -28,7 +28,7 @@ public class Quotation extends FunctionInvokingInstruction{
                 .mapToInt(FunctionArgument::getMaxExpansionLevel)
                 .max()
                 .orElse(0);
-        super.level = Collections.max(Arrays.asList(function.getMaxProgramLevel(), maxArgExpansion + 2)) + 1; // +1 because expansion of this instruction into the functions' instructions; max with 2 because at least one assignment will be added
+        super.level = Math.max(function.getMaxProgramLevel(), maxArgExpansion) + 1; // +1 because expansion of this instruction into the functions' instructions
     }
 
     @Override

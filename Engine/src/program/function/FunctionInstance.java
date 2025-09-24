@@ -96,6 +96,6 @@ public class FunctionInstance implements FunctionArgument {
                 .max()
                 .orElse(0);
 
-        return Math.max(function.getMaxProgramLevel(), maxArgExpansion + 2);
+        return Math.max(function.getMaxProgramLevel(), maxArgExpansion) + 1; // +1 because expansion of this instruction into the functions' instructions
     }
 }
