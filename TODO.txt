@@ -1,9 +1,12 @@
 O.O.B:
 
 1. implement calculation of cycles for quotation and JEF instructions
-2. Each function / program should have its own history of runs
-3. Check that there's no function call in usage to a function that does not exist (from main program and also from other functions)
-4. print the cycles in the quotation and JEF instructions as 5+ and 6+ accordingly
-5. Switch button between debug and run mode (?)
-6. Cycles are not updated well between different program expansions
-7. Remove the option to click the columns in the instructions table (aka remove sort option on a column)
+2. print the cycles in the quotation and JEF instructions as 5+ and 6+ accordingly
+3. Each function / program should have its own history of runs
+4. Check that there's no function call in usage to a function that does not exist (from main program and also from other functions); function-name calls are case-sensitive
+5. Make the run button to be the primary button that runs the program according to the radio button selection (debug or run)
+6. Verify that the cycles are updated well between different program expansions
+7. Verify that the cycles label is updated correctly (also when switching between different programs)
+8. Remove the option to click the columns in the instructions table (aka remove sort option on a column) and in all tables, except the pop-up table
+9. Make x variables inside nested functions to be presented in the arguments table (or at least verify it works)
+10. Make sure that if a program (or a function) uses x1 and x3, it doesn't let the user add x2 by himself in the table, but being initialized only in the code
