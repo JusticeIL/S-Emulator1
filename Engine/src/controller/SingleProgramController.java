@@ -107,6 +107,7 @@ public class SingleProgramController implements Model, Serializable {
 
     @Override
     public void runProgram(Set<VariableDTO> args) {
+        programExecutioner.setMainExecutioner();
         programExecutioner.setProgram(activeProgram);
         programExecutioner.executeProgram(args);
     }

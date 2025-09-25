@@ -17,7 +17,12 @@ public class ProgramExecutioner {
     private int currentCommandIndex;
     private boolean isDebugMode = false;
     private Map<String,Integer> xInitializedVariablesForDebug;
-    int currentRunLevelForDebug;
+    private int currentRunLevelForDebug;
+    private boolean isMainExecutioner = false;
+
+    public void setMainExecutioner() {
+        isMainExecutioner = true;
+    }
 
     public boolean isDebugMode() {
         return isDebugMode;
@@ -50,7 +55,9 @@ public class ProgramExecutioner {
         Map<String,Integer> finalStateOfAllVariables = program.getVariables().stream()
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
 
-        program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
+        if(isMainExecutioner) {
+            program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
+        }
     }
 
     private void setUpNewRun(Set<VariableDTO> args){
