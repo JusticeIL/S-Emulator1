@@ -98,4 +98,13 @@ public class FunctionInstance implements FunctionArgument {
 
         return Math.max(function.getMaxProgramLevel(), maxArgExpansion) + 1; // +1 because expansion of this instruction into the functions' instructions
     }
+
+    @Override
+    public List<FunctionArgument> getInnerArgument() {
+        List<FunctionArgument> innerArguments = new ArrayList<>();
+        for (FunctionArgument argument : arguments) {
+            innerArguments.addAll(argument.getInnerArgument());
+        }
+        return innerArguments;
+    }
 }

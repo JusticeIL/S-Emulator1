@@ -7,6 +7,7 @@ import instruction.component.VariableFactory;
 import program.function.FunctionArgument;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 abstract public class Instruction implements Executable, Expandable, Serializable {
@@ -111,4 +112,8 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     public abstract List<String> getExpandedStringRepresentation();
 
     abstract public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel);
+
+    public List<FunctionArgument> getInnerFunctionVariables() {
+        return Collections.emptyList();
+    }
 }

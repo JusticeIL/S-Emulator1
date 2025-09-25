@@ -2,6 +2,9 @@ package program.data;
 
 import instruction.Instruction;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class InstructionDTO {
     private final int id;
     private final String instruction;
@@ -13,6 +16,7 @@ public class InstructionDTO {
     private final String fullExpandedStringRepresentation;
     private final String type;
     private final InstructionDTO parentInstruction;
+    private final Set<VariableDTO> innerFunctionVariables;
 
     public VariableDTO getArgumentVariable() {
         return argumentVariable;
@@ -36,6 +40,10 @@ public class InstructionDTO {
         this.argumentVariable = new VariableDTO(instruction.getArgumentVariable());
         this.fullExpandedStringRepresentation = instruction.toString();
         this.type = instruction.getInstructionType().toString();
+        this.innerFunctionVariables = new HashSet<VariableDTO>();
+
+        innerFunctionVariables.addAll(instruction.getInnerFunctionVariables().stream().map(VariableDTO::new).toList());
+
         if (instruction.getParentInstruction() != null) {
             this.parentInstruction = new InstructionDTO(instruction.getParentInstruction());
         }
@@ -46,6 +54,10 @@ public class InstructionDTO {
 
     public InstructionDTO getParentInstruction() {
         return parentInstruction;
+    }
+
+    public Set<VariableDTO> getInnerFunctionVariables() {
+        return innerFunctionVariables;
     }
 
     public int getId() {

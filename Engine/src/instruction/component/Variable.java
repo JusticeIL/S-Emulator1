@@ -4,6 +4,7 @@ import program.function.Function;
 import program.function.FunctionArgument;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,5 +67,12 @@ public class Variable implements Serializable, FunctionArgument {
     @Override
     public int getMaxExpansionLevel() {
         return 2; // Variables do not expand, but they are a part of assignment
+    }
+
+    @Override
+    public List<FunctionArgument> getInnerArgument() {
+        List<FunctionArgument> arguments = new ArrayList<>();
+        arguments.add(this);
+        return arguments;
     }
 }
