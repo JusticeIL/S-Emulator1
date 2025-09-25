@@ -65,6 +65,6 @@ public class Variable implements Serializable, FunctionArgument {
 
     @Override
     public int getMaxExpansionLevel() {
-        return 0;
+        return 2; // Variables do not expand, but they are a part of assignment
     }
 }

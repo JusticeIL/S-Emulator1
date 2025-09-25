@@ -86,9 +86,6 @@ public class RightSideController{
     private Button RunProgramBtn;
 
     @FXML
-    private Button StartDebugBtn;
-
-    @FXML
     private TableColumn<ArgumentTableEntry, String> argumentNamesColumn;
 
     @FXML
@@ -119,6 +116,12 @@ public class RightSideController{
     private Button SetUpRunBtn;
 
     @FXML
+    private RadioButton debugRadioButton;
+
+    @FXML
+    private RadioButton runRadioButton;
+
+    @FXML
     private Button StopDebugBtn;
 
     @FXML
@@ -132,10 +135,6 @@ public class RightSideController{
 
     @FXML
     private Label cyclesLabel;
-
-    public void loadArguments(List<String> xArgumentsList) { // TODO: implement
-        ;
-    }
 
     @FXML
     public void initialize() {
@@ -165,22 +164,23 @@ public class RightSideController{
 
         historySizeProperty.addListener((obs, oldSize, newSize) -> updateStatisticsTable());
 
+        /* Buttons initialization */
+        // Rerun
         RerunBtn.disableProperty().bind(
                 Bindings.isEmpty(StatisticsTable.getItems())
                         .or(Bindings.isEmpty(StatisticsTable.getSelectionModel().getSelectedItems()))
                         .or(isDebugMode)
         );
 
-        ShowStatisticsBtn.disableProperty().bind(
-                Bindings.isEmpty(StatisticsTable.getItems()).or(Bindings.isEmpty(StatisticsTable.getSelectionModel().getSelectedItems()))
-        );
+        // Radio buttons
+        ToggleGroup modeToggleGroup = new ToggleGroup();
+        debugRadioButton.setToggleGroup(modeToggleGroup);
+        runRadioButton.setToggleGroup(modeToggleGroup);
+
+        // Debugging buttons
         StepOverDebugBtn.disableProperty().bind(isDebugMode.not());
         ResumeDebugBtn.disableProperty().bind(isDebugMode.not());
         StopDebugBtn.disableProperty().bind(isDebugMode.not());
-
-        StartDebugBtn.disableProperty().bind(
-                isProgramLoaded.not().or(isDebugMode)
-        );
 
         SetUpRunBtn.disableProperty().bind(
                 isProgramLoaded.not().or(isDebugMode)
@@ -188,6 +188,11 @@ public class RightSideController{
 
         RunProgramBtn.disableProperty().bind(
                 isProgramLoaded.not().or(isDebugMode)
+        );
+
+        // Show statistics
+        ShowStatisticsBtn.disableProperty().bind(
+                Bindings.isEmpty(StatisticsTable.getItems()).or(Bindings.isEmpty(StatisticsTable.getSelectionModel().getSelectedItems()))
         );
 
         // Initialize the cycles label

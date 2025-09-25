@@ -14,7 +14,7 @@ import program.function.FunctionArgument;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Quotation extends FunctionInvokingInstruction{
+public class Quotation extends FunctionInvokingInstruction {
 
     public Quotation(int num, Variable variable, Label label, Function function, List<FunctionArgument> arguments) {
         super(num, variable, label, Program.EMPTY_LABEL, function, arguments);
