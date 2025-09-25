@@ -330,16 +330,22 @@ public class RightSideController{
 
     @FXML
     void RunProgramPressed(ActionEvent event) {
-        Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
-                .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
-                .collect(Collectors.toSet());
-        // Pass them to runProgram
-        model.runProgram(argumentValues);
-        updateResultVariableTable();
 
-        refreshHistorySize();
-        model.getProgramData().ifPresent(programData ->
-                currentCycles.set(programData.getCurrentCycles()));
+        if(runRadioButton.isSelected()) {
+            Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
+                    .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
+                    .collect(Collectors.toSet());
+            // Pass them to runProgram
+            model.runProgram(argumentValues);
+            updateResultVariableTable();
+
+            refreshHistorySize();
+            model.getProgramData().ifPresent(programData ->
+                    currentCycles.set(programData.getCurrentCycles()));
+        }
+        else {
+            StartDebugPressed(event);
+        }
     }
 
 
