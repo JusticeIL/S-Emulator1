@@ -170,6 +170,12 @@ public class LeftSideController {
 
         // Initialize the history chain table and disable row selection
         chosenInstructionHistoryTable.setSelectionModel(null);
+
+        instructionsTable.getSortOrder().clear();
+        instructionsTable.setSortPolicy(param -> null); // disables sorting globally
+        chosenInstructionHistoryTable.getSortOrder().clear();
+        chosenInstructionHistoryTable.setSortPolicy(param -> null); // disables sorting globally
+
     }
 
     public void markEntryInInstructionTable(int entryId) {

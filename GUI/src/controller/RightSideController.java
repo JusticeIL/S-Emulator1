@@ -152,6 +152,13 @@ public class RightSideController{
             entry.valueProperty().set(event.getNewValue().intValue());
         });
 
+        variableTable.getSortOrder().clear();
+        variableTable.setSortPolicy(param -> null); // disables sorting globally
+        StatisticsTable.getSortOrder().clear();
+        StatisticsTable.setSortPolicy(param -> null); // disables sorting globally
+        executionArgumentInput.getSortOrder().clear();
+        executionArgumentInput.setSortPolicy(param -> null); // disables sorting globally
+
         // Allow editing only on values
         executionArgumentInput.setEditable(true);
         executionArgumentInput.getSelectionModel().setCellSelectionEnabled(true);
