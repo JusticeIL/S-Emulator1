@@ -219,13 +219,13 @@ FlowPane, StackPane, AnchorPane {
     -fx-stroke: #bcbec3;
 }
 
-#debug_icon, #resume_icon, #stepover_icon {
+#resume_icon, #stepover_icon {
     -fx-text-fill: transparent;
     -fx-fill: #72aa6c;
     -fx-stroke: transparent;
 }
 
-#debug_icon:disabled, #resume_icon:disabled, #stepover_icon:disabled {
+#resume_icon:disabled, #stepover_icon:disabled {
     -fx-text-fill: transparent;
     -fx-fill: #bcbec3;
     -fx-stroke: transparent;
@@ -239,11 +239,11 @@ FlowPane, StackPane, AnchorPane {
     -fx-border-color: #72aa6c !important;
 }
 
-#RunProgramBtn:hover, #StartDebugBtn:hover, #ResumeDebugBtn:hover, #StepOverDebugBtn:hover, #SetUpRunBtn:hover {
+#RunProgramBtn:hover, #ResumeDebugBtn:hover, #StepOverDebugBtn:hover, #SetUpRunBtn:hover {
     -fx-background-color: #404144 !important;
 }
 
-#RunProgramBtn:disabled, #StartDebugBtn:disabled, #ResumeDebugBtn:disabled, #StepOverDebugBtn:disabled, #SetUpRunBtn:disabled {
+#RunProgramBtn:disabled, #ResumeDebugBtn:disabled, #StepOverDebugBtn:disabled, #SetUpRunBtn:disabled {
     -fx-border-radius: 6;
     -fx-background-radius: 6;
     -fx-background-color: #7b7e84 !important;
