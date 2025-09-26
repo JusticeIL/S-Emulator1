@@ -1,6 +1,5 @@
 package program.function;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface FunctionArgument {
@@ -10,6 +9,5 @@ public interface FunctionArgument {
     Function tryGetFunction();
     List<FunctionArgument> tryGetFunctionArguments();
     int getMaxExpansionLevel();
-
     List<FunctionArgument> getInnerArgument();
 }

@@ -102,9 +102,7 @@ public class FunctionInstance implements FunctionArgument {
     @Override
     public List<FunctionArgument> getInnerArgument() {
         List<FunctionArgument> innerArguments = new ArrayList<>();
-        for (FunctionArgument argument : arguments) {
-            innerArguments.addAll(argument.getInnerArgument());
-        }
+        arguments.forEach(argument -> innerArguments.addAll(argument.getInnerArgument()));
         return innerArguments;
     }
 }

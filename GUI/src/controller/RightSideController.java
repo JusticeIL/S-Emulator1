@@ -338,7 +338,7 @@ public class RightSideController{
     @FXML
     void RunProgramPressed(ActionEvent event) {
 
-        if(runRadioButton.isSelected()) {
+        if (runRadioButton.isSelected()) {
             Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
                     .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
                     .collect(Collectors.toSet());
@@ -423,6 +423,7 @@ public class RightSideController{
     void SetupNewRunPressed(ActionEvent event) {
         variableTable.getItems().clear();
         executionArgumentInput.getItems().forEach(entry->{entry.valueProperty().set(0);});
+        currentCycles.set(0);
     }
 
     public BooleanProperty isInDebugModeProperty() {

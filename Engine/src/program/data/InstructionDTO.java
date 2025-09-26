@@ -42,7 +42,10 @@ public class InstructionDTO {
         this.type = instruction.getInstructionType().toString();
         this.innerFunctionVariables = new HashSet<VariableDTO>();
 
-        innerFunctionVariables.addAll(instruction.getInnerFunctionVariables().stream().map(VariableDTO::new).toList());
+        innerFunctionVariables.addAll(instruction.getInnerFunctionVariables().stream()
+                .map(VariableDTO::new)
+                .toList()
+        );
 
         if (instruction.getParentInstruction() != null) {
             this.parentInstruction = new InstructionDTO(instruction.getParentInstruction());
