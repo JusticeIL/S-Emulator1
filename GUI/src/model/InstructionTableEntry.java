@@ -15,7 +15,7 @@ public class InstructionTableEntry {
     private final SimpleStringProperty id;
     private final SimpleStringProperty instruction;
     private final SimpleStringProperty label;
-    private final SimpleIntegerProperty cycles;
+    private final SimpleStringProperty cycles;
     private final Set<Searchable> searchables;
     private final InstructionDTO instructionDTO;
 
@@ -31,7 +31,11 @@ public class InstructionTableEntry {
         this.id = new SimpleStringProperty(String.valueOf(instruction.getId()));
         this.instruction = new SimpleStringProperty(instruction.getInstruction());
         this.label = new SimpleStringProperty(instruction.getLabelName());
-        this.cycles = new SimpleIntegerProperty(instruction.getCycles());
+        this.cycles = new SimpleStringProperty(String.valueOf(instruction.getCycles()));
+
+        if(this.instruction.get().contains("(")){
+            this.cycles.set(this.cycles.get()+"+");
+        }
 
         this.instructionDTO = instruction;
     }
@@ -41,7 +45,7 @@ public class InstructionTableEntry {
     public String getId() { return id.get(); }
     public String getInstruction() { return instruction.get(); }
     public String getLabel() { return label.get(); }
-    public int getCycles() { return cycles.get(); }
+    public String getCycles() { return cycles.get(); }
     public InstructionDTO getInstructionDTO() { return instructionDTO; }
 
     // --- properties for table ---
@@ -49,7 +53,7 @@ public class InstructionTableEntry {
     public StringProperty idProperty() { return id; }
     public StringProperty instructionProperty() { return instruction; }
     public StringProperty labelProperty() { return label; }
-    public IntegerProperty cyclesProperty() { return cycles; }
+    public StringProperty cyclesProperty() { return cycles; }
 
     public Set<Searchable> getSearchables() {
         return searchables;

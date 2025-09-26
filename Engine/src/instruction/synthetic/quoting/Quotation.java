@@ -19,6 +19,8 @@ public class Quotation extends FunctionInvokingInstruction {
     public Quotation(int num, Variable variable, Label label, Function function, List<FunctionArgument> arguments) {
         super(num, variable, label, Program.EMPTY_LABEL, function, arguments);
 
+        this.cycles = 5;
+
         String joinedVariableNames = arguments.stream()
                 .map(FunctionArgument::getName)
                 .collect(Collectors.joining(","));

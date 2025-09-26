@@ -28,4 +28,9 @@ public abstract class FunctionInvokingInstruction extends SyntheticInstruction {
         }
         return args;
     }
+
+    @Override
+    public int getCycles() {
+        return super.getCycles()+ function.getFunction().getProgramCycles();
+    }
 }

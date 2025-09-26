@@ -24,6 +24,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
         super(num, variable, label, destinationLabel, function, arguments);
         this.variableFactory = variableFactory;
         this.expandedInstructions = createExpandedInstructions();
+        this.cycles = 6;
 
         String joinedVariableNames = arguments.stream()
                 .map(FunctionArgument::getName)
