@@ -33,8 +33,8 @@ public class InstructionTableEntry {
         this.label = new SimpleStringProperty(instruction.getLabelName());
         this.cycles = new SimpleStringProperty(String.valueOf(instruction.getCycles()));
 
-        if(this.instruction.get().contains("(")){
-            this.cycles.set(this.cycles.get()+"+");
+        if (this.instruction.get().contains("(")) { // Case: instruction includes function call
+            this.cycles.set(this.cycles.get() + "+"); //TODO: should be changed to instruction cycles, not to current cycles
         }
 
         this.instructionDTO = instruction;

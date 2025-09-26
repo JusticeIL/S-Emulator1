@@ -1,3 +1,5 @@
 O.O.B:
 
 1. Fix bug of cycles counter in the instructions table when expanding a program to functions.
+2. Remove unused lines (such as line 184-190 in program?)
+3. Handle todos that aren't done yet

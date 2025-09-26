@@ -172,9 +172,9 @@ public class LeftSideController {
         chosenInstructionHistoryTable.setSelectionModel(null);
 
         instructionsTable.getSortOrder().clear();
-        instructionsTable.setSortPolicy(param -> null); // disables sorting globally
+        instructionsTable.setSortPolicy(param -> null); // Disables sorting globally
         chosenInstructionHistoryTable.getSortOrder().clear();
-        chosenInstructionHistoryTable.setSortPolicy(param -> null); // disables sorting globally
+        chosenInstructionHistoryTable.setSortPolicy(param -> null); // Disables sorting globally
 
     }
 
