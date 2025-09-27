@@ -141,7 +141,7 @@
                 <TableView fx:id="executionArgumentInput" nodeOrientation="LEFT_TO_RIGHT">
                     <columns>
                         <TableColumn fx:id="argumentNamesColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" sortable="false" text="Argument Name" />
-                        <TableColumn fx:id="argumentValuesColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" onEditCommit="#ExecutionArgumentUpdated" prefWidth="-1.0" sortable="false" text="Value" />
+                        <TableColumn fx:id="argumentValuesColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" sortable="false" text="Value" />
                     </columns>
                     <placeholder>
                         <Label text="No program loaded." />

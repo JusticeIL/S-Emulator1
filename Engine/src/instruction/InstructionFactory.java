@@ -185,7 +185,7 @@ public class InstructionFactory {
         try {
             return functions.tryGetFunction(functionName);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);//TODO CHANGE EXCEPTION TYPES
+            throw new IllegalArgumentException(e);
         }
 
     }

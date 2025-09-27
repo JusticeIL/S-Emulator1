@@ -19,7 +19,7 @@ public class FunctionsContainer {
 
     public Function tryGetFunction(String name) throws FileNotFoundException {
         if(!functionNames.contains(name)) {
-            throw new IllegalArgumentException("Function " + name + " not found");//TODO: CHANGE EXEPTION TYPE LATER
+            throw new IllegalArgumentException("Function " + name + " not found");
         }
 
         Function function;

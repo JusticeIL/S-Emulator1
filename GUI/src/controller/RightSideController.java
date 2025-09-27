@@ -288,10 +288,6 @@ public class RightSideController{
         });
     }
 
-    @FXML
-    void ExecutionArgumentUpdated(ActionEvent event) { // TODO: implement
-
-    }
 
     @FXML
     void RerunPressed(ActionEvent event) {
@@ -391,8 +387,9 @@ public class RightSideController{
             if (!model.isDebugmode()){ // Debugging finished
                 nextInstructionIdForDebug.set(0);
                 leftController.clearMarkInInstructionTable();
+                updateStatisticsTable();
+
             }
-            updateStatisticsTable(); //TODO: maybe update only in the if section?
             leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         });
         updateResultVariableTable();

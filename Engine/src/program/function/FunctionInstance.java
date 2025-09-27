@@ -21,7 +21,7 @@ public class FunctionInstance implements FunctionArgument {
 
     public FunctionInstance(Function function, List<FunctionArgument> arguments) {
         this.function = function;
-        this.arguments = new ArrayList<FunctionArgument>(arguments);
+        this.arguments = new ArrayList<>(arguments);
     }
 
     public List<FunctionArgument> getArguments() {
@@ -68,7 +68,7 @@ public class FunctionInstance implements FunctionArgument {
             String innerArgumentName = "x" + argumentIndex;
             Variable newVariable = variableTransitionsOldToNew.get(innerArgumentName);
             if(newVariable == null) {
-                newVariable = function.getVariables().stream().filter(var -> var.getName().equals(innerArgumentName)).findFirst().get(); //TODO: make it "if present .get()"?
+                newVariable = function.getVariables().stream().filter(var -> var.getName().equals(innerArgumentName)).findFirst().get();
             }
             Instruction newArgumentSetupInstruction;
 

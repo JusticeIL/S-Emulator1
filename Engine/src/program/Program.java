@@ -174,20 +174,13 @@ public class Program implements Serializable {
                 functionsContainer.getFunctionNames().forEach(functionName -> {
                     try {
                         functionsContainer.tryGetFunction(functionName);
-                    } catch (Exception e) {//TODO: MAYBE CHANGE EXCEPTION TYPE
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 });
             });
 
 
-//            sFunctions.ifPresent(list->list.getSFunction().forEach(sFunction -> {
-//                try {
-//                    functions.put(sFunction.getName(),new Function(sFunction));
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                };
-//            }));
 
             // Load instructions
             InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
