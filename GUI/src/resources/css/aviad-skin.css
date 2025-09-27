@@ -133,6 +133,7 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-color: #f103e6 !important;
     -fx-border-color: #2f528f;
     -fx-font-family: "Calibri";
+    -fx-font-size: 16px;
 }
 
 #variableTable .placeholder, #variableTable .table-row-cell:odd, #variableTable .table-row-cell:even {
@@ -157,6 +158,8 @@ FlowPane, StackPane, AnchorPane {
 #variableTable .table-row-cell:selected .table-cell {
     -fx-background-color: transparent !important;
     -fx-text-fill: white !important;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
 }
 
 #variableTable .table-row-cell:selected {

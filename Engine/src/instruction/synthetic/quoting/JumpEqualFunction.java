@@ -2,7 +2,6 @@ package instruction.synthetic.quoting;
 
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
-import instruction.basic.Neutral;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;

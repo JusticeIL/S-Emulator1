@@ -90,6 +90,7 @@ FlowPane, StackPane, AnchorPane {
 .table-cell {
     -fx-background-color: transparent;
     -fx-text-fill: white;
+    -fx-font-size: 13px;
     -fx-alignment: CENTER_LEFT;
 }
 
@@ -100,6 +101,8 @@ FlowPane, StackPane, AnchorPane {
 #variableTable .table-row-cell:selected .table-cell {
     -fx-background-color: transparent !important;
     -fx-text-fill: #b2ae6a;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
 #variableTable .table-row-cell:odd:selected {

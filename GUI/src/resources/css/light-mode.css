@@ -95,11 +95,14 @@ FlowPane, StackPane, AnchorPane {
 
 #variableTable .table-cell, #executionArgumentInput .table-cell, #StatisticsTable .table-cell, #runAllVariablesTable .table-cell  {
     -fx-alignment: CENTER;
+    -fx-font-size: 13px;
 }
 
 #variableTable .table-row-cell:selected .table-cell {
     -fx-background-color: transparent !important;
     -fx-text-fill: #bb5753;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
 #variableTable .table-row-cell:odd:selected {
