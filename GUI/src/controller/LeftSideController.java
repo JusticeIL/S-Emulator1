@@ -420,6 +420,13 @@ public class LeftSideController {
         });
     }
 
+    public Set<Integer> getCurrentBreakpoints() {
+        return instructionsTable.getItems().stream()
+                .filter(InstructionTableEntry::isBreakpoint)
+                .map(InstructionTableEntry::getId) // Entry -> Integer (ID)
+                .collect(Collectors.toSet());
+    }
+
     @FXML
     public void clearAllBreakpoints(ActionEvent event) {
         instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
