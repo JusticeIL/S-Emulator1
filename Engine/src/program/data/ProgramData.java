@@ -43,12 +43,22 @@ public final class ProgramData implements Serializable {
         }
         programVariablesCurrentState.sort((a, b) -> {
             // Assign priority: y=0, x=1, z=2, others=3
-            int priorityA = a.getName().startsWith("y") ? 0 : (a.getName().startsWith("x") ? 1 : (a.getName().startsWith("z") ? 2 : 3));
-            int priorityB = b.getName().startsWith("y") ? 0 : (b.getName().startsWith("x") ? 1 : (b.getName().startsWith("z") ? 2 : 3));
+            String nameA = a.getName();
+            String nameB = b.getName();
+
+            int priorityA = nameA.startsWith("y") ? 0 : (nameA.startsWith("x") ? 1 : (nameA.startsWith("z") ? 2 : 3));
+            int priorityB = nameB.startsWith("y") ? 0 : (nameB.startsWith("x") ? 1 : (nameB.startsWith("z") ? 2 : 3));
             if (priorityA != priorityB) {
                 return Integer.compare(priorityA, priorityB);
             }
-            return a.getName().compareTo(b.getName());
+
+            int numA = extractNumber(nameA);
+            int numB = extractNumber(nameB);
+
+            if (numA != numB) {
+                return Integer.compare(numA, numB);
+            }
+            return nameA.compareTo(nameB);
         });
 
         this.programXArguments.addAll(program.getUsedXVariableNames());
@@ -64,6 +74,19 @@ public final class ProgramData implements Serializable {
         this.functionNames = new ArrayList<>();
         functionNames.add(program.getProgramName()); // Add primary program name
         program.getFunctions().forEach(function -> functionNames.add(function.getUserString())); // Add all function user-representation strings
+    }
+
+    // Helper method for comparing variable names with numerical suffixes
+    private int extractNumber(String name) {
+        String digits = name.replaceAll("^[a-zA-Z]+", "");
+        if (digits.isEmpty()) { // Case: no number, sort after numbered variables
+            return Integer.MAX_VALUE;
+        }
+        try {
+            return Integer.parseInt(digits);
+        } catch (NumberFormatException e) {
+            return Integer.MAX_VALUE;
+        }
     }
 
     public String getProgramName() {
