@@ -200,6 +200,7 @@ public class LeftSideController {
                     .map(InstructionTableEntry::new) // Convert InstructionDTO -> InstructionTableEntry
                     .toList();
             instructionsTable.getItems().setAll(entries);// Replace items in the table
+            clearAllBreakpoints(null); // Clear all breakpoints when loading a new function, a new program or when changing the expansion level
         });
     }
 
@@ -277,7 +278,6 @@ public class LeftSideController {
                         setCurrentLevel(selectedLevel);
                         model.Expand(currentLevel.get());
                         updateMainInstructionTable();
-                        clearAllBreakpoints(null);
                         updateVariablesOrLabelSelectionMenu();
                     });
                     return menuItem;
@@ -310,7 +310,6 @@ public class LeftSideController {
                     model.switchFunction(functionName);
                     functionChooser.setText(functionName);
                     updateMainInstructionTable();
-                    clearAllBreakpoints(null);
                     updateMaxExpansionLevel();
                     setCurrentLevel(0);
                     updateAvailableExpansionLevels(maxLevel.get());

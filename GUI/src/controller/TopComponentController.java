@@ -160,7 +160,6 @@ public class TopComponentController{
                     // Update main table after loading succeeded
                     if (leftController != null) {
                         leftController.updateMainInstructionTable();
-                        leftController.clearAllBreakpoints(null);
                         leftController.setCurrentLevel(0);
                         leftController.updateMaxExpansionLevel();
                         leftController.updateVariablesOrLabelSelectionMenu();
