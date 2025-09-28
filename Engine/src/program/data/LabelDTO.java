@@ -3,6 +3,7 @@ package program.data;
 import java.util.Objects;
 
 public class LabelDTO implements Searchable {
+
     private final String name;
 
     public LabelDTO(String name) {

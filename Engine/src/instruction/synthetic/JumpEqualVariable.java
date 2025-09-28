@@ -17,7 +17,6 @@ public class JumpEqualVariable extends SyntheticInstruction {
 
     static private final int CYCLES = 2;
 
-
     public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable) {
         super(num, variable, CYCLES, label, destinationLabel);
         this.argumentVariable = argumentVariable;

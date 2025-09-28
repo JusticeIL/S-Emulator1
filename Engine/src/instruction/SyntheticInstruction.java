@@ -9,8 +9,8 @@ import java.util.*;
 
 abstract public class SyntheticInstruction extends Instruction {
 
-    protected ExpandedSyntheticInstructionArguments expandedInstruction;
     protected boolean isExpanded;
+    protected ExpandedSyntheticInstructionArguments expandedInstruction;
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles ,label, destinationLabel,InstructionType.S, variable);
@@ -24,6 +24,11 @@ abstract public class SyntheticInstruction extends Instruction {
 
     public ExpandedSyntheticInstructionArguments generateExpandedInstructions(LabelFactory labelFactory, VariableFactory variableFactory) {
         return expandSyntheticInstruction(labelFactory, variableFactory);
+    }
+
+    @Override
+    public Label execute() {
+        return executeUnExpandedInstruction();
     }
 
     @Override
@@ -43,11 +48,5 @@ abstract public class SyntheticInstruction extends Instruction {
     }
 
     protected abstract ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory);
-
-    @Override
-    public Label execute() {
-        return executeUnExpandedInstruction();
-    }
-
     protected abstract Label executeUnExpandedInstruction();
 }

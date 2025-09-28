@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class InstructionDTO {
+
     private final int id;
     private final String instruction;
     private final String cycles;
@@ -17,18 +18,6 @@ public class InstructionDTO {
     private final String type;
     private final InstructionDTO parentInstruction;
     private final Set<VariableDTO> innerFunctionVariables;
-
-    public VariableDTO getArgumentVariable() {
-        return argumentVariable;
-    }
-
-    public String getFullExpandedStringRepresentation() {
-        return fullExpandedStringRepresentation;
-    }
-
-    public String getType() {
-        return type;
-    }
 
     public InstructionDTO(Instruction instruction) {
         this.id = instruction.getNumber();
@@ -53,6 +42,18 @@ public class InstructionDTO {
         else {
             this.parentInstruction = null;
         }
+    }
+
+    public VariableDTO getArgumentVariable() {
+        return argumentVariable;
+    }
+
+    public String getFullExpandedStringRepresentation() {
+        return fullExpandedStringRepresentation;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public InstructionDTO getParentInstruction() {
@@ -85,10 +86,6 @@ public class InstructionDTO {
 
     public LabelDTO getLabel() {
         return label;
-    }
-
-    public String getDestinationLabelName() {
-        return destinationLabel.getName();
     }
 
     public LabelDTO getDestinationLabel() {

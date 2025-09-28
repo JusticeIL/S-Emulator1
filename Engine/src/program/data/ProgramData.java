@@ -25,16 +25,12 @@ public final class ProgramData implements Serializable {
     private final boolean isDebugmode;
     private final List<String> functionNames;
 
-    public boolean isDebugmode() {
-        return isDebugmode;
-    }
-
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
         for (Instruction instruction : program.getInstructionList()) {
             programInstructions.add(new InstructionDTO(instruction));
         }
-        for(Instruction instruction: program.getRuntimeExecutedInstructions()){
+        for (Instruction instruction: program.getRuntimeExecutedInstructions()){
             runtimeExecutedInstructions.add(instruction.toString());
         }
 
@@ -89,6 +85,10 @@ public final class ProgramData implements Serializable {
         }
     }
 
+    public boolean isDebugmode() {
+        return isDebugmode;
+    }
+
     public String getProgramName() {
         return programName;
     }
@@ -119,10 +119,6 @@ public final class ProgramData implements Serializable {
 
     public int getMaxExpandLevel() {
         return maxExpandLevel;
-    }
-
-    public List<String> getRuntimeExecutedInstructions() {
-        return runtimeExecutedInstructions;
     }
 
     public int getCurrentCycles() {

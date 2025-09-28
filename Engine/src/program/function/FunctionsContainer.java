@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class FunctionsContainer {
+
     private final Map<String, Function> functions = new HashMap<>();
     private final Set<String> functionNames = new HashSet<>();
     private final Map<String, SFunction> sFunctions = new HashMap<>();
@@ -18,16 +19,16 @@ public class FunctionsContainer {
     }
 
     public Function tryGetFunction(String name) throws FileNotFoundException {
-        if(!functionNames.contains(name)) {
+        if (!functionNames.contains(name)) {
             throw new IllegalArgumentException("Function " + name + " not found");
         }
 
         Function function;
 
-        if(functions.containsKey(name)) {
+        if (functions.containsKey(name)) {
             function = functions.get(name);
         }
-        else{
+        else {
             function = new Function(sFunctions.get(name),this);
             functions.put(name, function);
         }
@@ -42,6 +43,4 @@ public class FunctionsContainer {
     public Set<String> getFunctionNames() {
         return functionNames;
     }
-
-
 }

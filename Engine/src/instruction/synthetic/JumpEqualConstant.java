@@ -1,4 +1,5 @@
 package instruction.synthetic;
+
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
@@ -10,12 +11,13 @@ import instruction.component.LabelFactory;
 import instruction.component.Variable;
 import instruction.component.VariableFactory;
 import program.Program;
+
 import java.util.*;
 
 public class JumpEqualConstant extends SyntheticInstruction {
 
-    static private final int CYCLES = 2;
     private final int constValue;
+    static private final int CYCLES = 2;
 
     public JumpEqualConstant(int num, Variable variable, Label label, Label destinationLabel, int constValue) {
         super(num, variable, CYCLES, label, destinationLabel);

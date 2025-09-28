@@ -8,7 +8,6 @@ import program.Run;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class HistoryTableEntry {
@@ -25,7 +24,7 @@ public class HistoryTableEntry {
         this.args = new SimpleStringProperty(run.getInputArgs().entrySet().stream()
                 .map(entry -> entry.getKey() + " = " + entry.getValue())
                 .collect(Collectors.joining(", ", "[", "]")));
-        this.y = new SimpleIntegerProperty(run.getyValue());
+        this.y = new SimpleIntegerProperty(run.getYValue());
         this.cycles = new SimpleIntegerProperty(run.getRunCycles());
         this.allVariables = new HashMap<>();
         allVariables.putAll(run.getFinalStateOfAllVariables());

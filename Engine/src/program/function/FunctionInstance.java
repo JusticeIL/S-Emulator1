@@ -9,6 +9,7 @@ import instruction.component.VariableFactory;
 import instruction.synthetic.Assignment;
 import instruction.synthetic.quoting.Quotation;
 import program.Program;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +23,6 @@ public class FunctionInstance implements FunctionArgument {
     public FunctionInstance(Function function, List<FunctionArgument> arguments) {
         this.function = function;
         this.arguments = new ArrayList<>(arguments);
-    }
-
-    public List<FunctionArgument> getArguments() {
-        return arguments;
-    }
-
-    public Function getFunction() {
-        return function;
     }
 
     @Override
@@ -50,6 +43,31 @@ public class FunctionInstance implements FunctionArgument {
     @Override
     public List<FunctionArgument> tryGetFunctionArguments() {
         return getArguments();
+    }
+
+    @Override
+    public int getMaxExpansionLevel() {
+        int maxArgExpansion = arguments.stream()
+                .mapToInt(FunctionArgument::getMaxExpansionLevel)
+                .max()
+                .orElse(0);
+
+        return Math.max(function.getMaxProgramLevel(), maxArgExpansion) + 1; // +1 because expansion of this instruction into the functions' instructions
+    }
+
+    @Override
+    public List<FunctionArgument> getInnerArgument() {
+        List<FunctionArgument> innerArguments = new ArrayList<>();
+        arguments.forEach(argument -> innerArguments.addAll(argument.getInnerArgument()));
+        return innerArguments;
+    }
+
+    public List<FunctionArgument> getArguments() {
+        return arguments;
+    }
+
+    public Function getFunction() {
+        return function;
     }
 
     public ExpandedSyntheticInstructionArguments open(LabelFactory labelFactory, VariableFactory variableFactory, Map<Label, Label> labelTransitionsOldToNew, Map<String, Variable> variableTransitionsOldToNew,Instruction parent) {
@@ -87,22 +105,5 @@ public class FunctionInstance implements FunctionArgument {
         }
 
         return newArgumentSetupQuoteInstructions;
-    }
-
-    @Override
-    public int getMaxExpansionLevel() {
-        int maxArgExpansion = arguments.stream()
-                .mapToInt(FunctionArgument::getMaxExpansionLevel)
-                .max()
-                .orElse(0);
-
-        return Math.max(function.getMaxProgramLevel(), maxArgExpansion) + 1; // +1 because expansion of this instruction into the functions' instructions
-    }
-
-    @Override
-    public List<FunctionArgument> getInnerArgument() {
-        List<FunctionArgument> innerArguments = new ArrayList<>();
-        arguments.forEach(argument -> innerArguments.addAll(argument.getInnerArgument()));
-        return innerArguments;
     }
 }

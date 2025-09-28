@@ -3,9 +3,7 @@ package instruction.basic;
 import instruction.BasicInstruction;
 import instruction.Instruction;
 import instruction.component.Label;
-import instruction.component.LabelFactory;
 import instruction.component.Variable;
-import instruction.component.VariableFactory;
 
 public class Increase extends BasicInstruction {
 

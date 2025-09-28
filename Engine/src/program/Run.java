@@ -6,13 +6,12 @@ import java.util.Map;
 
 public class Run implements Serializable {
 
-    private final int expansionLevel;
-    private final Map<String,Integer> inputArgs;
-    private final Map<String,Integer> finalStateOfAllVariables;
-
     private final int runCycles;
     private final int runID;
     private final int yValue;
+    private final int expansionLevel;
+    private final Map<String,Integer> inputArgs;
+    private final Map<String,Integer> finalStateOfAllVariables;
 
     public Run(int runNumber, int runLevel, Map<String,Integer> inputArguments, Map<String,Integer> finalStateOfAllVariables, int runCycles) {
         this.finalStateOfAllVariables = new HashMap<>();
@@ -37,7 +36,7 @@ public class Run implements Serializable {
         return inputArgs;
     }
 
-    public int getyValue() {
+    public int getYValue() {
         return yValue;
     }
 

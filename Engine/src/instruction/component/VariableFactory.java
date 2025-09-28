@@ -12,7 +12,7 @@ public class VariableFactory implements Serializable {
 
     public Variable generateVariable(String name, int value) {
         Variable var;
-        if(name.contains("z")) {
+        if (name.contains("z")) {
             var = createZVariable();
         }
         else {

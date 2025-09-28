@@ -15,9 +15,9 @@ import java.util.stream.IntStream;
 
 public class ConstantAssignment extends SyntheticInstruction {
 
-    static private final int CYCLES = 2;
     private final int constValue;
-
+    static private final int CYCLES = 2;
+    
     public ConstantAssignment(int num, Variable variable, Label label, Label destinationLabel, int constValue) {
         super(num, variable, CYCLES, label, destinationLabel);
         command = variable.getName() + " <- " + constValue;

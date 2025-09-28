@@ -259,7 +259,7 @@ public class ConsoleUI {
                         run.getInputArgs().entrySet().stream()
                                 .map(entry -> entry.getKey() + " = " + entry.getValue())
                                 .toList(),
-                        run.getyValue(),
+                        run.getYValue(),
                         run.getRunCycles()
                 )).forEach(System.out::println);
     }

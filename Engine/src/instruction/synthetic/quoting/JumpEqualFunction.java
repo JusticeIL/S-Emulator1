@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 
 public class JumpEqualFunction extends FunctionInvokingInstruction {
 
-    private ExpandedSyntheticInstructionArguments expandedInstructions;
-    private VariableFactory variableFactory;
+    private final ExpandedSyntheticInstructionArguments expandedInstructions;
+    private final VariableFactory variableFactory;
 
-    public JumpEqualFunction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<FunctionArgument> arguments, VariableFactory variableFactory) {
+    public JumpEqualFunction(int num, Variable variable, Label label, Label destinationLabel, Function function, List<FunctionArgument> arguments, VariableFactory variableFactory) {
         super(num, variable, label, destinationLabel, function, arguments);
         this.variableFactory = variableFactory;
         this.expandedInstructions = createExpandedInstructions();
@@ -57,8 +57,13 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
     }
 
     @Override
+    protected ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
+        return expandedInstructions;
+    }
+
+    @Override
     protected Label executeUnExpandedInstruction() {
-        if(function.getValue() == variable.getValue()){
+        if (function.getValue() == variable.getValue()){
             return destinationLabel;
         }
         return Program.EMPTY_LABEL;
@@ -67,10 +72,5 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
     @Override
     public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
         return new JumpEqualFunction(number, newVariable, newLabel, destinationLabel, function.getFunction(), function.getArguments(), variableFactory);
-    }
-
-    @Override
-    protected ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
-        return expandedInstructions;
     }
 }

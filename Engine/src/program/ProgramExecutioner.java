@@ -21,12 +21,53 @@ public class ProgramExecutioner {
     private boolean isMainExecutioner = false;
     private final Set<Integer> breakpoints = new HashSet<>();
 
-    public void setMainExecutioner() {
-        isMainExecutioner = true;
+    private void executeSingleInstruction() {
+        Label nextLabel = currentInstruction.execute();
+        cycleCounter += currentInstruction.getCycles();
+
+        if (nextLabel.equals(Program.EMPTY_LABEL)) {
+            currentCommandIndex++;
+        } else if (nextLabel.equals(Program.EXIT_LABEL)) {
+            currentCommandIndex = program.getInstructionList().size(); // Exit the loop
+        } else {
+            currentInstruction = program.getLabels().get(nextLabel);
+            currentCommandIndex = currentInstruction.getNumber() - 1;
+        }
+
+        if (currentCommandIndex < program.getInstructionList().size()) {
+            currentInstruction = program.getInstructionList().get(currentCommandIndex);
+        }
+
+        program.setCycleCounter(cycleCounter);
     }
 
-    public boolean isDebugMode() {
-        return isDebugMode;
+    private void setUpNewRun(Set<VariableDTO> args){
+        cycleCounter = 0;
+        currentCommandIndex = 0;
+        currentInstruction = program.getInstructionList().get(currentCommandIndex);
+
+
+
+        Map<String,Variable> Variables = program.getVariables().stream().collect(Collectors.toMap(Variable::getName, Variable -> Variable));
+        program.AddYVariableIfNotExists();
+        for (Variable variable : Variables.values()) {
+            variable.setValue(0);
+        }
+        for (VariableDTO arg : args) {
+            if (Variables.containsKey(arg.getName())) { // Case: variable argument
+                Variables.get(arg.getName()).setValue(arg.getValue());
+            } else if (arg.getName().startsWith("(") && arg.getName().endsWith(")")) { // Case: function argument
+                // Ignore setup a function argument
+            } else {
+                throw new IllegalArgumentException("Argument " + arg.getName() + " not found in program variables and is not a function invoke.");
+            }
+        }
+        this.currentCommandIndex = 0;
+        this.cycleCounter = 0;
+    }
+
+    public void setMainExecutioner() {
+        isMainExecutioner = true;
     }
 
     public void setDebugMode(boolean debugMode) {
@@ -61,31 +102,6 @@ public class ProgramExecutioner {
         }
     }
 
-    private void setUpNewRun(Set<VariableDTO> args){
-        cycleCounter = 0;
-        currentCommandIndex = 0;
-        currentInstruction = program.getInstructionList().get(currentCommandIndex);
-
-
-
-        Map<String,Variable> Variables = program.getVariables().stream().collect(Collectors.toMap(Variable::getName, Variable -> Variable));
-        program.AddYVariableIfNotExists();
-        for (Variable variable : Variables.values()) {
-            variable.setValue(0);
-        }
-        for (VariableDTO arg : args) {
-            if (Variables.containsKey(arg.getName())) { // Case: variable argument
-                Variables.get(arg.getName()).setValue(arg.getValue());
-            } else if (arg.getName().startsWith("(") && arg.getName().endsWith(")")) { // Case: function argument
-                // Ignore setup a function argument
-            } else {
-                throw new IllegalArgumentException("Argument " + arg.getName() + " not found in program variables and is not a function invoke.");
-            }
-        }
-        this.currentCommandIndex = 0;
-        this.cycleCounter = 0;
-    }
-
     public void setUpDebugRun(Set<VariableDTO> args, Set<Integer> breakpoints) {
         setUpNewRun(args);
         this.breakpoints.clear();
@@ -100,26 +116,6 @@ public class ProgramExecutioner {
         if(!breakpoints.contains(currentInstruction.getNumber())) {
             resumeDebug();
         }
-    }
-
-    private void executeSingleInstruction() {
-        Label nextLabel = currentInstruction.execute();
-        cycleCounter += currentInstruction.getCycles();
-
-        if (nextLabel.equals(Program.EMPTY_LABEL)) {
-            currentCommandIndex++;
-        } else if (nextLabel.equals(Program.EXIT_LABEL)) {
-            currentCommandIndex = program.getInstructionList().size(); // Exit the loop
-        } else {
-            currentInstruction = program.getLabels().get(nextLabel);
-            currentCommandIndex = currentInstruction.getNumber() - 1;
-        }
-
-        if (currentCommandIndex < program.getInstructionList().size()) {
-            currentInstruction = program.getInstructionList().get(currentCommandIndex);
-        }
-
-        program.setCycleCounter(cycleCounter);
     }
 
     public void stepOver() {

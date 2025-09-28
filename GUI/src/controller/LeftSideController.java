@@ -18,6 +18,7 @@ import javafx.util.Duration;
 import model.InstructionTableEntry;
 import program.data.InstructionDTO;
 import program.data.Searchable;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -55,6 +56,87 @@ public class LeftSideController {
     @FXML
     private Label maxExpandLevel;
 
+    @FXML
+    public void initialize() {
+
+        instructionsTable.setRowFactory(tv -> {
+            TableRow<InstructionTableEntry> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    updateParentInstructionTable(row.getItem().getInstructionDTO());
+                }
+            });
+            return row;
+        });
+
+        // Initialize the menu button of the expansion levels
+        expansionLevelMenu.getItems().clear();
+        maxLevel.addListener((obs, oldValue, newValue) -> {
+            updateAvailableExpansionLevels(newValue.intValue());
+        });
+
+        // Initialize the highlight selection menu button
+        highlightSelection.getItems().clear();
+
+        // Initialize the program or function selectin menu button
+        functionChooser.getItems().clear();
+
+        // Initialize the history chain table and disable row selection
+        chosenInstructionHistoryTable.setSelectionModel(null);
+
+        instructionsTable.getSortOrder().clear();
+        instructionsTable.setSortPolicy(param -> null); // Disables sorting globally
+        chosenInstructionHistoryTable.getSortOrder().clear();
+        chosenInstructionHistoryTable.setSortPolicy(param -> null); // Disables sorting globally
+
+        // Minimize tables' height to prevent vertical scrolling
+        instructionsTable.setPrefHeight(instructionsTable.getPrefHeight() * 0.85);
+        chosenInstructionHistoryTable.setPrefHeight(chosenInstructionHistoryTable.getPrefHeight() * 0.85);
+    }
+
+    @FXML
+    public void clearAllBreakpoints(ActionEvent event) {
+        instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
+        instructionsTable.refresh();
+    }
+
+    private void updateParentInstructionTable(InstructionDTO instruction) {
+        List<InstructionTableEntry> historyEntries = new ArrayList<>();
+        InstructionDTO parent = instruction.getParentInstruction();
+        while (parent != null) {
+            historyEntries.add(new InstructionTableEntry(parent));
+            parent = parent.getParentInstruction();
+        }
+
+        // Clear the table first
+        chosenInstructionHistoryTable.getItems().clear();
+        chosenInstructionHistoryTable.getItems().addAll(historyEntries);
+
+        if (topController.isAnimationAllowedProperty().get()) { // Case: animation allowed
+            playHistoryChainAnimation();
+        } else { // Case: user requests no animations
+            List<Node> rows = new ArrayList<>(chosenInstructionHistoryTable.lookupAll(".table-row-cell"));
+            rows.forEach(row -> row.setOpacity(1));
+        }
+    }
+
+    private void playHistoryChainAnimation() {
+        List<Node> rows = new ArrayList<>(chosenInstructionHistoryTable.lookupAll(".table-row-cell"));
+        rows.forEach(row -> row.setOpacity(0));
+        int delay = 0;
+        for (Node row : rows) {
+            PauseTransition pause = new PauseTransition(Duration.millis(delay));
+            pause.setOnFinished(e -> {
+                FadeTransition fade = new FadeTransition(Duration.millis(200), row);
+                fade.setFromValue(0);
+                fade.setToValue(1);
+                fade.play();
+            });
+            pause.play();
+            delay += HISTORY_CHAIN_EFFECT_DURATION;
+        }
+    }
+
     public void setModel(SingleProgramController model) {
         this.model = model;
     }
@@ -87,10 +169,6 @@ public class LeftSideController {
 
         // Bind the selection of an instruction in the left table to "if in debug mode" in right controller
         instructionsTable.addEventFilter(MouseEvent.ANY, event -> {
-//            if (rightController.isInDebugModeProperty().get()) {
-//                event.consume();
-//            }
-
             if (rightController.isInDebugModeProperty().get()) {
                 // Allow interaction only if the event target is a TableCell in the id column
                 Node target = event.getTarget() instanceof Node ? (Node) event.getTarget() : null;
@@ -100,10 +178,10 @@ public class LeftSideController {
                 if (target instanceof TableCell<?, ?> cell) {
                     TableColumn<?, ?> column = cell.getTableColumn();
                     if ("idColumn".equals(column.getId())) {
-                        return; // allow event for id column
+                        return; // Allow event for id column
                     }
                 }
-                event.consume(); // block all other interactions
+                event.consume(); // Block all other interactions
             }
         });
 
@@ -241,44 +319,6 @@ public class LeftSideController {
         this.topController = topController;
     }
 
-    @FXML
-    public void initialize() {
-
-        instructionsTable.setRowFactory(tv -> {
-            TableRow<InstructionTableEntry> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (!row.isEmpty()) {
-                    updateParentInstructionTable(row.getItem().getInstructionDTO());
-                }
-            });
-            return row;
-        });
-
-        // Initialize the menu button of the expansion levels
-        expansionLevelMenu.getItems().clear();
-        maxLevel.addListener((obs, oldValue, newValue) -> {
-            updateAvailableExpansionLevels(newValue.intValue());
-        });
-
-        // Initialize the highlight selection menu button
-        highlightSelection.getItems().clear();
-
-        // Initialize the program or function selectin menu button
-        functionChooser.getItems().clear();
-
-        // Initialize the history chain table and disable row selection
-        chosenInstructionHistoryTable.setSelectionModel(null);
-
-        instructionsTable.getSortOrder().clear();
-        instructionsTable.setSortPolicy(param -> null); // Disables sorting globally
-        chosenInstructionHistoryTable.getSortOrder().clear();
-        chosenInstructionHistoryTable.setSortPolicy(param -> null); // Disables sorting globally
-
-        // Minimize tables' height to prevent vertical scrolling
-        instructionsTable.setPrefHeight(instructionsTable.getPrefHeight() * 0.85);
-        chosenInstructionHistoryTable.setPrefHeight(chosenInstructionHistoryTable.getPrefHeight() * 0.85);
-    }
-
     public void markEntryInInstructionTable(int entryId) {
         instructionsTable.getSelectionModel().clearAndSelect(entryId);
         instructionsTable.getFocusModel().focus(entryId);
@@ -400,43 +440,6 @@ public class LeftSideController {
         });
     }
 
-    private void updateParentInstructionTable(InstructionDTO instruction) {
-        List<InstructionTableEntry> historyEntries = new ArrayList<>();
-        InstructionDTO parent = instruction.getParentInstruction();
-        while (parent != null) {
-            historyEntries.add(new InstructionTableEntry(parent));
-            parent = parent.getParentInstruction();
-        }
-
-        // Clear the table first
-        chosenInstructionHistoryTable.getItems().clear();
-        chosenInstructionHistoryTable.getItems().addAll(historyEntries);
-
-        if (topController.isAnimationAllowedProperty().get()) { // Case: animation allowed
-            playHistoryChainAnimation();
-        } else { // Case: user requests no animations
-            List<Node> rows = new ArrayList<>(chosenInstructionHistoryTable.lookupAll(".table-row-cell"));
-            rows.forEach(row -> row.setOpacity(1));
-        }
-    }
-
-    private void playHistoryChainAnimation() {
-        List<Node> rows = new ArrayList<>(chosenInstructionHistoryTable.lookupAll(".table-row-cell"));
-        rows.forEach(row -> row.setOpacity(0));
-        int delay = 0;
-        for (Node row : rows) {
-            PauseTransition pause = new PauseTransition(Duration.millis(delay));
-            pause.setOnFinished(e -> {
-                FadeTransition fade = new FadeTransition(Duration.millis(200), row);
-                fade.setFromValue(0);
-                fade.setToValue(1);
-                fade.play();
-            });
-            pause.play();
-            delay += HISTORY_CHAIN_EFFECT_DURATION;
-        }
-    }
-
     public void clearHistoryChainTable() {
         chosenInstructionHistoryTable.getItems().clear();
     }
@@ -451,11 +454,5 @@ public class LeftSideController {
         return instructionsTable.getItems().stream()
                 .filter(InstructionTableEntry::isBreakpoint)
                 .collect(Collectors.toSet());
-    }
-
-    @FXML
-    public void clearAllBreakpoints(ActionEvent event) {
-        instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
-        instructionsTable.refresh();
     }
 }

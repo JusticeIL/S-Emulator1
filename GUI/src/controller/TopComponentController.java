@@ -18,6 +18,7 @@ import javafx.concurrent.Task;
 import java.io.File;
 import jakarta.xml.bind.JAXBException;
 import javafx.stage.StageStyle;
+
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
@@ -54,68 +55,6 @@ public class TopComponentController{
         absolutePathProperty = new SimpleStringProperty("---");
         currentLoadedProgramPath.textProperty().bind(absolutePathProperty);
         availableCSSFileNames = listCssFiles();
-    }
-
-    private Stage createLoadingDialog(Stage owner, Task<?> task) {
-        Label msg = new Label();
-        msg.textProperty().bind(task.messageProperty());
-
-        ProgressBar bar = new ProgressBar();
-        bar.setPrefWidth(240);
-        bar.progressProperty().bind(task.progressProperty());
-
-        VBox root = new VBox(12, msg, bar);
-        root.setPadding(new Insets(14));
-        root.setFillWidth(true);
-
-        Stage dialog = new Stage(StageStyle.UTILITY);
-        dialog.initOwner(owner);
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.setResizable(false);
-        dialog.setTitle("Loading");
-        dialog.setScene(new Scene(root));
-        dialog.getScene().getStylesheets().add(owner.getScene().getStylesheets().getFirst());
-        return dialog;
-    }
-
-    public void setModel(SingleProgramController model) {
-        this.model = model;
-    }
-
-    public void setRightController(RightSideController rightController) {
-        this.rightController = rightController;
-
-        // Initialize the skin chooser menu
-        skinMenu.getItems().clear();
-        skinMenu.disableProperty().bind(
-                Bindings.isEmpty(skinMenu.getItems())
-        );
-        availableCSSFileNames.stream().forEach(fileName -> {
-            MenuItem menuItem = new MenuItem(fileName);
-            menuItem.setOnAction(event -> {
-                primaryStage.getScene().getStylesheets().clear();
-                primaryStage.getScene().getStylesheets().add(getClass().getResource("../resources/css/" + fileName + ".css").toExternalForm());
-            });
-            skinMenu.getItems().add(menuItem);
-        });
-
-        // Bind the text property based on whether items are empty or not
-        skinMenu.textProperty().bind(
-                Bindings.when(Bindings.isEmpty(skinMenu.getItems()))
-                        .then("No Available Skin")
-                        .otherwise("Choose a Skin")
-        );
-    }
-
-    public void setLeftController(LeftSideController leftController) {
-        this.leftController = leftController;
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        if (rightController != null) {
-            rightController.setPrimaryStage(primaryStage);
-        }
     }
 
     @FXML
@@ -209,6 +148,68 @@ public class TopComponentController{
         thread.start();
 
         dialog.showAndWait();
+    }
+
+    private Stage createLoadingDialog(Stage owner, Task<?> task) {
+        Label msg = new Label();
+        msg.textProperty().bind(task.messageProperty());
+
+        ProgressBar bar = new ProgressBar();
+        bar.setPrefWidth(240);
+        bar.progressProperty().bind(task.progressProperty());
+
+        VBox root = new VBox(12, msg, bar);
+        root.setPadding(new Insets(14));
+        root.setFillWidth(true);
+
+        Stage dialog = new Stage(StageStyle.UTILITY);
+        dialog.initOwner(owner);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.setResizable(false);
+        dialog.setTitle("Loading");
+        dialog.setScene(new Scene(root));
+        dialog.getScene().getStylesheets().add(owner.getScene().getStylesheets().getFirst());
+        return dialog;
+    }
+
+    public void setModel(SingleProgramController model) {
+        this.model = model;
+    }
+
+    public void setRightController(RightSideController rightController) {
+        this.rightController = rightController;
+
+        // Initialize the skin chooser menu
+        skinMenu.getItems().clear();
+        skinMenu.disableProperty().bind(
+                Bindings.isEmpty(skinMenu.getItems())
+        );
+        availableCSSFileNames.stream().forEach(fileName -> {
+            MenuItem menuItem = new MenuItem(fileName);
+            menuItem.setOnAction(event -> {
+                primaryStage.getScene().getStylesheets().clear();
+                primaryStage.getScene().getStylesheets().add(getClass().getResource("../resources/css/" + fileName + ".css").toExternalForm());
+            });
+            skinMenu.getItems().add(menuItem);
+        });
+
+        // Bind the text property based on whether items are empty or not
+        skinMenu.textProperty().bind(
+                Bindings.when(Bindings.isEmpty(skinMenu.getItems()))
+                        .then("No Available Skin")
+                        .otherwise("Choose a Skin")
+        );
+    }
+
+    public void setLeftController(LeftSideController leftController) {
+        this.leftController = leftController;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        if (rightController != null) {
+            rightController.setPrimaryStage(primaryStage);
+        }
     }
 
     public List<String> listCssFiles() {

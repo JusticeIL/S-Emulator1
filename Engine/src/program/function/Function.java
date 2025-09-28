@@ -50,16 +50,16 @@ public class Function extends Program {
         LabelTransitionsOldToNew.put(Program.EMPTY_LABEL,Program.EMPTY_LABEL);
 
         for (Instruction instruction : getInstructionList()) {
-            if(!LabelTransitionsOldToNew.containsKey(instruction.getLabel())) {
+            if (!LabelTransitionsOldToNew.containsKey(instruction.getLabel())) {
                 LabelTransitionsOldToNew.put(instruction.getLabel(), labelFactory.createLabel());
             }
-            if(!LabelTransitionsOldToNew.containsKey(instruction.getDestinationLabel())) {
+            if (!LabelTransitionsOldToNew.containsKey(instruction.getDestinationLabel())) {
                 LabelTransitionsOldToNew.put(instruction.getDestinationLabel(), labelFactory.createLabel());
             }
-            if(!VariableTransitionsOldToNew.containsKey(instruction.getVariable().getName())) {
+            if (!VariableTransitionsOldToNew.containsKey(instruction.getVariable().getName())) {
                 VariableTransitionsOldToNew.put(instruction.getVariable().getName(),variableFactory.createZVariable());
             }
-            if(!VariableTransitionsOldToNew.containsKey(instruction.getArgumentVariable().getName())) {
+            if (!VariableTransitionsOldToNew.containsKey(instruction.getArgumentVariable().getName())) {
                 VariableTransitionsOldToNew.put(instruction.getArgumentVariable().getName(),variableFactory.createZVariable());
             }
             Variable newVariable = VariableTransitionsOldToNew.get(instruction.getVariable().getName());
@@ -69,7 +69,7 @@ public class Function extends Program {
             instructions.add(instruction.duplicate(newVariable,newArgumentVariable,newLabel,newDestinationLabel));
         }
 
-        for(Instruction instruction : instructions){
+        for (Instruction instruction : instructions){
             if(!instruction.getLabel().equals(Program.EMPTY_LABEL)){
                 labelMap.put(instruction.getLabel(),instruction);
             }

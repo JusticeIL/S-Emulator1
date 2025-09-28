@@ -4,7 +4,6 @@ import jakarta.xml.bind.JAXBException;
 import program.Program;
 import program.ProgramExecutioner;
 import program.data.ProgramData;
-import program.Statistics;
 import program.data.VariableDTO;
 
 import java.io.FileNotFoundException;
@@ -15,9 +14,9 @@ public class SingleProgramController implements Model, Serializable {
 
     private Program activeProgram;
     private Map<Integer, Program> activeProgramExpansionsByLevel;
+    private boolean isCurrentlyInDebugMode = false;
     private final Map<String,Map<Integer,Program>> programsAndFunctionsByName = new HashMap<>();
     private final ProgramExecutioner programExecutioner = new ProgramExecutioner();
-    private boolean isCurrentlyInDebugMode = false;
 
     @Override
     public void loadProgram(String path) throws FileNotFoundException, JAXBException {
@@ -42,25 +41,6 @@ public class SingleProgramController implements Model, Serializable {
     }
 
     @Override
-    public void switchFunction(String functionName) {
-
-        if (programsAndFunctionsByName.containsKey(functionName)) { // Case: the function name belongs to the main program
-            activeProgramExpansionsByLevel = programsAndFunctionsByName.get(functionName);
-            activeProgram = activeProgramExpansionsByLevel.get(0);
-            return;
-        }
-
-        // Case: the function name belongs to a function
-        activeProgram.getFunctions().stream()
-                        .filter(function -> function.getUserString().equals(functionName))
-                        .findFirst()
-                        .ifPresent(function -> {
-                            activeProgramExpansionsByLevel = programsAndFunctionsByName.get(function.getProgramName());
-                            activeProgram = activeProgramExpansionsByLevel.get(0);
-                        });
-    }
-
-    @Override
     public boolean isProgramLoaded() {
         return activeProgram != null;
     }
@@ -69,20 +49,6 @@ public class SingleProgramController implements Model, Serializable {
     public Optional<ProgramData> getProgramData() {
         return Optional.ofNullable(activeProgram)
                 .map(ProgramData::new);
-    }
-
-    @Override
-    public void stopDebug() {
-        if(isCurrentlyInDebugMode) {
-            programExecutioner.stopDebug();
-            programExecutioner.setDebugMode(false);
-            isCurrentlyInDebugMode = false;
-        }
-    }
-
-    @Override
-    public void resumeDebug() {
-        programExecutioner.resumeDebug();
     }
 
     @Override
@@ -113,13 +79,6 @@ public class SingleProgramController implements Model, Serializable {
     }
 
     @Override
-    public void stepOver() {
-        if(isCurrentlyInDebugMode) {
-            programExecutioner.stepOver();
-        }
-    }
-
-    @Override
     public void startDebug(Set<VariableDTO> args,Set<Integer> breakpoints) {
         programExecutioner.setDebugMode(true);
         programExecutioner.setProgram(activeProgram);
@@ -136,5 +95,45 @@ public class SingleProgramController implements Model, Serializable {
     @Override
     public void removeBreakpoint(int lineNumber) {
         programExecutioner.removeBreakpoint(lineNumber);
+    }
+
+    @Override
+    public void stepOver() {
+        if(isCurrentlyInDebugMode) {
+            programExecutioner.stepOver();
+        }
+    }
+
+    @Override
+    public void stopDebug() {
+        if(isCurrentlyInDebugMode) {
+            programExecutioner.stopDebug();
+            programExecutioner.setDebugMode(false);
+            isCurrentlyInDebugMode = false;
+        }
+    }
+
+    @Override
+    public void resumeDebug() {
+        programExecutioner.resumeDebug();
+    }
+
+    @Override
+    public void switchFunction(String functionName) {
+
+        if (programsAndFunctionsByName.containsKey(functionName)) { // Case: the function name belongs to the main program
+            activeProgramExpansionsByLevel = programsAndFunctionsByName.get(functionName);
+            activeProgram = activeProgramExpansionsByLevel.get(0);
+            return;
+        }
+
+        // Case: the function name belongs to a function
+        activeProgram.getFunctions().stream()
+                .filter(function -> function.getUserString().equals(functionName))
+                .findFirst()
+                .ifPresent(function -> {
+                    activeProgramExpansionsByLevel = programsAndFunctionsByName.get(function.getProgramName());
+                    activeProgram = activeProgramExpansionsByLevel.get(0);
+                });
     }
 }

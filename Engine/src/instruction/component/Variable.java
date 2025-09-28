@@ -10,8 +10,8 @@ import java.util.Objects;
 
 public class Variable implements Serializable, FunctionArgument {
 
-    protected final String name;
     protected int value;
+    protected final String name;
 
     public Variable(int highestUnusedZId) {
         this.value = 0;
@@ -21,6 +21,15 @@ public class Variable implements Serializable, FunctionArgument {
     public Variable(String name, int value) {
         this.value = value;
         this.name = name;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    @Override
+    public int getValue() {
+        return value;
     }
 
     @Override
@@ -39,12 +48,15 @@ public class Variable implements Serializable, FunctionArgument {
     }
 
     @Override
-    public int getValue() {
-        return value;
+    public int getMaxExpansionLevel() {
+        return 2; // Variables do not expand, but they are a part of assignment
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    @Override
+    public List<FunctionArgument> getInnerArgument() {
+        List<FunctionArgument> arguments = new ArrayList<>();
+        arguments.add(this);
+        return arguments;
     }
 
     @Override
@@ -62,17 +74,5 @@ public class Variable implements Serializable, FunctionArgument {
     @Override
     public int hashCode() {
         return Objects.hashCode(name);
-    }
-
-    @Override
-    public int getMaxExpansionLevel() {
-        return 2; // Variables do not expand, but they are a part of assignment
-    }
-
-    @Override
-    public List<FunctionArgument> getInnerArgument() {
-        List<FunctionArgument> arguments = new ArrayList<>();
-        arguments.add(this);
-        return arguments;
     }
 }

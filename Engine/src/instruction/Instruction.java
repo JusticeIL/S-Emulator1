@@ -18,35 +18,11 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     protected Label destinationLabel;
     protected int level;
     protected int number;
+    protected Instruction parentInstruction;
     protected final String DELIMITER = ">>>";
     protected final InstructionType instructionType;
-    protected Instruction parentInstruction;
     protected final Variable variable;
     protected Variable argumentVariable;
-
-    public InstructionType getInstructionType() {
-        return instructionType;
-    }
-
-    public String getCommand() {
-        return command;
-    }
-
-    public abstract Label execute(); // Implementation of command execution logic
-
-    public Label getLabel() {
-        return label;
-    }
-
-    public Label getDestinationLabel() {
-        return destinationLabel;
-    }
-
-    public abstract ExpandedSyntheticInstructionArguments generateExpandedInstructions(LabelFactory labelFactory, VariableFactory variableFactory);
-
-    public int getLevel() {
-        return level;
-    }
 
     public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Variable variable) {
         this.number = num;
@@ -70,6 +46,26 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         this.variable = variable;
         this.argumentVariable = variable;
         this.parentInstruction = parentInstruction;
+    }
+
+    public InstructionType getInstructionType() {
+        return instructionType;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
+
+    public Label getDestinationLabel() {
+        return destinationLabel;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public void setParentInstruction(Instruction parentInstruction) {
@@ -100,6 +96,14 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         return String.valueOf(cycles);
     }
 
+    public Instruction getParentInstruction() {
+        return parentInstruction;
+    }
+
+    public List<FunctionArgument> getInnerFunctionVariables() {
+        return Collections.emptyList();
+    }
+
     @Override
     public String toString() {
         String thisInstructionString = "#" + String.format("%-3s", number) + " " + "(" + instructionType + ")" + " " + "[" + String.format(" %-4s", label) + "]" + " " + String.format("%-24s", command) + " " + "(" + cycles + ")";
@@ -109,15 +113,8 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         return thisInstructionString;
     }
 
-    public Instruction getParentInstruction() {
-        return parentInstruction;
-    }
-
-    public abstract List<String> getExpandedStringRepresentation();
-
     abstract public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel);
-
-    public List<FunctionArgument> getInnerFunctionVariables() {
-        return Collections.emptyList();
-    }
+    abstract public Label execute(); // Implementation of command execution logic
+    abstract public ExpandedSyntheticInstructionArguments generateExpandedInstructions(LabelFactory labelFactory, VariableFactory variableFactory);
+    abstract public List<String> getExpandedStringRepresentation();
 }

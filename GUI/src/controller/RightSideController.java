@@ -1,22 +1,17 @@
 package controller;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -32,6 +27,7 @@ import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
 import model.InstructionTableEntry;
 import program.data.VariableDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,29 +46,6 @@ public class RightSideController{
     private final BooleanProperty isProgramLoaded = new SimpleBooleanProperty(false);
     private final IntegerProperty currentCycles = new SimpleIntegerProperty(-1);
     private final SimpleIntegerProperty nextInstructionIdForDebug = new SimpleIntegerProperty(0);
-
-    public void setModel(SingleProgramController model) {
-
-        this.model = model;
-        isProgramLoaded.set(model.isProgramLoaded());
-    }
-
-    public void OnProgramLoaded() {
-        updateCycles();
-        isProgramLoaded.set(true);
-    }
-
-    public void setTopController(TopComponentController topController) {
-        this.topController = topController;
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-    public void setLeftController(LeftSideController leftController) {
-        this.leftController = leftController;
-    }
 
     @FXML
     private TableView<ArgumentTableEntry> executionArgumentInput;
@@ -227,6 +200,134 @@ public class RightSideController{
         executionArgumentInput.setPrefHeight(executionArgumentInput.getPrefHeight() * 0.85);
     }
 
+    @FXML
+    public void RerunPressed(ActionEvent event) {
+        List<ArgumentTableEntry> argsList = new ArrayList<>();
+
+        String argsString = StatisticsTable.getSelectionModel().getSelectedItem().getArgs();
+        if (argsString.startsWith("[") && argsString.endsWith("]")) {
+            argsString = argsString.substring(1, argsString.length() - 1); // strip [ ]
+        }
+
+        String[] pairs = argsString.split(", ");
+        for (String pair : pairs) {
+            String[] kv = pair.split(" = ");
+            if (kv.length == 2) {
+                String name = kv[0].trim();
+                int value = Integer.parseInt(kv[1].trim());
+                argsList.add(new ArgumentTableEntry(name) {{
+                    setValue(value);
+                }});
+            }
+        }
+        executionArgumentInput.getItems().setAll(argsList);
+        model.Expand(StatisticsTable.getSelectionModel().getSelectedItem().getLevel());
+        leftController.updateMainInstructionTable();
+        leftController.setCurrentLevel(StatisticsTable.getSelectionModel().getSelectedItem().getLevel());
+        variableTable.getItems().clear();
+    }
+
+    @FXML
+    public void ResumeDebugPressed(ActionEvent event) {
+        model.resumeDebug();
+        updateAfterDebugStep();
+    }
+
+    @FXML
+    public void RunProgramPressed(ActionEvent event) {
+
+        if (runRadioButton.isSelected()) {
+            Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
+                    .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
+                    .collect(Collectors.toSet());
+            // Pass them to runProgram
+            model.runProgram(argumentValues);
+            updateResultVariableTable();
+
+            refreshHistorySize();
+            model.getProgramData().ifPresent(programData ->
+                    currentCycles.set(programData.getCurrentCycles()));
+        }
+        else {
+            StartDebugPressed(event);
+        }
+    }
+
+
+    @FXML
+    public void ShowStatisticsPressed(ActionEvent event) {
+        if (!isShowHistoryDialogOpen && !StatisticsTable.getSelectionModel().isEmpty()) {
+            isShowHistoryDialogOpen = true;
+            HistoryTableEntry entry = StatisticsTable.getSelectionModel().getSelectedItem();
+            Map<String, Integer> allEntryVariables = entry.getAllVariables();
+            Stage dialogStage = createVariablesTableDialog(allEntryVariables);
+            dialogStage.setOnCloseRequest(closeEvent -> isShowHistoryDialogOpen = false);
+            dialogStage.show();
+        }
+    }
+
+    @FXML
+    void StartDebugPressed(ActionEvent event) {
+        Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
+                .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
+                .collect(Collectors.toSet());
+        Set<Integer> breakpoints = leftController.getEntriesWithBreakpoints().stream()
+                .map(InstructionTableEntry::getId).collect(Collectors.toSet());
+        model.startDebug(argumentValues, breakpoints);
+        model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
+        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+        updateResultVariableTable();
+        updateIsDebugProperty();
+        model.getProgramData().ifPresent(programData ->
+                currentCycles.set(programData.getCurrentCycles()));
+        leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
+        updateAfterDebugStep();
+    }
+
+    @FXML
+    void StepOverDebugPressed(ActionEvent event) {
+        model.stepOver();
+        updateAfterDebugStep();
+    }
+
+    @FXML
+    void StopDebugPressed(ActionEvent event) {
+        model.stopDebug();
+        updateIsDebugProperty();
+        updateStatisticsTable();
+        leftController.clearMarkInInstructionTable();
+    }
+
+    @FXML
+    void SetupNewRunPressed(ActionEvent event) {
+        variableTable.getItems().clear();
+        executionArgumentInput.getItems().forEach(entry->{entry.valueProperty().set(0);});
+        currentCycles.set(0);
+    }
+
+    public void setModel(SingleProgramController model) {
+
+        this.model = model;
+        isProgramLoaded.set(model.isProgramLoaded());
+    }
+
+    public void OnProgramLoaded() {
+        updateCycles();
+        isProgramLoaded.set(true);
+    }
+
+    public void setTopController(TopComponentController topController) {
+        this.topController = topController;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    public void setLeftController(LeftSideController leftController) {
+        this.leftController = leftController;
+    }
+
     public void updateArgumentTable() {
         model.getProgramData().ifPresent(programData -> {
             List<ArgumentTableEntry> entries = programData.getProgramXArguments().stream()
@@ -293,100 +394,9 @@ public class RightSideController{
         });
     }
 
-
-    @FXML
-    void RerunPressed(ActionEvent event) {
-        List<ArgumentTableEntry> argsList = new ArrayList<>();
-
-        String argsString = StatisticsTable.getSelectionModel().getSelectedItem().getArgs();
-        if (argsString.startsWith("[") && argsString.endsWith("]")) {
-            argsString = argsString.substring(1, argsString.length() - 1); // strip [ ]
-        }
-
-        String[] pairs = argsString.split(", ");
-        for (String pair : pairs) {
-            String[] kv = pair.split(" = ");
-            if (kv.length == 2) {
-                String name = kv[0].trim();
-                int value = Integer.parseInt(kv[1].trim());
-                argsList.add(new ArgumentTableEntry(name) {{
-                    setValue(value);
-                }});
-            }
-        }
-        executionArgumentInput.getItems().setAll(argsList);
-        model.Expand(StatisticsTable.getSelectionModel().getSelectedItem().getLevel());
-        leftController.updateMainInstructionTable();
-        leftController.setCurrentLevel(StatisticsTable.getSelectionModel().getSelectedItem().getLevel());
-        variableTable.getItems().clear();
-    }
-
-    @FXML
-    void ResumeDebugPressed(ActionEvent event) {
-        model.resumeDebug();
-        updateAfterDebugStep();
-    }
-
     public void updateCycles(){
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
-    }
-
-    @FXML
-    void RunProgramPressed(ActionEvent event) {
-
-        if (runRadioButton.isSelected()) {
-            Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
-                    .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
-                    .collect(Collectors.toSet());
-            // Pass them to runProgram
-            model.runProgram(argumentValues);
-            updateResultVariableTable();
-
-            refreshHistorySize();
-            model.getProgramData().ifPresent(programData ->
-                    currentCycles.set(programData.getCurrentCycles()));
-        }
-        else {
-            StartDebugPressed(event);
-        }
-    }
-
-
-    @FXML
-    void ShowStatisticsPressed(ActionEvent event) {
-        if (!isShowHistoryDialogOpen && !StatisticsTable.getSelectionModel().isEmpty()) {
-            isShowHistoryDialogOpen = true;
-            HistoryTableEntry entry = StatisticsTable.getSelectionModel().getSelectedItem();
-            Map<String, Integer> allEntryVariables = entry.getAllVariables();
-            Stage dialogStage = createVariablesTableDialog(allEntryVariables);
-            dialogStage.setOnCloseRequest(closeEvent -> isShowHistoryDialogOpen = false);
-            dialogStage.show();
-        }
-    }
-
-    @FXML
-    void StartDebugPressed(ActionEvent event) {
-        Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
-                .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
-                .collect(Collectors.toSet());
-        Set<Integer> breakpoints = leftController.getEntriesWithBreakpoints().stream()
-                .map(InstructionTableEntry::getId).collect(Collectors.toSet());
-        model.startDebug(argumentValues, breakpoints);
-        model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
-        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
-        updateResultVariableTable();
-        updateIsDebugProperty();
-        model.getProgramData().ifPresent(programData ->
-                currentCycles.set(programData.getCurrentCycles()));
-        leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
-        updateAfterDebugStep();
-    }
-
-    @FXML
-    void StepOverDebugPressed(ActionEvent event) {
-        model.stepOver();
-        updateAfterDebugStep();
     }
 
     void updateAfterDebugStep(){
@@ -406,14 +416,6 @@ public class RightSideController{
                 currentCycles.set(programData.getCurrentCycles()));
     }
 
-    @FXML
-    void StopDebugPressed(ActionEvent event) {
-        model.stopDebug();
-        updateIsDebugProperty();
-        updateStatisticsTable();
-        leftController.clearMarkInInstructionTable();
-    }
-
     public void updateIsDebugProperty(){
         if ( model.isProgramLoaded()) {
             model.getProgramData().ifPresent(data ->
@@ -422,13 +424,6 @@ public class RightSideController{
         } else {
             isDebugMode.set(false);
         }
-    }
-
-    @FXML
-    void SetupNewRunPressed(ActionEvent event) {
-        variableTable.getItems().clear();
-        executionArgumentInput.getItems().forEach(entry->{entry.valueProperty().set(0);});
-        currentCycles.set(0);
     }
 
     public BooleanProperty isInDebugModeProperty() {
@@ -555,5 +550,4 @@ public class RightSideController{
     public void clearVariableTable() {
         variableTable.getItems().clear();
     }
-
 }

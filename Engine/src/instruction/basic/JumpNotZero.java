@@ -2,9 +2,6 @@ package instruction.basic;
 
 import instruction.BasicInstruction;
 import instruction.Instruction;
-import instruction.component.LabelFactory;
-import instruction.component.VariableFactory;
-import instruction.synthetic.JumpZero;
 import program.Program;
 import instruction.component.Label;
 import instruction.component.Variable;
@@ -33,8 +30,9 @@ public class JumpNotZero extends BasicInstruction {
         if (variable.getValue() != 0) { // Case: jump condition is met
             return destinationLabel;
         }
-        else
+        else {
             return Program.EMPTY_LABEL;
+        }
     }
 
     @Override

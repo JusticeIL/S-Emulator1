@@ -11,12 +11,12 @@ public class Label implements Serializable {
         this.labelName = labelName;
     }
 
-    @Override
-    public String toString() {
+    public String getLabelName() {
         return labelName;
     }
 
-    public String getLabelName() {
+    @Override
+    public String toString() {
         return labelName;
     }
 
