@@ -277,6 +277,7 @@ public class LeftSideController {
                         setCurrentLevel(selectedLevel);
                         model.Expand(currentLevel.get());
                         updateMainInstructionTable();
+                        clearAllBreakpoints(null);
                         updateVariablesOrLabelSelectionMenu();
                     });
                     return menuItem;
@@ -309,6 +310,7 @@ public class LeftSideController {
                     model.switchFunction(functionName);
                     functionChooser.setText(functionName);
                     updateMainInstructionTable();
+                    clearAllBreakpoints(null);
                     updateMaxExpansionLevel();
                     setCurrentLevel(0);
                     updateAvailableExpansionLevels(maxLevel.get());
@@ -420,10 +422,9 @@ public class LeftSideController {
         });
     }
 
-    public Set<Integer> getCurrentBreakpoints() {
+    public Set<InstructionTableEntry> getEntriesWithBreakpoints() {
         return instructionsTable.getItems().stream()
                 .filter(InstructionTableEntry::isBreakpoint)
-                .map(InstructionTableEntry::getId) // Entry -> Integer (ID)
                 .collect(Collectors.toSet());
     }
 
