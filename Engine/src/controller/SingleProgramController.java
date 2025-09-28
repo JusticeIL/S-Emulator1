@@ -120,10 +120,10 @@ public class SingleProgramController implements Model, Serializable {
     }
 
     @Override
-    public void startDebug(Set<VariableDTO> args) {
+    public void startDebug(Set<VariableDTO> args,Set<Integer> breakpoints) {
         programExecutioner.setDebugMode(true);
         programExecutioner.setProgram(activeProgram);
-        programExecutioner.setUpDebugRun(args);
+        programExecutioner.setUpDebugRun(args, breakpoints);
         isCurrentlyInDebugMode = true;
         activeProgram.setCycleCounter(0);
     }

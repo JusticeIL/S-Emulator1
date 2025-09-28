@@ -14,7 +14,7 @@ public interface Model {
     Optional<ProgramData> getProgramData();
     void Expand(int level) throws IllegalArgumentException;
     void runProgram(Set<VariableDTO> args);
-    void startDebug(Set<VariableDTO> args);
+    void startDebug(Set<VariableDTO> args,Set<Integer> breakpoints);
     void stepOver();
     void stopDebug();
     void resumeDebug();

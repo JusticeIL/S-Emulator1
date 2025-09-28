@@ -30,6 +30,7 @@ import javafx.util.Duration;
 import javafx.util.converter.NumberStringConverter;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
+import model.InstructionTableEntry;
 import program.data.VariableDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -319,11 +320,7 @@ public class RightSideController{
     @FXML
     void ResumeDebugPressed(ActionEvent event) {
         model.resumeDebug();
-        updateResultVariableTable();
-        updateStatisticsTable();
-        updateIsDebugProperty();
-        leftController.clearMarkInInstructionTable();
-        updateCycles();
+        updateAfterDebugStep();
     }
 
     public void updateCycles(){
@@ -369,7 +366,9 @@ public class RightSideController{
         Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
                 .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
                 .collect(Collectors.toSet());
-        model.startDebug(argumentValues);
+        Set<Integer> breakpoints = leftController.getEntriesWithBreakpoints().stream()
+                .map(InstructionTableEntry::getId).collect(Collectors.toSet());
+        model.startDebug(argumentValues, breakpoints);
         model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
         leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         updateResultVariableTable();
@@ -377,11 +376,16 @@ public class RightSideController{
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
         leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
+
     }
 
     @FXML
     void StepOverDebugPressed(ActionEvent event) {
         model.stepOver();
+        updateAfterDebugStep();
+    }
+
+    void updateAfterDebugStep(){
         model.getProgramData().ifPresent(model-> {
             nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug());
             if (!model.isDebugmode()){ // Debugging finished

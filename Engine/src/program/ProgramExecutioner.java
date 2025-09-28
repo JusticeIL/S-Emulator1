@@ -19,6 +19,7 @@ public class ProgramExecutioner {
     private Map<String,Integer> xInitializedVariablesForDebug;
     private int currentRunLevelForDebug;
     private boolean isMainExecutioner = false;
+    private final Set<Integer> breakpoints = new HashSet<>();
 
     public void setMainExecutioner() {
         isMainExecutioner = true;
@@ -85,8 +86,10 @@ public class ProgramExecutioner {
         this.cycleCounter = 0;
     }
 
-    public void setUpDebugRun(Set<VariableDTO> args){
+    public void setUpDebugRun(Set<VariableDTO> args, Set<Integer> breakpoints) {
         setUpNewRun(args);
+        this.breakpoints.clear();
+        this.breakpoints.addAll(breakpoints);
         program.setNextInstructionIdForDebug(currentInstruction.getNumber());
         xInitializedVariablesForDebug = program.getVariables().stream()
                 .filter(var -> var.getName().startsWith("x"))
@@ -94,6 +97,9 @@ public class ProgramExecutioner {
         currentRunLevelForDebug = program.getCurrentProgramLevel();
         program.setInDebugMode(true);
         program.setCycleCounter(cycleCounter);
+        if(!breakpoints.contains(currentInstruction.getNumber())) {
+            resumeDebug();
+        }
     }
 
     private void executeSingleInstruction() {
@@ -134,9 +140,8 @@ public class ProgramExecutioner {
     }
 
     public void resumeDebug() {
-        while (currentCommandIndex < program.getInstructionList().size()) {
-            executeSingleInstruction();
-        }
-        stopDebug();
+        do {
+            stepOver();
+        } while (currentCommandIndex < program.getInstructionList().size()&&!breakpoints.contains(currentInstruction.getNumber()));
     }
 }
