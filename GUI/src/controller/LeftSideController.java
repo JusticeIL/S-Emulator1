@@ -180,11 +180,15 @@ public class LeftSideController {
 
                             InstructionTableEntry entry = getTableRow().getItem();
                             if (entry != null && entry.isBreakpoint()) {
+                                model.addBreakpoint(entry.getId());
                                 isActive = true;
                                 setText(null);
                                 setGraphic(wrapper);
                                 circle.setFill(Color.rgb(217, 83, 79, 1.0));
                             } else {
+                                if (entry != null) {
+                                    model.removeBreakpoint(entry.getId());
+                                }
                                 isActive = false;
                                 setText(item.toString());
                                 setGraphic(null);

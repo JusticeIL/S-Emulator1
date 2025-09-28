@@ -15,6 +15,8 @@ public interface Model {
     void Expand(int level) throws IllegalArgumentException;
     void runProgram(Set<VariableDTO> args);
     void startDebug(Set<VariableDTO> args,Set<Integer> breakpoints);
+    void addBreakpoint(int lineNumber);
+    void removeBreakpoint(int lineNumber);
     void stepOver();
     void stopDebug();
     void resumeDebug();

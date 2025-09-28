@@ -127,4 +127,14 @@ public class SingleProgramController implements Model, Serializable {
         isCurrentlyInDebugMode = true;
         activeProgram.setCycleCounter(0);
     }
+
+    @Override
+    public void addBreakpoint(int lineNumber) {
+        programExecutioner.addBreakpoint(lineNumber);
+    }
+
+    @Override
+    public void removeBreakpoint(int lineNumber) {
+        programExecutioner.removeBreakpoint(lineNumber);
+    }
 }

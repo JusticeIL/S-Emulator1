@@ -144,4 +144,12 @@ public class ProgramExecutioner {
             stepOver();
         } while (currentCommandIndex < program.getInstructionList().size()&&!breakpoints.contains(currentInstruction.getNumber()));
     }
+
+    public void addBreakpoint(int lineNumber) {
+        breakpoints.add(lineNumber);
+    }
+
+    public void removeBreakpoint(int lineNumber) {
+        breakpoints.remove(lineNumber);
+    }
 }
