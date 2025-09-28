@@ -136,7 +136,7 @@ public class LeftSideController {
 
                             // Click handler: toggle breakpoint
                             this.setOnMouseClicked(e -> {
-                                if (getItem() == null || rightController.isInDebugModeProperty().get()) return;
+                                if (getItem() == null) return;
                                 isActive = !isActive;
                                 InstructionTableEntry entry = getTableRow().getItem();
                                 if (isActive) {
@@ -153,14 +153,14 @@ public class LeftSideController {
 
                             // Hover handlers
                             this.setOnMouseEntered(e -> {
-                                if (!isActive && getItem() != null && rightController.isInDebugModeProperty().not().get()) {
+                                if (!isActive && getItem() != null) {
                                     setText(null);
                                     setGraphic(wrapper);
                                     circle.setFill(Color.rgb(217, 83, 79, 0.5));
                                 }
                             });
                             this.setOnMouseExited(e -> {
-                                if (!isActive && getItem() != null && rightController.isInDebugModeProperty().not().get()) {
+                                if (!isActive && getItem() != null) {
                                     setText(getItem().toString());
                                     setGraphic(null);
                                 }
