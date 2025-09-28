@@ -221,6 +221,9 @@ public class RightSideController{
                         .then(new Label("No program loaded."))
                         .otherwise(new Label("No runs have been executed for this program."))
         );
+
+        // Minimize tables' height to prevent vertical scrolling
+        StatisticsTable.setPrefHeight(StatisticsTable.getPrefHeight() * 0.85);
     }
 
     public void updateArgumentTable() {

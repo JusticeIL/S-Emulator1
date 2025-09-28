@@ -255,6 +255,10 @@ public class LeftSideController {
         instructionsTable.setSortPolicy(param -> null); // Disables sorting globally
         chosenInstructionHistoryTable.getSortOrder().clear();
         chosenInstructionHistoryTable.setSortPolicy(param -> null); // Disables sorting globally
+
+        // Minimize tables' height to prevent vertical scrolling
+        instructionsTable.setPrefHeight(instructionsTable.getPrefHeight() * 0.85);
+        chosenInstructionHistoryTable.setPrefHeight(chosenInstructionHistoryTable.getPrefHeight() * 0.85);
     }
 
     public void markEntryInInstructionTable(int entryId) {
