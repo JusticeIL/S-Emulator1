@@ -8,7 +8,7 @@ import java.util.Set;
 public class InstructionDTO {
     private final int id;
     private final String instruction;
-    private final int cycles;
+    private final String cycles;
     private final VariableDTO variable;
     private final VariableDTO argumentVariable;
     private final LabelDTO label;
@@ -33,7 +33,7 @@ public class InstructionDTO {
     public InstructionDTO(Instruction instruction) {
         this.id = instruction.getNumber();
         this.instruction = instruction.getCommand();
-        this.cycles = instruction.getCycles();
+        this.cycles = instruction.getCyclesStringRepresentation();
         this.label = new LabelDTO(instruction.getLabel().getLabelName());
         this.destinationLabel = new LabelDTO(instruction.getDestinationLabel().getLabelName());
         this.variable = new VariableDTO(instruction.getVariable());
@@ -71,7 +71,7 @@ public class InstructionDTO {
         return instruction;
     }
 
-    public int getCycles() {
+    public String getCycles() {
         return cycles;
     }
 

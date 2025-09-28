@@ -33,4 +33,9 @@ public abstract class FunctionInvokingInstruction extends SyntheticInstruction {
     public int getCycles() {
         return super.getCycles()+ function.getFunction().getProgramCycles();
     }
+
+    @Override
+    public String getCyclesStringRepresentation() {
+        return cycles + "+";
+    }
 }

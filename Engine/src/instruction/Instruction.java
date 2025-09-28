@@ -96,6 +96,10 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         return variable;
     }
 
+    public String getCyclesStringRepresentation() {
+        return String.valueOf(cycles);
+    }
+
     @Override
     public String toString() {
         String thisInstructionString = "#" + String.format("%-3s", number) + " " + "(" + instructionType + ")" + " " + "[" + String.format(" %-4s", label) + "]" + " " + String.format("%-24s", command) + " " + "(" + cycles + ")";

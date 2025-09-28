@@ -29,12 +29,7 @@ public class InstructionTableEntry {
         this.id = new SimpleStringProperty(String.valueOf(instruction.getId()));
         this.instruction = new SimpleStringProperty(instruction.getInstruction());
         this.label = new SimpleStringProperty(instruction.getLabelName());
-        this.cycles = new SimpleStringProperty(String.valueOf(instruction.getCycles()));
-
-        if (this.instruction.get().contains("(")) { // Case: instruction includes function call
-            this.cycles.set(instruction.getCycles() + "+");
-        }
-
+        this.cycles = new SimpleStringProperty(instruction.getCycles());
         this.instructionDTO = instruction;
     }
 
