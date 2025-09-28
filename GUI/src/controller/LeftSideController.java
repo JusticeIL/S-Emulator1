@@ -87,8 +87,23 @@ public class LeftSideController {
 
         // Bind the selection of an instruction in the left table to "if in debug mode" in right controller
         instructionsTable.addEventFilter(MouseEvent.ANY, event -> {
+//            if (rightController.isInDebugModeProperty().get()) {
+//                event.consume();
+//            }
+
             if (rightController.isInDebugModeProperty().get()) {
-                event.consume();
+                // Allow interaction only if the event target is a TableCell in the id column
+                Node target = event.getTarget() instanceof Node ? (Node) event.getTarget() : null;
+                while (target != null && !(target instanceof TableCell)) {
+                    target = target.getParent();
+                }
+                if (target instanceof TableCell<?, ?> cell) {
+                    TableColumn<?, ?> column = cell.getTableColumn();
+                    if ("idColumn".equals(column.getId())) {
+                        return; // allow event for id column
+                    }
+                }
+                event.consume(); // block all other interactions
             }
         });
 
@@ -140,11 +155,13 @@ public class LeftSideController {
                                 isActive = !isActive;
                                 InstructionTableEntry entry = getTableRow().getItem();
                                 if (isActive) {
+                                    model.addBreakpoint(this.getItem().intValue()); // Remove any existing breakpoint first to avoid duplicates
                                     setText(null);
                                     setGraphic(wrapper);
                                     circle.setFill(Color.rgb(217, 83, 79, 1.0));
                                     if (entry != null) entry.setBreakpoint(true);
                                 } else {
+                                    model.removeBreakpoint(this.getItem().intValue());
                                     setText(getItem().toString());
                                     setGraphic(null);
                                     if (entry != null) entry.setBreakpoint(false);
