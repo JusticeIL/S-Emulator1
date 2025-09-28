@@ -223,7 +223,8 @@ public class RightSideController{
         );
 
         // Minimize tables' height to prevent vertical scrolling
-        StatisticsTable.setPrefHeight(StatisticsTable.getPrefHeight() * 0.85);
+        variableTable.setPrefHeight(variableTable.getPrefHeight() * 0.85);
+        executionArgumentInput.setPrefHeight(executionArgumentInput.getPrefHeight() * 0.85);
     }
 
     public void updateArgumentTable() {
