@@ -7,14 +7,17 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import model.InstructionTableEntry;
 import program.data.InstructionDTO;
 import program.data.Searchable;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -27,12 +30,6 @@ public class LeftSideController {
     private final IntegerProperty currentLevel = new SimpleIntegerProperty(-1);
     private IntegerProperty maxLevel = new SimpleIntegerProperty(-1);
     private final int HISTORY_CHAIN_EFFECT_DURATION = 300; // milliseconds
-
-    @FXML
-    private InstructionTableController chosenInstructionHistoryTableController;
-
-    @FXML
-    private InstructionTableController instructionTableController;
 
     @FXML
     private TableView<InstructionTableEntry> chosenInstructionHistoryTable;
@@ -117,6 +114,81 @@ public class LeftSideController {
                     }
                 }, rightController.isProgramLoadedProperty(), instructionsTable.getSelectionModel().selectedItemProperty())
         );
+
+        // Set red circles implementation on idColumn for breakpoints
+        instructionsTable.getColumns().stream()
+                .filter(column -> "idColumn".equals(column.getId()))
+                .findFirst()
+                .ifPresent(column -> {
+                    TableColumn<InstructionTableEntry, Number> idColumn = (TableColumn<InstructionTableEntry, Number>) column;
+                    idColumn.setCellFactory(col -> new TableCell<>() {
+                        private final Circle circle = new Circle(6);
+                        private final StackPane wrapper = new StackPane(circle);
+                        private boolean isActive = false;
+                        {
+                            setStyle("-fx-alignment: center;");
+                            wrapper.setAlignment(Pos.CENTER);
+                            circle.setFill(Color.rgb(217, 83, 79, 1.0));
+                            circle.setStroke(Color.rgb(139, 43, 43));
+
+                            // Click handler: toggle breakpoint
+                            this.setOnMouseClicked(e -> {
+                                if (getItem() == null || rightController.isInDebugModeProperty().get()) return;
+                                isActive = !isActive;
+                                InstructionTableEntry entry = getTableRow().getItem();
+                                if (isActive) {
+                                    setText(null);
+                                    setGraphic(wrapper);
+                                    circle.setFill(Color.rgb(217, 83, 79, 1.0));
+                                    if (entry != null) entry.setBreakpoint(true);
+                                } else {
+                                    setText(getItem().toString());
+                                    setGraphic(null);
+                                    if (entry != null) entry.setBreakpoint(false);
+                                }
+                            });
+
+                            // Hover handlers
+                            this.setOnMouseEntered(e -> {
+                                if (!isActive && getItem() != null && rightController.isInDebugModeProperty().not().get()) {
+                                    setText(null);
+                                    setGraphic(wrapper);
+                                    circle.setFill(Color.rgb(217, 83, 79, 0.5));
+                                }
+                            });
+                            this.setOnMouseExited(e -> {
+                                if (!isActive && getItem() != null && rightController.isInDebugModeProperty().not().get()) {
+                                    setText(getItem().toString());
+                                    setGraphic(null);
+                                }
+                            });
+                        }
+
+                        @Override
+                        protected void updateItem(Number item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (empty || item == null) {
+                                setText(null);
+                                setGraphic(null);
+                                isActive = false;
+                                return;
+                            }
+
+                            InstructionTableEntry entry = getTableRow().getItem();
+                            if (entry != null && entry.isBreakpoint()) {
+                                isActive = true;
+                                setText(null);
+                                setGraphic(wrapper);
+                                circle.setFill(Color.rgb(217, 83, 79, 1.0));
+                            } else {
+                                isActive = false;
+                                setText(item.toString());
+                                setGraphic(null);
+                            }
+                        }
+                    });
+                });
     }
 
     public void updateMainInstructionTable() {
@@ -175,7 +247,6 @@ public class LeftSideController {
         instructionsTable.setSortPolicy(param -> null); // Disables sorting globally
         chosenInstructionHistoryTable.getSortOrder().clear();
         chosenInstructionHistoryTable.setSortPolicy(param -> null); // Disables sorting globally
-
     }
 
     public void markEntryInInstructionTable(int entryId) {
