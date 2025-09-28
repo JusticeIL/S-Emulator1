@@ -150,7 +150,7 @@ public class LeftSideController {
                             circle.setStroke(Color.rgb(139, 43, 43));
 
                             // Click handler: toggle breakpoint
-                            this.setOnMouseClicked(e -> {
+                            this.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
                                 if (getItem() == null) return;
                                 isActive = !isActive;
                                 InstructionTableEntry entry = getTableRow().getItem();
@@ -166,6 +166,7 @@ public class LeftSideController {
                                     setGraphic(null);
                                     if (entry != null) entry.setBreakpoint(false);
                                 }
+                                e.consume(); // Prevent the event from propagating to the row selection
                             });
 
                             // Hover handlers
