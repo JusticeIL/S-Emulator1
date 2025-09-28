@@ -376,7 +376,7 @@ public class RightSideController{
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
         leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
-
+        updateAfterDebugStep();
     }
 
     @FXML
