@@ -47,6 +47,9 @@ public class LeftSideController {
     private TableView<InstructionTableEntry> instructionsTable;
 
     @FXML
+    private Button clearBreakpointsBtn;
+
+    @FXML
     private Label summaryLine;
 
     @FXML
@@ -415,5 +418,11 @@ public class LeftSideController {
         model.getProgramData().ifPresent(programData -> {
             functionChooser.setText(programData.getAllFunctionNames().getFirst());
         });
+    }
+
+    @FXML
+    public void clearAllBreakpoints(ActionEvent event) {
+        instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
+        instructionsTable.refresh();
     }
 }

@@ -277,6 +277,15 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-color: #b71c1c;
 }
 
+#clearBreakpointsBtn {
+    -fx-background-color: #bb5753;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
 /* Menu buttons styling */
 .menu-button {
     -fx-border-color: #484b6a;
