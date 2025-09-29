@@ -22,11 +22,12 @@ public abstract class FunctionInvokingInstruction extends SyntheticInstruction {
     @Override
     public int getCycles() {
         int baseCycles = super.getCycles();
-        int programCycles = function.getFunction().getProgramCycles();
+        int functionCycles = function.getFunction().getProgramCycles();
         int argumentsCycles = function.getArguments().stream()
                 .mapToInt(FunctionArgument::getCyclesEvaluation)
                 .sum();
-        return baseCycles + programCycles + argumentsCycles;
+        System.out.println("Base: " + baseCycles + ", Function: " + functionCycles + ", Args: " + argumentsCycles);
+        return baseCycles + functionCycles + argumentsCycles;
     }
 
     @Override

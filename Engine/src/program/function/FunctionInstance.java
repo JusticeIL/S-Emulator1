@@ -67,6 +67,7 @@ public class FunctionInstance implements FunctionArgument {
         int argumentCycles = getArguments().stream()
                 .mapToInt(FunctionArgument::getCyclesEvaluation)
                 .sum();
+        System.out.println("Function: " + function.getProgramCycles() + ", Args: " + argumentCycles + " | Argument is: " + getName());
         return function.getProgramCycles() + argumentCycles;
     }
 
@@ -93,7 +94,7 @@ public class FunctionInstance implements FunctionArgument {
         for (FunctionArgument argument : arguments) {
             String innerArgumentName = "x" + argumentIndex;
             Variable newVariable = variableTransitionsOldToNew.get(innerArgumentName);
-            if(newVariable == null) {
+            if (newVariable == null) {
                 newVariable = function.getVariables().stream().filter(var -> var.getName().equals(innerArgumentName)).findFirst().get();
             }
             Instruction newArgumentSetupInstruction;
