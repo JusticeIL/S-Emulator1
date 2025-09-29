@@ -62,6 +62,14 @@ public class FunctionInstance implements FunctionArgument {
         return innerArguments;
     }
 
+    @Override
+    public int getCyclesEvaluation() {
+        int argumentCycles = getArguments().stream()
+                .mapToInt(FunctionArgument::getCyclesEvaluation)
+                .sum();
+        return function.getProgramCycles() + argumentCycles;
+    }
+
     public List<FunctionArgument> getArguments() {
         return arguments;
     }

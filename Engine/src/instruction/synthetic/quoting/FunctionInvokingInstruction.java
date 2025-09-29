@@ -14,14 +14,19 @@ public abstract class FunctionInvokingInstruction extends SyntheticInstruction {
 
     protected final FunctionInstance function;
 
-    public FunctionInvokingInstruction(int num, Variable variable, Label label,Label destinationLabel, Function function, List<FunctionArgument> arguments) {
-        super(num, variable, function.getProgramCycles(), label, destinationLabel);
+    public FunctionInvokingInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Function function, List<FunctionArgument> arguments) {
+        super(num, variable, cycles, label, destinationLabel);
         this.function = new FunctionInstance(function, arguments);
     }
 
     @Override
     public int getCycles() {
-        return super.getCycles()+ function.getFunction().getProgramCycles();
+        int baseCycles = super.getCycles();
+        int programCycles = function.getFunction().getProgramCycles();
+        int argumentsCycles = function.getArguments().stream()
+                .mapToInt(FunctionArgument::getCyclesEvaluation)
+                .sum();
+        return baseCycles + programCycles + argumentsCycles;
     }
 
     @Override

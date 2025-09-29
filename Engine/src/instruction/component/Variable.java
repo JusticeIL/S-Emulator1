@@ -60,6 +60,11 @@ public class Variable implements Serializable, FunctionArgument {
     }
 
     @Override
+    public int getCyclesEvaluation() {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return name + " = " + value;
     }

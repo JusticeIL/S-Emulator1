@@ -121,7 +121,7 @@ public class ProgramExecutioner {
         currentRunLevelForDebug = program.getCurrentProgramLevel();
         program.setInDebugMode(true);
         program.setCycleCounter(cycleCounter);
-        if(!breakpoints.contains(currentInstruction.getNumber())) {
+        if (!breakpoints.contains(currentInstruction.getNumber())) {
             resumeDebug();
         }
     }
@@ -129,7 +129,7 @@ public class ProgramExecutioner {
     public void stepOver() {
         executeSingleInstruction();
         program.setNextInstructionIdForDebug(currentInstruction.getNumber());
-        if(currentCommandIndex >= program.getInstructionList().size() && isDebugMode) {
+        if (currentCommandIndex >= program.getInstructionList().size() && isDebugMode) {
             stopDebug();
         }
     }

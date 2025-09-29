@@ -20,7 +20,7 @@ public class JumpEqualFunction extends FunctionInvokingInstruction {
     private final VariableFactory variableFactory;
 
     public JumpEqualFunction(int num, Variable variable, Label label, Label destinationLabel, Function function, List<FunctionArgument> arguments, VariableFactory variableFactory) {
-        super(num, variable, label, destinationLabel, function, arguments);
+        super(num, variable, 6, label, destinationLabel, function, arguments);
         this.variableFactory = variableFactory;
         this.expandedInstructions = createExpandedInstructions();
         this.cycles = 6;

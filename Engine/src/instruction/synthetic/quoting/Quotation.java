@@ -18,8 +18,7 @@ import java.util.stream.Collectors;
 public class Quotation extends FunctionInvokingInstruction {
 
     public Quotation(int num, Variable variable, Label label, Function function, List<FunctionArgument> arguments) {
-        super(num, variable, label, Program.EMPTY_LABEL, function, arguments);
-
+        super(num, variable, 5, label, Program.EMPTY_LABEL, function, arguments);
         this.cycles = 5;
 
         String joinedVariableNames = arguments.stream()

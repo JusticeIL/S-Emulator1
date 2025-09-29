@@ -10,4 +10,5 @@ public interface FunctionArgument {
     List<FunctionArgument> tryGetFunctionArguments();
     int getMaxExpansionLevel();
     List<FunctionArgument> getInnerArgument();
+    int getCyclesEvaluation();
 }
