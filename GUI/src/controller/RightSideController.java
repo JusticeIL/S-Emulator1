@@ -290,8 +290,7 @@ public class RightSideController{
         leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         updateResultVariableTable();
         updateIsDebugProperty();
-        model.getProgramData().ifPresent(programData ->
-                currentCycles.set(programData.getCurrentCycles()));
+        updateCycles();
         leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
         updateAfterDebugStep();
     }
@@ -422,12 +421,12 @@ public class RightSideController{
         });
     }
 
-    public void updateCycles(){
+    public void updateCycles() {
         model.getProgramData().ifPresent(programData ->
                 currentCycles.set(programData.getCurrentCycles()));
     }
 
-    void updateAfterDebugStep(){
+    void updateAfterDebugStep() {
         model.getProgramData().ifPresent(model-> {
             nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug());
             if (!model.isDebugmode()){ // Debugging finished
@@ -440,12 +439,11 @@ public class RightSideController{
         });
         updateResultVariableTable();
         updateIsDebugProperty();
-        model.getProgramData().ifPresent(programData ->
-                currentCycles.set(programData.getCurrentCycles()));
+        updateCycles();
     }
 
-    public void updateIsDebugProperty(){
-        if ( model.isProgramLoaded()) {
+    public void updateIsDebugProperty() {
+        if (model.isProgramLoaded()) {
             model.getProgramData().ifPresent(data ->
                     isDebugMode.set(data.isDebugmode())
             );
