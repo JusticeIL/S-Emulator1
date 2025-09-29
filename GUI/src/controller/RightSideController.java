@@ -20,6 +20,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.converter.NumberStringConverter;
@@ -240,8 +241,14 @@ public class RightSideController{
             Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
                     .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
                     .collect(Collectors.toSet());
+
             // Pass them to runProgram
-            model.runProgram(argumentValues);
+            try {
+                model.runProgram(argumentValues);
+            } catch (Exception e) {
+                Alert alert = createErrorMessageOnRunProgram(e);
+                alert.showAndWait();
+            }
             updateResultVariableTable();
 
             refreshHistorySize();
@@ -249,7 +256,12 @@ public class RightSideController{
                     currentCycles.set(programData.getCurrentCycles()));
         }
         else {
-            StartDebugPressed(event);
+            try {
+                StartDebugPressed(event);
+            } catch (Exception e) {
+                Alert alert = createErrorMessageOnRunProgram(e);
+                alert.showAndWait();
+            }
         }
     }
 
@@ -326,6 +338,22 @@ public class RightSideController{
 
     public void setLeftController(LeftSideController leftController) {
         this.leftController = leftController;
+    }
+
+    private Alert createErrorMessageOnRunProgram(Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK); // Helps access and style the ok button
+        okButton.setId("ok-button");
+        alert.initOwner(primaryStage);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setTitle("Error");
+        alert.setHeaderText("Program Run Failed");
+        alert.setContentText(e.getMessage());
+
+        // Ensure the dialog is focused
+        alert.setOnShown(dialogEvent -> alert.getDialogPane().requestFocus());
+
+        return alert;
     }
 
     public void updateArgumentTable() {

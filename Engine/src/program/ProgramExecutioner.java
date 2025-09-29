@@ -46,13 +46,13 @@ public class ProgramExecutioner {
         currentCommandIndex = 0;
         currentInstruction = program.getInstructionList().get(currentCommandIndex);
 
-
-
         Map<String,Variable> Variables = program.getVariables().stream().collect(Collectors.toMap(Variable::getName, Variable -> Variable));
         program.AddYVariableIfNotExists();
         for (Variable variable : Variables.values()) {
             variable.setValue(0);
         }
+
+        // Check if variables and functions in args exist in program
         for (VariableDTO arg : args) {
             if (Variables.containsKey(arg.getName())) { // Case: variable argument
                 Variables.get(arg.getName()).setValue(arg.getValue());
@@ -62,6 +62,14 @@ public class ProgramExecutioner {
                 throw new IllegalArgumentException("Argument " + arg.getName() + " not found in program variables and is not a function invoke.");
             }
         }
+
+        // Handle negative variables
+        args.stream()
+                .filter(variable -> variable.getValue() < 0)
+                .findAny()
+                .ifPresent(var -> { throw new IllegalArgumentException("Variable " + var.getName() + " has a negative value: " + var.getValue());
+                });
+
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
     }
@@ -97,7 +105,7 @@ public class ProgramExecutioner {
         Map<String,Integer> finalStateOfAllVariables = program.getVariables().stream()
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
 
-        if(isMainExecutioner) {
+        if (isMainExecutioner) {
             program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
         }
     }
