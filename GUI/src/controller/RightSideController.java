@@ -252,8 +252,7 @@ public class RightSideController{
             updateResultVariableTable();
 
             refreshHistorySize();
-            model.getProgramData().ifPresent(programData ->
-                    currentCycles.set(programData.getCurrentCycles()));
+            updateCycles();
         }
         else {
             try {
@@ -290,7 +289,6 @@ public class RightSideController{
         leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         updateResultVariableTable();
         updateIsDebugProperty();
-        updateCycles();
         leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
         updateAfterDebugStep();
     }

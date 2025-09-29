@@ -84,7 +84,6 @@ public class SingleProgramController implements Model, Serializable {
         programExecutioner.setProgram(activeProgram);
         programExecutioner.setUpDebugRun(args, breakpoints);
         isCurrentlyInDebugMode = true;
-        activeProgram.setCycleCounter(0);
     }
 
     @Override
