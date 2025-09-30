@@ -12,17 +12,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ProgramExecutioner {
+
     private Program program;
     private Instruction currentInstruction;
     private int cycleCounter;
     private int currentCommandIndex;
-    private boolean isDebugMode = false;
-    private Map<String,Integer> xInitializedVariablesForDebug;
     private int currentRunLevelForDebug;
+    private boolean isDebugMode = false;
     private boolean isMainExecutioner = false;
-    private final Set<Integer> breakpoints = new HashSet<>();
+    private boolean wasCalledFromFunction = false;
     private FunctionInstance callerFunctionInstance;
-    boolean wasCalledFromFunction = false;
+    private Map<String,Integer> xInitializedVariablesForDebug;
+    private final Set<Integer> breakpoints = new HashSet<>();
 
     private void executeSingleInstruction() {
         Label nextLabel = currentInstruction.execute();

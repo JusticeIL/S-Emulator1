@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 public class FunctionInstance implements FunctionArgument {
 
     private int cycles;
-    private boolean wasExecuted;
-    private int value;
     private final Function function;
     private final List<FunctionArgument> arguments;
 
@@ -28,20 +26,9 @@ public class FunctionInstance implements FunctionArgument {
         this.arguments = new ArrayList<>(arguments);
     }
 
-
-
     @Override
     public int getValue() {
-
         return function.execute(arguments,this);
-    }
-
-    public void setCycles(int cycles) {
-        this.cycles = cycles;
-    }
-
-    public int getCycles() {
-        return cycles;
     }
 
     @Override
@@ -82,6 +69,14 @@ public class FunctionInstance implements FunctionArgument {
                 .mapToInt(FunctionArgument::getCyclesEvaluation)
                 .sum();
         return cycles + argumentCycles;
+    }
+
+    public void setCycles(int cycles) {
+        this.cycles = cycles;
+    }
+
+    public int getCycles() {
+        return cycles;
     }
 
     public List<FunctionArgument> getArguments() {

@@ -26,7 +26,7 @@ public abstract class FunctionInvokingInstruction extends SyntheticInstruction {
         int argumentsCycles = function.getArguments().stream()
                 .mapToInt(FunctionArgument::getCyclesEvaluation)
                 .sum();
-        System.out.println("Calculating cycles for "+command+":");
+        System.out.println("Calculating cycles for " + command + ":");
 
         function.getArguments().forEach(argument -> {
             System.out.println("    Argument: " + argument.getName() + " cycles: " + argument.getCyclesEvaluation());

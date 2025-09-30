@@ -13,7 +13,6 @@ import program.data.VariableDTO;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Function extends Program {
 
@@ -28,7 +27,7 @@ public class Function extends Program {
         return userString;
     }
 
-    public int execute(List<FunctionArgument> arguments,FunctionInstance caller) {
+    public int execute(List<FunctionArgument> arguments, FunctionInstance caller) {
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setProgram(this);
         programExecutioner.SetCallerFunctionInstance(caller);
