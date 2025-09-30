@@ -11,7 +11,6 @@
 
 This project is a simple emulator for the S-language, developed as part of a university Java programming assignment. It includes:
 
-- A (deprecated) **console UI module** that provides the interactive menu, validates user input, and prints program output.
 - A **GUI module** that provides an interactive GUI, handles user input, and displays program output better than a console.
 - An **engine module** that holds the emulator logic:
   - program representation (model).
@@ -25,7 +24,12 @@ This project is a simple emulator for the S-language, developed as part of a uni
 The architecture follows the **Model–View–Controller (MVC)** design pattern:
   - Model → Program data, instructions, and statistics (engine).
   - View → **JavaFX**-based GUI.
-  - Controller → Connects user actions in the UI with the engine logic.
+  - Controller → Connects user actions in the GUI with the engine logic.
+
+The emulator now supports:
+- **Function invocation** allowing functions to be called with arguments.
+- **Quotation** and **JEF** (**J**ump **E**qual **F**unction) instructions, for inserting function calls as arguments into other functions.
+- Controller → Connects user actions in the GUI with the engine logic.
 
 ---
 
@@ -37,10 +41,10 @@ The architecture follows the **Model–View–Controller (MVC)** design pattern:
    ```
 
 2. **Copy .jar files**  
-   Copy the two jars (`Engine.jar` and `UI.jar`) into a new folder (named in English).
+   Copy the two jars (`Engine.jar` and `GUI.jar`) into a new folder (named in English).
 
 3. **Copy essential dependencies**  
-   Copy the `mod` folder into the newly created folder.
+   Copy the `lib` folder into the newly created folder.
 
 4. **Open the new folder**  
    Open the newly created folder from the terminal:  
@@ -51,7 +55,7 @@ The architecture follows the **Model–View–Controller (MVC)** design pattern:
 5. **Run the console S-Emulator program**  
    Run the following command in the terminal:  
    ```bash
-   java -jar UI.jar
+   java -jar GUI.jar
    ```
 
 > 🔥 **Important:**  
@@ -88,7 +92,7 @@ The architecture follows the **Model–View–Controller (MVC)** design pattern:
   Let the user set breakpoints on specific instructions, run the program step-by-step, and view the current state of variables and the next instruction to be executed,
   like it's a modern IDE!
 
-- **View Instruction History Chain**  
+- **Instruction History Chain**  
     Display the sequence of parent instructions in a dedicated table, sorted from newest to oldest.
 
 - **CSS Skins**  
