@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 
 public class FunctionInstance implements FunctionArgument {
 
+    private int cycles;
+    private boolean wasExecuted;
+    private int value;
     private final Function function;
     private final List<FunctionArgument> arguments;
 
@@ -25,9 +28,20 @@ public class FunctionInstance implements FunctionArgument {
         this.arguments = new ArrayList<>(arguments);
     }
 
+
+
     @Override
     public int getValue() {
-        return function.execute(arguments);
+
+        return function.execute(arguments,this);
+    }
+
+    public void setCycles(int cycles) {
+        this.cycles = cycles;
+    }
+
+    public int getCycles() {
+        return cycles;
     }
 
     @Override
@@ -67,8 +81,7 @@ public class FunctionInstance implements FunctionArgument {
         int argumentCycles = getArguments().stream()
                 .mapToInt(FunctionArgument::getCyclesEvaluation)
                 .sum();
-        System.out.println("Function: " + function.getProgramCycles() + ", Args: " + argumentCycles + " | Argument is: " + getName());
-        return function.getProgramCycles() + argumentCycles;
+        return cycles + argumentCycles;
     }
 
     public List<FunctionArgument> getArguments() {

@@ -4,6 +4,7 @@ import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
 import program.data.VariableDTO;
+import program.function.FunctionInstance;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -20,6 +21,8 @@ public class ProgramExecutioner {
     private int currentRunLevelForDebug;
     private boolean isMainExecutioner = false;
     private final Set<Integer> breakpoints = new HashSet<>();
+    private FunctionInstance callerFunctionInstance;
+    boolean wasCalledFromFunction = false;
 
     private void executeSingleInstruction() {
         Label nextLabel = currentInstruction.execute();
@@ -108,6 +111,9 @@ public class ProgramExecutioner {
         if (isMainExecutioner) {
             program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
         }
+        if(wasCalledFromFunction) {
+            callerFunctionInstance.setCycles(cycleCounter);
+        }
     }
 
     public void setUpDebugRun(Set<VariableDTO> args, Set<Integer> breakpoints) {
@@ -155,5 +161,10 @@ public class ProgramExecutioner {
 
     public void removeBreakpoint(int lineNumber) {
         breakpoints.remove(lineNumber);
+    }
+
+    public void SetCallerFunctionInstance(FunctionInstance caller) {
+        this.callerFunctionInstance = caller;
+        this.wasCalledFromFunction = true;
     }
 }

@@ -28,13 +28,15 @@ public class Function extends Program {
         return userString;
     }
 
-    public int execute(List<FunctionArgument> arguments) {
+    public int execute(List<FunctionArgument> arguments,FunctionInstance caller) {
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setProgram(this);
+        programExecutioner.SetCallerFunctionInstance(caller);
         List<VariableDTO> verifiedArgumentList = new ArrayList<>();
         int argumentCounter = 1;
         for (FunctionArgument argument : arguments) {
             VariableDTO functionArgument = new VariableDTO(argument);
+
                 functionArgument.setName("x"+argumentCounter);
             verifiedArgumentList.add(functionArgument);
             argumentCounter++;
