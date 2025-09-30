@@ -112,7 +112,7 @@ public class ProgramExecutioner {
         if (isMainExecutioner) {
             program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
         }
-        if(wasCalledFromFunction) {
+        if (wasCalledFromFunction) {
             callerFunctionInstance.setCycles(cycleCounter);
         }
     }
