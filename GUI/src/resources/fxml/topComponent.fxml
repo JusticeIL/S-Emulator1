@@ -19,7 +19,7 @@
                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
             </padding>
         </HBox>
-      <CheckBox fx:id="allowAnimationBox" mnemonicParsing="false" selected="true" text="Animations" />
+      <CheckBox fx:id="allowAnimationBox" mnemonicParsing="false" text="Animations" />
 
         <!-- Right side: MenuButton stays aligned to the right -->
         <MenuButton fx:id="skinMenu" maxWidth="Infinity" mnemonicParsing="false" text="No Available Skin">
