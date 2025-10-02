@@ -52,7 +52,7 @@ The emulator now supports:
    cd <newly-created-folder-name>
    ```
 
-5. **Run the console S-Emulator program**  
+5. **Run the GUI S-Emulator program**  
    Run the following command in the terminal:  
    ```bash
    java -jar GUI.jar
