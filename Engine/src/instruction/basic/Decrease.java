@@ -20,7 +20,7 @@ public class Decrease extends BasicInstruction {
     }
 
     @Override
-    protected BasicInstruction createCopy(){
+    protected BasicInstruction createCopy() {
         return new Decrease(this.number, this.variable, this.label, this.destinationLabel, this.parentInstruction);
     }
 
@@ -32,5 +32,10 @@ public class Decrease extends BasicInstruction {
             variable.setValue(tmp);
         }
         return destinationLabel;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new Decrease(number,newVariable,newLabel, newDestinationLabel);
     }
 }

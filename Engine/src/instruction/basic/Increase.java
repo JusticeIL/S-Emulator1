@@ -31,4 +31,9 @@ public class Increase extends BasicInstruction {
         variable.setValue(tmp);
         return destinationLabel;
     }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new Increase(number,newVariable,newLabel, newDestinationLabel);
+    }
 }

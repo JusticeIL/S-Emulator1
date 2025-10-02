@@ -14,8 +14,8 @@ public class Statistics implements Serializable {
         history = new ArrayList<>();
     }
 
-    public void addRunToHistory(int runLevel, Map<String,Integer> inputInts, int yValue, int runCycles) {
-        history.add(new Run(runCounter++, runLevel, inputInts, yValue, runCycles));
+    public void addRunToHistory(int runLevel, Map<String,Integer> inputInts, Map<String,Integer> finalStateOfAllVariables, int runCycles) {
+        history.add(new Run(runCounter++, runLevel, inputInts, finalStateOfAllVariables, runCycles));
     }
 
     public List<Run> getHistory() {

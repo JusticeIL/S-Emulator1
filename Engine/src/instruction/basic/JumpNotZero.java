@@ -30,7 +30,13 @@ public class JumpNotZero extends BasicInstruction {
         if (variable.getValue() != 0) { // Case: jump condition is met
             return destinationLabel;
         }
-        else
+        else {
             return Program.EMPTY_LABEL;
+        }
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new JumpNotZero(number,newVariable,newLabel, newDestinationLabel);
     }
 }

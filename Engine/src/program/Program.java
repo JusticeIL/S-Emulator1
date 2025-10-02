@@ -1,26 +1,30 @@
 package program;
 
-import java.io.FileNotFoundException;
-import java.io.Serializable;
-import java.util.*;
-import XMLandJaxB.SInstruction;
-import XMLandJaxB.SProgram;
+import XMLandJaxB.*;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import program.function.Function;
+import program.function.FunctionsContainer;
+
 import java.io.File;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.io.FileNotFoundException;
+import java.io.Serializable;
+import java.util.*;
 
 public class Program implements Serializable {
 
-    private int currentCommandIndex; // Program Counter
+    private final FunctionsContainer functionsContainer;
     private Instruction currentInstruction;
     private int cycleCounter;
     private Program expandedProgram = null;
@@ -37,18 +41,152 @@ public class Program implements Serializable {
     private final Map<String, Variable> Variables = new TreeMap<>();
     static public final Label EMPTY_LABEL = new Label("    ");
     static public final Label EXIT_LABEL = new Label("EXIT");
+    private final LabelFactory labelFactory;
+    private final VariableFactory variableFactory;
+    private int nextInstructionIdForDebug;
+    private boolean isInDebugMode = false;
 
-    private void setArguments(int[] arguments) {
-        int variableCounter = 1;
-        for (int variable : arguments) {
-            String variableName = "x" + variableCounter; //The xs could also not be in order
-            if(Variables.containsKey(variableName)) {
-                Variables.get(variableName).setValue(variable);
+    public Program(String filePath) throws FileNotFoundException, JAXBException {
+        this.labelFactory = new LabelFactory();
+        this.variableFactory = new VariableFactory();
+        this.functionsContainer = new FunctionsContainer();
+        loadProgram(filePath);
+        this.statistics = new Statistics();
+        this.cycleCounter = 0;
+        this.currentInstruction = instructionList.getFirst();
+        this.runCounter = 1;
+        this.currentProgramLevel = 0;
+        this.maxProgramLevel = calculateMaxProgramLevel();
+        this.usedXVariableNames = Variables.keySet().stream()
+                .filter(name -> name.startsWith("x"))
+                .collect(Collectors.toSet());
+    }
+
+    public Program(Program baseProgram, ExpandedSyntheticInstructionArguments newInstructions) {
+        // Copy statistics and program name from the base program
+        this.statistics = baseProgram.getStatistics();
+        this.programName = baseProgram.getProgramName();
+        this.labelFactory = baseProgram.labelFactory;
+        this.variableFactory = baseProgram.variableFactory;
+        this.instructionList.addAll(newInstructions.getInstructions());
+        this.Variables.putAll(baseProgram.Variables);
+        this.functionsContainer = baseProgram.functionsContainer;
+
+        // Copy variables and labels from the base program
+        this.Variables.putAll(newInstructions.getVariables().stream().
+                collect(Collectors.toMap(Variable::getName, v -> v)));
+
+        this.Labels.putAll(newInstructions.getLabels());
+
+        // Set up initial state
+        this.cycleCounter = 0;
+        this.runCounter = baseProgram.runCounter;
+        this.currentProgramLevel = baseProgram.currentProgramLevel + 1;
+        this.maxProgramLevel = baseProgram.maxProgramLevel - 1;
+        this.usedXVariableNames = baseProgram.usedXVariableNames;
+
+        // Set the current instruction if the list is not empty
+        if (!instructionList.isEmpty()) {
+            this.currentInstruction = instructionList.getFirst();
+        }
+    }
+
+    public Program(SInstructions sInstructions, String programName, FunctionsContainer functionsContainer) throws FileNotFoundException {
+        this.labelFactory = new LabelFactory();
+        this.variableFactory = new VariableFactory();
+        this.functionsContainer = functionsContainer;
+
+        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
+        int instructionCounter = 1;
+        boolean containsExit = false;
+
+        for (SInstruction sInstr : sInstructions.getSInstruction()) {
+            Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
+            instructionList.add(newInstruction);
+            if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
+                Labels.put(newInstruction.getLabel(), newInstruction);
             }
-            else {
-                Variables.put(variableName, new Variable(variableName, variable));
+            if (newInstruction.getDestinationLabel().equals(EXIT_LABEL)) {
+                containsExit = true;
             }
-            variableCounter++;
+            instructionCounter++;
+        }
+        if (containsExit) {
+            Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
+            Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
+        }
+        // Load program name
+        this.programName = programName;
+        Set<Label> missingLabels = instructionFactory.getMissingLabels();
+
+        //this is for functions (their set is empty)
+        this.statistics = new Statistics();
+        this.cycleCounter = 0;
+        this.currentInstruction = instructionList.getFirst();
+        this.runCounter = 1;
+        this.currentProgramLevel = 0;
+        this.maxProgramLevel = calculateMaxProgramLevel();
+        this.usedXVariableNames = Variables.keySet().stream()
+                .filter(name -> name.startsWith("x"))
+                .collect(Collectors.toSet());
+        if (!missingLabels.isEmpty()) {
+            throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
+        }
+    }
+
+    public void loadProgram(String filePath) throws FileNotFoundException, JAXBException{
+        if (new File(filePath).exists()) {
+            // Load JAXB
+            JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
+            List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
+
+
+            // Load functions;
+
+            Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
+            sFunctionsOpt.ifPresent(sFunctions -> {
+                functionsContainer.setup(sFunctions.getSFunction());
+                functionsContainer.getFunctionNames().forEach(functionName -> {
+                    try {
+                        functionsContainer.tryGetFunction(functionName);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            });
+
+
+
+            // Load instructions
+            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
+            int instructionCounter = 1;
+            boolean containsExit = false;
+
+            for (SInstruction sInstr : sInstructions) {
+                Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
+                instructionList.add(newInstruction);
+                if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
+                    Labels.put(newInstruction.getLabel(), newInstruction);
+                }
+                if (newInstruction.getDestinationLabel().equals(EXIT_LABEL)) {
+                    containsExit = true;
+                }
+                instructionCounter++;
+            }
+            if (containsExit) {
+                Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
+                Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
+            }
+            // Load program name
+            programName = sProgram.getName();
+            Set<Label> missingLabels = instructionFactory.getMissingLabels();
+            if (!missingLabels.isEmpty()) {
+                throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
+            }
+        } else {
+            throw new FileNotFoundException();
         }
     }
 
@@ -60,62 +198,18 @@ public class Program implements Serializable {
                 .orElse(0);
     }
 
-    private void setUpNewRun(){
-
-        if(Variables.containsKey("y")) {
-            Variables.get("y").setValue(0);
-        }else{
-            Variables.put("y", new Variable("y", 0));
-        }
-        List<String> keysToRemove = Variables.keySet().stream()
-                .filter(v -> v.startsWith("x"))
-                .filter(v-> !usedXVariableNames.contains(v))
-                .toList();
-        for (String key : keysToRemove) {
-            Variables.remove(key);
-        }
-        for (Variable variable : Variables.values()) {
-            variable.setValue(0);
-        }
-        this.currentCommandIndex = 0;
-        this.cycleCounter = 0;
-        runtimeExecutedInstructions.clear();
-    }
-
-    public Set<Label> getLabels() {
-        return Labels.keySet();
-    }
-
-    public List<Instruction> getInstructionList() {
-        return instructionList;
-    }
-
-    public String getProgramName() {
-        return programName;
-    }
-
-    public List<String> getExpandedProgramStringRepresentation() {
-        List<String> result = new ArrayList<>();
-        for (instruction.Instruction instruction : instructionList) {
-            result.addAll(instruction.getExpandedStringRepresentation());
-        }
-        return result;
-    }
-
     public Program expand(int level) {
         if (level == 0) {
             return this;
-        }
-        else if (wasExpanded) {
+        } else if (wasExpanded) {
             return this.expandedProgram.expand(level - 1);
-        }
-        else {
+        } else {
             List<Instruction> expandedInstructions = new ArrayList<>();
             Map<Label, Instruction> expandedLabels = new HashMap<>(Labels);
             Set<Variable> expandedVariables = new HashSet<>(Variables.values());
 
             instructionList.forEach(instruction -> {
-                ExpandedSyntheticInstructionArguments singleExpandedInstruction = instruction.generateExpandedInstructions();
+                ExpandedSyntheticInstructionArguments singleExpandedInstruction = instruction.generateExpandedInstructions(labelFactory, variableFactory);
                 if (singleExpandedInstruction != null) {
                     expandedVariables.addAll(singleExpandedInstruction.getVariables());
                     expandedInstructions.addAll(singleExpandedInstruction.getInstructions());
@@ -131,112 +225,24 @@ public class Program implements Serializable {
         }
     }
 
-    public void runProgram(int ...variables) {
-        setUpNewRun();
-        setArguments(variables);
-        Map<String,Integer> xVariables = new HashMap<>();
-        Variables.entrySet().stream()
-                .filter(entry -> entry.getKey().contains("x"))
-                .map(Map.Entry::getValue)
-                .forEach(v -> xVariables.put(v.getName(), v.getValue()));
-
-        int currentIndex = 0;
-        Instruction currentInstruction = instructionList.get(currentIndex);
-
-        while (currentIndex < instructionList.size()) {
-            runtimeExecutedInstructions.add(currentInstruction);
-            Label nextLabel = currentInstruction.execute();
-            cycleCounter += currentInstruction.getCycles();
-
-            if (nextLabel.equals(Program.EMPTY_LABEL)) {
-                currentIndex++;
-            } else if (nextLabel.equals(Program.EXIT_LABEL)) {
-                currentIndex = instructionList.size(); // Exit the loop
-            } else {
-                currentInstruction = Labels.get(nextLabel);
-                currentIndex = currentInstruction.getNumber() - 1;
-            }
-
-            if (currentIndex < instructionList.size()) {
-                currentInstruction = instructionList.get(currentIndex);
-            }
-        }
-
-        int yValue = Variables.get("y").getValue();
-        statistics.addRunToHistory(currentProgramLevel, xVariables, yValue, cycleCounter);
+    public boolean isInDebugMode() {
+        return isInDebugMode;
     }
 
-    public Program(Program baseProgram, ExpandedSyntheticInstructionArguments newInstructions) {
-        // Copy statistics and program name from the base program
-        this.statistics = baseProgram.getStatistics();
-        this.programName = baseProgram.getProgramName();
-        this.instructionList.addAll(newInstructions.getInstructions());
-
-        // Copy variables and labels from the base program
-        this.Variables.putAll(newInstructions.getVariables().stream().
-                collect(Collectors.toMap(Variable::getName, v -> v)));
-
-        this.Labels.putAll(newInstructions.getLabels());
-
-        // Set up initial state
-        this.currentCommandIndex = 0;
-        this.cycleCounter = 0;
-        this.runCounter = baseProgram.runCounter;
-        this.currentProgramLevel = baseProgram.currentProgramLevel + 1;
-        this.maxProgramLevel = baseProgram.maxProgramLevel-1;
-        this.usedXVariableNames = baseProgram.usedXVariableNames;
-
-        // Set the current instruction if the list is not empty
-        if (!instructionList.isEmpty()) {
-            this.currentInstruction = instructionList.getFirst();
-        }
+    public Set<Label> getLabelNames() {
+        return Labels.keySet();
     }
 
-    public void loadProgram(String filePath) throws FileNotFoundException, JAXBException {
-        if (new File(filePath).exists()) {
-            // Load JAXB
-            JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(new File(filePath));
-            List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
-            // Load instructions
-            InstructionFactory instructionFactory = new InstructionFactory(Variables);
-            int instructionCounter = 1;
-            boolean containsExit = false;
-            Label.saveHighestUnusedLabelNumber();
-            Label.resetHighestUnusedLabelNumber();
+    public Map<Label, Instruction> getLabels() {
+        return Labels;
+    }
 
-            Variable.saveHighestUnusedZId();
-            Variable.resetZIdCounter();
+    public List<Instruction> getInstructionList() {
+        return instructionList;
+    }
 
-            for (SInstruction sInstr : sInstructions) {
-                Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
-                instructionList.add(newInstruction);
-                if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
-                    Labels.put(newInstruction.getLabel(), newInstruction);
-                }
-                if(newInstruction.getDestinationLabel().equals(EXIT_LABEL)){
-                    containsExit = true;
-                }
-                instructionCounter++;
-            }
-            if(containsExit){
-                Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
-                Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
-            }
-            // Load program name
-            programName = sProgram.getName();
-            Set<Label> missingLabels = instructionFactory.getMissingLabels();
-            if (!missingLabels.isEmpty()) {
-                Label.loadHighestUnusedLabelNumber();
-                Variable.loadHighestUnusedZId();
-                throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
-            }
-
-        }
-        else  {
-            throw new FileNotFoundException();
-        }
+    public String getProgramName() {
+        return programName;
     }
 
     public Collection<Variable> getVariables() {
@@ -245,20 +251,6 @@ public class Program implements Serializable {
 
     public List<Instruction> getRuntimeExecutedInstructions() {
         return runtimeExecutedInstructions;
-    }
-
-    public Program(String filePath) throws FileNotFoundException, JAXBException {
-        loadProgram(filePath);
-        this.statistics = new Statistics();
-        this.currentCommandIndex = 0;
-        this.cycleCounter = 0;
-        this.currentInstruction = instructionList.getFirst();
-        this.runCounter = 1;
-        this.currentProgramLevel = 0;
-        this.maxProgramLevel = calculateMaxProgramLevel();
-        this.usedXVariableNames = Variables.keySet().stream()
-                .filter(name -> name.startsWith("x"))
-                .collect(Collectors.toSet());
     }
 
     public Set<String> getUsedXVariableNames() {
@@ -275,5 +267,35 @@ public class Program implements Serializable {
 
     public Statistics getStatistics() {
         return statistics;
+    }
+
+    public int getCurrentProgramLevel() {
+        return currentProgramLevel;
+    }
+
+    public void setCycleCounter(int cycleCounter) {
+        this.cycleCounter = cycleCounter;
+    }
+
+    public Set<Function> getFunctions() {
+        return new HashSet<>(functionsContainer.getFunctions().values());
+    }
+
+    public void setInDebugMode(boolean inDebugMode) {
+        isInDebugMode = inDebugMode;
+    }
+
+    public void setNextInstructionIdForDebug(int nextInstructionIdForDebug) {
+        this.nextInstructionIdForDebug = nextInstructionIdForDebug;
+    }
+
+    public int getNextInstructionIdForDebug() {
+        return nextInstructionIdForDebug;
+    }
+
+    public void AddYVariableIfNotExists() {
+        if (!Variables.containsKey("y")) {
+            Variables.put("y", new Variable("y", 0));
+        }
     }
 }

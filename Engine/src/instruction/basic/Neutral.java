@@ -28,4 +28,9 @@ public class Neutral extends BasicInstruction {
     public Label execute() {
         return destinationLabel;
     }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new Neutral(number,newVariable,newLabel, newDestinationLabel);
+    }
 }

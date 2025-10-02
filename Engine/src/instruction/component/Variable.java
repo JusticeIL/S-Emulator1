@@ -1,40 +1,67 @@
 package instruction.component;
 
+import program.function.Function;
+import program.function.FunctionArgument;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class Variable implements Serializable {
+public class Variable implements Serializable, FunctionArgument {
 
-    private static int highestUnusedZId = 1;
-    private static int previousHighestUnusedZId = 1;
-    protected final String name;
     protected int value;
+    protected final String name;
 
-    public Variable() {
+    public Variable(int highestUnusedZId) {
         this.value = 0;
         this.name = "z"+ highestUnusedZId;
-        highestUnusedZId++;
     }
 
     public Variable(String name, int value) {
         this.value = value;
         this.name = name;
-
-        if(name.contains("z")) {
-            highestUnusedZId++;
-        }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getValue() {
-        return value;
     }
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    @Override
+    public int getValue() {
+        return value;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Function tryGetFunction() {
+        return null;
+    }
+
+    @Override
+    public List<FunctionArgument> tryGetFunctionArguments() {
+        return null;
+    }
+
+    @Override
+    public int getMaxExpansionLevel() {
+        return 2; // Variables do not expand, but they are a part of assignment
+    }
+
+    @Override
+    public List<FunctionArgument> getInnerArgument() {
+        List<FunctionArgument> arguments = new ArrayList<>();
+        arguments.add(this);
+        return arguments;
+    }
+
+    @Override
+    public int getCyclesEvaluation() {
+        return 0;
     }
 
     @Override
@@ -52,17 +79,5 @@ public class Variable implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(name);
-    }
-
-    public static void resetZIdCounter() {
-        highestUnusedZId = 1;
-    }
-
-    public static void saveHighestUnusedZId() {
-        previousHighestUnusedZId = highestUnusedZId;
-    }
-
-    public static void loadHighestUnusedZId() {
-        highestUnusedZId = previousHighestUnusedZId;
     }
 }

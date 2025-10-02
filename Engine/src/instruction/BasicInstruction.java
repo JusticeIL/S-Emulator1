@@ -1,15 +1,32 @@
 package instruction;
 
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 
 import java.util.*;
 
 abstract public class BasicInstruction extends Instruction {
 
-    protected Variable variable;
+    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
+        super(num, cycles, label, destinationLabel, InstructionType.B, variable);
+    }
 
-    public ExpandedSyntheticInstructionArguments generateExpandedInstructions() {
+    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
+        super(num, cycles, label, destinationLabel, InstructionType.B, variable, parentInstruction);
+    }
+
+    @Override
+    public List<String> getExpandedStringRepresentation() {
+        // Use ArrayList to ensure mutability
+        List<String> result = new ArrayList<>();
+        result.add(this.toString());
+        return result;
+    }
+
+    @Override
+    public ExpandedSyntheticInstructionArguments generateExpandedInstructions(LabelFactory labelFactory, VariableFactory variableFactory) {
         Set<Variable> newVariables = new HashSet<>();
         Map<Label,Instruction> newLabels = new HashMap<>();
         List<Instruction> newInstructions = new ArrayList<>();
@@ -20,22 +37,4 @@ abstract public class BasicInstruction extends Instruction {
     }
 
     abstract protected BasicInstruction createCopy();
-
-    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
-        super(num, cycles, label, destinationLabel, InstructionType.B);
-        this.variable = variable;
-    }
-
-    public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
-        super(num, cycles, label, destinationLabel, InstructionType.B, parentInstruction);
-        this.variable = variable;
-    }
-
-    @Override
-    public List<String> getExpandedStringRepresentation() {
-        // Use ArrayList to ensure mutability
-        List<String> result = new ArrayList<>();
-        result.add(this.toString());
-        return result;
-    }
 }

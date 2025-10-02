@@ -1,4 +1,5 @@
 package instruction.synthetic;
+
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
@@ -6,14 +7,17 @@ import instruction.basic.Decrease;
 import instruction.basic.JumpNotZero;
 import instruction.basic.Neutral;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import program.Program;
+
 import java.util.*;
 
 public class JumpEqualConstant extends SyntheticInstruction {
 
-    static private final int CYCLES = 2;
     private final int constValue;
+    static private final int CYCLES = 2;
 
     public JumpEqualConstant(int num, Variable variable, Label label, Label destinationLabel, int constValue) {
         super(num, variable, CYCLES, label, destinationLabel);
@@ -39,12 +43,12 @@ public class JumpEqualConstant extends SyntheticInstruction {
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
-        Variable z1 = new Variable();
-        Label L1 = new Label();
+        Variable z1 = variableFactory.createZVariable();
+        Label L1 = labelFactory.createLabel();
         int instructionNumber = 1;
         expandedVariables.add(z1);
 
@@ -62,5 +66,10 @@ public class JumpEqualConstant extends SyntheticInstruction {
         expandedLabels.put(label, expandedInstructions.getFirst());
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
         return this.expandedInstruction;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new JumpEqualConstant(number,newVariable,newLabel, newDestinationLabel,constValue);
     }
 }

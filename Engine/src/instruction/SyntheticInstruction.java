@@ -1,51 +1,41 @@
 package instruction;
 
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
+
 import java.util.*;
 
 abstract public class SyntheticInstruction extends Instruction {
 
-    protected ExpandedSyntheticInstructionArguments expandedInstruction;
     protected boolean isExpanded;
-    protected Variable variable;
+    protected ExpandedSyntheticInstructionArguments expandedInstruction;
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S);
-        this.variable = variable;
+        super(num, cycles ,label, destinationLabel,InstructionType.S, variable);
         this.isExpanded = false;
     }
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
-        super(num, cycles ,label, destinationLabel,InstructionType.S, parentInstruction);
-        this.variable = variable;
+        super(num, cycles ,label, destinationLabel,InstructionType.S, variable, parentInstruction);
         this.isExpanded = false;
     }
 
-    public ExpandedSyntheticInstructionArguments generateExpandedInstructions() {
-        if(isExpanded) {
-            List<Instruction> expandedInstructions = new ArrayList<>();
-            Set<Variable> expandedVariables = new HashSet<>();
-            Map<Label, Instruction> expandedLabels = new HashMap<>();
+    public ExpandedSyntheticInstructionArguments generateExpandedInstructions(LabelFactory labelFactory, VariableFactory variableFactory) {
+        return expandSyntheticInstruction(labelFactory, variableFactory);
+    }
 
-            expandedInstruction.getInstructions().stream().map(Instruction::generateExpandedInstructions).forEach(
-                args -> {
-                    expandedInstructions.addAll(args.getInstructions());
-                    expandedVariables.addAll(args.getVariables());
-                    expandedLabels.putAll(args.getLabels());
-                    expandedLabels.put(this.label, expandedInstructions.getFirst());
-                }
-            );
-            return new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels,expandedInstructions);
-        }
-        return expandSyntheticInstruction();
+    @Override
+    public Label execute() {
+        return executeUnExpandedInstruction();
     }
 
     @Override
     public List<String> getExpandedStringRepresentation() {
         List<String> result = new ArrayList<>();
         if (isExpanded) {
-            String prefix = "<<<" + this + " ";
+            String prefix = DELIMITER + this + " ";
             for (Instruction instr : expandedInstruction.getInstructions()) {
                 List<String> subList = instr.getExpandedStringRepresentation();
                 subList.replaceAll(s -> s + prefix);
@@ -57,12 +47,6 @@ abstract public class SyntheticInstruction extends Instruction {
         return result;
     }
 
-    protected abstract ExpandedSyntheticInstructionArguments expandSyntheticInstruction();
-
-    @Override
-    public Label execute() {
-        return executeUnExpandedInstruction();
-    }
-
+    protected abstract ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory);
     protected abstract Label executeUnExpandedInstruction();
 }
