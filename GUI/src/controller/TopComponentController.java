@@ -21,13 +21,14 @@ import javafx.stage.StageStyle;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class TopComponentController{
 
@@ -187,9 +188,35 @@ public class TopComponentController{
         availableCSSFileNames.stream().forEach(fileName -> {
             MenuItem menuItem = new MenuItem(fileName);
             menuItem.setOnAction(event -> {
-                primaryStage.getScene().getStylesheets().clear();
-                primaryStage.getScene().getStylesheets().add(getClass().getResource("../resources/css/" + fileName + ".css").toExternalForm());
+                Scene scene = primaryStage.getScene();
+                if (scene == null) {
+                    System.err.println("No scene available on primaryStage");
+                    return;
+                }
+
+                // Build candidate resource paths (absolute for Class.getResource)
+                String[] candidates = new String[] {
+                        "/resources/css/" + fileName + ".css",
+                        "/css/" + fileName + ".css"
+                };
+
+                URL cssUrl = null;
+                for (String p : candidates) {
+                    cssUrl = getClass().getResource(p);
+                    if (cssUrl != null) break;
+                }
+
+                if (cssUrl == null) {
+                    System.err.println("CSS resource not found for fileName: " + fileName +
+                            ". Tried: " + Arrays.toString(candidates));
+                    // optional: log listCssFiles() if you have that helper
+                    return;
+                }
+
+                scene.getStylesheets().clear();
+                scene.getStylesheets().add(cssUrl.toExternalForm());
             });
+
             skinMenu.getItems().add(menuItem);
         });
 
@@ -213,33 +240,69 @@ public class TopComponentController{
     }
 
     public List<String> listCssFiles() {
+        final String resourcePath = "resources/css"; // adjust if your CSS ends up at a different path in the JAR
         List<String> cssFiles = new ArrayList<>();
+
         try {
-            URL folderUrl = Thread.currentThread()
-                    .getContextClassLoader()
-                    .getResource("resources/css");
-            if (folderUrl != null) {
-                Path folderPath = Paths.get(folderUrl.toURI());
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath, "*.css")) {
-                    for (Path entry : stream) {
-                        cssFiles.add(removeExtension(entry.getFileName().toString()));
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            URL dirURL = cl.getResource(resourcePath);
+
+            if (dirURL != null) {
+                String protocol = dirURL.getProtocol();
+
+                if ("file".equals(protocol)) {
+                    // running in IDE / exploded classes on filesystem
+                    Path folder = Paths.get(dirURL.toURI());
+                    try (DirectoryStream<Path> ds = Files.newDirectoryStream(folder, "*.css")) {
+                        for (Path p : ds) cssFiles.add(removeExtension(p.getFileName().toString()));
+                    }
+                } else if ("jar".equals(protocol)) {
+                    // running from JAR: iterate jar entries
+                    // dirURL example: jar:file:/C:/.../your.jar!/resources/css
+                    String fullPath = dirURL.getPath(); // "file:/C:/.../your.jar!/resources/css"
+                    String jarPath = fullPath.substring(5, fullPath.indexOf("!")); // remove "file:" and after '!'
+                    jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+                    try (JarFile jar = new JarFile(jarPath)) {
+                        Enumeration<JarEntry> entries = jar.entries();
+                        String prefix = resourcePath + "/";
+                        while (entries.hasMoreElements()) {
+                            JarEntry entry = entries.nextElement();
+                            String name = entry.getName();
+                            if (name.startsWith(prefix) && name.endsWith(".css") && !entry.isDirectory()) {
+                                String fileName = name.substring(prefix.length());
+                                cssFiles.add(removeExtension(fileName));
+                            }
+                        }
+                    }
+                } else {
+                    // some other protocol (rare)
+                    // attempt a fallback by listing resources via getResources
+                    Enumeration<URL> urls = cl.getResources(resourcePath);
+                    while (urls.hasMoreElements()) {
+                        URL u = urls.nextElement();
+                        // you could repeat logic above for each u
                     }
                 }
+            } else {
+                // resourcePath not found; check whether you packaged CSS under a different path.
+                System.err.println("Resource folder not found on classpath: " + resourcePath);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
         Collections.sort(cssFiles);
-        return cssFiles.reversed();
+        Collections.reverse(cssFiles); // you had reversed() in your original code — do this if required
+        return cssFiles;
     }
 
-    public static String removeExtension(String fileName) {
-        int lastDot = fileName.lastIndexOf('.');
-        if (lastDot == -1) {
-            return fileName; // Case: no extension found
-        }
-        return fileName.substring(0, lastDot);
+    // helper:
+    private String removeExtension(String s) {
+        int i = s.lastIndexOf('.');
+        return (i == -1) ? s : s.substring(0, i);
     }
+
 
     public BooleanProperty isAnimationAllowedProperty() {
         return allowAnimationBox.selectedProperty();
