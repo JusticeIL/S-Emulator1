@@ -9,13 +9,27 @@
 
 ## Overview
 
-This project implements a small emulator for the S-language designed for a university java programming assignment. It includes:
+This project is a simple emulator for the S-language, developed as part of a university Java programming assignment. It includes:
 
-- A **console UI module** that drives the program (menu, user input validation and printing).
+- A **GUI module** that provides an interactive GUI, handles user input, and displays program output better than a console.
 - An **engine module** that holds the emulator logic:
-  - program model.
+  - program representation (model).
   - instruction expansion.
+  - debugging, including breakpoints and step over functionality.
+  - instruction history representation.
+  - program execution.
+  - Highlighting labels and variables.
   - statistics.
+
+The architecture follows the **Model–View–Controller (MVC)** design pattern:
+  - Model → Program data, instructions, and statistics (engine).
+  - View → **JavaFX**-based GUI.
+  - Controller → Connects user actions in the GUI with the engine logic.
+
+The emulator now supports:
+- **Function invocation** allowing functions to be called with arguments.
+- **Quotation** and **JEF** (**J**ump **E**qual **F**unction) instructions, for inserting function calls as arguments into other functions.
+- Controller → Connects user actions in the GUI with the engine logic.
 
 ---
 
@@ -27,10 +41,10 @@ This project implements a small emulator for the S-language designed for a unive
    ```
 
 2. **Copy .jar files**  
-   Copy the two jars (`Engine.jar` and `UI.jar`) into a new folder (named in English).
+   Copy the two jars (`Engine.jar` and `GUI.jar`) into a new folder (named in English).
 
 3. **Copy essential dependencies**  
-   Copy the `mod` folder into the newly created folder.
+   Copy the `lib` folder into the newly created folder.
 
 4. **Open the new folder**  
    Open the newly created folder from the terminal:  
@@ -38,10 +52,10 @@ This project implements a small emulator for the S-language designed for a unive
    cd <newly-created-folder-name>
    ```
 
-5. **Run the console S-Emulator program**  
+5. **Run the GUI S-Emulator program**  
    Run the following command in the terminal:  
    ```bash
-   java -jar UI.jar
+   java -jar GUI.jar
    ```
 
 > 🔥 **Important:**  
@@ -65,21 +79,30 @@ This project implements a small emulator for the S-language designed for a unive
 
 - **Run Program:**  
   Execute the program with user-provided input arguments.
-  Prints executed instructions, final variable states, and total cycles consumed.
+  Provides execution of instructions, final variable states, and total cycles consumed.
   Allowing expansion up to the program’s maximum allowed level.
   
 - **Run History / Statistics:**  
-  Stores all executed runs, including run ID, expansion level, input arguments, final y value, and cycles.
+  Stores all executed runs, including run ID, expansion level, all arguments, final y value, and cycles.
   
-- **Save & Load State:**  
-  Serialize and restore the current program, run history, and relevant static state for later use.
+- **Highlighting Instruction Components**  
+  Allow the user to highlight instructions that use certain labels and variables in the program's instructions table.
+
+- **Debugging**  
+  Let the user set breakpoints on specific instructions, run the program step-by-step, and view the current state of variables and the next instruction to be executed,
+  like it's a modern IDE!
+
+- **Instruction History Chain**  
+    Display the sequence of parent instructions in a dedicated table, sorted from newest to oldest.
+
+- **CSS Skins**  
+    Change the GUI appearance using different CSS stylesheets for better user experience and personal customization.
 
 ---
 
 ## Notes
 
 - The emulator parses XML files using **JAXB (Jakarta XML Binding)**.
-- State persistence (save/load) is implemented using **Java Serialization**.
 - Labels are automatically sorted lexicographically, with `EXIT` always printed last.
 - Expansion is supported up to each program’s maximum defined level.
 

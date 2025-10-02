@@ -6,7 +6,9 @@ import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
 import instruction.basic.JumpNotZero;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import program.Program;
 
 import java.util.*;
@@ -28,11 +30,11 @@ public class ZeroVariable extends SyntheticInstruction {
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
-        Label L1 = label.equals(Program.EMPTY_LABEL) ? new Label() : label;
+        Label L1 = label.equals(Program.EMPTY_LABEL) ? labelFactory.createLabel() : label;
 
         int instructionNumber = 1;
         Instruction L1Instruction = new Decrease(instructionNumber++, variable, L1, Program.EMPTY_LABEL,this);
@@ -49,5 +51,10 @@ public class ZeroVariable extends SyntheticInstruction {
     protected Label executeUnExpandedInstruction() {
         variable.setValue(0);
         return destinationLabel;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new ZeroVariable(number,newVariable,newLabel, newDestinationLabel);
     }
 }

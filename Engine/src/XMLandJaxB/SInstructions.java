@@ -4,6 +4,7 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 //
 
+
 package XMLandJaxB;
 
 import java.util.ArrayList;

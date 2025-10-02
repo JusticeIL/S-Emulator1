@@ -1,10 +1,10 @@
 package console.ui;
 
-import controller.Controller;
+import controller.Model;
 import controller.SingleProgramController;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
-import program.ProgramData;
+import program.data.ProgramData;
 import program.Run;
 import java.io.*;
 import java.nio.file.InvalidPathException;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ConsoleUI {
 
-    private Controller engine = new SingleProgramController();
+    private Model engine = new SingleProgramController();
     private final Scanner scanner = new Scanner(System.in);
     private final String serializationFileType = ".ser";
     private final long WAIT = 1;
@@ -115,7 +115,7 @@ public class ConsoleUI {
                         return a.compareTo(b);
                     }).toList());
             System.out.println("Instructions: ");
-            programData.getProgramInstructions().forEach(System.out::println);
+            programData.getProgramInstructionsForConsole().forEach(System.out::println);
         }, () -> {
             System.out.println("No program loaded.");
             System.out.println("Load program first!");
@@ -149,7 +149,7 @@ public class ConsoleUI {
                     continue;
                 }
                 engine.Expand(level);
-                 engine.getProgramData().get().getProgramInstructions().forEach(System.out::println);
+                 engine.getProgramData().get().getProgramInstructionsForConsole().forEach(System.out::println);
 
             } catch (NumberFormatException e) { // Case: user input was not a number
                 System.out.println("Invalid input. Please enter a positive number.");
@@ -168,67 +168,67 @@ public class ConsoleUI {
     }
 
     private void handleRun() {
-        if (!engine.isProgramLoaded()) { // Case: no program was loaded
-            System.out.println("No program loaded.");
-            System.out.println("Load program first!");
-            return;
-        }
-        engine.Expand(0);
-        Optional<ProgramData> programDataOpt = engine.getProgramData();
-        final int maxLevel = programDataOpt.get().getMaxExpandLevel();
+//        if (!engine.isProgramLoaded()) { // Case: no program was loaded
+//            System.out.println("No program loaded.");
+//            System.out.println("Load program first!");
+//            return;
+//        }
+//        engine.Expand(0);
+//        Optional<ProgramData> programDataOpt = engine.getProgramData();
+//        final int maxLevel = programDataOpt.get().getMaxExpandLevel();
+//
+//        int level = -1;
+//        while (level < 0 || level > maxLevel) {
+//            System.out.print("Enter expansion level between 0 and " + maxLevel + " (0 for no expansion): ");
+//            String input = scanner.nextLine().trim();
+//            try {
+//                level = Integer.parseInt(input);
+//                if (level < 0) { // Case: number is not valid
+//                    System.out.println("Expansion level must be a non-negative integer.");
+//                    level = -1;
+//                }
+//                else if (level > maxLevel) { // Case: the user number input is higher than the max level of the program
+//                    System.out.println("Expansion level must be between 0 and " + maxLevel + ".");
+//                    level = -1;
+//                }
+//            }
+//            catch (NumberFormatException e) {
+//                System.out.println("The provided expansion level is illegal.");
+//                level = -1;
+//            }
+//            catch (IllegalArgumentException e) {
+//                System.out.println(e.getMessage());
+//                level = -1;
+//            }
+//        }
+//        int[] args = null;
+//        while (args == null) {
+//            System.out.println("Program x arguments: " + programDataOpt.get().getProgramXArguments());
+//            System.out.print("Enter x arguments separated by ',': ");
+//            String argsInput = scanner.nextLine().trim();
+//            try {
+//                String[] parts = argsInput.split(",");
+//                args = new int[parts.length];
+//                for (int i = 0; i < parts.length; i++) {
+//                    args[i] = Integer.parseInt(parts[i].trim());
+//                    if (args[i] < 0) {
+//                        throw new NumberFormatException("All arguments must be non-negative integers.");
+//                    }
+//                }
+//            } catch (NumberFormatException e) {
+//                System.out.println("Invalid input. Please re-enter the arguments for the program.");
+//                args = null;
+//            }
+//        }
 
-        int level = -1;
-        while (level < 0 || level > maxLevel) {
-            System.out.print("Enter expansion level between 0 and " + maxLevel + " (0 for no expansion): ");
-            String input = scanner.nextLine().trim();
-            try {
-                level = Integer.parseInt(input);
-                if (level < 0) { // Case: number is not valid
-                    System.out.println("Expansion level must be a non-negative integer.");
-                    level = -1;
-                }
-                else if (level > maxLevel) { // Case: the user number input is higher than the max level of the program
-                    System.out.println("Expansion level must be between 0 and " + maxLevel + ".");
-                    level = -1;
-                }
-            }
-            catch (NumberFormatException e) {
-                System.out.println("The provided expansion level is illegal.");
-                level = -1;
-            }
-            catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                level = -1;
-            }
-        }
-        int[] args = null;
-        while (args == null) {
-            System.out.println("Program x arguments: " + programDataOpt.get().getProgramXArguments());
-            System.out.print("Enter x arguments separated by ',': ");
-            String argsInput = scanner.nextLine().trim();
-            try {
-                String[] parts = argsInput.split(",");
-                args = new int[parts.length];
-                for (int i = 0; i < parts.length; i++) {
-                    args[i] = Integer.parseInt(parts[i].trim());
-                    if (args[i] < 0) {
-                        throw new NumberFormatException("All arguments must be non-negative integers.");
-                    }
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please re-enter the arguments for the program.");
-                args = null;
-            }
-        }
-
-        // Safe to run the program
-        engine.Expand(level);
-        engine.runProgram(args);
-        programDataOpt = engine.getProgramData(); // Refresh program data after run
-        System.out.println("Executed instructions:");
-        programDataOpt.get().getRuntimeExecutedInstructions().forEach(System.out::println);
-        programDataOpt.get().getProgramVariablesCurrentState().forEach(System.out::println);
-        System.out.println("Program cycles: " + engine.getProgramData().get().getCurrentCycles());
+//        // Safe to run the program
+//        engine.Expand(level);
+//        engine.runProgram(args);
+//        programDataOpt = engine.getProgramData(); // Refresh program data after run
+//        System.out.println("Executed instructions:");
+//        programDataOpt.get().getRuntimeExecutedInstructions().forEach(System.out::println);
+//        programDataOpt.get().getProgramVariablesCurrentState().forEach(System.out::println);
+//        System.out.println("Program cycles: " + engine.getProgramData().get().getCurrentCycles());
     }
 
     private void handleShowHistory() {
@@ -259,7 +259,7 @@ public class ConsoleUI {
                         run.getInputArgs().entrySet().stream()
                                 .map(entry -> entry.getKey() + " = " + entry.getValue())
                                 .toList(),
-                        run.getyValue(),
+                        run.getYValue(),
                         run.getRunCycles()
                 )).forEach(System.out::println);
     }
@@ -284,7 +284,7 @@ public class ConsoleUI {
         } catch (FileNotFoundException e) {
             System.out.println("Error with creating the serialization file");
         } catch (IOException e) {
-            System.out.println("Potential I/O error happend: " + e.getMessage());
+            System.out.println("Potential I/O error happened: " + e.getMessage());
         }
     }
 
@@ -295,13 +295,13 @@ public class ConsoleUI {
         try (ObjectInputStream in =
                 new ObjectInputStream(
                         new FileInputStream(filePath))) {
-            engine = (Controller) in.readObject();
+            engine = (Model) in.readObject();
             System.out.println("State loaded successfully!");
         } catch (FileNotFoundException e) {
             System.out.println("Could not find the serialization file.");
             System.out.println("Please save the state first.");
         } catch (IOException e) {
-            System.out.println("Potential I/O error happend: " + e.getMessage());
+            System.out.println("Potential I/O error happened: " + e.getMessage());
         } catch (ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }

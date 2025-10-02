@@ -6,7 +6,9 @@ import instruction.SyntheticInstruction;
 import instruction.basic.JumpNotZero;
 import instruction.basic.Neutral;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import program.Program;
 
 import java.util.*;
@@ -37,11 +39,11 @@ public class JumpZero extends SyntheticInstruction {
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label, Instruction> expandedLabels = new HashMap<>();
-        Label L1 =  new Label();
+        Label L1 = labelFactory.createLabel();
 
         int instructionNumber = 1;
         expandedInstructions.add(new JumpNotZero(instructionNumber++, variable, label, L1, this));
@@ -54,5 +56,10 @@ public class JumpZero extends SyntheticInstruction {
         expandedLabels.put(label, expandedInstructions.getFirst());
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
         return this.expandedInstruction;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new JumpZero(number,newVariable,newLabel, newDestinationLabel);
     }
 }

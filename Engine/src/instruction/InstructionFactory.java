@@ -5,21 +5,41 @@ import instruction.basic.Decrease;
 import instruction.basic.Increase;
 import instruction.basic.JumpNotZero;
 import instruction.basic.Neutral;
+import instruction.component.LabelFactory;
+import instruction.component.VariableFactory;
 import instruction.synthetic.*;
+import instruction.synthetic.quoting.JumpEqualFunction;
+import instruction.synthetic.quoting.Quotation;
 import program.Program;
 import XMLandJaxB.SInstruction;
 import XMLandJaxB.SInstructionArguments;
 import instruction.component.Label;
 import instruction.component.Variable;
+import program.function.Function;
+import program.function.FunctionInstance;
+import program.function.FunctionArgument;
+import program.function.FunctionsContainer;
+
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class InstructionFactory {
 
+    private final LabelFactory labelFactory;
+    private final VariableFactory variableFactory;
     private final Set<Label> destinationLabelSet = new HashSet<>();
     private final Map<String, Label> labels = new HashMap<>();
     private final Set<Label> sourceLabelSet = new HashSet<>();
     private final Map<String, Variable> variables;
+    private final FunctionsContainer functions;
+
+    public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory, FunctionsContainer functions) {
+        this.variables = variables;
+        this.labelFactory = labelFactory;
+        this.variableFactory = variableFactory;
+        this.functions = functions;
+    }
 
     private Variable getVariableFromArguments(SInstructionArguments sInstrArg) {
         if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) {
@@ -48,7 +68,7 @@ public class InstructionFactory {
         return argumentConstantName.map(Integer::parseInt).orElse(0);
     }
 
-    private Label getLabelFromSIndtruction(SInstruction sInstruction) {
+    private Label getLabelFromSInstruction(SInstruction sInstruction) {
         Label label = Program.EMPTY_LABEL;
         Optional<String> LabelName = Optional.ofNullable(sInstruction.getSLabel());
         return getLabel(label, LabelName);
@@ -60,12 +80,27 @@ public class InstructionFactory {
             if (labels.containsKey(labelname)) {
                 label = labels.get(labelname);
             } else {
-                label = new Label(labelname);
+                label = labelFactory.readLabelFromXML(labelname);
                 labels.put(labelname, label);
             }
         }
 
         return label;
+    }
+
+    private Variable getVariable(String variableName) {
+        variableName = variableName.toLowerCase();
+        try {
+            if (variables.containsKey(variableName)) {
+                return variables.get(variableName);
+            } else {
+                Variable variable = variableFactory.generateVariable(variableName, 0);
+                variables.put(variableName, variable);
+                return variable;
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private Label getDestinationLabelFromSInstruction(SInstruction sInstr) {
@@ -76,21 +111,84 @@ public class InstructionFactory {
         }
         Optional<String> argumentVariableName = sInstrArg.getSInstructionArgument().stream()
                 .filter(arg -> arg != null && arg.getName() != null && arg.getName().toUpperCase().contains("LABEL"))
-                //.filter(arg->!arg.getName().toUpperCase().contains(""))
                 .map(SInstructionArgument::getValue) // may still be null
                 .findFirst();
         return getLabel(destinationLabel, argumentVariableName);
+    }
+
+    private List<String> splitArguments(String input) {
+        List<String> result = new ArrayList<>();
+        int parens = 0;
+        StringBuilder current = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (c == '(') parens++;
+            if (c == ')') parens--;
+            if (c == ',' && parens == 0) {
+                if (!current.isEmpty()) {
+                    result.add(current.toString().trim());
+                    current.setLength(0);
+                }
+            } else {
+                current.append(c);
+            }
+        }
+        if (!current.isEmpty()) {
+            result.add(current.toString().trim());
+        }
+        return result;
+    }
+
+    private List<FunctionArgument> getFunctionArguments(SInstruction sInstr) {
+        SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+        if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) { // Case: instruction has no arguments
+            return Collections.emptyList();
+        }
+
+        return sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().equalsIgnoreCase("FUNCTIONARGUMENTS"))
+                .map(SInstructionArgument::getValue)
+                .filter(value -> value != null && !value.isBlank())
+                .flatMap(value -> splitArguments(value).stream())
+                .map(this::generateHasValue)
+                .collect(Collectors.toList());
+    }
+
+    private Function getFunctionFromSInstruction(SInstruction sInstr) {
+        SInstructionArguments sInstrArg = sInstr.getSInstructionArguments();
+        if (sInstrArg == null || sInstrArg.getSInstructionArgument() == null) { // Case: instruction has no arguments
+            return null;
+        }
+
+        String functionName =  sInstrArg.getSInstructionArgument().stream()
+                .filter(arg -> arg != null && arg.getName() != null && arg.getName().equalsIgnoreCase("FUNCTIONNAME"))
+                .map(SInstructionArgument::getValue)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+
+        if (functionName == null) {
+            return null;
+        }
+        try {
+            return functions.tryGetFunction(functionName);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+
     }
 
     public Instruction GenerateInstruction(SInstruction sInstr, int instructionCounter) {
         Variable variable = getVariable(sInstr.getSVariable());
         Variable argumentVariable = getVariableFromArguments(sInstr.getSInstructionArguments());
         Instruction instruction;
-        Label label = getLabelFromSIndtruction(sInstr);
+        Label label = getLabelFromSInstruction(sInstr);
         Label destinationLabel = getDestinationLabelFromSInstruction(sInstr);
+        Function function = getFunctionFromSInstruction(sInstr);
+        List<FunctionArgument> functionArguments = getFunctionArguments(sInstr);
+
         destinationLabelSet.add(destinationLabel);
         sourceLabelSet.add(label);
-
         int constant = getConstantFromSInstruction(sInstr);
 
         instruction = switch (sInstr.getName().toUpperCase()) {
@@ -105,6 +203,8 @@ public class InstructionFactory {
             case ("JUMP_EQUAL_VARIABLE") -> new JumpEqualVariable(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("ASSIGNMENT") -> new Assignment(instructionCounter, variable, label, destinationLabel, argumentVariable);
             case ("GOTO_LABEL") -> new GoToLabel(instructionCounter, variable, label, destinationLabel);
+            case("QUOTE") -> new Quotation(instructionCounter,variable,label,function,functionArguments);
+            case ("JUMP_EQUAL_FUNCTION") -> new JumpEqualFunction(instructionCounter, variable, label, destinationLabel, function, functionArguments, variableFactory);
 
             default -> throw new IllegalArgumentException("Invalid Instruction");
         };
@@ -112,24 +212,41 @@ public class InstructionFactory {
         return instruction;
     }
 
-    public InstructionFactory(Map<String, Variable> variables) {
-        this.variables = variables;
+    private FunctionArgument generateFunctionInstance(String input) {
+        // Remove outer parentheses
+        if (input.startsWith("(") && input.endsWith(")")) {
+            input = input.substring(1, input.length() - 1);
+        }
+        // Split into function name and arguments
+        List<String> parts = splitArguments(input);
+        if (parts.isEmpty()) { // Case: parsing of function arguments failed due to invalid input
+            throw new IllegalArgumentException("Invalid function instance: " + input);
+        }
+        String functionName = parts.getFirst(); // Assuming function name is ALWAYS the first part
+
+        Function func = null;
+        try {
+            func = functions.tryGetFunction(functionName);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        List<FunctionArgument> args = new ArrayList<>();
+        for (int i = 1; i < parts.size(); i++) {
+            String arg = parts.get(i);
+            if (arg.startsWith("(")) {
+                args.add(generateFunctionInstance(arg)); // Recursive call
+            } else {
+                args.add(getVariable(arg)); // Base case: every part is a variable
+            }
+        }
+        return new FunctionInstance(func, args);
     }
 
-    Variable getVariable(String variableName) {
-        variableName = variableName.toLowerCase();
-        try {
-            if (variables.containsKey(variableName)) {
-                return variables.get(variableName);
-            }else{
-                Variable variable = new Variable(variableName, 0);
-                variables.put(variableName, variable);
-                return variable;
-            }
-            } catch (NumberFormatException e) {
-            System.out.println("HARA AL HAROSH SHELI");
-            return null;
+    public FunctionArgument generateHasValue(String name){
+        if (name.contains("(")){
+            return generateFunctionInstance(name);
         }
+        return getVariable(name);
     }
 
     public Set<Label> getMissingLabels() {
@@ -138,6 +255,6 @@ public class InstructionFactory {
     }
 
     public Instruction GenerateExitInstruction(int size) {
-        return new Neutral(size + 1, new Variable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL);
+        return new Neutral(size + 1, variableFactory.generateVariable("Exit", 0), Program.EXIT_LABEL, Program.EXIT_LABEL);
     }
 }

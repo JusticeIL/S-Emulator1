@@ -5,7 +5,9 @@ import instruction.Instruction;
 import instruction.SyntheticInstruction;
 import instruction.basic.Increase;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import program.Program;
 
 import java.util.*;
@@ -13,9 +15,9 @@ import java.util.stream.IntStream;
 
 public class ConstantAssignment extends SyntheticInstruction {
 
-    static private final int CYCLES = 2;
     private final int constValue;
-
+    static private final int CYCLES = 2;
+    
     public ConstantAssignment(int num, Variable variable, Label label, Label destinationLabel, int constValue) {
         super(num, variable, CYCLES, label, destinationLabel);
         command = variable.getName() + " <- " + constValue;
@@ -37,7 +39,7 @@ public class ConstantAssignment extends SyntheticInstruction {
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
@@ -50,6 +52,10 @@ public class ConstantAssignment extends SyntheticInstruction {
         isExpanded = true;
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
         return this.expandedInstruction;
+    }
 
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new ConstantAssignment(number,newVariable,newLabel, newDestinationLabel,constValue);
     }
 }

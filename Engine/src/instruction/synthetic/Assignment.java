@@ -8,15 +8,16 @@ import instruction.basic.Increase;
 import instruction.basic.JumpNotZero;
 import instruction.basic.Neutral;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import program.Program;
 
 import java.util.*;
 
-public class Assignment extends SyntheticInstruction {
+public class Assignment extends SyntheticInstruction  {
 
     static private final int CYCLES = 4;
-    private Variable argumentVariable;
 
     public Assignment(int num, Variable assignedVariable, Label label, Label destinationLabel, Variable argumentVariable) {
         super(num, assignedVariable, CYCLES, label, destinationLabel);
@@ -39,15 +40,15 @@ public class Assignment extends SyntheticInstruction {
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
 
-        Label L1 = new Label();
-        Label L2 = new Label();
-        Label L3 = new Label();
-        Variable z1 = new Variable();
+        Label L1 = labelFactory.createLabel();
+        Label L2 = labelFactory.createLabel();
+        Label L3 = labelFactory.createLabel();
+        Variable z1 = variableFactory.createZVariable();
         expandedVariables.add(z1);
         Instruction L1Instruction = new Decrease(4, argumentVariable, L1, Program.EMPTY_LABEL,this);
         Instruction L2Instruction = new Decrease(7, z1, L2, Program.EMPTY_LABEL,this);
@@ -70,5 +71,11 @@ public class Assignment extends SyntheticInstruction {
         isExpanded = true;
         expandedLabels.put(label, expandedInstructions.getFirst());
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables,expandedLabels, expandedInstructions);
-        return this.expandedInstruction;    }
+        return this.expandedInstruction;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new Assignment(number,newVariable,newLabel, newDestinationLabel,newArgumentVariable);
+    }
 }

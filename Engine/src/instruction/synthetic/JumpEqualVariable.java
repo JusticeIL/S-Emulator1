@@ -6,7 +6,9 @@ import instruction.SyntheticInstruction;
 import instruction.basic.Decrease;
 import instruction.basic.Neutral;
 import instruction.component.Label;
+import instruction.component.LabelFactory;
 import instruction.component.Variable;
+import instruction.component.VariableFactory;
 import program.Program;
 
 import java.util.*;
@@ -14,7 +16,6 @@ import java.util.*;
 public class JumpEqualVariable extends SyntheticInstruction {
 
     static private final int CYCLES = 2;
-    private final Variable argumentVariable;
 
     public JumpEqualVariable(int num, Variable variable, Label label, Label destinationLabel, Variable argumentVariable) {
         super(num, variable, CYCLES, label, destinationLabel);
@@ -40,16 +41,16 @@ public class JumpEqualVariable extends SyntheticInstruction {
     }
 
     @Override
-    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction() {
+    public ExpandedSyntheticInstructionArguments expandSyntheticInstruction(LabelFactory labelFactory, VariableFactory variableFactory) {
         List<Instruction> expandedInstructions = new ArrayList<>();
         Set<Variable> expandedVariables = new HashSet<>();
         Map<Label,Instruction> expandedLabels = new HashMap<>();
         int instructionNumber = 1;
-        Label L1 = new Label();
-        Label L2 = new Label();
-        Label L3 = new Label();
-        Variable z1 = new Variable();
-        Variable z2 = new Variable();
+        Label L1 = labelFactory.createLabel();
+        Label L2 = labelFactory.createLabel();
+        Label L3 = labelFactory.createLabel();
+        Variable z1 = variableFactory.createZVariable();
+        Variable z2 = variableFactory.createZVariable();
         expandedVariables.add(z1);
         expandedVariables.add(z2);
 
@@ -72,5 +73,10 @@ public class JumpEqualVariable extends SyntheticInstruction {
         isExpanded = true;
         this.expandedInstruction = new ExpandedSyntheticInstructionArguments(expandedVariables, expandedLabels, expandedInstructions);
         return this.expandedInstruction;
+    }
+
+    @Override
+    public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel) {
+        return new JumpEqualVariable(number,newVariable,newLabel, newDestinationLabel,newArgumentVariable);
     }
 }
