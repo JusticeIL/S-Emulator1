@@ -189,8 +189,7 @@ public class TopComponentController{
             MenuItem menuItem = new MenuItem(fileName);
             menuItem.setOnAction(event -> {
                 Scene scene = primaryStage.getScene();
-                if (scene == null) {
-                    System.err.println("No scene available on primaryStage");
+                if (scene == null) { // Case: No scene available on primaryStage
                     return;
                 }
 
@@ -206,10 +205,7 @@ public class TopComponentController{
                     if (cssUrl != null) break;
                 }
 
-                if (cssUrl == null) {
-                    System.err.println("CSS resource not found for fileName: " + fileName +
-                            ". Tried: " + Arrays.toString(candidates));
-                    // optional: log listCssFiles() if you have that helper
+                if (cssUrl == null) { // Case: CSS file not found
                     return;
                 }
 
@@ -250,17 +246,14 @@ public class TopComponentController{
             if (dirURL != null) {
                 String protocol = dirURL.getProtocol();
 
-                if ("file".equals(protocol)) {
-                    // running in IDE / exploded classes on filesystem
+                if ("file".equals(protocol)) { // Case: IDE / filesystem
                     Path folder = Paths.get(dirURL.toURI());
                     try (DirectoryStream<Path> ds = Files.newDirectoryStream(folder, "*.css")) {
                         for (Path p : ds) cssFiles.add(removeExtension(p.getFileName().toString()));
                     }
-                } else if ("jar".equals(protocol)) {
-                    // running from JAR: iterate jar entries
-                    // dirURL example: jar:file:/C:/.../your.jar!/resources/css
-                    String fullPath = dirURL.getPath(); // "file:/C:/.../your.jar!/resources/css"
-                    String jarPath = fullPath.substring(5, fullPath.indexOf("!")); // remove "file:" and after '!'
+                } else if ("jar".equals(protocol)) { // Case: jar entry
+                    String fullPath = dirURL.getPath();
+                    String jarPath = fullPath.substring(5, fullPath.indexOf("!"));
                     jarPath = URLDecoder.decode(jarPath, "UTF-8");
 
                     try (JarFile jar = new JarFile(jarPath)) {
@@ -275,25 +268,20 @@ public class TopComponentController{
                             }
                         }
                     }
-                } else {
-                    // some other protocol (rare)
-                    // attempt a fallback by listing resources via getResources
+                } else { // Case: unknown protocol
                     Enumeration<URL> urls = cl.getResources(resourcePath);
                     while (urls.hasMoreElements()) {
                         URL u = urls.nextElement();
-                        // you could repeat logic above for each u
                     }
                 }
-            } else {
-                // resourcePath not found; check whether you packaged CSS under a different path.
-                System.err.println("Resource folder not found on classpath: " + resourcePath);
+            } else { // Case: resourcePath not found; check whether you packaged CSS under a different path.
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         Collections.sort(cssFiles);
-        Collections.reverse(cssFiles); // you had reversed() in your original code — do this if required
+        Collections.reverse(cssFiles);
         return cssFiles;
     }
 
@@ -302,7 +290,6 @@ public class TopComponentController{
         int i = s.lastIndexOf('.');
         return (i == -1) ? s : s.substring(0, i);
     }
-
 
     public BooleanProperty isAnimationAllowedProperty() {
         return allowAnimationBox.selectedProperty();
