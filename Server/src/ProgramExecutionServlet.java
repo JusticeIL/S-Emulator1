@@ -22,8 +22,8 @@ public class ProgramExecutionServlet extends HttpServlet {
         Set<VariableDTO> args = argNames.stream().map(name -> new VariableDTO(name, Integer.parseInt(req.getParameter(name)))).collect(Collectors.toSet());
         model.runProgram(args);
         resp.getWriter().write("Program executed with arguments: " + args.stream().map(x->{return (x.getName()+"="+x.getValue());}).collect(Collectors.joining(", ")));
-        resp.getWriter().write("Excecuted cycles: " + model.getProgramData().get().getCurrentCycles());
-        resp.getWriter().write("Final Y value: " + model.getProgramData().get()
+        resp.getWriter().write("\nExcecuted cycles: " + model.getProgramData().get().getCurrentCycles());
+        resp.getWriter().write("\nFinal Y value: " + model.getProgramData().get()
                 .getProgramVariablesCurrentState().stream()
                 .filter(x->x.getName().equals("y"))
                 .toList().getFirst().getValue());
