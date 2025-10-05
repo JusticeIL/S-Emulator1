@@ -34,7 +34,7 @@ public class ProgramServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Expects the body to contain the path to the program xml file
-        
+
         String sprogramPath = req.getReader().readLine();
         Model model = (Model) getServletContext().getAttribute("model");
         try {
