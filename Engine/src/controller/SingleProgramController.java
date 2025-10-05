@@ -103,6 +103,8 @@ public class SingleProgramController implements Model, Serializable {
         }
     }
 
+
+
     @Override
     public void stopDebug() {
         if(isCurrentlyInDebugMode) {
