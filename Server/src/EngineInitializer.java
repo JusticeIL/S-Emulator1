@@ -2,7 +2,6 @@ import controller.SingleProgramController;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
-import org.apache.catalina.Engine;
 
 @WebListener
 public class EngineInitializer implements ServletContextListener {
