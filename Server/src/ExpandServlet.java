@@ -7,12 +7,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "StepOverServlet", urlPatterns = {"/program/debug/stepover"})
-public class StepOverServlet extends HttpServlet {
+@WebServlet(name = "ExpandServlet", urlPatterns = {"/program/expand"})
+public class ExpandServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int level = req.getParameter("level") != null ? Integer.parseInt(req.getParameter("level")) : 0;
         Model model = (Model) getServletContext().getAttribute("model");
-        model.stepOver();
+        model.Expand(level);
         resp.sendRedirect(req.getContextPath() + "/program");
     }
 }
