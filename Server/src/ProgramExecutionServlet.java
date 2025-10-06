@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import controller.Model;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,17 +17,12 @@ import java.util.stream.Collectors;
 public class ProgramExecutionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
         Model model = (Model) getServletContext().getAttribute("model");
         // Expects the query parameters to contain the arguments for the program
         List<String> argNames = model.getProgramData().get().getProgramXArguments();
         Set<VariableDTO> args = argNames.stream().map(name -> new VariableDTO(name, Integer.parseInt(req.getParameter(name)))).collect(Collectors.toSet());
         model.runProgram(args);
-        resp.getWriter().write("Program executed with arguments: " + args.stream().map(x->{return (x.getName()+"="+x.getValue());}).collect(Collectors.joining(", ")));
-        resp.getWriter().write("\nExcecuted cycles: " + model.getProgramData().get().getCurrentCycles());
-        resp.getWriter().write("\nFinal Y value: " + model.getProgramData().get()
-                .getProgramVariablesCurrentState().stream()
-                .filter(x->x.getName().equals("y"))
-                .toList().getFirst().getValue());
-
+        resp.sendRedirect(req.getContextPath() + "/program");
     }
 }

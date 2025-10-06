@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import controller.Model;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,19 +17,23 @@ public class ProgramServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Model model = (Model) getServletContext().getAttribute("model");
+        Gson gson = new Gson();
         Optional<ProgramData> data = model.getProgramData();
-        resp.setContentType("text/html");
-        data.ifPresent(programData -> {
-            try {
-                resp.getWriter().write("Program Name: " + programData.getProgramName() + "\n");
-            } catch (IOException e) {
-                try {
-                    resp.getWriter().write("no program loaded yet");
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+        data.ifPresentOrElse(
+                programData -> {
+                    String responseJson = gson.toJson(programData);
+                    resp.setContentType("application/json");
+                    resp.setCharacterEncoding("UTF-8");
+                    try {
+                        resp.getWriter().write(responseJson);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                () -> {
+                    resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 }
-            }
-        });
+        );
     }
 
     @Override
@@ -41,7 +46,7 @@ public class ProgramServlet extends HttpServlet {
             model.loadProgram(sprogramPath);
             doGet(req, resp);
         } catch (JAXBException e) {
-            resp.getWriter().write("failed to load program: " + e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
     }
 
