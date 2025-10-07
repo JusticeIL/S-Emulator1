@@ -1,3 +1,4 @@
+import controller.MultiUserController;
 import controller.SingleProgramController;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -11,7 +12,7 @@ public class EngineInitializer implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        sce.getServletContext().setAttribute("model", new SingleProgramController());
+        sce.getServletContext().setAttribute("model", new MultiUserController());
         sce.getServletContext().setAttribute("users", new HashSet<String>());
     }
 }

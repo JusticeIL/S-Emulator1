@@ -1,18 +1,40 @@
 import controller.Model;
+import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @WebServlet(name = "StepOverServlet", urlPatterns = {"/program/debug/stepover"})
 public class StepOverServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Model model = (Model) getServletContext().getAttribute("model");
-        model.stepOver();
-        resp.sendRedirect(req.getContextPath() + "/program");
+        MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
+        Cookie[] cookies = req.getCookies();
+        boolean hasUsernameCookie = false;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("username".equals(cookie.getName())) {
+                    hasUsernameCookie = true;
+                    break;
+                }
+            }
+        }
+        if (hasUsernameCookie) {
+            String username = Arrays.stream(cookies)
+                    .filter(cookie -> "username".equals(cookie.getName()))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .orElse(null);
+        model.stepOver(username);
+        resp.sendRedirect(req.getContextPath() + "/program");}
+        else {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
     }
 }

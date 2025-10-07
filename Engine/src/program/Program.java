@@ -225,6 +225,23 @@ public class Program implements Serializable {
         }
     }
 
+    public Program(Program baseProgram) {
+        this.labelFactory = baseProgram.labelFactory;
+        this.variableFactory = baseProgram.variableFactory;
+        this.functionsContainer = baseProgram.functionsContainer;
+        this.instructionList.addAll(baseProgram.instructionList);
+        this.Variables.putAll(baseProgram.Variables);
+        this.Labels.putAll(baseProgram.Labels);
+        this.programName = baseProgram.programName;
+        this.statistics = baseProgram.statistics;
+        this.cycleCounter = baseProgram.cycleCounter;
+        this.currentInstruction = baseProgram.currentInstruction;
+        this.runCounter = baseProgram.runCounter + 1;
+        this.currentProgramLevel = baseProgram.currentProgramLevel;
+        this.maxProgramLevel = baseProgram.maxProgramLevel;
+        this.usedXVariableNames = baseProgram.usedXVariableNames;
+    }//TODO: MAKE COPIED OBJECTS OF INSTRUCTIONS, LABELS, VARIABLES
+
     public boolean isInDebugMode() {
         return isInDebugMode;
     }
