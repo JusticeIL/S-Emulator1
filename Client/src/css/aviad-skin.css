@@ -546,3 +546,13 @@ FlowPane, StackPane, AnchorPane {
     -fx-opacity: 0;
     -fx-visible: false;
 }
+
+/* ---------- Text fields ---------- */
+.text-field {
+    -fx-background-color: #fbe5d6;         /* outer background (border area) */
+    -fx-border-width: 2px;
+    -fx-border-color: #2f528f;
+    -fx-text-fill: black;                /* color of user-typed text */
+    -fx-prompt-text-fill: black; /* color of placeholder text */
+    -fx-background-radius: 0;
+}

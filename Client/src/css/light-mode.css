@@ -435,6 +435,14 @@ FlowPane, StackPane, AnchorPane {
     -fx-border-color: #4573e8;
 }
 
+/* Text fields */
+.text-field {
+    -fx-background-color: white;         /* outer background (border area) */
+    -fx-text-fill: black;                /* color of user-typed text */
+    -fx-prompt-text-fill: #9b9b9b; /* color of placeholder text */
+    -fx-background-radius: 6;
+}
+
 /* Focus ring for inputs / buttons */
 *:focused {
     -fx-focus-color: #484b6a;
