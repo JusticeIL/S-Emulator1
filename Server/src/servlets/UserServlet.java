@@ -1,3 +1,5 @@
+package servlets;
+
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

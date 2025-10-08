@@ -1,4 +1,5 @@
-import controller.Model;
+package servlets;
+
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

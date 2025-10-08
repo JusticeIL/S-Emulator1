@@ -1,5 +1,6 @@
+package servlets;
+
 import com.google.gson.Gson;
-import controller.Model;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

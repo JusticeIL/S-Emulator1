@@ -1,4 +1,6 @@
-import controller.Model;
+package servlets;
+
+import com.google.gson.Gson;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -6,16 +8,23 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import program.data.VariableDTO;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@WebServlet(name = "StopDebugServlet", urlPatterns = {"/program/debug/stop"})
-public class StopDebugServlet extends HttpServlet {
+@WebServlet(name = "DebugServlet", urlPatterns = {"/program/debug"})
+public class DebugServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
+        // Expects the query parameters to contain the arguments for the program
+        // and the body to contain the breakpoints, one per line
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
         if (cookies != null) {
@@ -32,9 +41,11 @@ public class StopDebugServlet extends HttpServlet {
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElse(null);
-        model.stopDebug(username);
-        resp.sendRedirect(req.getContextPath() + "/program");}
-        else {
+            List<String> argNames = model.getProgramData(username).get().getProgramXArguments();
+            Set<VariableDTO> args = argNames.stream().map(name -> new VariableDTO(name, Integer.parseInt(req.getParameter(name)))).collect(Collectors.toSet());
+            Set<Integer> breakpoints = req.getReader().lines().map(Integer::parseInt).collect(Collectors.toSet());
+            model.startDebug(username, args,breakpoints);resp.sendRedirect(req.getContextPath() + "/program");}
+        else{
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }

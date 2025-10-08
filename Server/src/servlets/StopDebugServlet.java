@@ -1,4 +1,5 @@
-import controller.Model;
+package servlets;
+
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,8 +11,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "StepOverServlet", urlPatterns = {"/program/debug/stepover"})
-public class StepOverServlet extends HttpServlet {
+@WebServlet(name = "StopDebugServlet", urlPatterns = {"/program/debug/stop"})
+public class StopDebugServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
@@ -31,7 +33,7 @@ public class StepOverServlet extends HttpServlet {
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElse(null);
-        model.stepOver(username);
+        model.stopDebug(username);
         resp.sendRedirect(req.getContextPath() + "/program");}
         else {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);

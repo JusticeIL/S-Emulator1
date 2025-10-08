@@ -1,4 +1,5 @@
-import controller.Model;
+package servlets;
+
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,12 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "ExpandServlet", urlPatterns = {"/program/expand"})
-public class ExpandServlet extends HttpServlet {
-
+@WebServlet(name = "ResumeDebugServlet", urlPatterns = {"/program/debug/resume"})
+public class ResumeDebugServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int level = req.getParameter("level") != null ? Integer.parseInt(req.getParameter("level")) : 0;
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
@@ -33,9 +32,9 @@ public class ExpandServlet extends HttpServlet {
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElse(null);
-            model.Expand(username, level);
+            model.resumeDebug(username);
             resp.sendRedirect(req.getContextPath() + "/program");
-        }else {
+        } else {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
