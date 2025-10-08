@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class test extends Application {
@@ -13,6 +14,9 @@ public class test extends Application {
             Parent root = fxmlLoader.load();
             PrimaryController primaryController = fxmlLoader.getController();
             primaryStage.setTitle("S-embler");
+            primaryStage.getIcons().add(
+                    new Image(getClass().getResourceAsStream("resources/icon.png"))
+            );
             Scene primaryScene = new Scene(root, 850, 600);
             primaryScene.getStylesheets().clear();
             primaryScene.getStylesheets().add(getClass().getResource("css/dark-mode.css").toExternalForm());
