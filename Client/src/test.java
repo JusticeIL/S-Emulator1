@@ -1,14 +1,14 @@
-import execution.controller.PrimaryController;
+import dashboard.controller.PrimaryController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class ClientGUI extends Application {
+public class test extends Application {
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("execution/resources/fxml/execution.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("dashboard/resources/fxml/dashboard.fxml"));
         try {
             Parent root = fxmlLoader.load();
             PrimaryController primaryController = fxmlLoader.getController();

@@ -72,7 +72,7 @@ public class TopComponentController{
 
                 // Build candidate resource paths (absolute for Class.getResource)
                 String[] candidates = new String[] {
-                        "/execution/resources/css/" + fileName + ".css",
+                        "/css/" + fileName + ".css",
                         "/css/" + fileName + ".css"
                 };
 
@@ -113,7 +113,7 @@ public class TopComponentController{
     }
 
     public List<String> listCssFiles() {
-        final String resourcePath = "execution/resources/css"; // adjust if your CSS ends up at a different path in the JAR
+        final String resourcePath = "css";
         List<String> cssFiles = new ArrayList<>();
 
         try {

@@ -2,8 +2,6 @@ package dashboard.controller;
 
 import controller.Model;
 import controller.SingleProgramController;
-import execution.controller.LeftSideController;
-import execution.controller.RightSideController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
@@ -27,8 +25,8 @@ import java.util.jar.JarFile;
 public class TopComponentController{
 
     private Stage primaryStage;
-    private execution.controller.RightSideController rightController;
-    private execution.controller.LeftSideController leftController;
+    private RightSideController rightController;
+    private LeftSideController leftController;
     private Model model;
     private List<String> availableCSSFileNames;
 
@@ -50,14 +48,6 @@ public class TopComponentController{
     @FXML
     public void initialize() {
         availableCSSFileNames = listCssFiles();
-    }
-
-    public void setModel(SingleProgramController model) {
-        this.model = model;
-    }
-
-    public void setRightController(RightSideController rightController) {
-        this.rightController = rightController;
 
         // Initialize the skin chooser menu
         skinMenu.getItems().clear();
@@ -74,7 +64,7 @@ public class TopComponentController{
 
                 // Build candidate resource paths (absolute for Class.getResource)
                 String[] candidates = new String[] {
-                        "/execution/resources/css/" + fileName + ".css",
+                        "/css/" + fileName + ".css",
                         "/css/" + fileName + ".css"
                 };
 
@@ -103,19 +93,24 @@ public class TopComponentController{
         );
     }
 
+    public void setModel(SingleProgramController model) {
+        this.model = model;
+    }
+
+    public void setRightController(RightSideController rightController) {
+        this.rightController = rightController;
+    }
+
     public void setLeftController(LeftSideController leftController) {
         this.leftController = leftController;
     }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        if (rightController != null) {
-            rightController.setPrimaryStage(primaryStage);
-        }
     }
 
     public List<String> listCssFiles() {
-        final String resourcePath = "execution/resources/css"; // adjust if your CSS ends up at a different path in the JAR
+        final String resourcePath = "css"; // adjust if your CSS ends up at a different path in the JAR
         List<String> cssFiles = new ArrayList<>();
 
         try {

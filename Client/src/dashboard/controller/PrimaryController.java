@@ -1,9 +1,6 @@
 package dashboard.controller;
 
 import controller.SingleProgramController;
-import execution.controller.LeftSideController;
-import execution.controller.RightSideController;
-import execution.controller.TopComponentController;
 import javafx.fxml.FXML;
 
 public class PrimaryController {
@@ -26,8 +23,6 @@ public class PrimaryController {
         rightSideController.setTopController(topComponentController);
         topComponentController.setLeftController(leftSideController);
         topComponentController.setRightController(rightSideController);
-        leftSideController.setModel(singleProgramController);
-        rightSideController.setModel(singleProgramController);
         topComponentController.setModel(singleProgramController);
     }
 

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<BorderPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="execution.controller.RightSideController">
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RightSideController">
 
     <top>
         <FlowPane fx:id="runConfigFlowPane" alignment="CENTER" hgap="30.0" vgap="5" BorderPane.alignment="CENTER">
@@ -82,7 +82,7 @@
     </top>
 
     <bottom>
-        <StackPane prefWidth="555.0" BorderPane.alignment="CENTER">
+        <StackPane BorderPane.alignment="CENTER">
             <children>
                 <TableView fx:id="StatisticsTable">
                     <columns>
