@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="execution.controller.TopComponentController">
+
+    <!-- 20px padding on all sides -->
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <!-- LEFT: username -->
+    <left>
+        <Label fx:id="userNameDisplay" alignment="CENTER_LEFT" minWidth="100.0" text="---" BorderPane.alignment="CENTER_LEFT" />
+    </left>
+
+    <!-- CENTER: program name (responsive & centered) -->
+    <center>
+        <HBox alignment="CENTER">
+            <children>
+                <Label fx:id="currentProgramName" maxWidth="Infinity" style="-fx-font-weight: bold; -fx-text-overrun: ELLIPSIS;" text="Program Name" />
+            </children>
+        </HBox>
+    </center>
+
+    <!-- RIGHT: controls -->
+    <right>
+        <HBox alignment="CENTER_RIGHT" spacing="50.0" BorderPane.alignment="CENTER_RIGHT">
+            <children>
+                <Label fx:id="currentCredits" text="Available Credit: ___" />
+                <CheckBox fx:id="allowAnimationBox" mnemonicParsing="false" text="Animations" />
+                <MenuButton fx:id="skinMenu" mnemonicParsing="false" text="No Available Skin" />
+            </children>
+         <BorderPane.margin>
+            <Insets left="10.0" />
+         </BorderPane.margin>
+        </HBox>
+    </right>
+</BorderPane>

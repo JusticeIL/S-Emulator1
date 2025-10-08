@@ -1,4 +1,4 @@
-import controller.PrimaryController;
+import execution.controller.PrimaryController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,14 +8,14 @@ import javafx.stage.Stage;
 public class ClientGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("resources/fxml/primary.fxml"));;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("execution/resources/fxml/execution.fxml"));;
         try {
             Parent root = fxmlLoader.load();
             PrimaryController primaryController = fxmlLoader.getController();
             primaryStage.setTitle("S-embler");
             Scene primaryScene = new Scene(root, 850, 600);
             primaryScene.getStylesheets().clear();
-            primaryScene.getStylesheets().add(getClass().getResource("resources/css/dark-mode.css").toExternalForm());
+            primaryScene.getStylesheets().add(getClass().getResource("execution/resources/css/dark-mode.css").toExternalForm());
             primaryStage.setScene(primaryScene);
             primaryController.getTopComponentController().setPrimaryStage(primaryStage);
             primaryStage.show();
