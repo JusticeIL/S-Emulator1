@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<SplitPane dividerPositions="0.5" orientation="VERTICAL" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.controller.LeftSideController">
+<SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.controller.LeftSideController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
@@ -35,7 +35,7 @@
                    <!-- Button anchored to bottom-right with 20px padding -->
                   <AnchorPane StackPane.alignment="BOTTOM_RIGHT">
                      <children>
-                        <Button fx:id="unselectUserBtn" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#unselectUser" text="Unselect user" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="248.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="131.0" />
+                        <Button fx:id="unselectUserBtn" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" mnemonicParsing="false" onAction="#unselectUser" text="Unselect user" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                      </children>
                   </AnchorPane>
                </children>
