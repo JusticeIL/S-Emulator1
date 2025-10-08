@@ -5,5 +5,5 @@ O.O.B:
 3. Save set<SProgram> instead of set <Program> for the recipes in order to create a program from sprogram; change program constructor or have a method.
 4. functions container needs to sit inside the model to help 3
 5. synchronize on function invoking instructions such as JEF and quotation.
-6. Solve nested mapps inside a new class (like we did with history of class statistics)
+6. Solve nested maps inside a new class (like we did with history of class statistics)
 7. Create a module for the DTO from the existing classes of the DTOs.
