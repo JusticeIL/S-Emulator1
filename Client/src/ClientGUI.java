@@ -13,11 +13,11 @@ public class ClientGUI extends Application {
         try {
             Parent root = fxmlLoader.load();
             PrimaryController primaryController = fxmlLoader.getController();
-            primaryStage.setTitle("S-embler");
+            primaryStage.setTitle("S-embler - Execution");
             primaryStage.getIcons().add(
                     new Image(getClass().getResourceAsStream("resources/icon.png"))
             );
-            Scene primaryScene = new Scene(root, 850, 600);
+            Scene primaryScene = new Scene(root, 1050, 600);
             primaryScene.getStylesheets().clear();
             primaryScene.getStylesheets().add(getClass().getResource("css/dark-mode.css").toExternalForm());
             primaryStage.setScene(primaryScene);

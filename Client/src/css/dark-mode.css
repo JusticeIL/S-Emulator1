@@ -134,7 +134,7 @@ FlowPane, StackPane, AnchorPane {
 }
 
 .button:hover {
-    -fx-background-color: transparent;
+    -fx-background-color: #404144;
 }
 .button:pressed {
     -fx-background-color: #2b2d30;
@@ -162,6 +162,28 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-radius: 6;
 }
 
+#loadFileBtn {
+    -fx-background-color: #72aa6c;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+}
+
+#loadFileBtn:hover {
+    -fx-background-color: transparent;
+    -fx-text-fill: #72aa6c;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-border-color: #72aa6c;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+}
+
 /* Stop button */
 #StopDebugBtn, .stop-button {
     -fx-background-color: #bb5753;
@@ -183,29 +205,6 @@ FlowPane, StackPane, AnchorPane {
     -fx-border-width: 0;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
-    -fx-border-color: transparent;
-}
-
-#loadFileBtn, #ShowStatisticsBtn, #RerunBtn {
-    -fx-background-color: #72aa6c;
-    -fx-text-fill: white;
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-    -fx-border-color: transparent;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-padding: 6 12;
-}
-
-#ShowStatisticsBtn:hover, #RerunBtn:hover {
-    -fx-background-color: #404144;
-    -fx-text-fill: #72aa6c;
-    -fx-border-color: transparent;
-}
-
-#ShowStatisticsBtn:disabled, #RerunBtn:disabled {
-    -fx-background-color: #869484;
-    -fx-text-fill: #bcbec3;
     -fx-border-color: transparent;
 }
 
@@ -270,13 +269,30 @@ FlowPane, StackPane, AnchorPane {
     -fx-border-color: transparent;
 }
 
-#clearBreakpointsBtn, #clearBreakpointsBtn:hover {
+#clearBreakpointsBtn {
     -fx-background-color: #bb5753;
     -fx-text-fill: white;
     -fx-background-radius: 8;
     -fx-padding: 8 16 8 16;
     -fx-cursor: hand;
     -fx-border-color: transparent;
+}
+
+#clearBreakpointsBtn:hover {
+    -fx-background-color: transparent;
+    -fx-text-fill: #bb5753;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+    -fx-border-color: #bb5753;
+}
+
+#clear_breakpoints_icon {
+    -fx-stroke: white;
+}
+
+#clearBreakpointsBtn:hover #clear_breakpoints_icon {
+    -fx-stroke: #bb5753;
 }
 
 #backToDashboardBtn {

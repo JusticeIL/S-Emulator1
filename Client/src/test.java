@@ -13,7 +13,7 @@ public class test extends Application {
         try {
             Parent root = fxmlLoader.load();
             PrimaryController primaryController = fxmlLoader.getController();
-            primaryStage.setTitle("S-embler");
+            primaryStage.setTitle("S-embler - Dashboard");
             primaryStage.getIcons().add(
                     new Image(getClass().getResourceAsStream("resources/icon.png"))
             );

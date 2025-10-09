@@ -22,6 +22,8 @@
 
 #runConfigFlowPane {
     -fx-background-color: #ffff00; /* Yellow bg for the buttons */
+    -fx-border-width: 2px;
+    -fx-border-color: #2f528f;
 }
 
 /* Transparent containers */
@@ -33,6 +35,7 @@ FlowPane, StackPane, AnchorPane {
 .table-view {
     -fx-background-color: transparent;
     -fx-border-width: 2px !important;
+    -fx-border-color: #2f528f;
 }
 
 .table-view .column-header, .table-view .filter {
@@ -174,19 +177,16 @@ FlowPane, StackPane, AnchorPane {
 
 /* ---------- Buttons (primary) ---------- */
 .button {
-    -fx-background-color: #ffff00 !important; /* yellow like the flowpane bg */
-    -fx-text-fill: black; /* black text for primary icons */
+    -fx-background-color: #70ad47;
+    -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
     -fx-padding: 8 12 8 12;
     -fx-cursor: hand;
-    -fx-border-color: black;
-    -fx-border-width: 1;
+    -fx-border-width: 2px;
+    -fx-border-color: #507e32;
 }
 
-.button:hover {
-    -fx-background-color: #8db672;
-}
 .button:pressed {
     -fx-background-color: #d9d9d9;
     -fx-opacity: 0.85;
@@ -212,28 +212,6 @@ FlowPane, StackPane, AnchorPane {
     -fx-border-color: transparent;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
-}
-
-#ShowStatisticsBtn, #RerunBtn {
-    -fx-background-color: #e7e6e6 !important;
-    -fx-text-fill: black !important;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-border-color: transparent;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-padding: 6 12;
-}
-
-#ShowStatisticsBtn:disabled, #RerunBtn:disabled {
-    -fx-background-color: #7b7e84 !important;
-    -fx-text-fill: #bcbec3 !important;
-    -fx-font-size: 14px;
-    -fx-font-weight: 600;
-    -fx-border-color: transparent;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-padding: 6 12;
 }
 
 #run_icon, #stop_icon {

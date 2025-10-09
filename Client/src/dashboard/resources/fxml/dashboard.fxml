@@ -16,7 +16,7 @@
 
         <!-- center: left / right split -->
         <center>
-            <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
+            <SplitPane dividerPositions="0.33" BorderPane.alignment="CENTER">
                 <items>
                     <!-- LEFT slot -->
                     <AnchorPane>

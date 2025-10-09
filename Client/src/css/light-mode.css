@@ -128,7 +128,7 @@ FlowPane, StackPane, AnchorPane {
     -fx-padding: 6 12;
     -fx-cursor: hand;
     -fx-border-color: transparent;
-    -fx-border-width: 0;
+    -fx-border-width: 1px;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
 }
@@ -168,6 +168,30 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-radius: 6;
 }
 
+#loadFileBtn {
+    -fx-background-color: #72aa6c;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-border-width: 1px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+}
+
+#loadFileBtn:hover {
+    -fx-background-color: transparent;
+    -fx-text-fill: #72aa6c;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-border-width: 1px;
+    -fx-border-color: #72aa6c;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+}
+
 /* Stop button */
 #StopDebugBtn, .stop-button {
     -fx-background-color: #bb5753;
@@ -187,18 +211,6 @@ FlowPane, StackPane, AnchorPane {
     -fx-padding: 6 12;
     -fx-border-width: 0;
     -fx-border-radius: 6;
-}
-
-#loadFileBtn, #loadFileBtn:hover {
-    -fx-background-color: #72aa6c;
-    -fx-background-radius: 6;
-    -fx-text-fill: white;
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-border-radius: 6;
-    -fx-padding: 6 12;
 }
 
 #stop_icon{
@@ -285,6 +297,23 @@ FlowPane, StackPane, AnchorPane {
     -fx-padding: 8 16 8 16;
     -fx-cursor: hand;
     -fx-border-color: transparent;
+}
+
+#clearBreakpointsBtn:hover {
+    -fx-background-color: transparent;
+    -fx-text-fill: #bb5753;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+    -fx-border-color: #bb5753;
+}
+
+#clear_breakpoints_icon {
+    -fx-stroke: white;
+}
+
+#clearBreakpointsBtn:hover #clear_breakpoints_icon {
+    -fx-stroke: #bb5753;
 }
 
 #backToDashboardBtn {
@@ -439,6 +468,9 @@ FlowPane, StackPane, AnchorPane {
 .text-field {
     -fx-background-color: white;         /* outer background (border area) */
     -fx-text-fill: black;                /* color of user-typed text */
+    -fx-border-width: 1px;
+    -fx-border-radius: 6;
+    -fx-border-color: black;
     -fx-prompt-text-fill: #9b9b9b; /* color of placeholder text */
     -fx-background-radius: 6;
 }

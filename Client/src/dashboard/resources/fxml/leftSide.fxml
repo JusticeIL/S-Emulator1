@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.controller.LeftSideController">
+<SplitPane dividerPositions="0.5" orientation="VERTICAL" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.controller.LeftSideController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
@@ -20,12 +20,12 @@
                           <Label text="No users to display." />
                       </placeholder>
                     <columns>
-                      <TableColumn prefWidth="-1.0" text="Username" />
-                      <TableColumn prefWidth="105.0" text="Programs Loaded" />
-                        <TableColumn prefWidth="105.0" text="Functions Loaded" />
-                        <TableColumn prefWidth="50.0" text="Credits" />
-                        <TableColumn prefWidth="85.0" text="Credits Used" />
-                        <TableColumn prefWidth="65.0" text="Executions" />
+                      <TableColumn maxWidth="250" minWidth="70.0" prefWidth="125.0" text="Username" />
+                      <TableColumn maxWidth="150.0" minWidth="30.0" prefWidth="125.0" text="Programs Loaded" />
+                        <TableColumn maxWidth="125.0" minWidth="30.0" prefWidth="105.0" text="Functions Loaded" />
+                        <TableColumn maxWidth="80.0" minWidth="30.0" prefWidth="50.0" text="Credits" />
+                        <TableColumn maxWidth="100.0" minWidth="30.0" prefWidth="85.0" text="Credits Used" />
+                        <TableColumn maxWidth="100.0" minWidth="30.0" prefWidth="65.0" text="Executions" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -48,13 +48,13 @@
                     <Label text="No user has been chosen yet." />
                 </placeholder>
               <columns>
-                <TableColumn prefWidth="50.0" text="Run" />
-                <TableColumn prefWidth="110.0" text="Program/Function" />
-                  <TableColumn prefWidth="-1.0" text="Program Name" />
-                  <TableColumn prefWidth="105.0" text="Architecture Type" />
-                  <TableColumn prefWidth="50.0" text="Level" />
-                  <TableColumn prefWidth="50.0" text="y" />
-                  <TableColumn prefWidth="65.0" text="Cycles" />
+                <TableColumn maxWidth="80.0" minWidth="30.0" prefWidth="50.0" text="Run" />
+                <TableColumn maxWidth="120.0" minWidth="30.0" prefWidth="110.0" text="Program/Function" />
+                  <TableColumn maxWidth="250" minWidth="50.0" prefWidth="150.0" text="Program Name" />
+                  <TableColumn maxWidth="115.0" minWidth="30.0" prefWidth="105.0" text="Architecture Type" />
+                  <TableColumn maxWidth="80.0" minWidth="30.0" prefWidth="50.0" text="Level" />
+                  <TableColumn maxWidth="80.0" minWidth="30.0" prefWidth="50.0" text="y" />
+                  <TableColumn maxWidth="100.0" minWidth="30.0" prefWidth="65.0" text="Cycles" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

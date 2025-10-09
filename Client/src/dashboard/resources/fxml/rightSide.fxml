@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<SplitPane dividerPositions="0.5" orientation="VERTICAL" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.controller.RightSideController">
+<SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="400.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.controller.RightSideController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
@@ -20,12 +20,12 @@
                           <Label text="No programs uploaded." />
                       </placeholder>
                     <columns>
-                      <TableColumn prefWidth="-1.0" text="Program Name" />
-                      <TableColumn prefWidth="-1.0" text="User Uploading" />
-                        <TableColumn prefWidth="75.0" text="Insrtuctions" />
-                        <TableColumn prefWidth="65.0" text="Max Level" />
-                        <TableColumn prefWidth="100.0" text="Times Executed" />
-                        <TableColumn prefWidth="125.0" text="Average Credit Cost" />
+                      <TableColumn maxWidth="1000.0" minWidth="90.0" prefWidth="150.0" text="Program Name" />
+                      <TableColumn maxWidth="1000.0" minWidth="90.0" prefWidth="150.0" text="User Uploading" />
+                        <TableColumn maxWidth="100.0" minWidth="-Infinity" prefWidth="75.0" text="Insrtuctions" />
+                        <TableColumn maxWidth="75.0" minWidth="-Infinity" prefWidth="60.0" text="Max Level" />
+                        <TableColumn maxWidth="110.0" minWidth="-Infinity" prefWidth="100.0" text="Times Executed" />
+                        <TableColumn maxWidth="150.0" minWidth="-Infinity" prefWidth="125.0" text="Average Credit Cost" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -48,11 +48,11 @@
                           <Label text="No functions uploaded." />
                       </placeholder>
                     <columns>
-                      <TableColumn prefWidth="-1.0" text="Function Name" />
-                      <TableColumn prefWidth="105.0" text="Program Origin" />
-                        <TableColumn prefWidth="95.0" text="User Uploading" />
-                        <TableColumn prefWidth="75.0" text="Instructions" />
-                        <TableColumn prefWidth="65.0" text="Max Level" />
+                      <TableColumn maxWidth="1000.0" minWidth="90.0" prefWidth="150.0" text="Function Name" />
+                      <TableColumn maxWidth="500.0" minWidth="90.0" prefWidth="200.0" text="Program Origin" />
+                        <TableColumn maxWidth="150.0" prefWidth="95.0" text="User Uploading" />
+                        <TableColumn maxWidth="100.0" minWidth="-Infinity" prefWidth="75.0" text="Instructions" />
+                        <TableColumn maxWidth="125.0" minWidth="-Infinity" prefWidth="65.0" text="Max Level" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
