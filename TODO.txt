@@ -21,7 +21,7 @@ O.O.B:
 18. if a program is loaded valid or invalid, both should return a message to the client
 19. file xml upload should happen ASYNCHRONOUSLY
 20. Functions table, Programs table, Users table and each user table should be updated with a pull request from the server each period of time, less than 2 secs
-21. Each instruction should present its minimum level now
+21. Each instruction should present its minimum architecture generation
 22. the summary line should now present the instructions that fall to each architecture generation,
 and if there are instructions that cannot be run in any architecture generation, this information should be red to be seen by the user.
 Solution: expand the program so the user can run in the architecture or change architecture generation
