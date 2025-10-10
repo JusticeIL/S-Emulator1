@@ -6,9 +6,9 @@
 </div><h3 id="Overview">Overview</h3><div class="text">
 
 <p>Like many server applications, Tomcat installs a variety of class loaders
-(that is, classes that implement <code>java.lang.ClassLoader</code>) to allow
+(that is, dto that implement <code>java.lang.ClassLoader</code>) to allow
 different portions of the container, and the web applications running on the
-container, to have access to different repositories of available classes and
+container, to have access to different repositories of available dto and
 resources.  This mechanism is used to provide the functionality defined in the
 Servlet Specification, version 2.4&nbsp;&mdash; in particular, Sections 9.4
 and 9.6.</p>
@@ -34,7 +34,7 @@ class loader is above the child class loader:</p>
   Webapp1   Webapp2 ...</code></pre></div>
 
 <p>The characteristics of each of these class loaders, including the source
-of classes and resources that they make visible, are discussed in detail in
+of dto and resources that they make visible, are discussed in detail in
 the following section.</p>
 
 </div><h3 id="Class_Loader_Definitions">Class Loader Definitions</h3><div class="text">
@@ -43,14 +43,14 @@ the following section.</p>
 loaders as it is initialized:</p>
 <ul>
 <li><p><strong>Bootstrap</strong> &mdash; This class loader contains the basic
-    runtime classes provided by the Java Virtual Machine, plus any classes from
+    runtime dto provided by the Java Virtual Machine, plus any dto from
     JAR files present in the System Extensions directory
     (<code>$JAVA_HOME/jre/lib/ext</code>).  <em>Note</em>: some JVMs may
     implement this as more than one class loader, or it may not be visible
     (as a class loader) at all.</p></li>
 <li><p><strong>System</strong> &mdash; This class loader is normally initialized
     from the contents of the <code>CLASSPATH</code> environment variable.  All
-    such classes are visible to both Tomcat internal classes, and to web
+    such dto are visible to both Tomcat internal dto, and to web
     applications.  However, the standard Tomcat startup scripts
     (<code>$CATALINA_HOME/bin/catalina.sh</code> or
     <code>%CATALINA_HOME%\bin\catalina.bat</code>) totally ignore the contents
@@ -60,10 +60,10 @@ loaders as it is initialized:</p>
     <ul>
     <li><p><em>$CATALINA_HOME/bin/bootstrap.jar</em> &mdash; Contains the
         main() method that is used to initialize the Tomcat server, and the
-        class loader implementation classes it depends on.</p></li>
+        class loader implementation dto it depends on.</p></li>
     <li><p><em>$CATALINA_BASE/bin/tomcat-juli.jar</em> or
         <em>$CATALINA_HOME/bin/tomcat-juli.jar</em> &mdash; Logging
-        implementation classes. These include enhancement classes to
+        implementation dto. These include enhancement dto to
         <code>java.util.logging</code> API, known as Tomcat JULI,
         and a package-renamed copy of Apache Commons Logging library
         used internally by Tomcat.
@@ -73,7 +73,7 @@ loaders as it is initialized:</p>
         <em>$CATALINA_BASE/bin</em>, it is used instead of the one in
         <em>$CATALINA_HOME/bin</em>. It is useful in certain logging
         configurations</p></li>
-    <li><p><em>$CATALINA_HOME/bin/commons-daemon.jar</em> &mdash; The classes
+    <li><p><em>$CATALINA_HOME/bin/commons-daemon.jar</em> &mdash; The dto
         from <a href="https://commons.apache.org/daemon/">Apache Commons
         Daemon</a> project.
         This JAR file is not present in the <code>CLASSPATH</code> built by
@@ -82,22 +82,22 @@ loaders as it is initialized:</p>
     </ul>
     </li>
 <li><p><strong>Common</strong> &mdash; This class loader contains additional
-    classes that are made visible to both Tomcat internal classes and to all
+    dto that are made visible to both Tomcat internal dto and to all
     web applications.</p>
-    <p>Normally, application classes should <strong>NOT</strong>
+    <p>Normally, application dto should <strong>NOT</strong>
     be placed here.  The locations searched by this class loader are defined by
     the <code>common.loader</code> property in
     $CATALINA_BASE/conf/catalina.properties. The default setting will search the
     following locations in the order they are listed:</p>
     <ul>
-      <li>unpacked classes and resources in <code>$CATALINA_BASE/lib</code></li>
+      <li>unpacked dto and resources in <code>$CATALINA_BASE/lib</code></li>
       <li>JAR files in <code>$CATALINA_BASE/lib</code></li>
-      <li>unpacked classes and resources in <code>$CATALINA_HOME/lib</code></li>
+      <li>unpacked dto and resources in <code>$CATALINA_HOME/lib</code></li>
       <li>JAR files in <code>$CATALINA_HOME/lib</code></li>
     </ul>
     <p>By default, this includes the following:</p>
     <ul>
-    <li><em>annotations-api.jar</em> &mdash; Jakarta Annotations 2.1.1 classes.
+    <li><em>annotations-api.jar</em> &mdash; Jakarta Annotations 2.1.1 dto.
         </li>
     <li><em>catalina.jar</em> &mdash; Implementation of the Catalina servlet
         container portion of Tomcat.</li>
@@ -125,7 +125,7 @@ loaders as it is initialized:</p>
     <li><em>tomcat-api.jar</em> &mdash; Several interfaces defined by Tomcat.
         </li>
     <li><em>tomcat-coyote.jar</em> &mdash; Tomcat connectors and utility
-        classes.</li>
+        dto.</li>
     <li><em>tomcat-dbcp.jar</em> &mdash; Optional. Database connection pool
         implementation based on package-renamed copy of Apache Commons Pool 2
         and Apache Commons DBCP 2.</li>
@@ -138,7 +138,7 @@ loaders as it is initialized:</p>
         <a href="jdbc-pool.html">documentation</a> for more details.</li>
     <li><em>tomcat-jni.jar</em> &mdash; Provides the integration with the Tomcat
         Native library.</li>
-    <li><em>tomcat-util.jar</em> &mdash; Common classes used by various
+    <li><em>tomcat-util.jar</em> &mdash; Common dto used by various
         components of Apache Tomcat.</li>
     <li><em>tomcat-util-scan.jar</em> &mdash; Provides the class scanning
         functionality used by Tomcat.</li>
@@ -151,8 +151,8 @@ loaders as it is initialized:</p>
     </ul></li>
 <li><p><strong>WebappX</strong> &mdash; A class loader is created for each web
     application that is deployed in a single Tomcat instance.  All unpacked
-    classes and resources in the <code>/WEB-INF/classes</code> directory of
-    your web application, plus classes and resources in JAR files
+    dto and resources in the <code>/WEB-INF/dto</code> directory of
+    your web application, plus dto and resources in JAR files
     under the <code>/WEB-INF/lib</code> directory of your web application,
     are made visible to this web application, but not to other ones.</p></li>
 </ul>
@@ -164,22 +164,22 @@ When a request to load a
 class from the web application's <em>WebappX</em> class loader is processed,
 this class loader will look in the local repositories <strong>first</strong>,
 instead of delegating before looking.  There are exceptions. Classes which are
-part of the JRE base classes cannot be overridden. There are some exceptions
+part of the JRE base dto cannot be overridden. There are some exceptions
 such as the XML parser components which can be overridden using the upgradeable
 modules feature.
 Lastly, the web application class loader will always delegate first for Jakarta
-EE API classes for the specifications implemented by Tomcat
+EE API dto for the specifications implemented by Tomcat
 (Servlet, JSP, EL, WebSocket). All other class loaders in Tomcat follow the
 usual delegation pattern.</p>
 
 <p>Therefore, from the perspective of a web application, class or resource
 loading looks in the following repositories, in this order:</p>
 <ul>
-<li>Bootstrap classes of your JVM</li>
-<li><em>/WEB-INF/classes</em> of your web application</li>
+<li>Bootstrap dto of your JVM</li>
+<li><em>/WEB-INF/dto</em> of your web application</li>
 <li><em>/WEB-INF/lib/*.jar</em> of your web application</li>
-<li>System class loader classes (described above)</li>
-<li>Common class loader classes (described above)</li>
+<li>System class loader dto (described above)</li>
+<li>Common class loader dto (described above)</li>
 </ul>
 
 <p>If the web application class loader is
@@ -187,10 +187,10 @@ loading looks in the following repositories, in this order:</p>
 <code>&lt;Loader delegate="true"/&gt;</code>
 then the order becomes:</p>
 <ul>
-<li>Bootstrap classes of your JVM</li>
-<li>System class loader classes (described above)</li>
-<li>Common class loader classes (described above)</li>
-<li><em>/WEB-INF/classes</em> of your web application</li>
+<li>Bootstrap dto of your JVM</li>
+<li>System class loader dto (described above)</li>
+<li>Common class loader dto (described above)</li>
+<li><em>/WEB-INF/dto</em> of your web application</li>
 <li><em>/WEB-INF/lib/*.jar</em> of your web application</li>
 </ul>
 
@@ -214,7 +214,7 @@ is a risk that Tomcat and/or the deployed application will experience errors.</p
 
 </div><h3 id="Running_under_a_security_manager">Running under a security manager</h3><div class="text">
 
-<p>When running under a security manager the locations from which classes
+<p>When running under a security manager the locations from which dto
 are permitted to be loaded will also depend on the contents of your policy
 file. See <a href="security-manager-howto.html">Security Manager How-To</a>
 for further information.</p>

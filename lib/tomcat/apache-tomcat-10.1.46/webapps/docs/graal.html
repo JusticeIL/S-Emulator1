@@ -16,7 +16,7 @@
   <p>
     The native image tool is much easier to use with single JARs, as a result
     the process will use the Maven shade plugin JAR packaging. The
-    idea is to produce a single JAR that contains all necessary classes from
+    idea is to produce a single JAR that contains all necessary dto from
     Tomcat, the webapps and all additional dependencies. Although Tomcat has
     received compatibility fixes to support native images, other libraries
     may not be compatible and may require replacement code (the GraalVM
@@ -46,13 +46,13 @@
   </p>
 
   <p>
-    All the webapp classes need to be made available to the Maven shade plugin
+    All the webapp dto need to be made available to the Maven shade plugin
     as well as the compiler during the JSP precompilation step.
     Any JARs that are present in <code>/WEB-INF/lib</code>
     need to be made available as Maven dependencies.
-    The <code>webapp-jspc.ant.xml</code> script will copy classes from the
-    <code>/WEB-INF/classes</code> folder of the webapp
-    to the <code>target/classes</code> path that Maven uses as the compilation
+    The <code>webapp-jspc.ant.xml</code> script will copy dto from the
+    <code>/WEB-INF/dto</code> folder of the webapp
+    to the <code>target/dto</code> path that Maven uses as the compilation
     target, but if any of the JSP sources use them, then they need to be
     packaged as JARs instead.
   </p>
@@ -109,7 +109,7 @@ ant -Dwebapp.name=$WEBAPPNAME -f webapp-jspc.ant.xml</code></pre></div>
     (ex: Servlet access, websockets, etc) need to be accessed using a script
     that will exercise the webapp. Servlets may be loaded on startup
     instead of needing an actual access. Listeners may also be used to load
-    additional classes on startup. When that is done, Tomcat can be stopped.
+    additional dto on startup. When that is done, Tomcat can be stopped.
   </p>
 
   <p>
@@ -121,10 +121,10 @@ ant -Dwebapp.name=$WEBAPPNAME -f webapp-jspc.ant.xml</code></pre></div>
   </p>
 
   <p>
-    Even though all classes that are used have to be complied AOT into the
+    Even though all dto that are used have to be complied AOT into the
     native image, webapps must still be left unchanged, and continue including
-    all needed classes and JARs in the <code>WEB-INF</code> folder. Although
-    these classes will not actually be run or loaded, access to them is
+    all needed dto and JARs in the <code>WEB-INF</code> folder. Although
+    these dto will not actually be run or loaded, access to them is
     required.
   </p>
 

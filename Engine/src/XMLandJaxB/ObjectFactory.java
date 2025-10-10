@@ -21,7 +21,7 @@ import jakarta.xml.bind.annotation.XmlRegistry;
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
  * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
+ * and dto representing the binding of schema
  * type definitions, element declarations and model 
  * groups.  Factory methods for each of these are 
  * provided in this class.
@@ -34,7 +34,7 @@ public class ObjectFactory {
     private static final QName _SLabel_QNAME = new QName("", "S-Label");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: examples.com.jaxb.generated
+     * Create a new ObjectFactory that can be used to create new instances of schema derived dto for package: examples.com.jaxb.generated
      * 
      */
     public ObjectFactory() {

@@ -16,8 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import model.InstructionTableEntry;
-import classes.InstructionDTO;
-import classes.Searchable;
+import dto.InstructionDTO;
+import dto.Searchable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -297,7 +297,7 @@ public class LeftSideController {
     public void updateMainInstructionTable() {
         model.getProgramData().ifPresent(programData -> {
             List<InstructionTableEntry> entries = programData.getProgramInstructions().stream()
-                    .map(InstructionTableEntry::new) // Convert classes.InstructionDTO -> InstructionTableEntry
+                    .map(InstructionTableEntry::new) // Convert dto.InstructionDTO -> InstructionTableEntry
                     .toList();
             instructionsTable.getItems().setAll(entries);// Replace items in the table
             clearAllBreakpoints(null); // Clear all breakpoints when loading a new function, a new program or when changing the expansion level

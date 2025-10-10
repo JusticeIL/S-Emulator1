@@ -42,7 +42,7 @@ is discussed below.  All of these components exist under a top level
 <li><strong>docs/</strong> - Documentation for your application, in whatever
     format your development team is using.<br><br></li>
 <li><strong>src/</strong> - Java source files that generate the servlets,
-    beans, and other Java classes that are unique to your application.
+    beans, and other Java dto that are unique to your application.
     If your source code is organized in packages (<strong>highly</strong>
     recommended), the package hierarchy should be reflected as a directory
     structure underneath this directory.<br><br></li>
@@ -188,11 +188,11 @@ provided:</p>
     <code>build</code> and <code>dist</code> directories, so that they
     can be reconstructed from scratch.  This allows you to guarantee that
     you have not made source code modifications that will result in
-    problems at runtime due to not recompiling all affected classes.
+    problems at runtime due to not recompiling all affected dto.
     <br><br></li>
 <li><strong>compile</strong> - This target is used to compile any source code
     that has been changed since the last time compilation took place.  The
-    resulting class files are created in the <code>WEB-INF/classes</code>
+    resulting class files are created in the <code>WEB-INF/dto</code>
     subdirectory of your <code>build</code> directory, exactly where the
     structure of a web application requires them to be.  Because
     this command is executed so often during development, it is normally
@@ -205,7 +205,7 @@ provided:</p>
     ensure that you have not unknowingly introduced any incompatible changes.
     <br><br></li>
 <li><strong>javadoc</strong> - This target creates Javadoc API documentation
-    for the Java classes in this web application.  The example
+    for the Java dto in this web application.  The example
     <code>build.xml</code> file assumes you want to include the API
     documentation with your app distribution, so it generates the docs
     in a subdirectory of the <code>dist</code> directory.  Because you normally
@@ -215,7 +215,7 @@ provided:</p>
     <br><br></li>
 <li><strong>dist</strong> - This target creates a distribution directory for
     your application, including any required documentation, the Javadocs for
-    your Java classes, and a web application archive (WAR) file that will be
+    your Java dto, and a web application archive (WAR) file that will be
     delivered to system administrators who wish to install your application.
     Because this target also depends on the <code>deploy</code> target, the
     web application archive will have also picked up any external dependencies
@@ -233,7 +233,7 @@ Tomcat, the following additional targets are defined:</p>
 <li><strong>reload</strong> - Once the application is installed, you can
     continue to make changes and recompile using the <code>compile</code>
     target.  Tomcat will automatically recognize changes made to JSP pages,
-    but not to servlet or JavaBean classes - this command will tell Tomcat
+    but not to servlet or JavaBean dto - this command will tell Tomcat
     to restart the currently installed application so that such changes are
     recognized.
     <br><br></li>

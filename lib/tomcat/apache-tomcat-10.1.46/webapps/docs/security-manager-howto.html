@@ -38,8 +38,8 @@
 
 </div><h3 id="Permissions">Permissions</h3><div class="text">
 
-  <p>Permission classes are used to define what Permissions a class loaded
-  by Tomcat will have.  There are a number of Permission classes that are
+  <p>Permission dto are used to define what Permissions a class loaded
+  by Tomcat will have.  There are a number of Permission dto that are
   a standard part of the JDK, and you can create your own Permission class
   for use in your own web applications.  Both techniques are used in
   Tomcat.</p>
@@ -48,7 +48,7 @@
   <div class="subsection"><h4 id="Standard_Permissions">Standard Permissions</h4><div class="text">
 
     <p>This is just a short summary of the standard system SecurityManager
-    Permission classes applicable to Tomcat.  See
+    Permission dto applicable to Tomcat.  See
     <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/">
     http://docs.oracle.com/javase/7/docs/technotes/guides/security/</a>
     for more information.</p>
@@ -210,7 +210,7 @@ grant codeBase "file:${catalina.home}/bin/tomcat-juli.jar" {
         // the following to be on a single line):
         // permission java.io.FilePermission "${catalina.base}${file.separator}
         //  webapps${file.separator}examples${file.separator}WEB-INF
-        //  ${file.separator}classes${file.separator}logging.properties", "read";
+        //  ${file.separator}dto${file.separator}logging.properties", "read";
 };
 
 // These permissions apply to the server startup code
@@ -218,7 +218,7 @@ grant codeBase "file:${catalina.home}/bin/bootstrap.jar" {
         permission java.security.AllPermission;
 };
 
-// These permissions apply to the servlet API classes
+// These permissions apply to the servlet API dto
 // and those that are shared across all class loaders
 // located in the "lib" directory
 grant codeBase "file:${catalina.home}/lib/-" {
@@ -331,10 +331,10 @@ grant codeBase "file:${catalina.home}/webapps/host-manager/-" {
 
 // You can assign additional permissions to particular web applications by
 // adding additional "grant" entries here, based on the code base for that
-// application, /WEB-INF/classes/, or /WEB-INF/lib/ jar files.
+// application, /WEB-INF/dto/, or /WEB-INF/lib/ jar files.
 //
-// Different permissions can be granted to JSP pages, classes loaded from
-// the /WEB-INF/classes/ directory, all jar files in the /WEB-INF/lib/
+// Different permissions can be granted to JSP pages, dto loaded from
+// the /WEB-INF/dto/ directory, all jar files in the /WEB-INF/lib/
 // directory, or even to individual jar files in the /WEB-INF/lib/ directory.
 //
 // For instance, assume that the standard "examples" application
@@ -348,8 +348,8 @@ grant codeBase "file:${catalina.home}/webapps/host-manager/-" {
 //      permission java.net.SocketPermission "*.noaa.gov:80", "connect";
 // };
 //
-// The permissions granted to the context WEB-INF/classes directory
-// grant codeBase "file:${catalina.base}/webapps/examples/WEB-INF/classes/-" {
+// The permissions granted to the context WEB-INF/dto directory
+// grant codeBase "file:${catalina.base}/webapps/examples/WEB-INF/dto/-" {
 // };
 //
 // The permission granted to your JDBC driver

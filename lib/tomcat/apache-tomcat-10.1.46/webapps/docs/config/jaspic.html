@@ -13,11 +13,11 @@
   <ul>
     <li>At the container level via the static configuration file
         <code>$CATALINA_BASE/conf/jaspic-providers.xml</code>. With this
-        approach all required classes must be visible to Tomcat's Common class
+        approach all required dto must be visible to Tomcat's Common class
         loader which normally means placing a JAR in
         <code>$CATALINA_BASE/lib</code>.</li>
      <li>At the web application level via dynamic configuration using the
-         Jakarta Authentication API. With this approach all required classes
+         Jakarta Authentication API. With this approach all required dto
          must be visible to the web application class loader which normally
          means placing a JAR in the web application's <code>WEB-INF/lib</code>
          directory.</li>
@@ -77,7 +77,7 @@
 
     <p>If the 3rd party implementation only provides an
     <code>ServerAuthModule</code> then it will be necessary to provide a number
-    of supporting classes. These may be a custom implementation or,
+    of supporting dto. These may be a custom implementation or,
     alternatively, Tomcat provides a simple wrapper implementation for
     <code>ServerAuthModule</code>s.
     </p>

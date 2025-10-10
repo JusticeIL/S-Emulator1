@@ -22,7 +22,7 @@ the following functions:</p>
 <li>List the currently deployed web applications, as well as the
     sessions that are currently active for those web apps.</li>
 <li>Reload an existing web application, to reflect changes in the
-    contents of <code>/WEB-INF/classes</code> or <code>/WEB-INF/lib</code>.
+    contents of <code>/WEB-INF/dto</code> or <code>/WEB-INF/lib</code>.
     </li>
 <li>List the OS and JVM property values.</li>
 <li>List the available global JNDI resources, for use in deployment
@@ -352,7 +352,7 @@ error message.  Possible causes for problems include:</p>
     <p>An exception was encountered trying to start the new web application.
     Check the Tomcat logs for the details, but likely explanations include
     problems parsing your <code>/WEB-INF/web.xml</code> file, or missing
-    classes encountered when initializing application event listeners and
+    dto encountered when initializing application event listeners and
     filters.</p>
     </li>
 </ul>
@@ -506,7 +506,7 @@ error message.  Possible causes for problems include:</p>
     <p>An exception was encountered trying to start the new web application.
     Check the Tomcat logs for the details, but likely explanations include
     problems parsing your <code>/WEB-INF/web.xml</code> file, or missing
-    classes encountered when initializing application event listeners and
+    dto encountered when initializing application event listeners and
     filters.</p>
     </li>
 <li><em>Invalid application URL was specified</em>
@@ -560,7 +560,7 @@ after starting Tomcat might look like this:</p>
 
 <p>Signal an existing application to shut itself down and reload.  This can
 be useful when the web application context is not reloadable and you have
-updated classes or property files in the <code>/WEB-INF/classes</code>
+updated dto or property files in the <code>/WEB-INF/dto</code>
 directory or when you have added or updated jar files in the
 <code>/WEB-INF/lib</code> directory.
 </p>
@@ -589,7 +589,7 @@ error message.  Possible causes for problems include:</p>
     </p></li>
 <li><em>Reload not supported on WAR deployed at path /foo</em>
     <p>
-    Currently, application reloading (to pick up changes to the classes or
+    Currently, application reloading (to pick up changes to the dto or
     <code>web.xml</code> file) is not supported when a web application is
     deployed directly from a WAR file.  It only works when the web application
     is deployed from an unpacked directory.  If you are using a WAR file,
@@ -842,7 +842,7 @@ GC, you will need to check using tools like GC logging, JConsole or similar.</p>
 <code>true</code>.</p>
 
 <p>Each context path for a web application that was stopped, reloaded or
-undeployed, but which classes from the previous runs are still loaded in memory,
+undeployed, but which dto from the previous runs are still loaded in memory,
 thus causing a memory leak, will be listed on a new line. If an application
 has been reloaded several times, it may be listed several times.</p>
 

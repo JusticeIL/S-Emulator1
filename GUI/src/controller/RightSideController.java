@@ -27,7 +27,7 @@ import javafx.util.converter.NumberStringConverter;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
 import model.InstructionTableEntry;
-import classes.VariableDTO;
+import dto.VariableDTO;
 
 import java.util.ArrayList;
 import java.util.List;

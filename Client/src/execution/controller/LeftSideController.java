@@ -17,8 +17,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import execution.model.InstructionTableEntry;
-import classes.InstructionDTO;
-import classes.Searchable;
+import dto.InstructionDTO;
+import dto.Searchable;
 
 import java.util.*;
 import java.util.stream.Collectors;

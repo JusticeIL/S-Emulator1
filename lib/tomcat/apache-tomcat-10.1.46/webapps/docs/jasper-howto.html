@@ -321,7 +321,7 @@ consider setting this to <code>single</code> or <code>extended</code>.</li>
 
 <p>Using Ant is the preferred way to compile web applications using JSPC. Note
 that when pre-compiling JSPs, SMAP information will only be included in the
-final classes if suppressSmap is false and compile is true.
+final dto if suppressSmap is false and compile is true.
 Use the script given below (a similar script is included in the "deployer"
 download) to precompile a webapp:
 </p>
@@ -342,15 +342,15 @@ download) to precompile a webapp:
 
   &lt;target name="compile"&gt;
 
-    &lt;mkdir dir="${webapp.path}/WEB-INF/classes"/&gt;
+    &lt;mkdir dir="${webapp.path}/WEB-INF/dto"/&gt;
     &lt;mkdir dir="${webapp.path}/WEB-INF/lib"/&gt;
 
-    &lt;javac destdir="${webapp.path}/WEB-INF/classes"
+    &lt;javac destdir="${webapp.path}/WEB-INF/dto"
            debug="on" failonerror="false"
            srcdir="${webapp.path}/WEB-INF/src"
            excludes="**/*.smap"&gt;
       &lt;classpath&gt;
-        &lt;pathelement location="${webapp.path}/WEB-INF/classes"/&gt;
+        &lt;pathelement location="${webapp.path}/WEB-INF/dto"/&gt;
         &lt;fileset dir="${webapp.path}/WEB-INF/lib"&gt;
           &lt;include name="*.jar"/&gt;
         &lt;/fileset&gt;
@@ -374,7 +374,7 @@ download) to precompile a webapp:
   &lt;target name="cleanup"&gt;
     &lt;delete&gt;
         &lt;fileset dir="${webapp.path}/WEB-INF/src"/&gt;
-        &lt;fileset dir="${webapp.path}/WEB-INF/classes/org/apache/jsp"/&gt;
+        &lt;fileset dir="${webapp.path}/WEB-INF/dto/org/apache/jsp"/&gt;
     &lt;/delete&gt;
   &lt;/target&gt;
 
@@ -425,8 +425,8 @@ When you don't want to stop the JSP generation at first JSP syntax error, use
 <code>showSuccess="true"</code> all successful <i>JSP to Java</i>
 generation are printed out. Sometimes it is very helpful, when you cleanup the
 generate java source files at <code>${webapp.path}/WEB-INF/src</code>
-and the compile JSP servlet classes at
-<code>${webapp.path}/WEB-INF/classes/org/apache/jsp</code>.
+and the compile JSP servlet dto at
+<code>${webapp.path}/WEB-INF/dto/org/apache/jsp</code>.
 </p>
 
 <p><strong>Hints:</strong></p>

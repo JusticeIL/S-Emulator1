@@ -58,7 +58,7 @@
       that is aware of different web applications running on Tomcat (and
       their different class loaders). It supports private per-application
       logging configurations. It is also notified by Tomcat when a web application
-      is unloaded from memory, so that the references to its classes can be
+      is unloaded from memory, so that the references to its dto can be
       cleared, preventing memory leaks.
     </p>
 
@@ -203,7 +203,7 @@
         <code>${java.home}/lib/logging.properties</code> file in the JRE.
       </li>
       <li>In the web application. The file will be
-        <code>WEB-INF/classes/logging.properties</code>
+        <code>WEB-INF/dto/logging.properties</code>
       </li>
     </ul>
   <p>
@@ -265,7 +265,7 @@ java.util.logging.ConsoleHandler.level=ALL</code></pre></div>
       days.</li>
   </ul>
   <p>
-    There are several additional implementation classes, that can be used
+    There are several additional implementation dto, that can be used
     together with the ones provided by Java. The notable ones are
     <code>org.apache.juli.FileHandler</code> and <code>org.apache.juli.AsyncFileHandler</code>.
   </p>
@@ -342,7 +342,7 @@ org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager].handler
 
     <p>
       Example logging.properties for the servlet-examples web application to be
-      placed in WEB-INF/classes inside the web application:
+      placed in WEB-INF/dto inside the web application:
     </p>
     <div class="codeBox"><pre><code>handlers = org.apache.juli.AsyncFileHandler, java.util.logging.ConsoleHandler
 

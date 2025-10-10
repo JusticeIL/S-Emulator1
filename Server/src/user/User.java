@@ -1,6 +1,6 @@
 package user;
 
-import classes.Statistics;
+import dto.Statistics;
 
 public class User {
     private int programsLoaded;

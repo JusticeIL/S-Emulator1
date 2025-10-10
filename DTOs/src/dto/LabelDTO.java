@@ -1,4 +1,4 @@
-package classes;
+package dto;
 
 import java.util.Objects;
 

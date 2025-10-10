@@ -4,7 +4,7 @@ import controller.Model;
 import controller.SingleProgramController;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
-import classes.ProgramData;
+import dto.ProgramData;
 import program.Run;
 import java.io.*;
 import java.nio.file.InvalidPathException;

@@ -1,8 +1,8 @@
 package controller;
 
 import jakarta.xml.bind.JAXBException;
-import classes.ProgramData;
-import classes.VariableDTO;
+import dto.ProgramData;
+import dto.VariableDTO;
 
 import java.io.FileNotFoundException;
 import java.util.Optional;

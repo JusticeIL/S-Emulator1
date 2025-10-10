@@ -8,7 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import classes.VariableDTO;
+import dto.VariableDTO;
 
 import java.io.IOException;
 import java.util.Arrays;

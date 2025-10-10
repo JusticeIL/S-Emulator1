@@ -3,8 +3,8 @@ package controller;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
 import program.ProgramExecutioner;
-import classes.ProgramData;
-import classes.VariableDTO;
+import dto.ProgramData;
+import dto.VariableDTO;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;

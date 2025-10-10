@@ -476,11 +476,11 @@ For example:
 
 (7.3) Running a set of tests
 
-It is possible to run a set of JUnit test classes by adding the "test.name"
+It is possible to run a set of JUnit test dto by adding the "test.name"
 property to the build.properties file. The property specifies an Ant
 includes pattern for the fileset of test class files to run.
 
-The default value is "**/Test*.java", so all test classes are being
+The default value is "**/Test*.java", so all test dto are being
 executed (with few exceptions - see build.xml for several exclude patterns).
 
 You can include multiple patterns by concatenating them with a comma (",")
@@ -490,10 +490,10 @@ For example:
 
     test.name=**/TestSsl.java,**/TestWebSocketFrameClientSSL.java
 
-You can exclude specific JUnit test classes by adding the "test.exclude"
+You can exclude specific JUnit test dto by adding the "test.exclude"
 property to the build.properties file. The property specifies an Ant
 excludes pattern for the fileset of test class files to exclude form the run.
-The default value is empty, so no classes are excluded. The syntax is the same
+The default value is empty, so no dto are excluded. The syntax is the same
 as for the property "test.name".
 
 
@@ -645,7 +645,7 @@ To enable SpotBugs, add the following property to build.properties file:
 
     execute.spotbugs=true
 
-To compile Tomcat classes and generate a SpotBugs report, call the
+To compile Tomcat dto and generate a SpotBugs report, call the
 "spotbugs" target. For example:
 
     cd ${tomcat.source}

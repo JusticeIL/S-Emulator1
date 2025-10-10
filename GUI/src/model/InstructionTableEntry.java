@@ -1,8 +1,8 @@
 package model;
 
 import javafx.beans.property.*;
-import classes.InstructionDTO;
-import classes.Searchable;
+import dto.InstructionDTO;
+import dto.Searchable;
 
 import java.util.HashSet;
 import java.util.Set;

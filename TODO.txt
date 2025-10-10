@@ -6,7 +6,7 @@ O.O.B:
 4. functions container needs to sit inside the model to help 3
 5. synchronize on function invoking instructions such as JEF and quotation.
 6. Solve nested maps inside a new class (like we did with history of class statistics)
-7. Create a module for the DTO from the existing classes of the DTOs.
+7. Create a module for the DTO from the existing dto of the DTOs.
 ---
 8. Make the credits button load credits
 9. For each run / debug, need to check if there's enough credits
