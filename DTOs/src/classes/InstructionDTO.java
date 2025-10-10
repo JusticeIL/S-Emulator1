@@ -1,3 +1,5 @@
+package classes;
+
 import instruction.Instruction;
 
 import java.util.HashSet;

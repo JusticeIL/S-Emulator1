@@ -1,3 +1,5 @@
+package classes;
+
 import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;

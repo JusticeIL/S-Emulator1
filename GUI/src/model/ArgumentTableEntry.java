@@ -4,7 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import program.data.VariableDTO;
+import classes.VariableDTO;
 
 public class ArgumentTableEntry {
     private final StringProperty name;

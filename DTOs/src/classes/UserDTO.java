@@ -1,3 +1,7 @@
+package classes;
+
+import user.User;
+
 public class UserDTO {
     private final String username;
     private final int programsLoaded;

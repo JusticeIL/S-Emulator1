@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import execution.model.ArgumentTableEntry;
 import execution.model.InstructionTableEntry;
-import program.data.VariableDTO;
+import classes.VariableDTO;
 
 import java.util.ArrayList;
 import java.util.List;

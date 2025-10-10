@@ -1,4 +1,4 @@
-package program.data;
+package classes;
 
 import program.function.FunctionArgument;
 

@@ -9,7 +9,7 @@ import instruction.component.Variable;
 import instruction.component.VariableFactory;
 import program.Program;
 import program.ProgramExecutioner;
-import program.data.VariableDTO;
+import classes.VariableDTO;
 
 import java.io.FileNotFoundException;
 import java.util.*;

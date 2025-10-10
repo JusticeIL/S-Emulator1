@@ -1,4 +1,4 @@
-import instruction.ArchitectureGeneration;
+package classes;
 
 import java.io.Serializable;
 import java.util.HashMap;

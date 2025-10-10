@@ -3,7 +3,7 @@ package program;
 import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
-import program.data.VariableDTO;
+import classes.VariableDTO;
 import program.function.FunctionInstance;
 
 import java.util.HashSet;

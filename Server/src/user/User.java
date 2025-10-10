@@ -1,3 +1,6 @@
+package user;
+
+import classes.Statistics;
 
 public class User {
     private int programsLoaded;
