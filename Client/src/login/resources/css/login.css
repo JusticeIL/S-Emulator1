@@ -1,0 +1,129 @@
+/* Page background + global font */
+.root, BorderPane, .scroll-pane .viewport {
+    -fx-background-color: white;       /* main page bg */
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 16px;
+    -fx-text-fill: #222;              /* primary text color */
+}
+
+/* Make containers transparent by default */
+FlowPane, StackPane, AnchorPane, VBox {
+    -fx-background-color: transparent;
+}
+
+/* Form container (inner VBox). Keeps it centered visually */
+.vbox {
+    -fx-alignment: center;
+}
+
+/* TextField: light rounded input */
+.text-field, .text-area {
+    -fx-background-color: white;              /* input bg */
+    -fx-control-inner-background: white;
+    -fx-border-color: #222;                  /* subtle blue border */
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 10;                          /* inner padding */
+    -fx-text-fill: #222;                     /* input text */
+    -fx-prompt-text-fill: #9b9b9b;              /* placeholder color (normal grey) */
+    -fx-font-size: 13px;
+}
+
+/* Make textfield show subtle shadow on focus */
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #1e88e5;                  /* accent border when focused */
+    -fx-effect: dropshadow( gaussian , rgba(30,136,229,0.14) , 6, 0.0, 0, 2 );
+}
+
+/* Register button: solid blue primary button */
+.button {
+    -fx-background-color: #1e88e5;     /* primary blue */
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-padding: 8 16;
+    -fx-background-radius: 8;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+/* Specific override for the register button (keeps consistent width if needed) */
+#registerUserBtn {
+    -fx-background-color: #1e88e5;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+#registerUserBtn:hover {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1e88e5;
+    -fx-border-color: #1e88e5;
+}
+
+/* Hover and pressed states */
+.button:hover {
+    -fx-background-color: #1565c0; /* slightly darker blue */
+}
+
+.button:pressed {
+    -fx-background-color: #0f4a8a;
+    -fx-translate-y: 1; /* small press effect */
+}
+
+/* Disabled state */
+.button:disabled {
+    -fx-background-color: #cfe6ff;
+    -fx-text-fill: #9bb0c9;
+    -fx-opacity: 1;
+}
+
+/* Labels default (dark text on white) */
+.label {
+    -fx-text-fill: #222222;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+}
+
+/* Title styling (specific to login.fxml) */
+#clientApplicationTitle {
+    -fx-text-fill: #0d3b73; /* deeper accent for the title */
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 6 0 8 0;
+}
+
+/* ScrollBar styling: subtle and in-accent */
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-width: 10;
+}
+.scroll-bar .thumb {
+    -fx-background-color: #cfe6ff;
+    -fx-background-radius: 6;
+}
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+/* Focus ring for any focused control */
+*:focused {
+    -fx-focus-color: #1e88e5;
+    -fx-faint-focus-color: rgba(30,136,229,0.18);
+}
+
+/* Small responsive nicety: center the form container and keep max width */
+.form-column, .vbox > .vbox {
+    -fx-max-width: 240px; /* same as your layout constraint */
+}
+
+/* make placeholder label color (ScrollPane placeholder if any) */
+.scroll-pane .placeholder {
+    -fx-text-fill: #6b788a;
+}
+
+/* Accessibility: increase tappable areas for touch */
+.button, .text-field {
+    -fx-min-height: 36px;
+}
