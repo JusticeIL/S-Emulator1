@@ -396,6 +396,11 @@ FlowPane, StackPane, AnchorPane {
     -fx-text-alignment: center;
 }
 
+#userNameDisplay {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
 /* ScrollPane / ScrollBar subtle theme */
 .scroll-bar:vertical, .scroll-bar:horizontal {
     -fx-background-color: transparent;

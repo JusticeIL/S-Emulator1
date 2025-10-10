@@ -143,6 +143,7 @@ FlowPane, StackPane, AnchorPane {
 .button:disabled {
     -fx-background-color: #7b7e84;
     -fx-text-fill: #bcbec3;
+    -fx-border-color: transparent;
     -fx-opacity: 0.9;
 }
 
@@ -313,6 +314,29 @@ FlowPane, StackPane, AnchorPane {
     -fx-padding: 6 12;
 }
 
+#ShowStatisticsBtn, #RerunBtn {
+    -fx-background-color: #72aa6c;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+}
+
+#ShowStatisticsBtn:hover, #RerunBtn:hover {
+    -fx-background-color: #404144;
+    -fx-text-fill: #72aa6c;
+    -fx-border-color: #72aa6c;
+}
+
+#ShowStatisticsBtn:disabled, #RerunBtn:disabled {
+    -fx-background-color: #869484;
+    -fx-text-fill: #bcbec3;
+    -fx-border-color: transparent;
+}
+
 /* Menu buttons styling */
 .menu-button {
     -fx-background-radius: 6;
@@ -375,6 +399,11 @@ FlowPane, StackPane, AnchorPane {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-alignment: center;
+}
+
+#userNameDisplay {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
 /* ScrollPane / ScrollBar subtle theme */

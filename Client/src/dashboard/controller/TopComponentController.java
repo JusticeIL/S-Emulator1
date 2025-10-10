@@ -91,10 +91,9 @@ public class TopComponentController{
                         .then("No Available Skin")
                         .otherwise("Choose a Skin")
         );
-    }
 
-    public void setModel(SingleProgramController model) {
-        this.model = model;
+        //TODO: Currently, the credits label is initializing to 0, but should send a get request to the server to get the actual credits (if the user is new will get "0" from the server).
+        currentCredits.setText("Available Credits: 0");
     }
 
     public void setRightController(RightSideController rightController) {
@@ -107,6 +106,10 @@ public class TopComponentController{
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    public void setUsername(String text) {
+        userNameDisplay.setText(text);
     }
 
     public List<String> listCssFiles() {

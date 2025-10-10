@@ -1,5 +1,6 @@
 package login.controller;
 
+import dashboard.controller.PrimaryController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -59,10 +60,15 @@ public class MainController {
                                 dashboardScene.getStylesheets().clear();
                                 dashboardScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
 
+                                // Pass data to dashboard controller
+                                PrimaryController controller = loader.getController();
+                                controller.initData(usernameField.getText(), client);
                                 Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
+
                                 // Close current window
                                 ((Stage) registerUserBtn.getScene().getWindow()).close();
 
+                                controller.getTopComponentController().setPrimaryStage(primaryStage);
                                 primaryStage.setScene(dashboardScene);
                                 primaryStage.setTitle("S-embler - Dashboard");
                                 primaryStage.getIcons().add(
@@ -102,9 +108,5 @@ public class MainController {
             alert.setOnShown(dialogEvent -> alert.getDialogPane().requestFocus());
             alert.showAndWait();
         });
-    }
-
-    public OkHttpClient getClient() {
-        return client;
     }
 }

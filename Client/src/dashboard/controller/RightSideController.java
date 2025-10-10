@@ -1,6 +1,7 @@
 package dashboard.controller;
 
 import controller.SingleProgramController;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,7 +14,7 @@ public class RightSideController {
     private SingleProgramController model;
 
     @FXML
-    private Button executeFunctionBtn;
+    private TableView<?> programsTable;
 
     @FXML
     private Button executeProgramBtn;
@@ -22,11 +23,12 @@ public class RightSideController {
     private TableView<?> functionsTable;
 
     @FXML
-    private TableView<?> programsTable;
+    private Button executeFunctionBtn;
 
     @FXML
     public void initialize() {
-
+        executeProgramBtn.disableProperty().bind(Bindings.isEmpty(programsTable.getItems()));
+        executeFunctionBtn.disableProperty().bind(Bindings.isEmpty(functionsTable.getItems()));
     }
 
     @FXML

@@ -195,6 +195,7 @@ FlowPane, StackPane, AnchorPane {
 .button:disabled {
     -fx-background-color: #7b7e84;
     -fx-text-fill: #bcbec3;
+    -fx-border-color: transparent;
     -fx-opacity: 0.9;
 }
 
@@ -277,6 +278,28 @@ FlowPane, StackPane, AnchorPane {
     -fx-text-fill: white;
     -fx-border-color: #507e32;
     -fx-padding: 8 16 8 16;
+}
+
+#ShowStatisticsBtn, #RerunBtn {
+    -fx-background-color: #e7e6e6 !important;
+    -fx-text-fill: black !important;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+}
+
+#ShowStatisticsBtn:disabled, #RerunBtn:disabled {
+    -fx-background-color: #7b7e84 !important;
+    -fx-text-fill: #bcbec3 !important;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
 }
 
 /* ---------- MenuButton (match primary buttons) ---------- */
