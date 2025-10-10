@@ -7,14 +7,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import okhttp3.*;
+
+import java.util.Objects;
 
 public class MainController {
 
     private OkHttpClient client;
     private final String BASE_URL = "http://localhost:8080/S-emulator";
+    private final String RESOURCE = "/api/user/register";
 
     @FXML
     private Label clientApplicationTitle;
@@ -32,45 +36,54 @@ public class MainController {
 
     @FXML
     void tryRegisterUserBtn(ActionEvent event) {
-        Request request = new Request.Builder()
-                .url(BASE_URL + "/api/user/register")
-                .post(RequestBody.create(
-                        MediaType.parse("application/json"),
-                        "{\"username\":\"" + usernameField.getText() + "\"}"
-                ))
-                .build();
+            HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + RESOURCE))
+                    .newBuilder()
+                    .addQueryParameter("username", usernameField.getText());
+            String finalURL = urlBuilder.build().toString();
 
-        Call call = client.newCall(request);
+            Request request = new Request.Builder()
+                    .url(finalURL)
+                    .post(RequestBody.create(new byte[]{}))
+                    .build();
 
-        new Thread(() -> {
-            try {
-                Response response = call.execute();
-                if (response.isSuccessful()) {
-                    Platform.runLater(() -> {
-                        try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard.fxml"));
-                            Parent root = loader.load();
-                            Stage stage = new Stage();
-                            stage.setScene(new Scene(root));
-                            stage.setTitle("Dashboard");
-                            // Close current window
-                            ((Stage) registerUserBtn.getScene().getWindow()).close();
-                            stage.show();
-                        } catch (Exception ex) {
-                            Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
-                            showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
-                        }
-                    });
-                } else {
+            Call call = client.newCall(request);
+
+            new Thread(() -> {
+                try (Response response = call.execute()) {
+                    if (response.isSuccessful()) {
+                        Platform.runLater(() -> {
+                            try {
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard/resources/fxml/dashboard.fxml"));
+                                Parent newRoot = loader.load();
+                                Scene dashboardScene = new Scene(newRoot, 850, 600);
+                                dashboardScene.getStylesheets().clear();
+                                dashboardScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
+
+                                Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
+                                // Close current window
+                                ((Stage) registerUserBtn.getScene().getWindow()).close();
+
+                                primaryStage.setScene(dashboardScene);
+                                primaryStage.setTitle("S-embler - Dashboard");
+                                primaryStage.getIcons().add(
+                                        new Image(getClass().getResourceAsStream("/resources/icon.png"))
+                                );
+                                primaryStage.show();
+                            } catch (Exception ex) {
+                                Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
+                                showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
+                            }
+                        });
+                    } else {
+                        Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
+                        String errorMsg = response.body() != null ? response.body().string() : "Unknown error";
+                        showAlert(errorMsg, primaryStage);
+                    }
+                } catch (Exception e) {
                     Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
-                    String errorMsg = response.body() != null ? response.body().string() : "Unknown error";
-                    showAlert(errorMsg, primaryStage);
+                    showAlert("Error: " + e.getMessage(), primaryStage);
                 }
-            } catch (Exception e) {
-                Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
-                showAlert("Error: " + e.getMessage(), primaryStage);
-            }
-        }).start();
+            }).start();
     }
 
     //TODO: Refactor this method to a utility class if needed in other controllers
@@ -89,5 +102,9 @@ public class MainController {
             alert.setOnShown(dialogEvent -> alert.getDialogPane().requestFocus());
             alert.showAndWait();
         });
+    }
+
+    public OkHttpClient getClient() {
+        return client;
     }
 }
