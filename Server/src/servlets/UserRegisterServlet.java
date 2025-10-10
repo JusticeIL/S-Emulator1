@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -11,8 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Set;
 
-@WebServlet(name = "UserServlet", urlPatterns = {"/user"})
-public class UserServlet extends HttpServlet {
+@WebServlet(name = "UserRegisterServlet", urlPatterns = {"/api/user/register"})
+public class UserRegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Expects the parameters to contain the username
@@ -35,8 +34,10 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
             synchronized (users) {
-                if (users.contains(username) || username == null || username.trim().isEmpty()) {
+                if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);
+                } else if (username == null || username.trim().isEmpty()) {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                     users.add(username);
                     resp.setStatus(HttpServletResponse.SC_OK);
@@ -44,20 +45,5 @@ public class UserServlet extends HttpServlet {
                 }
             }
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //get all users
-        Gson gson = new Gson();
-        Set<String> users = (Set<String>) getServletContext().getAttribute("users");
-        String responseJson;
-        synchronized (users) {
-            responseJson = gson.toJson(users);
-        }
-
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-        resp.getWriter().write(responseJson);
     }
 }
