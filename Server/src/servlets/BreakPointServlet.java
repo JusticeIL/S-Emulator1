@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "BreakPointServlet", urlPatterns = {"/program/debug/breakpoint"})
+@WebServlet(name = "BreakPointServlet", urlPatterns = {"/api/program/debug/breakpoint"})
 public class BreakPointServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

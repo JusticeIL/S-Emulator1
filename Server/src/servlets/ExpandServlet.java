@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "ExpandServlet", urlPatterns = {"/program/expand"})
+@WebServlet(name = "ExpandServlet", urlPatterns = {"/api/program/expand"})
 public class ExpandServlet extends HttpServlet {
 
     @Override

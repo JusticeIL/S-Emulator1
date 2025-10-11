@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
-@WebServlet(name = "ProgramServlet", urlPatterns = {"/program"})
+@WebServlet(name = "ProgramServlet", urlPatterns = {"/api/program"})
 public class ProgramServlet extends HttpServlet {
 
     @Override

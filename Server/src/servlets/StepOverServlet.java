@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "StepOverServlet", urlPatterns = {"/program/debug/stepover"})
+@WebServlet(name = "StepOverServlet", urlPatterns = {"/api/program/debug/stepover"})
 public class StepOverServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

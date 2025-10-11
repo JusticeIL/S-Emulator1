@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "ResumeDebugServlet", urlPatterns = {"/program/debug/resume"})
+@WebServlet(name = "ResumeDebugServlet", urlPatterns = {"/api/program/debug/resume"})
 public class ResumeDebugServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "ProgramExecutionServlet", urlPatterns = {"/program/execute"})
+@WebServlet(name = "ProgramExecutionServlet", urlPatterns = {"/api/program/execute"})
 public class ProgramExecutionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

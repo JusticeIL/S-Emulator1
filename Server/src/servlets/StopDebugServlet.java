@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "StopDebugServlet", urlPatterns = {"/program/debug/stop"})
+@WebServlet(name = "StopDebugServlet", urlPatterns = {"/api/program/debug/stop"})
 public class StopDebugServlet extends HttpServlet {
 
     @Override

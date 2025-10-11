@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "DebugServlet", urlPatterns = {"/program/debug"})
+@WebServlet(name = "DebugServlet", urlPatterns = {"/api/program/debug"})
 public class DebugServlet extends HttpServlet {
 
     @Override
