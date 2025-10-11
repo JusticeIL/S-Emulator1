@@ -32,6 +32,9 @@ public class PrimaryController {
         this.username = text;
         topComponentController.setUsername(text);
         this.client = client;
+        topComponentController.setClient(client);
+        leftSideController.setClient(client);
+        rightSideController.setClient(client);
     }
 
     public TopComponentController getTopComponentController() {

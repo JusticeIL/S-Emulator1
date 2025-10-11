@@ -24,4 +24,28 @@ public class UserDTO {
     public String getUsername() {
         return username;
     }
+
+    public int getProgramsLoaded() {
+        return programsLoaded;
+    }
+
+    public int getFunctionsLoaded() {
+        return functionsLoaded;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public int getCreditsUsed() {
+        return creditsUsed;
+    }
+
+    public int getProgramExecutionsCounter() {
+        return programExecutionsCounter;
+    }
+
+    public Statistics getHistory() {
+        return history;
+    }
 }

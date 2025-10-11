@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import okhttp3.OkHttpClient;
 
 import java.net.URL;
 import java.net.URLDecoder;
@@ -29,6 +30,7 @@ public class TopComponentController{
     private LeftSideController leftController;
     private Model model;
     private List<String> availableCSSFileNames;
+    private OkHttpClient client;
 
     @FXML
     private Label userNameDisplay;
@@ -94,6 +96,10 @@ public class TopComponentController{
 
         //TODO: Currently, the credits label is initializing to 0, but should send a get request to the server to get the actual credits (if the user is new will get "0" from the server).
         currentCredits.setText("Available Credits: 0");
+    }
+
+    public void setClient(OkHttpClient client) {
+        this.client = client;
     }
 
     public void setRightController(RightSideController rightController) {

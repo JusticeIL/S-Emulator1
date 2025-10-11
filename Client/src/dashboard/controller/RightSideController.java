@@ -6,12 +6,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import okhttp3.OkHttpClient;
 
 public class RightSideController {
 
     private TopComponentController topController;
     private LeftSideController leftController;
     private SingleProgramController model;
+    private OkHttpClient client;
 
     @FXML
     private TableView<?> programsTable;
@@ -39,6 +41,10 @@ public class RightSideController {
     @FXML
     void executeProgram(ActionEvent event) {
 
+    }
+
+    public void setClient(OkHttpClient client) {
+        this.client = client;
     }
 
     public void setTopController(TopComponentController topController) {

@@ -6,9 +6,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import user.User;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Map;
 
 @WebServlet(name = "UserRegisterServlet", urlPatterns = {"/api/user/register"})
 public class UserRegisterServlet extends HttpServlet {
@@ -17,7 +18,7 @@ public class UserRegisterServlet extends HttpServlet {
         // Expects the parameters to contain the username
 
         String username = req.getParameter("username");
-        Set<String> users = (Set<String>) getServletContext().getAttribute("users");
+        Map<String, User> users = (Map<String, User>) getServletContext().getAttribute("users");
 
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
@@ -34,12 +35,12 @@ public class UserRegisterServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
             synchronized (users) {
-                if (users.contains(username)) {
+                if (users.containsKey(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);
                 } else if (username == null || username.trim().isEmpty()) {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                    users.add(username);
+                    users.put(username, new User(username));
                     resp.setStatus(HttpServletResponse.SC_OK);
                     resp.addCookie(new Cookie("username", username));
                 }
