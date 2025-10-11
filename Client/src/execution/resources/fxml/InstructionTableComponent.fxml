@@ -6,11 +6,12 @@
 
 <TableView fx:id="leftSideInstructionTables" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="execution.controller.InstructionTableController">
     <columns>
-        <TableColumn fx:id="idColumn" maxWidth="80.0" minWidth="-Infinity" prefWidth="40.0" resizable="false" text="#" />
-        <TableColumn fx:id="TypeColumn" maxWidth="80.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Type" />
-        <TableColumn fx:id="LabelColumn" maxWidth="80.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Label" />
-        <TableColumn fx:id="instructionColumn" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Instruction" />
-        <TableColumn fx:id="cyclesColumn" maxWidth="100.0" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Cycles" />
+        <TableColumn fx:id="idColumn" maxWidth="100.0" minWidth="-Infinity" prefWidth="40.0" text="#" />
+        <TableColumn fx:id="TypeColumn" maxWidth="90.0" minWidth="-Infinity" prefWidth="50.0" text="Type" />
+        <TableColumn fx:id="LabelColumn" maxWidth="100.0" minWidth="-Infinity" prefWidth="50.0" text="Label" />
+        <TableColumn fx:id="instructionColumn" maxWidth="250.0" minWidth="70.0" prefWidth="150.0" text="Instruction" />
+        <TableColumn fx:id="cyclesColumn" maxWidth="120.0" minWidth="-Infinity" prefWidth="50.0" text="Cycles" />
+      <TableColumn fx:id="architectureColumn" maxWidth="100.0" minWidth="-Infinity" text="Architecture" />
     </columns>
 
     <placeholder>

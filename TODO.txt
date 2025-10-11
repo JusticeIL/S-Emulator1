@@ -2,7 +2,7 @@ O.O.B:
 
 1. Create Client module and finish javafx GUI
 2. Handle TODOs in the code
-3. Save set<SProgram> instead of set <Program> for the recipes in order to create a program from sprogram; change program constructor or have a method.
+3. Save set<SProgram> instead of set <Program> for the recipes in order to create a program from sProgram; change program constructor or have a method.
 4. functions container needs to sit inside the model to help 3
 5. synchronize on function invoking instructions such as JEF and quotation.
 6. Solve nested maps inside a new class (like we did with history of class statistics)
@@ -12,7 +12,7 @@ O.O.B:
 9. For each run / debug, need to check if there's enough credits
 10. Implement architecture generation enum for each program / function
 11. Login system with user (check if there's a user, if not create one and allow the user to login else error)
-12. The user should file upload each program (by uploading an xml file) and read it as a part and then as stream
+12. The user should file upload each program (by uploading a xml file) and read it as a part and then as stream
 13. Stack the programs instead of throw it away
 14. Add rerun and show statistics again
 15. validation of programs and functions should happen as in exercise 1 and not as in exercise 2
@@ -26,7 +26,7 @@ O.O.B:
 and if there are instructions that cannot be run in any architecture generation, this information should be red to be seen by the user.
 Solution: expand the program so the user can run in the architecture or change architecture generation
 23. Each instruction knows its architecture generation | idea: create enum for this as protected data member in Instruction or implement an empty interface named "Gen1", "Gen2" etc
-24. if the credits are over or not sufficient, the user should be informed, we stop the program, and move the user back to the fashboard
+24. if the credits are over or not sufficient, the user should be informed, we stop the program, and move the user back to the dashboard
 25. Run option should calculate the cost for credits, and if the user has enough credits, we run the program, else we inform the user and don't let him run it
 26. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard
 27. If the user credits amount is smaller than avg cost for this program/function, we should not let him debug or run it (and inform the user)
