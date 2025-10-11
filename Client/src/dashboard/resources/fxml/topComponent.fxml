@@ -13,7 +13,7 @@
 
     <!-- 20px padding on all sides -->
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="20.0" left="50.0" right="20.0" top="20.0" />
     </padding>
 
     <!-- LEFT: username -->
