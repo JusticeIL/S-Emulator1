@@ -30,3 +30,4 @@ Solution: expand the program so the user can run in the architecture or change a
 25. Run option should calculate the cost for credits, and if the user has enough credits, we run the program, else we inform the user and don't let him run it
 26. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard
 27. If the user credits amount is smaller than avg cost for this program/function, we should not let him debug or run it (and inform the user)
+28. add a util class (probably named "Utils") in Client that holds refresh rate constant, base url constant and the open error dialog method (?)
