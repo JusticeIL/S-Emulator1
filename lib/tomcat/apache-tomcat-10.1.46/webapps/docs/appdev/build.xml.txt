@@ -28,7 +28,7 @@
                              the "docs" subdirectory of your distribution.
 
         src                  Java source code (and associated resource files)
-                             to be compiled to the "WEB-INF/dto"
+                             to be compiled to the "WEB-INF/classes"
                              subdirectory of your web application.
 
         web                  Static HTML, JSP, and other content (such as
@@ -148,7 +148,7 @@
   * Being copied into the "/WEB-INF/lib" directory during execution
     of the "deploy" target.
 
-  Because we will automatically include all of the Java dto that Tomcat
+  Because we will automatically include all of the Java class that Tomcat
   exposes to web applications, we will not need to explicitly list any of those
   dependencies.  You only need to worry about external dependencies for JAR
   files that you are going to include inside your "/WEB-INF/lib" directory.
@@ -277,25 +277,25 @@
 
   The "compile" target transforms source files (from your "src" directory)
   into object files in the appropriate location in the build directory.
-  This example assumes that you will be including your dto in an
-  unpacked directory hierarchy under "/WEB-INF/dto".
+  This example assumes that you will be including your class in an
+  unpacked directory hierarchy under "/WEB-INF/classes".
 
 -->
 
   <target name="compile" depends="prepare"
    description="Compile Java sources">
 
-    <!-- Compile Java dto as necessary -->
-    <mkdir    dir="${build.home}/WEB-INF/dto"/>
+    <!-- Compile Java class as necessary -->
+    <mkdir    dir="${build.home}/WEB-INF/classes"/>
     <javac srcdir="${src.home}"
-          destdir="${build.home}/WEB-INF/dto"
+          destdir="${build.home}/WEB-INF/classes"
             debug="${compile.debug}"
       deprecation="${compile.deprecation}">
         <classpath refid="compile.classpath"/>
     </javac>
 
     <!-- Copy application resources -->
-    <copy  todir="${build.home}/WEB-INF/dto">
+    <copy  todir="${build.home}/WEB-INF/classes">
       <fileset dir="${src.home}" excludes="**/*.java"/>
     </copy>
 
@@ -349,7 +349,7 @@
   this web application.
 
   If you have already installed this application, and simply want Tomcat to
-  recognize that you have updated Java dto (or the web.xml file), use the
+  recognize that you have updated Java class (or the web.xml file), use the
   "reload" target instead.
 
   NOTE:  This target will only succeed if it is run from the same server that
@@ -376,7 +376,7 @@
 <!--
 
   The "javadoc" target creates Javadoc API documentation for the Java
-  dto included in your application.  Normally, this is only required
+  Class included in your application.  Normally, this is only required
   when preparing a distribution release, but is available as a separate
   target in case the developer wants to create Javadocs independently.
 
@@ -435,7 +435,7 @@
     <!-- Create build directories as needed -->
     <mkdir  dir="${build.home}"/>
     <mkdir  dir="${build.home}/WEB-INF"/>
-    <mkdir  dir="${build.home}/WEB-INF/dto"/>
+    <mkdir  dir="${build.home}/WEB-INF/classes"/>
 
 
     <!-- Copy static content of this web application -->
@@ -462,8 +462,8 @@
 
   The "reload" signals the specified application Tomcat to shut itself down
   and reload. This can be useful when the web application context is not
-  reloadable and you have updated dto or property files in the
-  /WEB-INF/dto directory or when you have added or updated jar files in the
+  reloadable and you have updated class or property files in the
+  /WEB-INF/classes directory or when you have added or updated jar files in the
   /WEB-INF/lib directory.
 
   NOTE: The /WEB-INF/web.xml web application configuration file is not reread
