@@ -2,25 +2,31 @@ package dashboard.refreshTasks;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import dashboard.model.UserTableEntry;
 import dto.UserDTO;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableView;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimerTask;
 
 public class UserListRefresher extends TimerTask {
     private OkHttpClient client;
+    private TableView<UserTableEntry> usersTable;
     private final String BASE_URL = "http://localhost:8080/S-emulator";
     private final String RESOURCE = "/api/users";
     private final int REFRESH_RATE = 1500; // in milliseconds
 
-    public UserListRefresher(OkHttpClient client) {
+    public UserListRefresher(OkHttpClient client, TableView<UserTableEntry> table) {
         this.client = client;
+        this.usersTable = table;
     }
 
     @Override
@@ -45,11 +51,19 @@ public class UserListRefresher extends TimerTask {
                         String responseBody = response.body().string();
                         Type type = new TypeToken<Set<UserDTO>>() {}.getType();
                         Set<UserDTO> users = gson.fromJson(responseBody, type);
+                        List<UserTableEntry> fetchedUsers = users.stream()
+                                        .map(UserTableEntry::new)
+                                        .sorted()
+                                        .toList();
+
+                        ObservableList<UserTableEntry> currentUsers = usersTable.getItems();
                         Platform.runLater(() -> {
-                            System.out.println("Fetched users: " + users);
+                            if (!currentUsers.equals(fetchedUsers)) {
+                                currentUsers.setAll(fetchedUsers);
+                            }
                         });
                     } else { //TODO: handle error by creating a new dialog window
-                        System.err.println("Failed to fetch user list: " + response.code());
+                        System.out.println("Failed to fetch user list: " + response.code());
                     }
                 }
 

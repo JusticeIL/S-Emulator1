@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class UserTableEntry {
+public class UserTableEntry implements Comparable<UserTableEntry> {
     private final StringProperty username;
     private final IntegerProperty programsLoaded;
     private final IntegerProperty functionsLoaded;
@@ -21,6 +21,24 @@ public class UserTableEntry {
         this.credits = new SimpleIntegerProperty(user.getCredits());
         this.creditsUsed = new SimpleIntegerProperty(user.getCreditsUsed());
         this.programExecutionsCounter = new SimpleIntegerProperty(user.getProgramExecutionsCounter());
+    }
+
+    @Override
+    public int compareTo(UserTableEntry other) {
+        return this.username.get().compareToIgnoreCase(other.getUsername());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserTableEntry)) return false;
+        UserTableEntry other = (UserTableEntry) o;
+        return username.get().equals(other.username.get());
+    }
+
+    @Override
+    public int hashCode() {
+        return username.get().hashCode();
     }
 
     // getters and setters (needed by PropertyValueFactory)
