@@ -59,7 +59,7 @@ public class LeftSideController {
         ShowStatisticsBtn.disableProperty().bind(Bindings.isEmpty(userExecutionsTable.getItems()));
 
         /* Tables */
-        usersTable.setRowFactory(tv -> new TableRow<UserTableEntry>());
+        usersTable.setRowFactory(tv -> new TableRow<>());
 
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         programsLoadedColumn.setCellValueFactory(new PropertyValueFactory<>("programsLoaded"));

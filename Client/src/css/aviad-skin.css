@@ -175,6 +175,18 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-color: #f103e6;
 }
 
+#usersTable .table-cell {
+    -fx-alignment: CENTER;
+}
+
+#programsTable .table-cell {
+    -fx-alignment: CENTER;
+}
+
+#functionsTable .table-cell {
+    -fx-alignment: CENTER;
+}
+
 /* ---------- Buttons (primary) ---------- */
 .button {
     -fx-background-color: #70ad47;
