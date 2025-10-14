@@ -479,8 +479,8 @@
         loader is used for both the <em>Server</em> and the <em>Shared</em>
         class loaders.</p>
       </td></tr><tr id="Attributes_Common Attributes_reloadable"><td><code class="attributeName">reloadable</code></td><td>
-        <p>Set to <code>true</code> if you want Catalina to monitor dto in
-        <code>/WEB-INF/dto/</code> and <code>/WEB-INF/lib</code> for
+        <p>Set to <code>true</code> if you want Catalina to monitor classes in
+        <code>/WEB-INF/classes/</code> and <code>/WEB-INF/lib</code> for
         changes, and automatically reload the web application if a change
         is detected.  This feature is very useful during application
         development, but it requires significant runtime overhead and is
@@ -701,7 +701,7 @@
         <p>This attribute controls if, in addition to static resources being
         served from <code>META-INF/resources</code> inside web application JAR
         files, static resources are also served from
-        <code>WEB-INF/dto/META-INF/resources</code>. This only applies to
+        <code>WEB-INF/classes/META-INF/resources</code>. This only applies to
         web applications with a major version of 3 or higher. Since this is a
         proprietary extension to the Servlet 3 specification, it is disabled by
         default. To enable this feature, set the attribute to <code>true</code>.
@@ -735,7 +735,7 @@
         not specified, the default value of <code>true</code> will be used.</p>
       </td></tr><tr id="Attributes_Standard Implementation_clearReferencesObjectStreamClassCaches"><td><code class="attributeName">clearReferencesObjectStreamClassCaches</code></td><td>
         <p>If <code>true</code>, when the web application is stopped Tomcat
-        looks for <code>SoftReference</code>s to dto loaded by the web
+        looks for <code>SoftReference</code>s to classes loaded by the web
         application in the <code>ObjectStreamClass</code> class used for
         serialization and clears any <code>SoftReference</code>s it finds. This
         feature uses reflection to identify the <code>SoftReference</code>s and
@@ -774,7 +774,7 @@
       </td></tr><tr id="Attributes_Standard Implementation_clearReferencesThreadLocals"><td><code class="attributeName">clearReferencesThreadLocals</code></td><td>
         <p>If <code>true</code>, Tomcat attempts to clear
         <code>java.lang.ThreadLocal</code> variables that have been populated
-        with dto loaded by the web application. If not specified, the
+        with classes loaded by the web application. If not specified, the
         default value of <code>true</code> will be used.</p>
       </td></tr><tr id="Attributes_Standard Implementation_copyXML"><td><code class="attributeName">copyXML</code></td><td>
         <p>Set to <code>true</code> if you want a context XML descriptor
@@ -804,9 +804,9 @@
       </td></tr><tr id="Attributes_Standard Implementation_notFoundClassResourceCacheSize"><td><code class="attributeName">notFoundClassResourceCacheSize</code></td><td>
         <p>Class resources are not cached by the standard resources
         implementation since they are loaded on first use and then the resource
-        is then no longer required. It does help, however, to cache dto that
+        is then no longer required. It does help, however, to cache classes that
         are not found as in some scenarios the same class will be searched for
-        many times and the greater the number of JARs/dto, the longer that
+        many times and the greater the number of JARs/classes, the longer that
         search will take. An LRU cache is used and this attribute controls the
         size of that cache. A value of less than 1 disables the cache. If not
         specified, the default value of 1000 will be used.</p>
@@ -861,7 +861,7 @@
       Configure parsing and generation of HTTP cookie headers.</li>
   <li><a href="loader.html"><strong>Loader</strong></a> -
       Configure the web application class loader that will be used to load
-      servlet and bean dto for this web application.  Normally, the
+      servlet and bean classes for this web application.  Normally, the
       default configuration of the class loader will be sufficient.</li>
   <li><a href="manager.html"><strong>Manager</strong></a> -
       Configure the session manager that will be used to create, destroy,

@@ -432,7 +432,7 @@
     <ul class="changelog">
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
         <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=69635">69635</a>: Add support to <code>jakarta.el.ImportHandler</code>
-        for resolving inner dto. (markt)
+        for resolving inner classes. (markt)
       </li>
       <li><img alt="Add: " class="icon" src="./images/add.gif">
         <a href="https://github.com/apache/tomcat/pull/842">#842</a>Add support for optimized execution of c:set and c:remove tags, when
@@ -1026,9 +1026,9 @@
         Based on pull request <a href="https://github.com/apache/tomcat/pull/777">#777</a> by Chenjp. (markt)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
-        <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=69447">69447</a>: Update the support for caching dto the web
-        application class loader cannot find to take account of dto loaded
-        from external repositories. Prior to this fix, these dto could be
+        <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=69447">69447</a>: Update the support for caching classes the web
+        application class loader cannot find to take account of classes loaded
+        from external repositories. Prior to this fix, these classes could be
         incorrectly marked as not found. (markt)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
@@ -1815,7 +1815,7 @@
         (remm)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
-        Add the OpenSSL version number on the APR and OpenSSL status dto.
+        Add the OpenSSL version number on the APR and OpenSSL status classes.
         (remm)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
@@ -1878,7 +1878,7 @@
     <ul class="changelog">
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
         Update the optimisation in <code>jakarta.el.ImportHandler</code> so it
-        is aware of new dto added to the <code>java.lang</code> package in
+        is aware of new classes added to the <code>java.lang</code> package in
         Java 23. (markt)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
@@ -2258,7 +2258,7 @@
         Fix bnd jar descriptor to include the OpenSSL FFM support. (remm)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
-        Add OpenSSL FFM dto to <code>tomcat-embed-core.jar</code>. (remm)
+        Add OpenSSL FFM classes to <code>tomcat-embed-core.jar</code>. (remm)
       </li>
     </ul>
   </div></div>
@@ -3955,7 +3955,7 @@
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
         Refactor <code>WebappLoader</code> so it only has a runtime dependency
         on the migration tool for Jakarta EE if configured to use the converter
-        as dto are loaded. (markt)
+        as classes are loaded. (markt)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
         Improve the behavior of the credential handler attribute that is set in
@@ -4317,9 +4317,9 @@
         MemoryUserDatabase to an XML file. (schultz)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
-        Move control of XML-export logic from individual support dto into
+        Move control of XML-export logic from individual support classes into
         MemoryUserDatabase.save(). Deprecate and discontinue use of MemoryUser,
-        MemoryRole, and MemoryGroup dto. (schultz)
+        MemoryRole, and MemoryGroup classes. (schultz)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
         <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=66183">66183</a>: When logging cookie values in an access log valve and
@@ -4761,7 +4761,7 @@
         JAR to use the Servlet 6.0 web fragment schema. (markt)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
-        Update <code>ImportHandler</code> optimisation for new dto
+        Update <code>ImportHandler</code> optimisation for new classes
         introduced in Java 19. (markt)
       </li>
     </ul>
@@ -4816,7 +4816,7 @@
     <ul class="changelog">
       <li><img alt="Code: " class="icon" src="./images/code.gif">
         <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=65853">65853</a>: Refactor the <code>CsrfPreventionFilter</code> to make
-        it easier for sub-dto to modify the nonce generation and storage.
+        it easier for sub-classes to modify the nonce generation and storage.
         Based on suggestions by Marvin Fr&ouml;hlich. (markt)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
@@ -5195,7 +5195,7 @@
         request by jackshirazi. (markt)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
-        <a href="https://github.com/apache/tomcat/pull/469">#469</a>: Include the Jakarata Annotations API in the dto that
+        <a href="https://github.com/apache/tomcat/pull/469">#469</a>: Include the Jakarata Annotations API in the classes that
         Tomcat will not load from web applications. Pull request provided by
         ppkarwasz. (markt)
       </li>
@@ -5902,7 +5902,7 @@
       </li>
       <li><img alt="Update: " class="icon" src="./images/update.gif">
         Improve the reusability of the <code>UserDatabase</code> by adding
-        intermediate concrete implementation dto and allowing to do
+        intermediate concrete implementation classes and allowing to do
         partial database updates on <code>save</code>. (remm)
       </li>
       <li><img alt="Code: " class="icon" src="./images/code.gif">
@@ -6225,7 +6225,7 @@
       </li>
       <li><img alt="Code: " class="icon" src="./images/code.gif">
         Refactor <code>JNDIRealm$JNDIConnection</code> so its fields are
-        accessible to sub-dto of <code>JNDIRealm</code>. (markt)
+        accessible to sub-classes of <code>JNDIRealm</code>. (markt)
       </li>
       <li><img alt="Fix: " class="icon" src="./images/fix.gif">
         Fix serialization warnings in <code>UserDatabasePrincipal</code>

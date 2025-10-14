@@ -54,15 +54,15 @@ application's "document root" directory:</p>
     security constraints that you want the server to enforce for you.
     This file is discussed in more detail in the following subsection.
     <br><br></li>
-<li><strong>/WEB-INF/dto/</strong> - This directory contains any Java
+<li><strong>/WEB-INF/classes/</strong> - This directory contains any Java
     class files (and associated resources) required for your application,
-    including both servlet and non-servlet dto, that are not combined
-    into JAR files.  If your dto are organized into Java packages,
+    including both servlet and non-servlet classes, that are not combined
+    into JAR files.  If your classes are organized into Java packages,
     you must reflect this in the directory hierarchy under
-    <code>/WEB-INF/dto/</code>.  For example, a Java class named
+    <code>/WEB-INF/classes/</code>.  For example, a Java class named
     <code>com.mycompany.mypackage.MyServlet</code>
     would need to be stored in a file named
-    <code>/WEB-INF/dto/com/mycompany/mypackage/MyServlet.class</code>.
+    <code>/WEB-INF/classes/com/mycompany/mypackage/MyServlet.class</code>.
     <br><br></li>
 <li><strong>/WEB-INF/lib/</strong> - This directory contains JAR files that
     contain Java class files (and associated resources) required for your
@@ -70,11 +70,11 @@ application's "document root" directory:</p>
 </ul>
 
 <p>When you install an application into Tomcat (or any other 2.2 or later
-Servlet container), the dto in the <code>WEB-INF/dto/</code>
-directory, as well as all dto in JAR files found in the
-<code>WEB-INF/lib/</code> directory, are made visible to other dto
+Servlet container), the classes in the <code>WEB-INF/classes/</code>
+directory, as well as all classes in JAR files found in the
+<code>WEB-INF/lib/</code> directory, are made visible to other classes
 within your particular web application.  Thus, if
-you include all of the required library dto in one of these places (be
+you include all of the required library classes in one of these places (be
 sure to check licenses for redistribution rights for any third party libraries
 you utilize), you will simplify the installation of your web application --
 no adjustment to the system class path (or installation of global library
@@ -86,10 +86,10 @@ API Specification, version 2.3, which you should consult for more details.</p>
 </div><h3 id="Shared_Library_Files">Shared Library Files</h3><div class="text">
 
 <p>Like most servlet containers, Tomcat also supports mechanisms to install
-library JAR files (or unpacked dto) once, and make them visible to all
+library JAR files (or unpacked classes) once, and make them visible to all
 installed web applications (without having to be included inside the web
 application itself).  The details of how Tomcat locates and shares such
-dto are described in the
+classes are described in the
 <a href="../class-loader-howto.html">Class Loader How-To</a> documentation.
 The location commonly used within a Tomcat installation for shared code is
 <strong>$CATALINA_HOME/lib</strong>. JAR files placed here are visible both to

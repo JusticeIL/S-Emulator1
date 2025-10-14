@@ -100,7 +100,7 @@ grant codeBase "file:${catalina.home}/bin/tomcat-juli.jar" {
         // the following to be on a single line):
         // permission java.io.FilePermission "${catalina.base}${file.separator}
         //  webapps${file.separator}examples${file.separator}WEB-INF
-        //  ${file.separator}dto${file.separator}logging.properties", "read";
+        //  ${file.separator}classes${file.separator}logging.properties", "read";
 };
 
 // These permissions apply to the server startup code
@@ -108,7 +108,7 @@ grant codeBase "file:${catalina.home}/bin/bootstrap.jar" {
         permission java.security.AllPermission;
 };
 
-// These permissions apply to the servlet API dto
+// These permissions apply to the servlet API classes
 // and those that are shared across all class loaders
 // located in the "lib" directory
 grant codeBase "file:${catalina.home}/lib/-" {
@@ -221,10 +221,10 @@ grant codeBase "file:${catalina.home}/webapps/host-manager/-" {
 
 // You can assign additional permissions to particular web applications by
 // adding additional "grant" entries here, based on the code base for that
-// application, /WEB-INF/dto/, or /WEB-INF/lib/ jar files.
+// application, /WEB-INF/classes/, or /WEB-INF/lib/ jar files.
 //
-// Different permissions can be granted to JSP pages, dto loaded from
-// the /WEB-INF/dto/ directory, all jar files in the /WEB-INF/lib/
+// Different permissions can be granted to JSP pages, classes loaded from
+// the /WEB-INF/classes/ directory, all jar files in the /WEB-INF/lib/
 // directory, or even to individual jar files in the /WEB-INF/lib/ directory.
 //
 // For instance, assume that the standard "examples" application
@@ -238,8 +238,8 @@ grant codeBase "file:${catalina.home}/webapps/host-manager/-" {
 //      permission java.net.SocketPermission "*.noaa.gov:80", "connect";
 // };
 //
-// The permissions granted to the context WEB-INF/dto directory
-// grant codeBase "file:${catalina.base}/webapps/examples/WEB-INF/dto/-" {
+// The permissions granted to the context WEB-INF/classes directory
+// grant codeBase "file:${catalina.base}/webapps/examples/WEB-INF/classes/-" {
 // };
 //
 // The permission granted to your JDBC driver

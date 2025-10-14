@@ -201,11 +201,11 @@
         </p>
       </td></tr><tr id="Standard Implementations_JRE Memory Leak Prevention Listener - org.apache.catalina.core.JreMemoryLeakPreventionListener_classesToInitialize"><td><code class="attributeName">classesToInitialize</code></td><td>
         <p>List of comma-separated fully qualified class names to load and initialize
-        during the startup of this Listener. This allows to pre-load dto that are
+        during the startup of this Listener. This allows to pre-load classes that are
         known to provoke classloader leaks if they are loaded during a request
-        processing. Non-JRE dto may be referenced, like
+        processing. Non-JRE classes may be referenced, like
         <code>oracle.jdbc.driver.OracleTimeoutThreadPerVM</code>.
-        The default value is empty, but specific JRE dto are loaded by other leak
+        The default value is empty, but specific JRE classes are loaded by other leak
         protection features managed by other attributes of this Listener.</p>
       </td></tr><tr id="Standard Implementations_JRE Memory Leak Prevention Listener - org.apache.catalina.core.JreMemoryLeakPreventionListener_driverManagerProtection"><td><code class="attributeName">driverManagerProtection</code></td><td>
         <p>The first use of <code>java.sql.DriverManager</code> will trigger the

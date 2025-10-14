@@ -6,7 +6,7 @@
 </div><h3 id="Introduction">Introduction</h3><div class="text">
 
   <p>The <strong>Resources</strong> element represents all the resources
-  available to the web application. This includes dto, JAR files, HTML, JSPs
+  available to the web application. This includes classes, JAR files, HTML, JSPs
   and any other files that contribute to the web application. Implementations
   are provided to use directories, JAR files and WARs as the source of these
   resources and the resources implementation may be extended to provide support
@@ -239,10 +239,10 @@
   <h3>Ordering</h3>
 
   <p>In addition to the sets of resources described above, the standard
-  implementation also maintains ClassResources which represent the dto
-  contained in the JAR files mapped to <code>/WEB-INF/dto</code>. This
-  allows other components to search for dto with a single call rather than
-  one call to search <code>/WEB-INF/dto</code> followed by another to search
+  implementation also maintains ClassResources which represent the classes
+  contained in the JAR files mapped to <code>/WEB-INF/classes</code>. This
+  allows other components to search for classes with a single call rather than
+  one call to search <code>/WEB-INF/classes</code> followed by another to search
   the JARs in <code>/WEB-INF/lib</code>. The ClassResources are populated
   from the JARs mapped to <code>/WEB-INF/lib</code> when the web application
   starts.</p>
@@ -261,37 +261,37 @@
   obtain the desired behaviour. Consider the following example:</p>
 
   <div class="codeBox"><pre><code>&lt;Resources&gt;
-  &lt;PostResources base="D:\Projects\external\dto"
+  &lt;PostResources base="D:\Projects\external\classes"
                  className="org.apache.catalina.webresources.DirResourceSet"
-                 webAppMount="/WEB-INF/dto"/&gt;
+                 webAppMount="/WEB-INF/classes"/&gt;
   &lt;PostResources base="D:\Projects\lib\library1.jar"
                  className="org.apache.catalina.webresources.FileResourceSet"
                  webAppMount="/WEB-INF/lib/library1.jar"/&gt;
 &lt;/Resources&gt;</code></pre></div>
 
   <p>Since both resources are PostResources, it might be expected that
-  <code>D:\Projects\external\dto</code> will be searched for dto before
+  <code>D:\Projects\external\classes</code> will be searched for classes before
   <code>D:\Projects\lib\library1.jar</code>. However, by adding the JAR using a
   <code>FileResourceSet</code>, the JAR is mapped to <code>/WEB-INF/lib</code>
   and will be processed at application start along with the other JARs in
-  <code>/WEB-INF/lib</code>. The dto from the JAR file will be added to the
-  ClassResources which means they will be searched before the dto from
-  <code>D:\Projects\external\dto</code>. If the desired behaviour is that
-  <code>D:\Projects\external\dto</code> is searched before
+  <code>/WEB-INF/lib</code>. The classes from the JAR file will be added to the
+  ClassResources which means they will be searched before the classes from
+  <code>D:\Projects\external\classes</code>. If the desired behaviour is that
+  <code>D:\Projects\external\classes</code> is searched before
   <code>D:\Projects\lib\library1.jar</code> then a slightly different
   configuration is required:</p>
 
   <div class="codeBox"><pre><code>&lt;Resources&gt;
-  &lt;PostResources base="D:\Projects\external\dto"
+  &lt;PostResources base="D:\Projects\external\classes"
                  className="org.apache.catalina.webresources.DirResourceSet"
-                 webAppMount="/WEB-INF/dto"/&gt;
+                 webAppMount="/WEB-INF/classes"/&gt;
   &lt;PostResources base="D:\Projects\lib\library1.jar"
                  className="org.apache.catalina.webresources.JarResourceSet"
-                 webAppMount="/WEB-INF/dto"/&gt;
+                 webAppMount="/WEB-INF/classes"/&gt;
 &lt;/Resources&gt;</code></pre></div>
 
   <p>In short, the JAR file should be added as a <code>JarResourceSet</code>
-  mapped to <code>/WEB-INF/dto</code> rather than using a
+  mapped to <code>/WEB-INF/classes</code> rather than using a
   <code>FileResourceSet</code> mapped to <code>/WEB-INF/lib</code>.
   </p>
 

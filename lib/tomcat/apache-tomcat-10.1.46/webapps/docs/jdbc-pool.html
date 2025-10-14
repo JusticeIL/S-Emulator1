@@ -22,14 +22,14 @@
           objects increases, the performance suffers. For highly concurrent
           systems the impact can be significant. Note that this does not apply
           to Commons DBCP 2.x.</li>
-      <li>Commons DBCP is over 60 classes. tomcat-jdbc-pool core is 8 dto,
+      <li>Commons DBCP is over 60 classes. tomcat-jdbc-pool core is 8 classes,
           hence modifications for future requirement will require much less
           changes. This is all you need to run the connection pool itself, the
           rest is gravy.</li>
       <li>Commons DBCP uses static interfaces. This means you have to use the
           right version for a given JRE version or you may see
           <code>NoSuchMethodException</code> exceptions.</li>
-      <li>It's not worth rewriting over 60 dto, when a connection pool can
+      <li>It's not worth rewriting over 60 classes, when a connection pool can
           be accomplished with a much simpler implementation.</li>
       <li>Tomcat jdbc pool implements the ability retrieve a connection
           asynchronously, without adding additional threads to the library
@@ -147,11 +147,11 @@
         </th><th style="width: 85%;">
           Description
         </th></tr><tr id="Attributes_System Properties_org.apache.tomcat.jdbc.pool.onlyAttemptCurrentClassLoader"><td><code class="attributeName">org.apache.tomcat.jdbc.pool.onlyAttemptCurrentClassLoader</code></td><td>
-        <p>(boolean) Controls classloading of dynamic dto, such as
+        <p>(boolean) Controls classloading of dynamic classes, such as
            JDBC drivers, interceptors and validators. If set to
            <code>false</code>, default value, the pool will first attempt
            to load using the current loader (i.e. the class loader that
-           loaded the pool dto) and if class loading fails attempt to
+           loaded the pool classes) and if class loading fails attempt to
            load using the thread context loader. Set this value to
            <code>true</code>, if you wish to remain backwards compatible
            with Apache Tomcat 8.0.8 and earlier, and only attempt the
@@ -359,7 +359,7 @@
          If the system is running on Linux (property <code>os.name=Linux</code>.
          To disable this Linux specific behavior and still use the fair queue, simply add the property
          <code>org.apache.tomcat.jdbc.pool.FairBlockingQueue.ignoreOS=true</code> to your system properties
-         before the connection pool dto are loaded.
+         before the connection pool classes are loaded.
       </p>
     </td></tr><tr id="Attributes_Tomcat JDBC Enhanced Attributes_abandonWhenPercentageFull"><td><code class="attributeName">abandonWhenPercentageFull</code></td><td>
       <p>(int) Connections that have been abandoned (timed out) won't get closed and reported up unless

@@ -402,7 +402,7 @@
       </td></tr><tr id="Attributes_JNDI Directory Realm - org.apache.catalina.realm.JNDIRealm_useContextClassLoader"><td><code class="attributeName">useContextClassLoader</code></td><td>
         <p>Instructs JNDIRealm to use the context class loader when opening the
         connection for the JNDI provider. The default value is
-        <code>true</code>. To load dto using the container's classloader,
+        <code>true</code>. To load classes using the container's classloader,
         specify <code>false</code>.</p>
       </td></tr><tr id="Attributes_JNDI Directory Realm - org.apache.catalina.realm.JNDIRealm_useDelegatedCredential"><td><code class="attributeName">useDelegatedCredential</code></td><td>
         <p>When the JNDIRealm is used with the SPNEGO authenticator, delegated
@@ -695,7 +695,7 @@
        If the realm is not placed in any Container, the default is <code>Tomcat</code>.
        </p>
       </td></tr><tr id="Attributes_JAAS Realm - org.apache.catalina.realm.JAASRealm_userClassNames"><td><strong><code class="attributeName">userClassNames</code></strong></td><td>
-        <p>A comma-separated list of the names of the dto that you have made
+        <p>A comma-separated list of the names of the classes that you have made
         for your user <code>Principals</code>.</p>
       </td></tr><tr id="Attributes_JAAS Realm - org.apache.catalina.realm.JAASRealm_configFile"><td><code class="attributeName">configFile</code></td><td>
         <p>The name of a JAAS configuration file to use with this Realm. It will
@@ -704,7 +704,7 @@
         application. If not specified, the default JVM global JAAS configuration
         will be used.</p>
       </td></tr><tr id="Attributes_JAAS Realm - org.apache.catalina.realm.JAASRealm_roleClassNames"><td><code class="attributeName">roleClassNames</code></td><td>
-        <p>A comma-separated list of the names of the dto that you have made
+        <p>A comma-separated list of the names of the classes that you have made
         for your role <code>Principals</code>.</p>
       </td></tr><tr id="Attributes_JAAS Realm - org.apache.catalina.realm.JAASRealm_stripRealmForGss"><td><code class="attributeName">stripRealmForGss</code></td><td>
         <p>When processing users authenticated via the GSS-API, this attribute
@@ -718,9 +718,9 @@
       </td></tr><tr id="Attributes_JAAS Realm - org.apache.catalina.realm.JAASRealm_useContextClassLoader"><td><code class="attributeName">useContextClassLoader</code></td><td>
         <p>Instructs JAASRealm to use the context class loader for loading the
         user-specified <code>LoginModule</code> class and associated
-        <code>Principal</code> dto. The default value is <code>true</code>,
+        <code>Principal</code> classes. The default value is <code>true</code>,
         which is backwards-compatible with the way Tomcat 5 works. To load
-        dto using the container's classloader, specify
+        classes using the container's classloader, specify
         <code>false</code>.</p>
       </td></tr><tr id="Attributes_JAAS Realm - org.apache.catalina.realm.JAASRealm_X509UsernameRetrieverClassName"><td><code class="attributeName">X509UsernameRetrieverClassName</code></td><td>
         <p>When using X509 client certificates, this specifies the class name

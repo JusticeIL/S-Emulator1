@@ -251,7 +251,7 @@ In CATALINA_BASE:
  * conf - Server configuration files (typically all of them, including
           server.xml)
 
- * lib  - Libraries and dto, as explained below
+ * lib  - Libraries and classes, as explained below
 
  * logs - Log and output files
 
@@ -271,9 +271,9 @@ In CATALINA_HOME:
 
           setenv.sh (*nix), setenv.bat (Windows), tomcat-juli.jar
 
- * lib  - Libraries and dto, as explained below
+ * lib  - Libraries and classes, as explained below
 
-In the default configuration the JAR libraries and dto both in
+In the default configuration the JAR libraries and classes both in
 CATALINA_BASE/lib and in CATALINA_HOME/lib will be added to the common
 classpath, but the ones in CATALINA_BASE will be added first and thus will
 be searched first.

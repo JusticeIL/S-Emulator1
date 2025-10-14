@@ -130,7 +130,7 @@
 
 <!-- The "descriptor" element groups a set of descriptor fields whose
      values will be included in the Descriptor for the corresponding
-     metadata info dto.
+     metadata info classes.
 -->
 <!ELEMENT descriptor (field*)>
 <!ATTLIST descriptor        id           ID                   #IMPLIED>
@@ -168,7 +168,7 @@
 
      group            Optional name of a "grouping classification" that can
                       be used to select groups of similar MBean implementation
-                      dto.
+                      classes.
 
      name             Unique name of this MBean (normally corresponds to the
                       base class name of the corresponding server component).

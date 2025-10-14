@@ -72,8 +72,8 @@ the following is displayed:</p>
         <li><strong>Stop</strong> - Stop a web application which is currently
             running and make it unavailable.</li>
         <li><strong>Reload</strong> - Reload the web application so that new
-            ".jar" files in <code>/WEB-INF/lib/</code> or new dto in
-            <code>/WEB-INF/dto/</code> can be used.</li>
+            ".jar" files in <code>/WEB-INF/lib/</code> or new classes in
+            <code>/WEB-INF/classes/</code> can be used.</li>
         <li><strong>Undeploy</strong> - Stop and then remove this web
              application from the server.</li>
       </ul>
@@ -155,7 +155,7 @@ error message.  Possible causes for problems include:</p>
 
 <p>Signal an existing application to shut itself down and reload.  This can
 be useful when the web application context is not reloadable and you have
-updated dto or property files in the <code>/WEB-INF/dto</code>
+updated classes or property files in the <code>/WEB-INF/classes</code>
 directory or when you have added or updated jar files in the
 <code>/WEB-INF/lib</code> directory.
 </p>
@@ -191,7 +191,7 @@ error message.  Possible causes for problems include:</p>
     <p>The <code>path</code> parameter is required.</p>
     </li>
 <li><em>Reload not supported on WAR deployed at path /foo</em>
-    <p>Currently, application reloading (to pick up changes to the dto or
+    <p>Currently, application reloading (to pick up changes to the classes or
     <code>web.xml</code> file) is not supported when a web application is
     installed directly from a WAR file, which happens when the host is
     configured to not unpack WAR files. As it only works when the web
@@ -427,7 +427,7 @@ error message.  Possible causes for problems include:</p>
     <p>An exception was encountered trying to start the new web application.
     Check the Tomcat logs for the details, but likely explanations include
     problems parsing your <code>/WEB-INF/web.xml</code> file, or missing
-    dto encountered when initializing application event listeners and
+    classes encountered when initializing application event listeners and
     filters.</p>
     </li>
 <li><em>Invalid application URL was specified</em>
@@ -471,7 +471,7 @@ StandardHost implementation. It will not work if a custom host is used that
 does not extend StandardHost.</p>
 
 <p>This diagnostic will list context paths for the web applications that were
-stopped, reloaded or undeployed, but which dto from the previous runs
+stopped, reloaded or undeployed, but which classes from the previous runs
 are still present in memory, thus being a memory leak. If an application
 has been reloaded several times, it may be listed several times.</p>
 

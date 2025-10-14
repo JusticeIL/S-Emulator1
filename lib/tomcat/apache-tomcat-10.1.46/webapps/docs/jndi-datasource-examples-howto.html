@@ -91,7 +91,7 @@ The following libraries are used:
 <p>
 These libraries are located in a single JAR at
 <code>$CATALINA_HOME/lib/tomcat-dbcp.jar</code>. However,
-only the dto needed for connection pooling have been included, and the
+only the classes needed for connection pooling have been included, and the
 packages have been renamed to avoid interfering with applications.
 </p>
 
@@ -468,7 +468,7 @@ driver(Oracle8i 8.1.7.1 JDBC/OCI Driver) from <a href="http://otn.oracle.com/">o
 <p>
 After renaming <code>classes12.zip</code> file to <code>classes12.jar</code>
 for Tomcat, copy it into <code>$CATALINA_HOME/lib</code>.
-You may also have to remove the <code>javax.sql.*</code> dto
+You may also have to remove the <code>javax.sql.*</code> classes
 from this file depending upon the version of Tomcat and JDK you are using.
 </p>
 </div></div>
@@ -496,7 +496,7 @@ test servlet/JSP and what you get is a
 First, the <code>UnsatisfiedLinkError</code> indicates that you have
 </p>
 <ul>
-<li>a mismatch between your JDBC dto file and
+<li>a mismatch between your JDBC classes file and
 your Oracle client version. The giveaway here is the message stating that a needed library file cannot be
 found. For example, you may be using a classes12.zip file from Oracle Version 8.1.6 with a Version 8.1.5
 Oracle client. The classesXXX.zip file and Oracle client software versions must match.

@@ -148,7 +148,7 @@
   * Being copied into the "/WEB-INF/lib" directory during execution
     of the "deploy" target.
 
-  Because we will automatically include all of the Java class that Tomcat
+  Because we will automatically include all of the Java classes that Tomcat
   exposes to web applications, we will not need to explicitly list any of those
   dependencies.  You only need to worry about external dependencies for JAR
   files that you are going to include inside your "/WEB-INF/lib" directory.
@@ -277,7 +277,7 @@
 
   The "compile" target transforms source files (from your "src" directory)
   into object files in the appropriate location in the build directory.
-  This example assumes that you will be including your class in an
+  This example assumes that you will be including your classes in an
   unpacked directory hierarchy under "/WEB-INF/classes".
 
 -->
@@ -285,7 +285,7 @@
   <target name="compile" depends="prepare"
    description="Compile Java sources">
 
-    <!-- Compile Java class as necessary -->
+    <!-- Compile Java classes as necessary -->
     <mkdir    dir="${build.home}/WEB-INF/classes"/>
     <javac srcdir="${src.home}"
           destdir="${build.home}/WEB-INF/classes"
@@ -349,7 +349,7 @@
   this web application.
 
   If you have already installed this application, and simply want Tomcat to
-  recognize that you have updated Java class (or the web.xml file), use the
+  recognize that you have updated Java classes (or the web.xml file), use the
   "reload" target instead.
 
   NOTE:  This target will only succeed if it is run from the same server that
@@ -376,7 +376,7 @@
 <!--
 
   The "javadoc" target creates Javadoc API documentation for the Java
-  Class included in your application.  Normally, this is only required
+  classes included in your application.  Normally, this is only required
   when preparing a distribution release, but is available as a separate
   target in case the developer wants to create Javadocs independently.
 
@@ -462,7 +462,7 @@
 
   The "reload" signals the specified application Tomcat to shut itself down
   and reload. This can be useful when the web application context is not
-  reloadable and you have updated class or property files in the
+  reloadable and you have updated classes or property files in the
   /WEB-INF/classes directory or when you have added or updated jar files in the
   /WEB-INF/lib directory.
 
