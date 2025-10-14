@@ -46,24 +46,29 @@ public class UserListRefresher extends TimerTask {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                    if (response.isSuccessful()) {
-                        Gson gson = new Gson();
-                        String responseBody = response.body().string();
-                        Type type = new TypeToken<Set<UserDTO>>() {}.getType();
-                        Set<UserDTO> users = gson.fromJson(responseBody, type);
-                        List<UserTableEntry> fetchedUsers = users.stream()
-                                        .map(UserTableEntry::new)
-                                        .sorted()
-                                        .toList();
+                    try (ResponseBody body = response.body()) {
+                        if (response.isSuccessful()) {
+                            Gson gson = new Gson();
+                            String responseBody = Objects.requireNonNull(body).string();
+                            Type type = new TypeToken<Set<UserDTO>>() {}.getType();
+                            Set<UserDTO> users = gson.fromJson(responseBody, type);
+                            List<UserTableEntry> fetchedUsers = users.stream()
+                                    .map(UserTableEntry::new)
+                                    .sorted() // Sorted users by lexicographical order of usernames
+                                    .toList();
 
-                        ObservableList<UserTableEntry> currentUsers = usersTable.getItems();
-                        Platform.runLater(() -> {
+                            ObservableList<UserTableEntry> currentUsers = usersTable.getItems();
                             if (!currentUsers.equals(fetchedUsers)) {
-                                currentUsers.setAll(fetchedUsers);
+                                Platform.runLater(() -> {
+                                    currentUsers.setAll(fetchedUsers);
+                                });
                             }
-                        });
-                    } else { //TODO: handle error by creating a new dialog window
-                        System.out.println("Failed to fetch user list: " + response.code());
+
+                        } else { //TODO: handle error by creating a new dialog window
+                            System.out.println("Failed to fetch user list: " + response.code());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
 
