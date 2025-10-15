@@ -3,11 +3,9 @@ package servlets;
 import com.google.gson.Gson;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
 import jakarta.xml.bind.JAXBException;
 import dto.ProgramData;
 
@@ -15,6 +13,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
+@MultipartConfig
 @WebServlet(name = "ProgramServlet", urlPatterns = {"/api/program"})
 public class ProgramServlet extends HttpServlet {
 
@@ -63,7 +62,6 @@ public class ProgramServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Expects the body to contain the path to the program xml file
 
-        String sprogramPath = req.getReader().readLine();
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
@@ -75,6 +73,17 @@ public class ProgramServlet extends HttpServlet {
                 }
             }
         }
+        Part xmlPart = req.getPart("program");
+
+        // 2. Check if the part exists
+        if (xmlPart == null) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("Error: Missing required part named 'program'.");
+            return;
+        }
+
+        System.out.println("Found file part with name: '" + xmlPart.getName() + "' and file name: '" + xmlPart.getSubmittedFileName() + "'");
+
         if (hasUsernameCookie) {
             String username = Arrays.stream(cookies)
                     .filter(cookie -> "username".equals(cookie.getName()))
@@ -82,7 +91,7 @@ public class ProgramServlet extends HttpServlet {
                     .map(Cookie::getValue)
                     .orElse(null);
         try {
-            model.loadProgram(username, sprogramPath);
+            model.loadProgram(username, xmlPart.getInputStream());
             doGet(req, resp);
         } catch (JAXBException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);

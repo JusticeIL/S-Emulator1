@@ -1,12 +1,16 @@
 package controller;
 
+import XMLandJaxB.SProgram;
+import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import program.Program;
 import program.ProgramExecutioner;
 import dto.ProgramData;
 import dto.VariableDTO;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -14,30 +18,34 @@ public class MultiUserController implements MultiUserModel, Serializable {
 
 
     private final Map<String,Map<String,Map<Integer,Program>>> usersToPrograms = new HashMap<>();
-    private Map<String, Program> loadedPrograms = new HashMap<>();
+    private final Map<String, SProgram> loadedPrograms = new HashMap<>();
     private final Map<String,Program> activeProgramsByUser = new HashMap<>();
     private final Map<String, Boolean> isCurrentlyInDebugMode = new HashMap<>();
     private final Map<String, ProgramExecutioner> programExecutionersByUser = new HashMap<>();
     private Map <String, Map<Integer, Program>> activeProgramExpansionsByLevelByUser = new HashMap<>();
 
     @Override
-    public void loadProgram(String username, String path) throws FileNotFoundException, JAXBException {
+    public void loadProgram(String username, InputStream path) throws FileNotFoundException, JAXBException {
         try {
             //TODO: if program in loadedPrograms, load from there
             usersToPrograms.putIfAbsent(username, new HashMap<>());
             isCurrentlyInDebugMode.putIfAbsent(username, false);
             programExecutionersByUser.putIfAbsent(username, new ProgramExecutioner());
-            Program program;
+            SProgram sProgram;
 
             synchronized (loadedPrograms) {
-                program = new Program(path);
-                loadedPrograms.putIfAbsent(program.getProgramName(), program);
+
+                JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
+
+                loadedPrograms.putIfAbsent(sProgram.getName(), sProgram);
             }
 
-            usersToPrograms.get(username).putIfAbsent(program.getProgramName(), new HashMap<>());
-            usersToPrograms.get(username).get(program.getProgramName()).putIfAbsent(0, new Program(program));
-            activeProgramsByUser.put(username, usersToPrograms.get(username).get(program.getProgramName()).get(0));
-            activeProgramExpansionsByLevelByUser.put(username, usersToPrograms.get(username).get(program.getProgramName()));
+            usersToPrograms.get(username).putIfAbsent(sProgram.getName(), new HashMap<>());
+            usersToPrograms.get(username).get(sProgram.getName()).putIfAbsent(0, new Program(sProgram));
+            activeProgramsByUser.put(username, usersToPrograms.get(username).get(sProgram.getName()).get(0));
+            activeProgramExpansionsByLevelByUser.put(username, usersToPrograms.get(username).get(sProgram.getName()));
             Program activeProgram = activeProgramsByUser.get(username);
             activeProgram.getFunctions().forEach(function -> {
                 HashMap<Integer,Program> functionExpansionMap = new HashMap<>();
@@ -45,8 +53,6 @@ public class MultiUserController implements MultiUserModel, Serializable {
                 usersToPrograms.get(username).put(function.getProgramName(), functionExpansionMap);
             });
 
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException("File not found at path: " + path);
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
         }

@@ -5,11 +5,12 @@ import dto.ProgramData;
 import dto.VariableDTO;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.Set;
 
 public interface MultiUserModel {
-    void loadProgram(String username, String path) throws JAXBException, FileNotFoundException;
+    void loadProgram(String username, InputStream path) throws JAXBException, FileNotFoundException;
     boolean isProgramLoaded(String username);
     Optional<ProgramData> getProgramData(String username);
     void Expand(String username, int level) throws IllegalArgumentException;

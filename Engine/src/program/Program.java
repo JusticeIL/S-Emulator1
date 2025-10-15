@@ -134,6 +134,59 @@ public class Program implements Serializable {
         }
     }
 
+    public Program(SProgram sProgram) {
+        this.labelFactory = new LabelFactory();
+        this.variableFactory = new VariableFactory();
+        this.functionsContainer = new FunctionsContainer();
+
+        List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
+        Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
+        sFunctionsOpt.ifPresent(sFunctions -> {
+            functionsContainer.setup(sFunctions.getSFunction());
+            functionsContainer.getFunctionNames().forEach(functionName -> {
+                try {
+                    functionsContainer.tryGetFunction(functionName);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
+            int instructionCounter = 1;
+            boolean containsExit = false;
+
+            for (SInstruction sInstr : sInstructions) {
+                Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
+                instructionList.add(newInstruction);
+                if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
+                    Labels.put(newInstruction.getLabel(), newInstruction);
+                }
+                if (newInstruction.getDestinationLabel().equals(EXIT_LABEL)) {
+                    containsExit = true;
+                }
+                instructionCounter++;
+            }
+            if (containsExit) {
+                Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
+                Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
+            }
+            // Load program name
+            programName = sProgram.getName();
+            Set<Label> missingLabels = instructionFactory.getMissingLabels();
+            if (!missingLabels.isEmpty()) {
+                throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
+            }});
+
+        this.statistics = new Statistics();
+        this.cycleCounter = 0;
+        this.currentInstruction = instructionList.getFirst();
+        this.runCounter = 1;
+        this.currentProgramLevel = 0;
+        this.maxProgramLevel = calculateMaxProgramLevel();
+        this.usedXVariableNames = Variables.keySet().stream()
+                .filter(name -> name.startsWith("x"))
+                .collect(Collectors.toSet());
+    }
+
     public void loadProgram(String filePath) throws FileNotFoundException, JAXBException{
         if (new File(filePath).exists()) {
             // Load JAXB
@@ -156,6 +209,7 @@ public class Program implements Serializable {
                     }
                 });
             });
+
 
 
 
@@ -224,23 +278,6 @@ public class Program implements Serializable {
             return this.expandedProgram.expand(level - 1);
         }
     }
-
-    public Program(Program baseProgram) {
-        this.labelFactory = baseProgram.labelFactory;
-        this.variableFactory = baseProgram.variableFactory;
-        this.functionsContainer = baseProgram.functionsContainer;
-        this.instructionList.addAll(baseProgram.instructionList);
-        this.Variables.putAll(baseProgram.Variables);
-        this.Labels.putAll(baseProgram.Labels);
-        this.programName = baseProgram.programName;
-        this.statistics = baseProgram.statistics;
-        this.cycleCounter = baseProgram.cycleCounter;
-        this.currentInstruction = baseProgram.currentInstruction;
-        this.runCounter = baseProgram.runCounter + 1;
-        this.currentProgramLevel = baseProgram.currentProgramLevel;
-        this.maxProgramLevel = baseProgram.maxProgramLevel;
-        this.usedXVariableNames = baseProgram.usedXVariableNames;
-    }//TODO: MAKE COPIED OBJECTS OF INSTRUCTIONS, LABELS, VARIABLES
 
     public boolean isInDebugMode() {
         return isInDebugMode;
