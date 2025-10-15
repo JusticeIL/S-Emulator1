@@ -41,7 +41,7 @@
                <!-- LEFT GROUP -->
                <HBox alignment="CENTER_LEFT" spacing="50.0">
                    <children>
-                       <Button fx:id="loadFileBtn" mnemonicParsing="false" text="Load Program" />
+                       <Button fx:id="loadFileBtn" mnemonicParsing="false" onAction="#loadProgramPressed" text="Load Program" />
                        <Label fx:id="currentLoadedProgramPath" text="---" />
                    </children>
                </HBox>
@@ -52,8 +52,8 @@
                <!-- RIGHT GROUP -->
                <HBox alignment="CENTER_RIGHT" spacing="20.0">
                    <children>
-                       <Button mnemonicParsing="false" text="Charge credits" />
-                       <TextField promptText="Enter Credits..." />
+                       <Button fx:id="addCreditsBtn" mnemonicParsing="false" onAction="#addCredits" text="Charge credits" />
+                       <TextField fx:id="creditsTextField" promptText="Enter Credits..." />
                    </children>
                </HBox>
            </children>

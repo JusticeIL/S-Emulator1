@@ -11,6 +11,7 @@ import dto.ProgramData;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @MultipartConfig
@@ -73,15 +74,16 @@ public class ProgramServlet extends HttpServlet {
                 }
             }
         }
-        Part xmlPart = req.getPart("program");
+        Collection<Part> parts = req.getParts();
 
         // 2. Check if the part exists
-        if (xmlPart == null) {
+        if (parts == null || parts.size() != 1) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("Error: Missing required part named 'program'.");
             return;
         }
 
+        Part xmlPart = parts.iterator().next();
         System.out.println("Found file part with name: '" + xmlPart.getName() + "' and file name: '" + xmlPart.getSubmittedFileName() + "'");
 
         if (hasUsernameCookie) {
@@ -92,12 +94,10 @@ public class ProgramServlet extends HttpServlet {
                     .orElse(null);
         try {
             model.loadProgram(username, xmlPart.getInputStream());
-            doGet(req, resp);
         } catch (JAXBException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }}else{
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
-
 }

@@ -1,24 +1,25 @@
 package dashboard.controller;
 
-import controller.Model;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -27,24 +28,31 @@ public class TopComponentController{
     private Stage primaryStage;
     private RightSideController rightController;
     private LeftSideController leftController;
-    private Model model;
     private List<String> availableCSSFileNames;
     private OkHttpClient client;
+    private final String UPLOAD_PROGRAM_RESOURCE = "/api/program";
+    private final String BASE_URL = "http://localhost:8080/S-emulator";
 
     @FXML
     private Label userNameDisplay;
 
     @FXML
-    private Label currentProgramName;
-
-    @FXML
     private Label currentCredits;
 
     @FXML
-    private CheckBox allowAnimationBox;
+    private MenuButton skinMenu;
 
     @FXML
-    private MenuButton skinMenu;
+    private Button loadFileBtn;
+
+    @FXML
+    private Label currentLoadedProgramPath;
+
+    @FXML
+    private Button addCreditsBtn;
+
+    @FXML
+    private TextField creditsTextField;
 
     @FXML
     public void initialize() {
@@ -95,6 +103,59 @@ public class TopComponentController{
 
         //TODO: Currently, the credits label is initializing to 0, but should send a get request to the server to get the actual credits (if the user is new will get "0" from the server).
         currentCredits.setText("Available Credits: 0");
+    }
+
+    @FXML
+    void loadProgramPressed(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Program");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Program File", "*.xml"));
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        if (selectedFile == null) {
+            return;
+        }
+
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + UPLOAD_PROGRAM_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Building the body sent to the server to include the xml file
+        RequestBody body = new MultipartBody.Builder()
+                .addFormDataPart("program", selectedFile.getName(), RequestBody.create(selectedFile, MediaType.parse("multipart/form-data")))
+                .build();
+
+        // Building the request based on the body from above
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .addHeader("Cookie", "username=" + userNameDisplay.getText())
+                .post(body)
+                .build();
+
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                    if (response.isSuccessful()) {
+                        Platform.runLater(() -> {
+                            currentLoadedProgramPath.setText(selectedFile.getAbsolutePath());
+                        });
+
+                    } else { //TODO: handle error by creating a new dialog window
+                        System.out.println("Failed to send program to server: " + response.code());
+                    }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @FXML
+    void addCredits(ActionEvent event) {
+
     }
 
     public void setClient(OkHttpClient client) {
@@ -171,9 +232,5 @@ public class TopComponentController{
     private String removeExtension(String s) {
         int i = s.lastIndexOf('.');
         return (i == -1) ? s : s.substring(0, i);
-    }
-
-    public BooleanProperty isAnimationAllowedProperty() {
-        return allowAnimationBox.selectedProperty();
     }
 }
