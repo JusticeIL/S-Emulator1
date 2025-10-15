@@ -1,7 +1,6 @@
 package dashboard.controller;
 
 import controller.Model;
-import controller.SingleProgramController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
