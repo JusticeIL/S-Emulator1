@@ -12,10 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TimerTask;
+import java.util.*;
 
 public class UserListRefresher extends TimerTask {
     private OkHttpClient client;
@@ -50,19 +47,34 @@ public class UserListRefresher extends TimerTask {
                         if (response.isSuccessful()) {
                             Gson gson = new Gson();
                             String responseBody = Objects.requireNonNull(body).string();
-                            Type type = new TypeToken<Set<UserDTO>>() {}.getType();
+                            Type type = new TypeToken<Set<UserDTO>>() {
+                            }.getType();
                             Set<UserDTO> users = gson.fromJson(responseBody, type);
                             List<UserTableEntry> fetchedUsers = users.stream()
                                     .map(UserTableEntry::new)
                                     .sorted() // Sorted users by lexicographical order of usernames
                                     .toList();
 
-                            ObservableList<UserTableEntry> currentUsers = usersTable.getItems();
-                            if (!currentUsers.equals(fetchedUsers)) {
-                                Platform.runLater(() -> {
-                                    currentUsers.setAll(fetchedUsers);
-                                });
-                            }
+                            Platform.runLater(() -> {
+                                ObservableList<UserTableEntry> currentUsers = usersTable.getItems();
+                                Map<String, Integer> usernameToIndex = new HashMap<>();
+                                for (int i = 0; i < currentUsers.size(); i++) {
+                                    usernameToIndex.put(currentUsers.get(i).getUsername(), i);
+                                }
+
+                                for (UserTableEntry fetchedUser : fetchedUsers) {
+                                    String username = fetchedUser.getUsername();
+                                    Integer idx = usernameToIndex.get(username);
+                                    if (idx != null) {
+                                        UserTableEntry currentUser = currentUsers.get(idx);
+                                        if (!fetchedUser.equals(currentUser)) {
+                                            currentUsers.set(idx, fetchedUser);
+                                        }
+                                    } else {
+                                        currentUsers.add(fetchedUser);
+                                    }
+                                }
+                            });
 
                         } else { //TODO: handle error by creating a new dialog window
                             System.out.println("Failed to fetch user list: " + response.code());
