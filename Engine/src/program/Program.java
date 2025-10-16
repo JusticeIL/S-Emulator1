@@ -134,12 +134,14 @@ public class Program implements Serializable {
         }
     }
 
+    // In Program.java
+
     public Program(SProgram sProgram) {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
         this.functionsContainer = new FunctionsContainer();
 
-        List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
+        // 1. Handle functions if they exist. This part is fine.
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
         sFunctionsOpt.ifPresent(sFunctions -> {
             functionsContainer.setup(sFunctions.getSFunction());
@@ -150,35 +152,44 @@ public class Program implements Serializable {
                     throw new RuntimeException(e);
                 }
             });
-            InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
-            int instructionCounter = 1;
-            boolean containsExit = false;
+        });
 
-            for (SInstruction sInstr : sInstructions) {
-                Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
-                instructionList.add(newInstruction);
-                if (!newInstruction.getLabel().equals(EMPTY_LABEL)) { // Case: add label iff it is not empty
-                    Labels.put(newInstruction.getLabel(), newInstruction);
-                }
-                if (newInstruction.getDestinationLabel().equals(EXIT_LABEL)) {
-                    containsExit = true;
-                }
-                instructionCounter++;
-            }
-            if (containsExit) {
-                Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
-                Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
-            }
-            // Load program name
-            programName = sProgram.getName();
-            Set<Label> missingLabels = instructionFactory.getMissingLabels();
-            if (!missingLabels.isEmpty()) {
-                throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
-            }});
+        // 2. Load instructions INDEPENDENTLY of functions. ✅
+        List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
+        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
+        int instructionCounter = 1;
+        boolean containsExit = false;
 
+        for (SInstruction sInstr : sInstructions) {
+            Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
+            instructionList.add(newInstruction);
+            if (!newInstruction.getLabel().equals(EMPTY_LABEL)) {
+                Labels.put(newInstruction.getLabel(), newInstruction);
+            }
+            if (newInstruction.getDestinationLabel().equals(EXIT_LABEL)) {
+                containsExit = true;
+            }
+            instructionCounter++;
+        }
+        if (containsExit) {
+            Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
+            Labels.put(EXIT_LABEL, ExitInstruction);
+        }
+        programName = sProgram.getName();
+        Set<Label> missingLabels = instructionFactory.getMissingLabels();
+        if (!missingLabels.isEmpty()) {
+            throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
+        }
+
+        // 3. The rest of the setup
         this.statistics = new Statistics();
         this.cycleCounter = 0;
-        this.currentInstruction = instructionList.getFirst();
+
+        // This line is now safe, as long as the XML has at least one instruction.
+        if (!instructionList.isEmpty()) {
+            this.currentInstruction = instructionList.getFirst();
+        }
+
         this.runCounter = 1;
         this.currentProgramLevel = 0;
         this.maxProgramLevel = calculateMaxProgramLevel();
