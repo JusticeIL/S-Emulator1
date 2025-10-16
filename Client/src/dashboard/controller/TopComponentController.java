@@ -1,5 +1,8 @@
 package dashboard.controller;
 
+import com.google.gson.Gson;
+import dto.CreditRequest;
+import dto.UserDTO;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -31,6 +34,7 @@ public class TopComponentController{
     private List<String> availableCSSFileNames;
     private OkHttpClient client;
     private final String UPLOAD_PROGRAM_RESOURCE = "/api/program";
+    private final String ADD_CREDITS_RESOURCE = "/api/user/credit";
     private final String BASE_URL = "http://localhost:8080/S-emulator";
 
     @FXML
@@ -156,6 +160,58 @@ public class TopComponentController{
     @FXML
     void addCredits(ActionEvent event) {
 
+        // Parse from text to int
+        int chargeAmount = Integer.parseInt(creditsTextField.getText());
+
+        // Build URL
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + ADD_CREDITS_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Create CreditRequest object as json
+        Gson gson = new Gson();
+        String json = gson.toJson(Map.of("addCredits", chargeAmount));
+
+        // Build the body sent to the server to include the creditRequest object
+        RequestBody body = RequestBody.create(
+                json,
+                MediaType.parse("application/json")
+        );
+
+        // Building the request based on the body from above
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .addHeader("Cookie", "username=" + userNameDisplay.getText())
+                .put(body)
+                .build();
+
+        // Send request
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    try (ResponseBody responseBody = response.body()) {
+                        Gson gson = new Gson();
+                        UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                        Platform.runLater(() -> {
+                            currentCredits.setText("Available Credits: " + user.getCredits());
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else { //TODO: handle error by creating a new dialog window
+                    System.out.println("Failed to send program to server: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void setClient(OkHttpClient client) {
