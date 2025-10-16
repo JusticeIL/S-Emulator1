@@ -8,6 +8,7 @@ import program.Program;
 import program.ProgramExecutioner;
 import dto.ProgramData;
 import dto.VariableDTO;
+import program.function.FunctionsContainer;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -23,6 +24,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
     private final Map<String, Boolean> isCurrentlyInDebugMode = new HashMap<>();
     private final Map<String, ProgramExecutioner> programExecutionersByUser = new HashMap<>();
     private Map <String, Map<Integer, Program>> activeProgramExpansionsByLevelByUser = new HashMap<>();
+    private final FunctionsContainer sharedFunctionsContainer = new FunctionsContainer();
 
     @Override
     public void loadProgram(String username, InputStream path) throws FileNotFoundException, JAXBException {
@@ -38,20 +40,9 @@ public class MultiUserController implements MultiUserModel, Serializable {
                 JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
-
                 loadedPrograms.putIfAbsent(sProgram.getName(), sProgram);
             }
 
-            usersToPrograms.get(username).putIfAbsent(sProgram.getName(), new HashMap<>());
-            usersToPrograms.get(username).get(sProgram.getName()).putIfAbsent(0, new Program(sProgram));
-            activeProgramsByUser.put(username, usersToPrograms.get(username).get(sProgram.getName()).get(0));
-            activeProgramExpansionsByLevelByUser.put(username, usersToPrograms.get(username).get(sProgram.getName()));
-            Program activeProgram = activeProgramsByUser.get(username);
-            activeProgram.getFunctions().forEach(function -> {
-                HashMap<Integer,Program> functionExpansionMap = new HashMap<>();
-                functionExpansionMap.put(0,function);
-                usersToPrograms.get(username).put(function.getProgramName(), functionExpansionMap);
-            });
 
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
@@ -163,5 +154,20 @@ public class MultiUserController implements MultiUserModel, Serializable {
                     activeProgramExpansionsByLevelByUser.put(username,programsAndFunctionsByName.get(function.getProgramName()));
                     activeProgramsByUser.put(username, activeProgramExpansionsByLevelByUser.get(username).get(0));
                 });
+    }
+
+    @Override
+    public void setActiveProgram(String username, String programName) {
+        usersToPrograms.get(username).putIfAbsent(programName, new HashMap<>());
+        Program newProgramInstance = new Program(loadedPrograms.get(programName), sharedFunctionsContainer);
+        usersToPrograms.get(username).get(programName).putIfAbsent(0, newProgramInstance);//TODO: handle if program not loaded
+        activeProgramsByUser.put(username, usersToPrograms.get(username).get(programName).get(0));
+        activeProgramExpansionsByLevelByUser.put(username, usersToPrograms.get(username).get(programName));
+        Program activeProgram = activeProgramsByUser.get(username);
+        activeProgram.getFunctions().forEach(function -> {
+            HashMap<Integer,Program> functionExpansionMap = new HashMap<>();
+            functionExpansionMap.put(0,function);
+            usersToPrograms.get(username).put(function.getProgramName(), functionExpansionMap);
+        });
     }
 }

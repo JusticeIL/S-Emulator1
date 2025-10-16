@@ -22,4 +22,5 @@ public interface MultiUserModel {
     void stopDebug(String username);
     void resumeDebug(String username);
     void switchFunction(String username, String functionName);
+    void setActiveProgram(String username, String programName);
 }

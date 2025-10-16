@@ -91,12 +91,13 @@ public class Program implements Serializable {
         }
     }
 
-    public Program(SInstructions sInstructions, String programName, FunctionsContainer functionsContainer) throws FileNotFoundException {
+    public Program(SInstructions sInstructions, String programName, FunctionsContainer functionsContainer,FunctionsContainer sharedFunctionContainer) throws FileNotFoundException {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
         this.functionsContainer = functionsContainer;
 
         InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
+        instructionFactory.setSharedFunctionsContainer(sharedFunctionContainer);
         int instructionCounter = 1;
         boolean containsExit = false;
 
@@ -136,7 +137,7 @@ public class Program implements Serializable {
 
     // In Program.java
 
-    public Program(SProgram sProgram) {
+    public Program(SProgram sProgram,FunctionsContainer sharedFunctionsContainer) {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
         this.functionsContainer = new FunctionsContainer();
@@ -144,10 +145,15 @@ public class Program implements Serializable {
         // 1. Handle functions if they exist. This part is fine.
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
         sFunctionsOpt.ifPresent(sFunctions -> {
-            functionsContainer.setup(sFunctions.getSFunction());
+
+                functionsContainer.setup(sFunctions.getSFunction(),sharedFunctionsContainer);
+
+
             functionsContainer.getFunctionNames().forEach(functionName -> {
                 try {
-                    functionsContainer.tryGetFunction(functionName);
+                    synchronized (sharedFunctionsContainer) {
+                        functionsContainer.tryGetFunction(functionName, sharedFunctionsContainer);
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -157,6 +163,7 @@ public class Program implements Serializable {
         // 2. Load instructions INDEPENDENTLY of functions. ✅
         List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
         InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
+        instructionFactory.setSharedFunctionsContainer(sharedFunctionsContainer);
         int instructionCounter = 1;
         boolean containsExit = false;
 

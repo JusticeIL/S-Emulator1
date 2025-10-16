@@ -19,7 +19,12 @@ public class Function extends Program {
     private final String userString;
 
     public Function(SFunction sFunction,FunctionsContainer functionsContainer) throws FileNotFoundException {
-        super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer);
+        super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer,null);
+        this.userString = sFunction.getUserString();
+    }
+
+    public Function(SFunction sFunction,FunctionsContainer functionsContainer,FunctionsContainer sharedFunctionsContainer) throws FileNotFoundException {
+        super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer, sharedFunctionsContainer);
         this.userString = sFunction.getUserString();
     }
 
@@ -40,9 +45,13 @@ public class Function extends Program {
             verifiedArgumentList.add(functionArgument);
             argumentCounter++;
         }
+        int returnValue;
+        synchronized (this){
+            programExecutioner.executeProgram(new HashSet<>(verifiedArgumentList));
+            returnValue = getVariables().stream().filter(var->var.getName().equals("y")).toList().getFirst().getValue();
+        }
 
-        programExecutioner.executeProgram(new HashSet<>(verifiedArgumentList));
-        return getVariables().stream().filter(var->var.getName().equals("y")).toList().getFirst().getValue();
+        return returnValue;
     }
 
     public ExpandedSyntheticInstructionArguments open(LabelFactory labelFactory, VariableFactory variableFactory, Map<Label,Label> LabelTransitionsOldToNew , Map<String, Variable> VariableTransitionsOldToNew){
