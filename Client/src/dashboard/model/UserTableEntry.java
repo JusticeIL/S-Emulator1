@@ -33,12 +33,24 @@ public class UserTableEntry implements Comparable<UserTableEntry> {
         if (this == o) return true;
         if (!(o instanceof UserTableEntry)) return false;
         UserTableEntry other = (UserTableEntry) o;
-        return username.get().equals(other.username.get());
+        return this.username.get().equals(other.username.get()) &&
+                Integer.valueOf(this.programsLoaded.get()).equals(other.programsLoaded.get()) &&
+                Integer.valueOf(this.functionsLoaded.get()).equals(other.functionsLoaded.get()) &&
+                Integer.valueOf(this.credits.get()).equals(other.credits.get()) &&
+                Integer.valueOf(this.creditsUsed.get()).equals(other.creditsUsed.get()) &&
+                Integer.valueOf(this.programExecutionsCounter.get()).equals(other.programExecutionsCounter.get());
     }
 
     @Override
     public int hashCode() {
-        return username.get().hashCode();
+        return java.util.Objects.hash(
+                username.get(),
+                programsLoaded.get(),
+                functionsLoaded.get(),
+                credits.get(),
+                creditsUsed.get(),
+                programExecutionsCounter.get()
+        );
     }
 
     // getters and setters (needed by PropertyValueFactory)

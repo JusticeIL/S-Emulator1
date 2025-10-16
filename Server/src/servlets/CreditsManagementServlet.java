@@ -2,7 +2,6 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import dto.CreditRequest;
 import dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
