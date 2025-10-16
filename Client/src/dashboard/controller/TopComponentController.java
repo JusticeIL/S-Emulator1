@@ -1,7 +1,6 @@
 package dashboard.controller;
 
 import com.google.gson.Gson;
-import dto.CreditRequest;
 import dto.UserDTO;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -168,7 +167,7 @@ public class TopComponentController{
                 .newBuilder();
         String finalURL = urlBuilder.build().toString();
 
-        // Create CreditRequest object as json
+        // Create a temporal object containing the amount of credits to charge as json
         Gson gson = new Gson();
         String json = gson.toJson(Map.of("addCredits", chargeAmount));
 
