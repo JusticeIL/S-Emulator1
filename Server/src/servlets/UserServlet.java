@@ -1,5 +1,7 @@
 package servlets;
 
+import com.google.gson.Gson;
+import dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -9,10 +11,46 @@ import jakarta.servlet.http.HttpServletResponse;
 import user.User;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
-@WebServlet(name = "UserRegisterServlet", urlPatterns = {"/api/user/register"})
-public class UserRegisterServlet extends HttpServlet {
+@WebServlet(name = "UserServlet", urlPatterns = {"/api/user"})
+public class UserServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Cookie[] cookies = req.getCookies();
+        boolean hasUsernameCookie = false;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("username".equals(cookie.getName())) {
+                    hasUsernameCookie = true;
+                    break;
+                }
+            }
+        }
+
+        if (hasUsernameCookie) {
+            String username = Arrays.stream(cookies)
+                    .filter(cookie -> "username".equals(cookie.getName()))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .orElse(null);
+
+            Map<String, User> users = (Map<String, User>) getServletContext().getAttribute("users");
+            User user = users.get(username);
+
+            Gson gson = new Gson();
+            String responseJson = gson.toJson(new UserDTO(user));
+
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().write(responseJson);
+        } else {
+            resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+        }
+    }
+
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Expects the parameters to contain the username

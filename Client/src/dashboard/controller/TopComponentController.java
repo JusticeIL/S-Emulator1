@@ -25,16 +25,15 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static configuration.ClientConfiguration.CLIENT;
+import static configuration.ResourcesConfiguration.*;
+
 public class TopComponentController{
 
     private Stage primaryStage;
     private RightSideController rightController;
     private LeftSideController leftController;
     private List<String> availableCSSFileNames;
-    private OkHttpClient client;
-    private final String UPLOAD_PROGRAM_RESOURCE = "/api/program";
-    private final String ADD_CREDITS_RESOURCE = "/api/user/credit";
-    private final String BASE_URL = "http://localhost:8080/S-emulator";
 
     @FXML
     private Label userNameDisplay;
@@ -59,6 +58,48 @@ public class TopComponentController{
 
     @FXML
     public void initialize() {
+        HttpUrl url = HttpUrl.parse(BASE_URL);
+        List<Cookie> cookies = CLIENT.cookieJar().loadForRequest(Objects.requireNonNull(url));
+
+        for (Cookie cookie : cookies) {
+            if ("username".equals(cookie.name())) {
+                userNameDisplay.setText(cookie.value());
+            }
+        }
+
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Building the request based on the body from above
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .addHeader("Cookie", "username=" + userNameDisplay.getText())
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+
+        try (Response response = call.execute()) {
+            if (response.isSuccessful()) {
+                try (ResponseBody responseBody = response.body()) {
+                    Gson gson = new Gson();
+                    UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                    Platform.runLater(() -> {
+                        currentCredits.setText("Available Credits: " + user.getCredits());
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else { //TODO: handle error by creating a new dialog window
+                System.out.println("Failed to send program to server: " + response.code());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         availableCSSFileNames = listCssFiles();
 
         // Initialize the skin chooser menu
@@ -104,8 +145,6 @@ public class TopComponentController{
                         .otherwise("Choose a Skin")
         );
 
-        //TODO: Currently, the credits label is initializing to 0, but should send a get request to the server to get the actual credits (if the user is new will get "0" from the server).
-        currentCredits.setText("Available Credits: 0");
     }
 
     @FXML
@@ -134,7 +173,7 @@ public class TopComponentController{
                 .post(body)
                 .build();
 
-        Call call = client.newCall(request);
+        Call call = CLIENT.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -185,7 +224,7 @@ public class TopComponentController{
                 .build();
 
         // Send request
-        Call call = client.newCall(request);
+        Call call = CLIENT.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -211,10 +250,6 @@ public class TopComponentController{
                 e.printStackTrace();
             }
         });
-    }
-
-    public void setClient(OkHttpClient client) {
-        this.client = client;
     }
 
     public void setRightController(RightSideController rightController) {

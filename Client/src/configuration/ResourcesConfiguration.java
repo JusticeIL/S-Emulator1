@@ -1,0 +1,9 @@
+package configuration;
+
+public class ResourcesConfiguration {
+    public static final String BASE_URL = "http://localhost:8080/S-emulator";
+
+    public static final String USER_RESOURCE = "/api/user";
+    public static final String UPLOAD_PROGRAM_RESOURCE = "/api/program";
+    public static final String ADD_CREDITS_RESOURCE = "/api/user/credit";
+}

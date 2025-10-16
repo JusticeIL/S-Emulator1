@@ -1,13 +1,8 @@
 package dashboard.controller;
 
 import javafx.fxml.FXML;
-import okhttp3.OkHttpClient;
 
 public class PrimaryController {
-
-    private OkHttpClient client;
-    private static final String BASE_URL = "http://localhost:8080/S-emulator";
-    private String username;
 
     @FXML
     private LeftSideController leftSideController;
@@ -26,15 +21,6 @@ public class PrimaryController {
         rightSideController.setTopController(topComponentController);
         topComponentController.setLeftController(leftSideController);
         topComponentController.setRightController(rightSideController);
-    }
-
-    public void initData(String text, OkHttpClient client) {
-        this.username = text;
-        topComponentController.setUsername(text);
-        this.client = client;
-        topComponentController.setClient(client);
-        leftSideController.setClient(client);
-        rightSideController.setClient(client);
     }
 
     public TopComponentController getTopComponentController() {

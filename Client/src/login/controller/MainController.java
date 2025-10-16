@@ -15,11 +15,11 @@ import okhttp3.*;
 
 import java.util.Objects;
 
-public class MainController {
+import static configuration.ClientConfiguration.CLIENT;
+import static configuration.ResourcesConfiguration.BASE_URL;
+import static configuration.ResourcesConfiguration.USER_RESOURCE;
 
-    private OkHttpClient client;
-    private final String BASE_URL = "http://localhost:8080/S-emulator";
-    private final String RESOURCE = "/api/user/register";
+public class MainController {
 
     @FXML
     private Label clientApplicationTitle;
@@ -32,12 +32,12 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        client = new OkHttpClient();
+
     }
 
     @FXML
     void tryRegisterUserBtn(ActionEvent event) {
-            HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + RESOURCE))
+            HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
                     .newBuilder()
                     .addQueryParameter("username", usernameField.getText());
             String finalURL = urlBuilder.build().toString();
@@ -47,7 +47,7 @@ public class MainController {
                     .post(RequestBody.create(new byte[]{}))
                     .build();
 
-            Call call = client.newCall(request);
+            Call call = CLIENT.newCall(request);
 
             new Thread(() -> {
                 try (Response response = call.execute()) {
@@ -62,7 +62,6 @@ public class MainController {
 
                                 // Pass data to dashboard controller
                                 PrimaryController controller = loader.getController();
-                                controller.initData(usernameField.getText(), client);
                                 Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
 
                                 // Close current window
