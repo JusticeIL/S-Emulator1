@@ -16,6 +16,7 @@ import user.User;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 @WebServlet(name = "UserServlet", urlPatterns = {"/api/user"})
 public class UserServlet extends HttpServlet {
@@ -39,11 +40,11 @@ public class UserServlet extends HttpServlet {
                     .map(Cookie::getValue)
                     .orElse(null);
 
-            Map<String, User> users = (Map<String, User>) getServletContext().getAttribute("users");
-            User user = users.get(username);
+            Set<String> users = (Set<String>) getServletContext().getAttribute("users");
+            MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
 
             Gson gson = new Gson();
-            String responseJson = gson.toJson(new UserDTO(user));
+            String responseJson = gson.toJson(model.getUserData(username));
 
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
@@ -59,7 +60,7 @@ public class UserServlet extends HttpServlet {
         // Expects the parameters to contain the username
 
         String username = req.getParameter("username");
-        Map<String, User> users = (Map<String, User>) getServletContext().getAttribute("users");
+        Set<String> users = (Set<String>) getServletContext().getAttribute("users");
 
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
@@ -76,12 +77,12 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
             synchronized (users) {
-                if (users.containsKey(username)) {
+                if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);
                 } else if (username == null || username.trim().isEmpty()) {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                    users.put(username, new User(username));
+                    users.add(username);
                     resp.setStatus(HttpServletResponse.SC_OK);
                     resp.addCookie(new Cookie("username", username));
                     MultiUserModel model = (MultiUserModel ) getServletContext().getAttribute("model");

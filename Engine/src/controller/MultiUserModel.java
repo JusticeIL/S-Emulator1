@@ -1,8 +1,10 @@
 package controller;
 
+import dto.UserDTO;
 import jakarta.xml.bind.JAXBException;
 import dto.ProgramData;
 import dto.VariableDTO;
+import user.User;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -24,4 +26,7 @@ public interface MultiUserModel {
     void switchFunction(String username, String functionName);
     void setActiveProgram(String username, String programName);
     void addUser(String username);
+    Set<UserDTO> getAllUsers();
+    void addCredits(String username, int creditsToAdd);
+    UserDTO getUserData(String username);
 }

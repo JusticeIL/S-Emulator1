@@ -1,6 +1,7 @@
 package controller;
 
 import XMLandJaxB.SProgram;
+import dto.UserDTO;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -136,5 +137,20 @@ public class MultiUserController implements MultiUserModel, Serializable {
     @Override
     public void addUser(String username) {
         usersManager.addUser(username);
+    }
+
+    @Override
+    public Set<UserDTO> getAllUsers() {
+        return usersManager.getAllUsers();
+    }
+
+    @Override
+    public void addCredits(String username, int creditsToAdd) {
+        usersManager.getUser(username).addCredits(creditsToAdd);
+    }
+
+    @Override
+    public UserDTO getUserData(String username) {
+        return usersManager.getUserData(username);
     }
 }

@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import controller.MultiUserModel;
 import dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,12 +21,11 @@ public class GetAllUsersServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //get all users
         Gson gson = new Gson();
-        Map<String, User> users = (Map<String, User>) getServletContext().getAttribute("users");
+        Set<String> users = (Set<String>) getServletContext().getAttribute("users");
+        MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
         String responseJson;
         synchronized (users) {
-            Set<UserDTO> usersSet = users.values().stream()
-                    .map(UserDTO::new)
-                    .collect(Collectors.toSet());
+            Set<UserDTO> usersSet = model.getAllUsers();
             responseJson = gson.toJson(usersSet);
         }
 

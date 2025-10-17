@@ -2,6 +2,8 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import controller.MultiUserController;
+import controller.MultiUserModel;
 import dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +16,7 @@ import user.User;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 @WebServlet(name = "CreditsManagementServlet", urlPatterns = {"/api/user/credit"})
 public class CreditsManagementServlet extends HttpServlet {
@@ -63,19 +66,20 @@ public class CreditsManagementServlet extends HttpServlet {
             }
 
             // Retrieve user from context
-            Map<String, User> users = (Map<String, User>) getServletContext().getAttribute("users");
-            User user = users.get(username);
-            if (user == null) {
+
+            //TODO CHANGE TO USE METHOD IN ENGINE CONTROLLER
+            Set<String> usersSet = (Set<String>) getServletContext().getAttribute("users");
+            if (!usersSet.contains(username)) {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 resp.getWriter().write("User not found");
                 return;
             }
-
+            MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
             // Add credits to user
-            user.addCredits(creditsToAdd);
+            model.addCredits(username, creditsToAdd);
 
             // Send the updated credit amount in the response
-            String responseJson = gson.toJson(new UserDTO(user));
+            String responseJson = gson.toJson(model.getUserData(username));
             resp.setContentType("application/json");
             resp.getWriter().write(responseJson);
         }
