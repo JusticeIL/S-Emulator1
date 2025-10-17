@@ -1,6 +1,9 @@
 package servlets;
 
 import com.google.gson.Gson;
+import controller.Model;
+import controller.MultiUserController;
+import controller.MultiUserModel;
 import dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -81,6 +84,8 @@ public class UserServlet extends HttpServlet {
                     users.put(username, new User(username));
                     resp.setStatus(HttpServletResponse.SC_OK);
                     resp.addCookie(new Cookie("username", username));
+                    MultiUserModel model = (MultiUserModel ) getServletContext().getAttribute("model");
+                    model.addUser(username);
                 }
             }
         }

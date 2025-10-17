@@ -9,6 +9,8 @@ import program.ProgramExecutioner;
 import dto.ProgramData;
 import dto.VariableDTO;
 import program.function.FunctionsContainer;
+import user.User;
+import user.UsersManager;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -18,20 +20,17 @@ import java.util.*;
 public class MultiUserController implements MultiUserModel, Serializable {
 
 
-    private final Map<String,Map<String,Map<Integer,Program>>> usersToPrograms = new HashMap<>();
+
+    private final UsersManager usersManager = new UsersManager();
     private final Map<String, SProgram> loadedPrograms = new HashMap<>();
-    private final Map<String,Program> activeProgramsByUser = new HashMap<>();
     private final Map<String, Boolean> isCurrentlyInDebugMode = new HashMap<>();
     private final Map<String, ProgramExecutioner> programExecutionersByUser = new HashMap<>();
-    private Map <String, Map<Integer, Program>> activeProgramExpansionsByLevelByUser = new HashMap<>();
     private final FunctionsContainer sharedFunctionsContainer = new FunctionsContainer();
 
     @Override
     public void loadProgram(String username, InputStream path) throws FileNotFoundException, JAXBException {
         try {
-            //TODO: if program in loadedPrograms, load from there
-            usersToPrograms.putIfAbsent(username, new HashMap<>());
-            isCurrentlyInDebugMode.putIfAbsent(username, false);
+
             programExecutionersByUser.putIfAbsent(username, new ProgramExecutioner());
             SProgram sProgram;
 
@@ -42,49 +41,30 @@ public class MultiUserController implements MultiUserModel, Serializable {
                 sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
                 loadedPrograms.putIfAbsent(sProgram.getName(), sProgram);
             }
-
-
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
         }
-    }//TODO: handle loading the same program twice
+    }//TODO: handle loading the same program twice:currently ignores and doesnt raise exception
 
     @Override
     public boolean isProgramLoaded(String username) {
-        return usersToPrograms.containsKey(username)&&!usersToPrograms.get(username).isEmpty();
+        return usersManager.getUser(username).getActiveProgram() != null;
     }
 
     @Override
     public Optional<ProgramData> getProgramData(String username) {
-        return Optional.ofNullable(activeProgramsByUser.get(username))
+        return Optional.ofNullable(usersManager.getUser(username).getActiveProgram())
                 .map(ProgramData::new);
     }
 
     @Override
     public void Expand(String username, int level) {
-        Program activeProgram = activeProgramsByUser.get(username);
-        Map<Integer, Program> activeProgramExpansionsByLevel = usersToPrograms.get(username).get(activeProgram.getProgramName());
-        int maxLevel = activeProgramExpansionsByLevel.get(0).getMaxProgramLevel();
-        if(level > maxLevel) {
-            throw new IllegalArgumentException("Level exceeds maximum program level of " + maxLevel);
-        }
-        else if (level < 0) {
-            throw new IllegalArgumentException("Level is a negative number! the level number should be between 0 and " + activeProgram.getMaxProgramLevel());
-        }
-        if(activeProgramExpansionsByLevel.containsKey(level)) {
-            activeProgramsByUser.put(username,activeProgramExpansionsByLevel.get(level));
-        } else {
-            Program expandedProgram = activeProgramExpansionsByLevel.get(0).expand(level);
-            if(expandedProgram != null) {
-                activeProgramExpansionsByLevel.put(level, expandedProgram);
-                activeProgramsByUser.put(username,expandedProgram);
-            }
-        }
+        usersManager.getUser(username).ExpandCurrentProgram(level);
     }
 
     @Override
     public void runProgram(String username, Set<VariableDTO> args) {
-        Program activeProgram = activeProgramsByUser.get(username);
+        Program activeProgram = usersManager.getUser(username).getActiveProgram();
         ProgramExecutioner programExecutioner = programExecutionersByUser.get(username);
         programExecutioner.setMainExecutioner();
         programExecutioner.setProgram(activeProgram);
@@ -93,7 +73,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
 
     @Override
     public void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints) {
-        Program activeProgram = activeProgramsByUser.get(username);
+        Program activeProgram = usersManager.getUser(username).getActiveProgram();
         ProgramExecutioner programExecutioner = programExecutionersByUser.get(username);
         programExecutioner.setDebugMode(true);
         programExecutioner.setProgram(activeProgram);
@@ -136,38 +116,25 @@ public class MultiUserController implements MultiUserModel, Serializable {
 
     @Override
     public void switchFunction(String username, String functionName) {
-        Program activeProgram = activeProgramsByUser.get(username);
-        Map<String, Map<Integer, Program>> programsAndFunctionsByName = usersToPrograms.get(username);
-
-
-        if (programsAndFunctionsByName.containsKey(functionName)) { // Case: the function name belongs to the main program
-            activeProgramExpansionsByLevelByUser.put(username,programsAndFunctionsByName.get(functionName)) ;
-            activeProgramsByUser.put(username,activeProgramExpansionsByLevelByUser.get(username).get(0));
-            return;
-        }
-
-        // Case: the function name belongs to a function
-        activeProgram.getFunctions().stream()
-                .filter(function -> function.getUserString().equals(functionName))
-                .findFirst()
-                .ifPresent(function -> {
-                    activeProgramExpansionsByLevelByUser.put(username,programsAndFunctionsByName.get(function.getProgramName()));
-                    activeProgramsByUser.put(username, activeProgramExpansionsByLevelByUser.get(username).get(0));
-                });
+        usersManager.getUser(username).switchToFunction(functionName);
     }
 
     @Override
     public void setActiveProgram(String username, String programName) {
-        usersToPrograms.get(username).putIfAbsent(programName, new HashMap<>());
+        User user  = usersManager.getUser(username);
+        isCurrentlyInDebugMode.putIfAbsent(username, false);
+        if(user.hasProgram(programName)){
+            user.setActiveProgram(programName);
+            return;
+        }
+
         Program newProgramInstance = new Program(loadedPrograms.get(programName), sharedFunctionsContainer);
-        usersToPrograms.get(username).get(programName).putIfAbsent(0, newProgramInstance);//TODO: handle if program not loaded
-        activeProgramsByUser.put(username, usersToPrograms.get(username).get(programName).get(0));
-        activeProgramExpansionsByLevelByUser.put(username, usersToPrograms.get(username).get(programName));
-        Program activeProgram = activeProgramsByUser.get(username);
-        activeProgram.getFunctions().forEach(function -> {
-            HashMap<Integer,Program> functionExpansionMap = new HashMap<>();
-            functionExpansionMap.put(0,function);
-            usersToPrograms.get(username).put(function.getProgramName(), functionExpansionMap);
-        });
+        usersManager.getUser(username).addProgram(newProgramInstance);
+        usersManager.getUser(username).setActiveProgram(programName);
+    }
+
+    @Override
+    public void addUser(String username) {
+        usersManager.addUser(username);
     }
 }

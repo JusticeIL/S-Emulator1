@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "UsersServlet", urlPatterns = {"/api/users"})
-public class UsersServlet extends HttpServlet {
+public class GetAllUsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //get all users

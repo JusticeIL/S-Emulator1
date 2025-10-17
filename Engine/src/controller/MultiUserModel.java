@@ -23,4 +23,5 @@ public interface MultiUserModel {
     void resumeDebug(String username);
     void switchFunction(String username, String functionName);
     void setActiveProgram(String username, String programName);
+    void addUser(String username);
 }
