@@ -6,7 +6,6 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import program.Program;
-import program.ProgramExecutioner;
 import dto.ProgramData;
 import dto.VariableDTO;
 import program.function.FunctionsContainer;
@@ -24,22 +23,16 @@ public class MultiUserController implements MultiUserModel, Serializable {
 
     private final UsersManager usersManager = new UsersManager();
     private final Map<String, SProgram> loadedPrograms = new HashMap<>();
-    private final Map<String, Boolean> isCurrentlyInDebugMode = new HashMap<>();
-    private final Map<String, ProgramExecutioner> programExecutionersByUser = new HashMap<>();
     private final FunctionsContainer sharedFunctionsContainer = new FunctionsContainer();
+    private final ExecutionManager executionManager = new ExecutionManager();
 
     @Override
     public void loadProgram(String username, InputStream path) throws FileNotFoundException, JAXBException {
         try {
-
-            programExecutionersByUser.putIfAbsent(username, new ProgramExecutioner());
-            SProgram sProgram;
-
             synchronized (loadedPrograms) {
-
                 JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
+                SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
                 loadedPrograms.putIfAbsent(sProgram.getName(), sProgram);
             }
         } catch (JAXBException e) {
@@ -65,54 +58,45 @@ public class MultiUserController implements MultiUserModel, Serializable {
 
     @Override
     public void runProgram(String username, Set<VariableDTO> args) {
-        Program activeProgram = usersManager.getUser(username).getActiveProgram();
-        ProgramExecutioner programExecutioner = programExecutionersByUser.get(username);
-        programExecutioner.setMainExecutioner();
-        programExecutioner.setProgram(activeProgram);
-        programExecutioner.executeProgram(args);
+        User user = usersManager.getUser(username);
+        executionManager.runProgram(user, args);
     }
 
     @Override
     public void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints) {
-        Program activeProgram = usersManager.getUser(username).getActiveProgram();
-        ProgramExecutioner programExecutioner = programExecutionersByUser.get(username);
-        programExecutioner.setDebugMode(true);
-        programExecutioner.setProgram(activeProgram);
-        programExecutioner.setUpDebugRun(args, breakpoints);
-        isCurrentlyInDebugMode.put(username, true);
+        User user = usersManager.getUser(username);
+        executionManager.startDebug(user, args, breakpoints);
     }
 
     @Override
     public void addBreakpoint(String username, int lineNumber) {
-        programExecutionersByUser.get(username).addBreakpoint(lineNumber);
+        User user = usersManager.getUser(username);
+        executionManager.addBreakpoint(user, lineNumber);
     }
 
     @Override
     public void removeBreakpoint(String username, int lineNumber) {
-        programExecutionersByUser.get(username).removeBreakpoint(lineNumber);
+        User user = usersManager.getUser(username);
+        executionManager.removeBreakpoint(user, lineNumber);
     }
 
     @Override
     public void stepOver(String username) {
-        if(isCurrentlyInDebugMode.get(username)) {
-            programExecutionersByUser.get(username).stepOver();
-        }
+        User user = usersManager.getUser(username);
+        executionManager.stepOver(user);
     }
-
 
 
     @Override
     public void stopDebug(String username) {
-        if(isCurrentlyInDebugMode.get(username)) {
-            programExecutionersByUser.get(username).stopDebug();
-            programExecutionersByUser.get(username).setDebugMode(false);
-            isCurrentlyInDebugMode.put(username,false);
-        }
+        User user = usersManager.getUser(username);
+        executionManager.stopDebug(user);
     }
 
     @Override
     public void resumeDebug(String username) {
-        programExecutionersByUser.get(username).resumeDebug();
+        User user = usersManager.getUser(username);
+        executionManager.resumeDebug(user);
     }
 
     @Override
@@ -123,7 +107,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
     @Override
     public void setActiveProgram(String username, String programName) {
         User user  = usersManager.getUser(username);
-        isCurrentlyInDebugMode.putIfAbsent(username, false);
+        executionManager.setDebugMode(user,false);
         if(user.hasProgram(programName)){
             user.setActiveProgram(programName);
             return;
