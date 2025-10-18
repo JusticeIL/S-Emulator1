@@ -20,20 +20,21 @@ import java.util.*;
 public class MultiUserController implements MultiUserModel, Serializable {
 
 
-
+    private final SharedProgramsContainer sharedProgramsContainer = new SharedProgramsContainer();
+    //Todo: create DTO for sharedProgramsContainer
     private final UsersManager usersManager = new UsersManager();
-    private final Map<String, SProgram> loadedPrograms = new HashMap<>();
     private final FunctionsContainer sharedFunctionsContainer = new FunctionsContainer();
+    //TODO: move sharedFunctionsContainer
     private final ExecutionManager executionManager = new ExecutionManager();
 
     @Override
     public void loadProgram(String username, InputStream path) throws FileNotFoundException, JAXBException {
         try {
-            synchronized (loadedPrograms) {
+            synchronized (sharedProgramsContainer) {
                 JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
-                loadedPrograms.putIfAbsent(sProgram.getName(), sProgram);
+                sharedProgramsContainer.addSProgram(sProgram);
             }
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
@@ -60,6 +61,9 @@ public class MultiUserController implements MultiUserModel, Serializable {
     public void runProgram(String username, Set<VariableDTO> args) {
         User user = usersManager.getUser(username);
         executionManager.runProgram(user, args);
+        String programName = user.getActiveProgram().getProgramName();
+        int CostForLastExecution = executionManager.getCostForLastExecution(user);
+        sharedProgramsContainer.addToProgramTotalCost(programName, CostForLastExecution);
     }
 
     @Override
@@ -113,7 +117,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
             return;
         }
 
-        Program newProgramInstance = new Program(loadedPrograms.get(programName), sharedFunctionsContainer);
+        Program newProgramInstance = new Program(sharedProgramsContainer.getSProgram(programName), sharedFunctionsContainer);
         usersManager.getUser(username).addProgram(newProgramInstance);
         usersManager.getUser(username).setActiveProgram(programName);
     }

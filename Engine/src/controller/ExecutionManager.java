@@ -14,6 +14,7 @@ public class ExecutionManager {
 
     private final Map<User, ProgramExecutioner> executioners = new HashMap<>();
     private final Map<User,Boolean> isCurrentlyInDebugMode = new HashMap<>();
+    private final Map<User,Integer> costForLastExecution = new HashMap<>();
 
     public void runProgram(User user, Set<VariableDTO> args) {
         Program activeProgram = user.getActiveProgram();
@@ -23,6 +24,7 @@ public class ExecutionManager {
         programExecutioner.setMainExecutioner(user);
         programExecutioner.setProgram(activeProgram);
         programExecutioner.executeProgram(args);
+        costForLastExecution.put(user,programExecutioner.getExecutionCost());
         executioners.remove(user);
     }
 
@@ -59,6 +61,7 @@ public class ExecutionManager {
         executionerOpt.ifPresent(executioner -> {
             if(!executioner.isInDebug()) {
                 isCurrentlyInDebugMode.put(user, false);
+                costForLastExecution.put(user,executioner.getExecutionCost());
                 executioners.remove(user);
             }
         });
@@ -87,5 +90,9 @@ public class ExecutionManager {
 
     public void setDebugMode(User user, boolean isDebugMode) {
         isCurrentlyInDebugMode.put(user, isDebugMode);
+    }
+
+    public int getCostForLastExecution(User user) {
+        return costForLastExecution.get(user);
     }
 }

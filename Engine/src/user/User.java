@@ -107,12 +107,14 @@ public class User {
         return programContainer.getFullProgramContainer(programName) != null;
     }
 
-    public void decreaseCredits(int cost) {
+    public int decreaseCredits(int cost) {
+        int actualCost = cost <= credits.get() ? cost : credits.get();
         this.credits.getAndAdd(-cost);
         if(cost<0) {
             this.credits = new AtomicInteger(0);
         }
 
         this.creditsUsed += cost;
+        return actualCost;
     }
 }

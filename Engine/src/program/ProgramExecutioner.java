@@ -26,19 +26,20 @@ public class ProgramExecutioner {
     private Map<String,Integer> xInitializedVariablesForDebug;
     private final Set<Integer> breakpoints = new HashSet<>();
     private User user;
+    private int executionCost;
 
     private void executeSingleInstruction() {
 
         if(user!=null){
             if(user.getCredits() < currentInstruction.getCost()){
-                user.decreaseCredits(currentInstruction.getCost());
+                executionCost += user.decreaseCredits(currentInstruction.getCost());
                 program.setCycleCounter(cycleCounter);
                 if(isDebugMode){
                     stopDebug();
                 }
                 return;
             }
-            user.decreaseCredits(currentInstruction.getCost());
+            executionCost += user.decreaseCredits(currentInstruction.getCost());
         }
         Label nextLabel = currentInstruction.execute();
         cycleCounter += currentInstruction.getCycles();
@@ -212,5 +213,9 @@ public class ProgramExecutioner {
 
     public boolean isInDebug() {
         return isDebugMode;
+    }
+
+    public int getExecutionCost() {
+        return executionCost;
     }
 }
