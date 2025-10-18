@@ -20,7 +20,7 @@ public class ExecutionManager {
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         executioners.put(user, programExecutioner);
         isCurrentlyInDebugMode.put(user, false);
-        programExecutioner.setMainExecutioner();
+        programExecutioner.setMainExecutioner(user);
         programExecutioner.setProgram(activeProgram);
         programExecutioner.executeProgram(args);
         executioners.remove(user);
@@ -31,6 +31,7 @@ public class ExecutionManager {
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setDebugMode(true);
         programExecutioner.setProgram(activeProgram);
+        programExecutioner.setMainExecutioner(user);
         programExecutioner.setUpDebugRun(args, breakpoints);
         isCurrentlyInDebugMode.put(user, true);
     }
@@ -49,7 +50,18 @@ public class ExecutionManager {
         if(isCurrentlyInDebugMode.get(user)) {
             Optional<ProgramExecutioner> executionerOpt = Optional.ofNullable(executioners.get(user));
             executionerOpt.ifPresent(ProgramExecutioner::stepOver);
+            checkForEndOfDebug(user);
         }
+    }
+
+    private void checkForEndOfDebug(User user) {
+        Optional<ProgramExecutioner> executionerOpt = Optional.ofNullable(executioners.get(user));
+        executionerOpt.ifPresent(executioner -> {
+            if(!executioner.isInDebug()) {
+                isCurrentlyInDebugMode.put(user, false);
+                executioners.remove(user);
+            }
+        });
     }
 
     public void stopDebug(User user) {
@@ -69,6 +81,7 @@ public class ExecutionManager {
     public void resumeDebug(User user) {
         Optional<ProgramExecutioner> executionerOpt = Optional.ofNullable(executioners.get(user));
         executionerOpt.ifPresent(ProgramExecutioner::resumeDebug);
+        checkForEndOfDebug(user);
     }
 
 

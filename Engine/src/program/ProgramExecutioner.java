@@ -5,6 +5,7 @@ import instruction.component.Label;
 import instruction.component.Variable;
 import dto.VariableDTO;
 import program.function.FunctionInstance;
+import user.User;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,8 +25,21 @@ public class ProgramExecutioner {
     private FunctionInstance callerFunctionInstance;
     private Map<String,Integer> xInitializedVariablesForDebug;
     private final Set<Integer> breakpoints = new HashSet<>();
+    private User user;
 
     private void executeSingleInstruction() {
+
+        if(user!=null){
+            if(user.getCredits() < currentInstruction.getCost()){
+                user.decreaseCredits(currentInstruction.getCost());
+                program.setCycleCounter(cycleCounter);
+                if(isDebugMode){
+                    stopDebug();
+                }
+                return;
+            }
+            user.decreaseCredits(currentInstruction.getCost());
+        }
         Label nextLabel = currentInstruction.execute();
         cycleCounter += currentInstruction.getCycles();
 
@@ -78,9 +92,15 @@ public class ProgramExecutioner {
         this.cycleCounter = 0;
     }
 
+    public void setMainExecutioner(User user) {
+        isMainExecutioner = true;
+        this.user = user;
+    }
+
     public void setMainExecutioner() {
         isMainExecutioner = true;
     }
+
 
     public void setDebugMode(boolean debugMode) {
         isDebugMode = debugMode;
@@ -102,7 +122,7 @@ public class ProgramExecutioner {
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
         int currentRunLevel = program.getCurrentProgramLevel();
 
-        while (currentCommandIndex < program.getInstructionList().size()) {
+        while (canContinueExecution()) {
             executeSingleInstruction();
         }
 
@@ -111,6 +131,9 @@ public class ProgramExecutioner {
 
         if (isMainExecutioner) {
             program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
+            if(user != null) {
+                user.getHistory().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
+            }
         }
         if (wasCalledFromFunction) {
             callerFunctionInstance.setCycles(cycleCounter);
@@ -134,9 +157,11 @@ public class ProgramExecutioner {
     }
 
     public void stepOver() {
-        executeSingleInstruction();
-        program.setNextInstructionIdForDebug(currentInstruction.getNumber());
-        if (currentCommandIndex >= program.getInstructionList().size() && isDebugMode) {
+        if(canContinueExecution()) {
+            executeSingleInstruction();
+            program.setNextInstructionIdForDebug(currentInstruction.getNumber());
+        }
+        if (!canContinueExecution() && isDebugMode) {
             stopDebug();
         }
     }
@@ -151,9 +176,11 @@ public class ProgramExecutioner {
     }
 
     public void resumeDebug() {
-        do {
-            stepOver();
-        } while (currentCommandIndex < program.getInstructionList().size()&&!breakpoints.contains(currentInstruction.getNumber()));
+        if(user == null || user.getCredits() > 0) {
+            do {
+                stepOver();
+            } while (canContinueExecution());
+        }
     }
 
     public void addBreakpoint(int lineNumber) {
@@ -167,5 +194,23 @@ public class ProgramExecutioner {
     public void SetCallerFunctionInstance(FunctionInstance caller) {
         this.callerFunctionInstance = caller;
         this.wasCalledFromFunction = true;
+    }
+
+    private boolean canContinueExecution() {
+        boolean conditionA = currentCommandIndex < program.getInstructionList().size();
+        boolean conditionB = true;
+        boolean conditionC = true;
+        if(isMainExecutioner){
+            conditionB = user.getCredits() >= currentInstruction.getCost();
+        }
+        if(isDebugMode){
+           conditionC = !breakpoints.contains(currentInstruction.getNumber());
+        }
+
+        return conditionA && conditionB && conditionC;
+    }
+
+    public boolean isInDebug() {
+        return isDebugMode;
     }
 }

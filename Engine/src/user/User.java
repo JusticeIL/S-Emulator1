@@ -106,4 +106,13 @@ public class User {
     public boolean hasProgram(String programName) {
         return programContainer.getFullProgramContainer(programName) != null;
     }
+
+    public void decreaseCredits(int cost) {
+        this.credits.getAndAdd(-cost);
+        if(cost<0) {
+            this.credits = new AtomicInteger(0);
+        }
+
+        this.creditsUsed += cost;
+    }
 }
