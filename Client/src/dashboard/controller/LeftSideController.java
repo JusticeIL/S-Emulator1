@@ -7,16 +7,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import okhttp3.OkHttpClient;
 
 import java.util.Timer;
+
+import static configuration.ClientConfiguration.REFRESH_RATE;
 
 public class LeftSideController {
 
     private RightSideController rightController;
     private TopComponentController topController;
-    private OkHttpClient client;
-    private final int REFRESH_RATE = 1500; // in milliseconds
 
     @FXML
     private Button unselectUserBtn;
@@ -67,6 +66,11 @@ public class LeftSideController {
         creditsColumn.setCellValueFactory(new PropertyValueFactory<>("credits"));
         creditsUsedColumn.setCellValueFactory(new PropertyValueFactory<>("creditsUsed"));
         programExecutionsCounterColumn.setCellValueFactory(new PropertyValueFactory<>("programExecutionsCounter"));
+
+        /* Timer tasks */
+        UserListRefresher userListRefreshTask = new UserListRefresher(usersTable);
+        Timer timer = new Timer();
+        timer.schedule(userListRefreshTask, REFRESH_RATE, REFRESH_RATE);
     }
 
     @FXML
@@ -82,14 +86,6 @@ public class LeftSideController {
     @FXML
     void ShowStatisticsPressed(ActionEvent event) {
 
-    }
-
-    public void setClient(OkHttpClient client) {
-        this.client = client;
-
-        UserListRefresher userListRefreshTask = new UserListRefresher(client, usersTable);
-        Timer timer = new Timer();
-        timer.schedule(userListRefreshTask, REFRESH_RATE, REFRESH_RATE);
     }
 
     public void setTopController(TopComponentController topController) {

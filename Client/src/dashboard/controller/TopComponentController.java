@@ -74,7 +74,6 @@ public class TopComponentController{
         // Building the request based on the body from above
         Request request = new Request.Builder()
                 .url(finalURL)
-                .addHeader("Cookie", "username=" + userNameDisplay.getText())
                 .get()
                 .build();
 
@@ -169,7 +168,6 @@ public class TopComponentController{
         // Building the request based on the body from above
         Request request = new Request.Builder()
                 .url(finalURL)
-                .addHeader("Cookie", "username=" + userNameDisplay.getText())
                 .post(body)
                 .build();
 
@@ -219,7 +217,6 @@ public class TopComponentController{
         // Building the request based on the body from above
         Request request = new Request.Builder()
                 .url(finalURL)
-                .addHeader("Cookie", "username=" + userNameDisplay.getText())
                 .put(body)
                 .build();
 
