@@ -23,6 +23,7 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
     protected final InstructionType instructionType;
     protected final Variable variable;
     protected Variable argumentVariable;
+    protected ArchitectureGeneration architecture;
 
     public Instruction(int num, int cycles, Label label, Label destinationLabel, InstructionType instructionType, Variable variable) {
         this.number = num;
@@ -111,6 +112,14 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
             thisInstructionString += " " + DELIMITER + " " + parentInstruction;
         }
         return thisInstructionString;
+    }
+
+    public String getArchitecture(){
+        return architecture.toString();
+    }
+
+    public int getCost(){
+        return architecture.getCost();
     }
 
     abstract public Instruction duplicate(Variable newVariable, Variable newArgumentVariable, Label newLabel, Label newDestinationLabel);

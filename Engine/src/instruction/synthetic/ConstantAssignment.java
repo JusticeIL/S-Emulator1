@@ -1,5 +1,6 @@
 package instruction.synthetic;
 
+import instruction.ArchitectureGeneration;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
@@ -23,6 +24,7 @@ public class ConstantAssignment extends SyntheticInstruction {
         command = variable.getName() + " <- " + constValue;
         this.constValue = constValue;
         super.level = 2;
+        architecture = ArchitectureGeneration.II;
     }
 
     public ConstantAssignment(int num, Variable variable, Label label, Label destinationLabel, int constValue, Instruction parentInstruction) {

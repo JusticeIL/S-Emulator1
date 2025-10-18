@@ -1,5 +1,6 @@
 package instruction.synthetic;
 
+import instruction.ArchitectureGeneration;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
@@ -21,12 +22,14 @@ public class GoToLabel extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         command = "GOTO " + destinationLabel.getLabelName();
         super.level = 1;
+        architecture = ArchitectureGeneration.II;
     }
 
     public GoToLabel(int num, Variable variable, Label label, Label destinationLabel, Instruction parentInstruction) {
         super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         command = "GOTO " + destinationLabel.getLabelName();
         super.level = 1;
+        architecture = ArchitectureGeneration.II;
     }
 
     @Override

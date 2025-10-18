@@ -11,10 +11,12 @@ abstract public class BasicInstruction extends Instruction {
 
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles, label, destinationLabel, InstructionType.B, variable);
+        architecture = ArchitectureGeneration.I;
     }
 
     public BasicInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
         super(num, cycles, label, destinationLabel, InstructionType.B, variable, parentInstruction);
+        architecture = ArchitectureGeneration.I;
     }
 
     @Override

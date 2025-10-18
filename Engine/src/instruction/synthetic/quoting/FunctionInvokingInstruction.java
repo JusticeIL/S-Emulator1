@@ -1,5 +1,6 @@
 package instruction.synthetic.quoting;
 
+import instruction.ArchitectureGeneration;
 import instruction.SyntheticInstruction;
 import instruction.component.Label;
 import instruction.component.Variable;
@@ -17,6 +18,7 @@ public abstract class FunctionInvokingInstruction extends SyntheticInstruction {
     public FunctionInvokingInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Function function, List<FunctionArgument> arguments) {
         super(num, variable, cycles, label, destinationLabel);
         this.function = new FunctionInstance(function, arguments);
+        architecture = ArchitectureGeneration.IV;
     }
 
     @Override
