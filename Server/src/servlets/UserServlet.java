@@ -1,21 +1,16 @@
 package servlets;
 
 import com.google.gson.Gson;
-import controller.Model;
-import controller.MultiUserController;
 import controller.MultiUserModel;
-import dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import user.User;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Set;
 
 @WebServlet(name = "UserServlet", urlPatterns = {"/api/user"})
@@ -50,7 +45,8 @@ public class UserServlet extends HttpServlet {
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(responseJson);
         } else {
-            resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.getWriter().write("Not logged in.");
         }
     }
 
@@ -75,15 +71,18 @@ public class UserServlet extends HttpServlet {
 
         if (hasUsernameCookie) {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.getWriter().write("Already logged in.");
         } else {
             synchronized (users) {
                 if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);
+                    resp.getWriter().write("Username " + username + " already taken.");
                 } else if (username == null || username.trim().isEmpty()) {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().write("Missing or empty username.");
                 } else {
                     users.add(username);
-                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.setStatus(HttpServletResponse.SC_CREATED);
                     resp.addCookie(new Cookie("username", username));
                     MultiUserModel model = (MultiUserModel ) getServletContext().getAttribute("model");
                     model.addUser(username);

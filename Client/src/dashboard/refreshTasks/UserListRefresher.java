@@ -74,7 +74,7 @@ public class UserListRefresher extends TimerTask {
                             }
                         });
 
-                    } else { //TODO: handle error by creating a new dialog window
+                    } else {
                         System.out.println("Failed to fetch user list: " + response.code());
                     }
                 } catch (IOException e) {
