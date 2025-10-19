@@ -21,10 +21,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
 
 
     private final SharedProgramsContainer sharedProgramsContainer = new SharedProgramsContainer();
-    //Todo: create DTO for sharedProgramsContainer
     private final UsersManager usersManager = new UsersManager();
-    private final FunctionsContainer sharedFunctionsContainer = new FunctionsContainer();
-    //TODO: move sharedFunctionsContainer
     private final ExecutionManager executionManager = new ExecutionManager();
 
     @Override
@@ -131,8 +128,8 @@ public class MultiUserController implements MultiUserModel, Serializable {
             user.setActiveProgram(programName);
             return;
         }
-
-        Program newProgramInstance = new Program(sharedProgramsContainer.getSProgram(programName), sharedFunctionsContainer, username);
+        user.pullSfunctions(sharedProgramsContainer.getAllSFunctions());
+        Program newProgramInstance = new Program(sharedProgramsContainer.getSProgram(programName), user);
         usersManager.getUser(username).addProgram(newProgramInstance);
         usersManager.getUser(username).setActiveProgram(programName);
     }

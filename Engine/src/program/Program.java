@@ -13,6 +13,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import program.function.Function;
 import program.function.FunctionsContainer;
+import user.User;
 
 import java.io.File;
 import java.util.Map;
@@ -149,11 +150,12 @@ public class Program implements Serializable {
 
     // In Program.java
 
-    public Program(SProgram sProgram, FunctionsContainer sharedFunctionsContainer, String username) {
+    public Program(SProgram sProgram, User user) {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
         this.functionsContainer = new FunctionsContainer();
-        this.uploadingUser = username;
+        this.uploadingUser = user.getUsername();
+        FunctionsContainer sharedFunctionsContainer = user.getFunctionsContainer();
 
         // 1. Handle functions if they exist. This part is fine.
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());

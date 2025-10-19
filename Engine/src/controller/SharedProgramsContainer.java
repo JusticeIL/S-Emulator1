@@ -7,6 +7,7 @@ import dto.ProgramData;
 import program.Program;
 import program.function.Function;
 import program.function.FunctionsContainer;
+import user.User;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -24,7 +25,7 @@ public class SharedProgramsContainer {
 
    synchronized public void addSProgram(SProgram sProgram, String username){
         sPrograms.putIfAbsent(sProgram.getName(),sProgram);
-        Program dummyProgram = new Program(sProgram,new FunctionsContainer(),username);//TODO:REMOVE SHARED FUNCTIONS CONTAINER
+        Program dummyProgram = new Program(sProgram,new User(username));//TODO:REMOVE SHARED FUNCTIONS CONTAINER
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
         dummyProgram.setUploadingUser(username);
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
@@ -75,5 +76,9 @@ public class SharedProgramsContainer {
             }
         }
         return count;
+    }
+
+    public Set<SFunction> getAllSFunctions() {
+        return new HashSet<>(sFunctions.values());
     }
 }

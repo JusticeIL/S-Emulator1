@@ -1,11 +1,14 @@
 package user;
 
+import XMLandJaxB.SFunction;
 import controller.ProgramContainer;
 import dto.Statistics;
 import program.Program;
+import program.function.FunctionsContainer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class User {
@@ -17,6 +20,7 @@ public class User {
     private final String username;
     private final Statistics history;
     private final ProgramContainer programContainer;
+    private final FunctionsContainer functionsContainer;
     private Program activeProgram;
 
     public User(String username) {
@@ -28,6 +32,11 @@ public class User {
         this.programExecutionsCounter = 0;
         this.history = new Statistics();
         this.programContainer = new ProgramContainer();
+        this.functionsContainer = new FunctionsContainer();
+    }
+
+    public FunctionsContainer getFunctionsContainer() {
+        return functionsContainer;
     }
 
     public ProgramContainer getProgramContainer() {
@@ -124,5 +133,9 @@ public class User {
 
         this.creditsUsed += cost;
         return actualCost;
+    }
+
+    public void pullSfunctions(Set<SFunction> allSFunctions) {
+        functionsContainer.setup(allSFunctions);
     }
 }
