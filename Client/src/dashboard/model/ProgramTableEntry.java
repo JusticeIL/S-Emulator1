@@ -3,7 +3,6 @@ package dashboard.model;
 import dto.ProgramData;
 import javafx.beans.property.*;
 
-
 public class ProgramTableEntry {
     private final StringProperty programName;
     private final StringProperty user;

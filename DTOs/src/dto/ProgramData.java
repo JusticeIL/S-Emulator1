@@ -29,8 +29,6 @@ public final class ProgramData implements Serializable {
     private final int numberOfRuns;
     private final float avarageCreditsPerRun;
 
-
-
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
         int zeroLevelInstructionsCount = 0;

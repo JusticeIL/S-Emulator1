@@ -13,19 +13,35 @@ public class FunctionTableEntry {
     private final IntegerProperty instructionsCounter;
     private final IntegerProperty maxProgramLevel;
 
-    public FunctionTableEntry(ProgramData dto) { //TODO: maybe create function data?
+    public FunctionTableEntry(ProgramData dto) {
         this.functionName = new SimpleStringProperty(dto.getProgramName());
         this.programOrigin = new SimpleStringProperty("test"); //TODO: dto.getProgramOrigin()
-        this.user = new SimpleStringProperty("test"); //TODO: dto.getUser()
-        this.instructionsCounter = new SimpleIntegerProperty(0); //TODO: dto.getInstructionsCounter()
-        this.maxProgramLevel = new SimpleIntegerProperty(0); //TODO: dto.getMaxProgramLevel()
+        this.user = new SimpleStringProperty(dto.getUploadingUser());
+        this.instructionsCounter = new SimpleIntegerProperty(dto.getNumberOfZeroLevelInstructions());
+        this.maxProgramLevel = new SimpleIntegerProperty(dto.getMaxExpandLevel());
+    }
 
-        /*
-        this.programOrigin = new SimpleStringProperty(dto.getProgramOrigin());
-        this.user = new SimpleStringProperty(dto.getUser());
-        this.instructionsCounter = new SimpleIntegerProperty(dto.getInstructionsCounter());
-        this.maxProgramLevel = new SimpleIntegerProperty(dto.getMaxProgramLevel());
-        */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FunctionTableEntry)) return false;
+        FunctionTableEntry other = (FunctionTableEntry) o;
+        return this.functionName.get().equals(other.functionName.get()) &&
+                this.user.get().equals(other.user.get()) &&
+                Integer.valueOf(this.instructionsCounter.get()).equals(other.instructionsCounter.get()) &&
+                Integer.valueOf(this.maxProgramLevel.get()).equals(other.maxProgramLevel.get()) &&
+                Integer.valueOf(this.instructionsCounter.get()).equals(other.instructionsCounter.get());
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(
+                functionName.get(),
+                user.get(),
+                instructionsCounter.get(),
+                maxProgramLevel.get(),
+                instructionsCounter.get()
+        );
     }
 
     // getters and setters (needed by PropertyValueFactory)

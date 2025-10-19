@@ -2,7 +2,7 @@ package dashboard.refreshTasks;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import dashboard.model.ProgramTableEntry;
+import dashboard.model.FunctionTableEntry;
 import dto.ProgramData;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -17,16 +17,16 @@ import java.util.*;
 import static configuration.ClientConfiguration.CLIENT;
 import static configuration.ResourcesConfiguration.*;
 
-public class ProgramsTableRefresher extends TimerTask {
-    private final TableView<ProgramTableEntry> programsTable;
+public class FunctionsTableRefresher extends TimerTask {
+    private final TableView<FunctionTableEntry> functionsTable;
 
-    public ProgramsTableRefresher(TableView<ProgramTableEntry> table) {
-        this.programsTable = table;
+    public FunctionsTableRefresher(TableView<FunctionTableEntry> table) {
+        this.functionsTable = table;
     }
 
     @Override
     public void run() {
-        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + GET_ALL_PROGRAMS_RESOURCE))
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + GET_ALL_FUNCTIONS_RESOURCE))
                 .newBuilder();
         String finalURL = urlBuilder.build().toString();
 
@@ -46,36 +46,36 @@ public class ProgramsTableRefresher extends TimerTask {
                         String responseBody = Objects.requireNonNull(body).string();
                         Type type = new TypeToken<List<ProgramData>>() {
                         }.getType();
-                        List<ProgramData> programs = gson.fromJson(responseBody, type);
-                        List<ProgramTableEntry> fetchedPrograms = programs.stream()
-                                .map(ProgramTableEntry::new)
+                        List<ProgramData> functions = gson.fromJson(responseBody, type);
+                        List<FunctionTableEntry> fetchedFunctions = functions.stream()
+                                .map(FunctionTableEntry::new)
                                 //.sorted() TODO: decide sorting
                                 .toList();
 
                         Platform.runLater(() -> {
-                            ObservableList<ProgramTableEntry> currentPrograms = programsTable.getItems();
-                            Map<String, Integer> programNameToIndex = new HashMap<>();
-                            for (int i = 0; i < currentPrograms.size(); i++) {
-                                programNameToIndex.put(currentPrograms.get(i).getProgramName(), i);
+                            ObservableList<FunctionTableEntry> currentFunctions = functionsTable.getItems();
+                            Map<String, Integer> functionNameToIndex = new HashMap<>();
+                            for (int i = 0; i < currentFunctions.size(); i++) {
+                                functionNameToIndex.put(currentFunctions.get(i).getFunctionName(), i);
                             }
 
-                            for (ProgramTableEntry fetchedProgram : fetchedPrograms) {
-                                String programName = fetchedProgram.getProgramName();
-                                Integer idx = programNameToIndex.get(programName);
+                            for (FunctionTableEntry fetchedFunction : fetchedFunctions) {
+                                String functionName = fetchedFunction.getFunctionName();
+                                Integer idx = functionNameToIndex.get(functionName);
                                 if (idx != null) {
-                                    ProgramTableEntry currentProgram = currentPrograms.get(idx);
-                                    if (!fetchedProgram.equals(currentProgram)) {
-                                        currentPrograms.set(idx, fetchedProgram);
+                                    FunctionTableEntry currentFunction = currentFunctions.get(idx);
+                                    if (!fetchedFunction.equals(currentFunction)) {
+                                        currentFunctions.set(idx, fetchedFunction);
                                     }
                                 } else {
-                                    currentPrograms.add(fetchedProgram);
+                                    currentFunctions.add(fetchedFunction);
                                 }
                             }
                         });
 
                     } else {
                         String responseBody = Objects.requireNonNull(body).string();
-                        System.out.println("Failed to fetch program list: " + response.code());
+                        System.out.println("Failed to fetch function list: " + response.code());
                         System.out.println(responseBody);
                     }
                 } catch (IOException e) {

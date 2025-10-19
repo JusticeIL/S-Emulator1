@@ -3,6 +3,7 @@ package dashboard.controller;
 import controller.SingleProgramController;
 import dashboard.model.FunctionTableEntry;
 import dashboard.model.ProgramTableEntry;
+import dashboard.refreshTasks.FunctionsTableRefresher;
 import dashboard.refreshTasks.ProgramsTableRefresher;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -95,8 +96,12 @@ public class RightSideController {
 
         /* Timer tasks */
         ProgramsTableRefresher programListRefreshTask = new ProgramsTableRefresher(programsTable);
-        Timer timer = new Timer();
-        timer.schedule(programListRefreshTask, REFRESH_RATE, REFRESH_RATE);
+        Timer timer1 = new Timer();
+        timer1.schedule(programListRefreshTask, REFRESH_RATE, REFRESH_RATE);
+
+        FunctionsTableRefresher functionListRefreshTask = new FunctionsTableRefresher(functionsTable);
+        Timer timer2 = new Timer();
+        timer2.schedule(functionListRefreshTask, REFRESH_RATE, REFRESH_RATE);
     }
 
     @FXML
