@@ -83,7 +83,7 @@ public final class ProgramData implements Serializable {
         program.getFunctions().forEach(function -> functionNames.add(function.getUserString())); // Add all function user-representation strings
         this.uploadingUser = program.getUploadingUser();
         this.numberOfRuns = program.getNumberOfRuns();
-        this.avarageCreditsPerRun = (float)program.getCostOfAllRuns()/(float)numberOfRuns;
+        this.avarageCreditsPerRun = numberOfRuns == 0 ? 0 : (float)program.getCostOfAllRuns() / (float)numberOfRuns;
     }
 
     public String getUploadingUser() {

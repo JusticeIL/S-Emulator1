@@ -3,6 +3,7 @@ package dashboard.model;
 import dto.ProgramData;
 import javafx.beans.property.*;
 
+
 public class ProgramTableEntry {
     private final StringProperty programName;
     private final StringProperty user;
@@ -13,19 +14,36 @@ public class ProgramTableEntry {
 
     public ProgramTableEntry(ProgramData dto) {
         this.programName = new SimpleStringProperty(dto.getProgramName());
-        this.user = new SimpleStringProperty("test"); //TODO: dto.getUser()
-        this.instructionsCounter = new SimpleIntegerProperty(0); //TODO: dto.getInstructionsCounter()
-        this.maxProgramLevel = new SimpleIntegerProperty(0); //TODO: dto.getMaxProgramLevel()
-        this.executionsCounter = new SimpleIntegerProperty(0); //TODO: dto.getExecutionsCounter()
-        this.averageExecutionCost = new SimpleDoubleProperty(0.0); //TODO: dto.getAverageExecutionCost()
+        this.user = new SimpleStringProperty(dto.getUploadingUser());
+        this.instructionsCounter = new SimpleIntegerProperty(dto.getNumberOfZeroLevelInstructions());
+        this.maxProgramLevel = new SimpleIntegerProperty(dto.getMaxExpandLevel());
+        this.executionsCounter = new SimpleIntegerProperty(dto.getNumberOfRuns());
+        this.averageExecutionCost = new SimpleDoubleProperty(dto.getAvarageCreditsPerRun());
+    }
 
-        /*
-        this.user = new SimpleStringProperty(dto.getUser());
-        this.instructionsCounter = new SimpleIntegerProperty(dto.getInstructionsCounter());
-        this.maxProgramLevel = new SimpleIntegerProperty(dto.getMaxProgramLevel());
-        this.executionsCounter = new SimpleIntegerProperty(dto.getExecutionsCounter());
-        this.averageExecutionCost = new SimpleDoubleProperty(dto.getAverageExecutionCost());
-        */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProgramTableEntry)) return false;
+        ProgramTableEntry other = (ProgramTableEntry) o;
+        return this.programName.get().equals(other.programName.get()) &&
+                this.user.get().equals(other.user.get()) &&
+                Integer.valueOf(this.instructionsCounter.get()).equals(other.instructionsCounter.get()) &&
+                Integer.valueOf(this.maxProgramLevel.get()).equals(other.maxProgramLevel.get()) &&
+                Integer.valueOf(this.executionsCounter.get()).equals(other.executionsCounter.get()) &&
+                Double.valueOf(this.averageExecutionCost.get()).equals(other.averageExecutionCost.get());
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(
+                programName.get(),
+                user.get(),
+                instructionsCounter.get(),
+                maxProgramLevel.get(),
+                executionsCounter.get(),
+                averageExecutionCost.get()
+        );
     }
 
     // getters and setters (needed by PropertyValueFactory)

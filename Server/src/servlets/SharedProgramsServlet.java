@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "SharedFunctionsServlet", urlPatterns = {"/api/shared/programs"})
+@WebServlet(name = "SharedProgramsServlet", urlPatterns = {"/api/shared/programs"})
 public class SharedProgramsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,7 +36,9 @@ public class SharedProgramsServlet extends HttpServlet {
                     .orElse(null);
 
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .serializeSpecialFloatingPointValues()
+                    .create();
             String responseJson = gson.toJson(model.getAllSharedProgramsData());
 
             resp.setContentType("application/json");
