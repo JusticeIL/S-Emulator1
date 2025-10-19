@@ -29,6 +29,9 @@ public class SharedProgramsContainer {
         dummyProgram.getFunctions().forEach(function -> {dummyProgramsForDashboard.putIfAbsent(function.getName(),dummyProgram);});
         sProgram.getSFunctions().getSFunction().forEach(sFunction -> {
             sFunctions.putIfAbsent(sFunction.getName(),sFunction);
+            Program dummyFunction = new Program(sProgram,new FunctionsContainer());//TODO:REMOVE SHARED FUNCTIONS CONTAINER
+            dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyFunction);
+            dummyFunction.setUploadingUser(username);
         });
     }
 
@@ -53,5 +56,9 @@ public class SharedProgramsContainer {
 
     public Collection<String> getAllProgramNames() {
         return sPrograms.keySet();
+    }
+
+    public Collection<String> getAllFunctionNames() {
+        return sFunctions.keySet();
     }
 }
