@@ -48,6 +48,15 @@ public class Program implements Serializable {
     private String uploadingUser;
     private int numberOfRuns = 0;
     private int costOfAllRuns;
+    private String originProgramName = "";
+
+    public String getOriginProgramName() {
+        return originProgramName;
+    }
+
+    protected void setOriginProgramName(String originProgramName) {
+        this.originProgramName = originProgramName;
+    }
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
         this.labelFactory = new LabelFactory();
@@ -149,7 +158,7 @@ public class Program implements Serializable {
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
         sFunctionsOpt.ifPresent(sFunctions -> {
 
-                functionsContainer.setup(sFunctions.getSFunction(),sharedFunctionsContainer);
+            functionsContainer.setup(sFunctions.getSFunction(), sharedFunctionsContainer, this);
 
 
             functionsContainer.getFunctionNames().forEach(functionName -> {
