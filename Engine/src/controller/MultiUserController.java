@@ -37,7 +37,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
                 sharedProgramsContainer.addSProgram(sProgram,username);
             }
             usersManager.getUser(username).updateProgramsLoaded();
-            sharedProgramsContainer.getNumberOfFunctions(username)
+            usersManager.getUser(username).setFunctionsLoaded(sharedProgramsContainer.getNumberOfFunctions(username));
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
         }

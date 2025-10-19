@@ -7,10 +7,7 @@ import dto.ProgramData;
 import program.Program;
 import program.function.FunctionsContainer;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class SharedProgramsContainer {
     private final Map<String, SProgram> sPrograms = new HashMap<>();
@@ -67,10 +64,11 @@ public class SharedProgramsContainer {
         return sFunctions.keySet();
     }
 
-    public void getNumberOfFunctions(String username) {
-        long count = sFunctions.values().stream()
-                .filter(sFunction -> sFunction.getUploadingUser().equals(username))
-                .count();
-        // Here you can use the count as needed
+    public int getNumberOfFunctions(String username) {
+        return (int) getAllFunctionNames().stream()
+                .filter(functionName->dummyProgramsForDashboard.
+                        get(functionName).getUploadingUser().equals(username)).
+                count();
+
     }
 }
