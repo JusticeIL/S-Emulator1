@@ -25,7 +25,7 @@ public class SharedProgramsContainer {
 
    synchronized public void addSProgram(SProgram sProgram, String username){
         sPrograms.putIfAbsent(sProgram.getName(),sProgram);
-        Program dummyProgram = new Program(sProgram,new User(username));//TODO:REMOVE SHARED FUNCTIONS CONTAINER
+        Program dummyProgram = new Program(sProgram,new User(username));
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
         dummyProgram.setUploadingUser(username);
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());

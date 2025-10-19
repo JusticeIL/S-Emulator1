@@ -41,7 +41,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
         }
-    }//TODO: handle loading the same program twice:currently ignores and doesnt raise exception
+    }
 
     @Override
     public boolean isProgramLoaded(String username) {

@@ -31,7 +31,7 @@ public class InstructionTableEntry {
         this.label = new SimpleStringProperty(instruction.getLabelName());
         this.instruction = new SimpleStringProperty(instruction.getInstruction());
         this.cycles = new SimpleStringProperty(instruction.getCycles());
-        this.architecture = new SimpleStringProperty("test"); //TODO: implement instruction.getArchitecture()
+        this.architecture = new SimpleStringProperty(instruction.getArchitecture());
         this.instructionDTO = instruction;
     }
 

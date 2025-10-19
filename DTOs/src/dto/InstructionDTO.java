@@ -94,4 +94,8 @@ public class InstructionDTO {
     public LabelDTO getDestinationLabel() {
         return destinationLabel;
     }
+
+    public String getArchitecture() {
+        return ArchitectureGeneration;
+    }
 }
