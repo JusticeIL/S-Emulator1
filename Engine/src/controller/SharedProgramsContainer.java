@@ -1,6 +1,7 @@
 package controller;
 
 import XMLandJaxB.SFunction;
+import XMLandJaxB.SFunctions;
 import XMLandJaxB.SProgram;
 import dto.ProgramData;
 import program.Program;
@@ -9,6 +10,7 @@ import program.function.FunctionsContainer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class SharedProgramsContainer {
     private final Map<String, SProgram> sPrograms = new HashMap<>();
@@ -27,11 +29,14 @@ public class SharedProgramsContainer {
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
         dummyProgram.setUploadingUser(username);
         dummyProgram.getFunctions().forEach(function -> {dummyProgramsForDashboard.putIfAbsent(function.getName(),dummyProgram);});
-        sProgram.getSFunctions().getSFunction().forEach(sFunction -> {
-            sFunctions.putIfAbsent(sFunction.getName(),sFunction);
-            Program dummyFunction = new Program(sProgram,new FunctionsContainer());//TODO:REMOVE SHARED FUNCTIONS CONTAINER
-            dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyFunction);
-            dummyFunction.setUploadingUser(username);
+       Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
+         sFunctionsOpt.ifPresent(programSFunctions -> {
+             programSFunctions.getSFunction().forEach(sFunction -> {
+                 sFunctions.putIfAbsent(sFunction.getName(),sFunction);
+                 Program dummyFunction = new Program(sProgram,new FunctionsContainer());//TODO:REMOVE SHARED FUNCTIONS CONTAINER
+                 dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyFunction);
+                 dummyFunction.setUploadingUser(username);
+             });
         });
     }
 
@@ -60,5 +65,12 @@ public class SharedProgramsContainer {
 
     public Collection<String> getAllFunctionNames() {
         return sFunctions.keySet();
+    }
+
+    public void getNumberOfFunctions(String username) {
+        long count = sFunctions.values().stream()
+                .filter(sFunction -> sFunction.getUploadingUser().equals(username))
+                .count();
+        // Here you can use the count as needed
     }
 }

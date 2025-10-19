@@ -56,8 +56,16 @@ public class User {
         return programsLoaded;
     }
 
+    public void updateProgramsLoaded() {
+        programsLoaded++;
+    }
+
     public int getFunctionsLoaded() {
         return functionsLoaded;
+    }
+
+    public void setFunctionsLoaded(int functionsLoaded) {
+        this.functionsLoaded = functionsLoaded;
     }
 
     public int getCredits() {
