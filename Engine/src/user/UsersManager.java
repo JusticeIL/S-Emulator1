@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UsersManager {
-    private Map<String, User> users = new HashMap<>();
+    private final Map<String, User> users = new HashMap<>();
 
     public void addUser(String username) {
         users.putIfAbsent(username, new User(username));
@@ -24,5 +24,5 @@ public class UsersManager {
 
     public UserDTO getUserData(String username) {
         return new UserDTO(users.get(username));
-    }
+    } //TODO: maybe add exception if user not found or return optional or use not null annotation
 }
