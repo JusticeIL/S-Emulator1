@@ -26,6 +26,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static configuration.ClientConfiguration.CLIENT;
+import static configuration.DialogUtils.showAlert;
 import static configuration.ResourcesConfiguration.*;
 
 public class TopComponentController{
@@ -91,13 +92,17 @@ public class TopComponentController{
                     e.printStackTrace();
                 }
 
-            } else { //TODO: handle error by creating a new dialog window
-                System.out.println("Failed to send program to server: " + response.code());
+            } else {
+                try (ResponseBody body = response.body()) {
+                    String responseBody = Objects.requireNonNull(body).string();
+                    showAlert("Failed to retrieve user data: " + response.code() + "\n" + responseBody, primaryStage);
+                } catch (Exception e) {
+                    showAlert("Failed to retrieve user data: " + response.code(), primaryStage);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         availableCSSFileNames = listCssFiles();
 
@@ -144,6 +149,18 @@ public class TopComponentController{
                         .otherwise("Choose a Skin")
         );
 
+        // Handle cases when user preses enter on the credits text field
+        creditsTextField.setOnAction(event -> {
+            try {
+                String creditsToAddAsString = creditsTextField.getText();
+                if (!creditsToAddAsString.isEmpty()) {
+                    Integer.parseInt(creditsTextField.getText());
+                }
+            } catch (NumberFormatException e) {
+                showAlert("Please enter a number", primaryStage);
+            }
+        });
+
     }
 
     @FXML
@@ -175,15 +192,18 @@ public class TopComponentController{
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
-                    if (response.isSuccessful()) {
-                        Platform.runLater(() -> {
-                            currentLoadedProgramPath.setText(selectedFile.getAbsolutePath());
-                        });
-
-                    } else { //TODO: handle error by creating a new dialog window
-                        System.out.println("Failed to send program to server: " + response.code());
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
+                        currentLoadedProgramPath.setText(selectedFile.getAbsolutePath());
+                    });
+                } else {
+                    try (ResponseBody body = response.body()) {
+                        String responseBody = Objects.requireNonNull(body).string();
+                        showAlert("Failed to send program to server: " + response.code() + "\n" + responseBody, primaryStage);
+                    } catch (Exception e) {
+                        showAlert("Failed to send program to server: " + response.code(), primaryStage);
                     }
+                }
             }
 
             @Override
@@ -196,8 +216,24 @@ public class TopComponentController{
     @FXML
     void addCredits(ActionEvent event) {
 
+        String chargeAmountAsText = creditsTextField.getText();
+        if (chargeAmountAsText.isEmpty()) { // Case: no amount entered
+            showAlert("Please enter a credit amount", primaryStage);
+            return;
+        }
         // Parse from text to int
-        int chargeAmount = Integer.parseInt(creditsTextField.getText());
+        int chargeAmount = 0;
+        try {
+            chargeAmount = Integer.parseInt(chargeAmountAsText);
+        } catch (NumberFormatException e) {
+            showAlert("Error " + e.getMessage() + " because it is not an acceptable number", primaryStage);
+            return;
+        }
+
+        if (chargeAmount <= 0) { // Case: non-positive amount entered
+            showAlert("Please enter a positive credit amount", primaryStage);
+            return;
+        }
 
         // Build URL
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + ADD_CREDITS_RESOURCE))
@@ -237,8 +273,13 @@ public class TopComponentController{
                         e.printStackTrace();
                     }
 
-                } else { //TODO: handle error by creating a new dialog window
-                    System.out.println("Failed to send program to server: " + response.code());
+                } else {
+                    try (ResponseBody body = response.body()) {
+                        String responseBody = Objects.requireNonNull(body).string();
+                        showAlert("Failed to add credits to user: " + response.code() + "\n" + responseBody, primaryStage);
+                    } catch (Exception e) {
+                        showAlert("Failed to add credits to user: " + response.code(), primaryStage);
+                    }
                 }
             }
 
