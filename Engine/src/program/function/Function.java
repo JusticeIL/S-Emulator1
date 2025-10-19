@@ -23,8 +23,10 @@ public class Function extends Program {
         this.userString = sFunction.getUserString();
     }
 
-    public Function(SFunction sFunction,FunctionsContainer functionsContainer,FunctionsContainer sharedFunctionsContainer) throws FileNotFoundException {
+    public Function(SFunction sFunction,FunctionsContainer functionsContainer,FunctionsContainer sharedFunctionsContainer,Program originProgram) throws FileNotFoundException {
         super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer, sharedFunctionsContainer);
+        setUploadingUser(originProgram.getUploadingUser());
+        setOriginProgramName(originProgram.getProgramName());
         this.userString = sFunction.getUserString();
     }
 

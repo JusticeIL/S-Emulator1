@@ -1,6 +1,7 @@
 package program.function;
 
 import XMLandJaxB.SFunction;
+import program.Program;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -10,7 +11,7 @@ public class FunctionsContainer {
     private final Map<String, Function> functions = new HashMap<>();
     private final Set<String> functionNames = new HashSet<>();
     private final Map<String, SFunction> sFunctions = new HashMap<>();
-
+    private Program originProgram;
 
 
     public void setup(Collection<SFunction> sFunctions){
@@ -20,7 +21,7 @@ public class FunctionsContainer {
         });
     }
 
-    public void setup(Collection<SFunction> sFunctions, FunctionsContainer sharedFunctionsContainer){
+    public void setup(Collection<SFunction> sFunctions, FunctionsContainer sharedFunctionsContainer,Program originProgram){
         sharedFunctionsContainer.setup(sFunctions);
         sFunctions.forEach(sFunction -> {
             this.functionNames.add(sFunction.getName());
@@ -69,7 +70,7 @@ public class FunctionsContainer {
             function = sharedFunctionsContainer.functions.get(name);
         }
         else {
-            function = new Function(sFunctions.get(name),this,sharedFunctionsContainer);
+            function = new Function(sFunctions.get(name),this,sharedFunctionsContainer,originProgram);
             functions.put(name, function);
             sharedFunctionsContainer.functions.put(name, function);
         }
