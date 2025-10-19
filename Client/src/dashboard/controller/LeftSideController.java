@@ -3,6 +3,8 @@ package dashboard.controller;
 import dashboard.model.UserTableEntry;
 import dashboard.refreshTasks.UserListRefresher;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -53,7 +55,17 @@ public class LeftSideController {
     @FXML
     public void initialize() {
         /* Buttons*/
-        unselectUserBtn.disableProperty().bind(Bindings.isEmpty(usersTable.getItems()));
+        ObservableValue<UserTableEntry> selectedItemObs = Bindings.select(usersTable.selectionModelProperty(), "selectedItem");
+        unselectUserBtn.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> {
+
+                    ObservableList<UserTableEntry> users = usersTable.getItems();
+                    if (users == null || users.isEmpty()) return true;
+                    return selectedItemObs.getValue() == null;
+                },
+                usersTable.itemsProperty(),
+                selectedItemObs
+        ));
         RerunBtn.disableProperty().bind(Bindings.isEmpty(userExecutionsTable.getItems()));
         ShowStatisticsBtn.disableProperty().bind(Bindings.isEmpty(userExecutionsTable.getItems()));
 
@@ -75,7 +87,7 @@ public class LeftSideController {
 
     @FXML
     void unselectUser(ActionEvent event) {
-
+        usersTable.getSelectionModel().clearSelection();
     }
 
     @FXML

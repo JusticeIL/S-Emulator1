@@ -158,7 +158,7 @@ public class TopComponentController{
                 }
             } catch (NumberFormatException e) {
                 showAlert("Please enter a number", primaryStage);
-                creditsTextField.setText("");
+                creditsTextField.clear();
             }
         });
 
@@ -228,13 +228,13 @@ public class TopComponentController{
             chargeAmount = Integer.parseInt(chargeAmountAsText);
         } catch (NumberFormatException e) {
             showAlert("Error " + e.getMessage() + " because it is not an acceptable number", primaryStage);
-            creditsTextField.setText("");
+            creditsTextField.clear();
             return;
         }
 
         if (chargeAmount <= 0) { // Case: non-positive amount entered
             showAlert("Please enter a positive credit amount", primaryStage);
-            creditsTextField.setText("");
+            creditsTextField.clear();
             return;
         }
 
