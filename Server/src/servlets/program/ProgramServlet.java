@@ -1,4 +1,4 @@
-package servlets;
+package servlets.program;
 
 import com.google.gson.Gson;
 import controller.MultiUserModel;
@@ -92,11 +92,16 @@ public class ProgramServlet extends HttpServlet {
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElse(null);
-        try {
-            model.loadProgram(username, xmlPart.getInputStream());
-        } catch (JAXBException e) {
-            resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-        }}else{
+            try {
+                model.loadProgram(username, xmlPart.getInputStream());
+            } catch (JAXBException e) {
+                resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            } catch (IllegalArgumentException e) {
+                resp.setStatus(HttpServletResponse.SC_CONFLICT);
+                resp.getWriter().write("Error: " + e.getMessage());
+                return;
+            }
+        } else {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }

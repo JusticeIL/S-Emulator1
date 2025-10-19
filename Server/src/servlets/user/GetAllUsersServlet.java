@@ -1,4 +1,4 @@
-package servlets;
+package servlets.user;
 
 import com.google.gson.Gson;
 import controller.MultiUserModel;

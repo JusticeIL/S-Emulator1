@@ -1,4 +1,4 @@
-package servlets;
+package servlets.execution;
 
 import com.google.gson.Gson;
 import controller.MultiUserModel;
@@ -8,14 +8,22 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import dto.VariableDTO;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@WebServlet(name = "SharedFunctionsServlet", urlPatterns = {"/api/shared/functions"})
-public class SharedFunctionsServlet extends HttpServlet {
+@WebServlet(name = "ProgramExecutionServlet", urlPatterns = {"/api/program/execute"})
+public class ProgramExecutionServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Gson gson = new Gson();
+        MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
+        // Expects the query parameters to contain the arguments for the program
+
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
         if (cookies != null) {
@@ -26,7 +34,6 @@ public class SharedFunctionsServlet extends HttpServlet {
                 }
             }
         }
-
         if (hasUsernameCookie) {
             String username = Arrays.stream(cookies)
                     .filter(cookie -> "username".equals(cookie.getName()))
@@ -34,16 +41,12 @@ public class SharedFunctionsServlet extends HttpServlet {
                     .map(Cookie::getValue)
                     .orElse(null);
 
-            MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-            Gson gson = new Gson();
-            String responseJson = gson.toJson(model.getAllSharedFunctionsData());
-
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write(responseJson);
+            List<String> argNames = model.getProgramData(username).get().getProgramXArguments();
+            Set<VariableDTO> args = argNames.stream().map(name -> new VariableDTO(name, Integer.parseInt(req.getParameter(name)))).collect(Collectors.toSet());
+            model.runProgram(username, args);
+            resp.sendRedirect(req.getContextPath() + "/program");
         } else {
-            resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-            resp.getWriter().write("Missing user verification.");
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 }

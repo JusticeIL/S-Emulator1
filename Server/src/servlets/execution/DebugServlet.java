@@ -1,4 +1,4 @@
-package servlets;
+package servlets.execution;
 
 import com.google.gson.Gson;
 import controller.MultiUserModel;
@@ -16,14 +16,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "ProgramExecutionServlet", urlPatterns = {"/api/program/execute"})
-public class ProgramExecutionServlet extends HttpServlet {
+@WebServlet(name = "DebugServlet", urlPatterns = {"/api/program/debug"})
+public class DebugServlet extends HttpServlet {
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
         // Expects the query parameters to contain the arguments for the program
-
+        // and the body to contain the breakpoints, one per line
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
         if (cookies != null) {
@@ -40,12 +41,11 @@ public class ProgramExecutionServlet extends HttpServlet {
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElse(null);
-
             List<String> argNames = model.getProgramData(username).get().getProgramXArguments();
             Set<VariableDTO> args = argNames.stream().map(name -> new VariableDTO(name, Integer.parseInt(req.getParameter(name)))).collect(Collectors.toSet());
-            model.runProgram(username, args);
-            resp.sendRedirect(req.getContextPath() + "/program");
-        } else {
+            Set<Integer> breakpoints = req.getReader().lines().map(Integer::parseInt).collect(Collectors.toSet());
+            model.startDebug(username, args,breakpoints);resp.sendRedirect(req.getContextPath() + "/program");}
+        else{
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }

@@ -1,21 +1,17 @@
-package servlets;
+package servlets.user;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import controller.MultiUserController;
 import controller.MultiUserModel;
-import dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import user.User;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Set;
 
 @WebServlet(name = "CreditsManagementServlet", urlPatterns = {"/api/user/credit"})

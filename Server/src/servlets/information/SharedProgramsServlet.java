@@ -1,5 +1,7 @@
-package servlets;
+package servlets.information;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,13 +13,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet(name = "ExpandServlet", urlPatterns = {"/api/program/expand"})
-public class ExpandServlet extends HttpServlet {
-
+@WebServlet(name = "SharedProgramsServlet", urlPatterns = {"/api/shared/programs"})
+public class SharedProgramsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int level = req.getParameter("level") != null ? Integer.parseInt(req.getParameter("level")) : 0;
-        MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
         if (cookies != null) {
@@ -28,16 +27,26 @@ public class ExpandServlet extends HttpServlet {
                 }
             }
         }
+
         if (hasUsernameCookie) {
             String username = Arrays.stream(cookies)
                     .filter(cookie -> "username".equals(cookie.getName()))
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElse(null);
-            model.Expand(username, level);
-            resp.sendRedirect(req.getContextPath() + "/program");
-        }else {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
+            MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
+            Gson gson = new GsonBuilder()
+                    .serializeSpecialFloatingPointValues()
+                    .create();
+            String responseJson = gson.toJson(model.getAllSharedProgramsData());
+
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().write(responseJson);
+        } else {
+            resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            resp.getWriter().write("Missing user verification.");
         }
     }
 }

@@ -1,4 +1,4 @@
-package servlets;
+package servlets.program;
 
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
