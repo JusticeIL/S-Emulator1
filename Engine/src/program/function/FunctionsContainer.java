@@ -27,6 +27,7 @@ public class FunctionsContainer {
             this.functionNames.add(sFunction.getName());
             this.sFunctions.putIfAbsent(sFunction.getName(), sFunction);
         });
+        this.originProgram = originProgram;
     }
 
     public Function tryGetFunction(String name) throws FileNotFoundException {

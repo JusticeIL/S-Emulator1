@@ -149,10 +149,11 @@ public class Program implements Serializable {
 
     // In Program.java
 
-    public Program(SProgram sProgram,FunctionsContainer sharedFunctionsContainer) {
+    public Program(SProgram sProgram, FunctionsContainer sharedFunctionsContainer, String username) {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
         this.functionsContainer = new FunctionsContainer();
+        this.uploadingUser = username;
 
         // 1. Handle functions if they exist. This part is fine.
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());

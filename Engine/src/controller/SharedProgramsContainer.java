@@ -5,8 +5,10 @@ import XMLandJaxB.SFunctions;
 import XMLandJaxB.SProgram;
 import dto.ProgramData;
 import program.Program;
+import program.function.Function;
 import program.function.FunctionsContainer;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class SharedProgramsContainer {
@@ -22,18 +24,17 @@ public class SharedProgramsContainer {
 
    synchronized public void addSProgram(SProgram sProgram, String username){
         sPrograms.putIfAbsent(sProgram.getName(),sProgram);
-        Program dummyProgram = new Program(sProgram,new FunctionsContainer());//TODO:REMOVE SHARED FUNCTIONS CONTAINER
+        Program dummyProgram = new Program(sProgram,new FunctionsContainer(),username);//TODO:REMOVE SHARED FUNCTIONS CONTAINER
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
         dummyProgram.setUploadingUser(username);
-        dummyProgram.getFunctions().forEach(function -> {dummyProgramsForDashboard.putIfAbsent(function.getName(),dummyProgram);});
-       Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
-         sFunctionsOpt.ifPresent(programSFunctions -> {
+        Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
+        sFunctionsOpt.ifPresent(programSFunctions -> {
              programSFunctions.getSFunction().forEach(sFunction -> {
                  sFunctions.putIfAbsent(sFunction.getName(),sFunction);
-                 Program dummyFunction = new Program(sProgram,new FunctionsContainer());//TODO:REMOVE SHARED FUNCTIONS CONTAINER
-                 dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyFunction);
-                 dummyFunction.setUploadingUser(username);
              });
+        });
+        dummyProgram.getFunctions().forEach(function -> {
+            dummyProgramsForDashboard.putIfAbsent(function.getName(),function);
         });
     }
 
@@ -65,10 +66,14 @@ public class SharedProgramsContainer {
     }
 
     public int getNumberOfFunctions(String username) {
-        return (int) getAllFunctionNames().stream()
-                .filter(functionName->dummyProgramsForDashboard.
-                        get(functionName).getUploadingUser().equals(username)).
-                count();
-
+        List<String> allFunctionNames = new ArrayList<>(getAllFunctionNames());
+        int count = 0;
+        for(String functionName : allFunctionNames) {
+            String functionUserString = sFunctions.get(functionName).getUserString();
+            if(dummyProgramsForDashboard.get(functionUserString).getUploadingUser().equals(username)) {
+                count++;
+            }
+        }
+        return count;
     }
 }
