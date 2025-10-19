@@ -34,7 +34,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
                 JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
-                sharedProgramsContainer.addSProgram(sProgram);
+                sharedProgramsContainer.addSProgram(sProgram,username);
             }
         } catch (JAXBException e) {
             throw new JAXBException("Error parsing XML file at path: " + path);
@@ -63,7 +63,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
         executionManager.runProgram(user, args);
         String programName = user.getActiveProgram().getProgramName();
         int CostForLastExecution = executionManager.getCostForLastExecution(user);
-        sharedProgramsContainer.addToProgramTotalCost(programName, CostForLastExecution);
+        sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
     }
 
     @Override
@@ -88,6 +88,11 @@ public class MultiUserController implements MultiUserModel, Serializable {
     public void stepOver(String username) {
         User user = usersManager.getUser(username);
         executionManager.stepOver(user);
+        if(executionManager.isInDebugMode(user)) {
+            int CostForLastExecution = executionManager.getCostForLastExecution(user);
+            String programName = user.getActiveProgram().getProgramName();
+            sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
+        }
     }
 
 
@@ -95,12 +100,20 @@ public class MultiUserController implements MultiUserModel, Serializable {
     public void stopDebug(String username) {
         User user = usersManager.getUser(username);
         executionManager.stopDebug(user);
+        int CostForLastExecution = executionManager.getCostForLastExecution(user);
+        String programName = user.getActiveProgram().getProgramName();
+        sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
     }
 
     @Override
     public void resumeDebug(String username) {
         User user = usersManager.getUser(username);
         executionManager.resumeDebug(user);
+        if(executionManager.isInDebugMode(user)) {
+            int CostForLastExecution = executionManager.getCostForLastExecution(user);
+            String programName = user.getActiveProgram().getProgramName();
+            sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
+        }
     }
 
     @Override
@@ -140,5 +153,15 @@ public class MultiUserController implements MultiUserModel, Serializable {
     @Override
     public UserDTO getUserData(String username) {
         return usersManager.getUserData(username);
+    }
+
+    public List<ProgramData> getAllSharedProgramsData() {
+        List<ProgramData> programDataList = new ArrayList<>();
+        synchronized (sharedProgramsContainer) {
+            for (String programName : sharedProgramsContainer.getAllProgramNames()) {
+                programDataList.add(sharedProgramsContainer.getSharedProgramData(programName));
+            }
+        }
+        return programDataList;
     }
 }

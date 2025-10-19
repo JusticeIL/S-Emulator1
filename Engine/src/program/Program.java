@@ -45,6 +45,9 @@ public class Program implements Serializable {
     private final VariableFactory variableFactory;
     private int nextInstructionIdForDebug;
     private boolean isInDebugMode = false;
+    private String uploadingUser;
+    private int numberOfRuns = 0;
+    private int costOfAllRuns;
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
         this.labelFactory = new LabelFactory();
@@ -369,5 +372,29 @@ public class Program implements Serializable {
         if (!Variables.containsKey("y")) {
             Variables.put("y", new Variable("y", 0));
         }
+    }
+
+    public String getUploadingUser() {
+        return uploadingUser;
+    }
+
+    public void setUploadingUser(String uploadingUser) {
+        this.uploadingUser = uploadingUser;
+    }
+
+    public void updateNumberOfRuns() {
+        numberOfRuns ++;
+    }
+
+    public int getNumberOfRuns() {
+        return numberOfRuns;
+    }
+
+    public void updateCostOfAllRuns(int costForLastExecution) {
+        this.costOfAllRuns += costForLastExecution;
+    }
+
+    public int getCostOfAllRuns() {
+        return costOfAllRuns;
     }
 }

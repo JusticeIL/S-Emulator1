@@ -18,6 +18,8 @@ public class InstructionDTO {
     private final String type;
     private final InstructionDTO parentInstruction;
     private final Set<VariableDTO> innerFunctionVariables;
+    private final String ArchitectureGeneration;
+
 
     public InstructionDTO(Instruction instruction) {
         this.id = instruction.getNumber();
@@ -30,6 +32,7 @@ public class InstructionDTO {
         this.fullExpandedStringRepresentation = instruction.toString();
         this.type = instruction.getInstructionType().toString();
         this.innerFunctionVariables = new HashSet<VariableDTO>();
+        this.ArchitectureGeneration = instruction.getArchitecture();
 
         innerFunctionVariables.addAll(instruction.getInnerFunctionVariables().stream()
                 .map(VariableDTO::new)

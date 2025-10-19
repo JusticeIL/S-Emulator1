@@ -2,7 +2,11 @@ package controller;
 
 import XMLandJaxB.SFunction;
 import XMLandJaxB.SProgram;
+import dto.ProgramData;
+import program.Program;
+import program.function.FunctionsContainer;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,16 +15,29 @@ public class SharedProgramsContainer {
     private final Map<String, SFunction> sFunctions = new HashMap<>();
     private final Map<String,Integer> totalCreditsUsedPerProgram = new HashMap<>();
     private final Map<String,Integer> totalRunsPerProgram = new HashMap<>();
+    private final Map<String, Program> dummyProgramsForDashboard = new HashMap<>();
 
     public SProgram getSProgram(String programName) {
         return sPrograms.get(programName);
     }
 
-    public void addSProgram(SProgram sProgram){
+   synchronized public void addSProgram(SProgram sProgram, String username){
         sPrograms.putIfAbsent(sProgram.getName(),sProgram);
+        Program dummyProgram = new Program(sProgram,new FunctionsContainer());//TODO:REMOVE SHARED FUNCTIONS CONTAINER
+        dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
+        dummyProgram.setUploadingUser(username);
+        dummyProgram.getFunctions().forEach(function -> {dummyProgramsForDashboard.putIfAbsent(function.getName(),dummyProgram);});
         sProgram.getSFunctions().getSFunction().forEach(sFunction -> {
             sFunctions.putIfAbsent(sFunction.getName(),sFunction);
         });
+    }
+
+    public void addRunForProgram(String programName,int costForLastExecution) {
+        Program program = dummyProgramsForDashboard.get(programName);
+        synchronized (program) {
+            program.updateNumberOfRuns();
+            program.updateCostOfAllRuns(costForLastExecution);
+        }
     }
 
     synchronized public void addToProgramTotalCost(String programName, int costForLastExecution) {
@@ -28,5 +45,13 @@ public class SharedProgramsContainer {
         totalRunsPerProgram.putIfAbsent(programName,0);
         totalCreditsUsedPerProgram.put(programName,totalCreditsUsedPerProgram.get(programName)+costForLastExecution);
         totalRunsPerProgram.put(programName,totalRunsPerProgram.get(programName)+1);
+    }
+
+    public ProgramData getSharedProgramData(String programName) {
+        return new ProgramData(dummyProgramsForDashboard.get(programName));
+    }
+
+    public Collection<String> getAllProgramNames() {
+        return sPrograms.keySet();
     }
 }
