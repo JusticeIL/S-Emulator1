@@ -155,6 +155,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
         return usersManager.getUserData(username);
     }
 
+    @Override
     public List<ProgramData> getAllSharedProgramsData() {
         List<ProgramData> programDataList = new ArrayList<>();
         synchronized (sharedProgramsContainer) {
@@ -164,4 +165,16 @@ public class MultiUserController implements MultiUserModel, Serializable {
         }
         return programDataList;
     }
+
+    @Override
+    public List<ProgramData> getAllSharedFunctionsData() {
+        List<ProgramData> programDataList = new ArrayList<>();
+        synchronized (sharedProgramsContainer) {
+            for (String programName : sharedProgramsContainer.getAllFunctionNames()) {
+                programDataList.add(sharedProgramsContainer.getSharedProgramData(programName));
+            }
+        }
+        return programDataList;
+    }
+
 }

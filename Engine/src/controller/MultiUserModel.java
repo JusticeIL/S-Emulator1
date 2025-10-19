@@ -8,6 +8,8 @@ import user.User;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,4 +31,7 @@ public interface MultiUserModel {
     Set<UserDTO> getAllUsers();
     void addCredits(String username, int creditsToAdd);
     UserDTO getUserData(String username);
+    List<ProgramData> getAllSharedProgramsData();
+    List<ProgramData> getAllSharedFunctionsData();
+
 }
