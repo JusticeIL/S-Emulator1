@@ -43,6 +43,7 @@ public class SharedFunctionsServlet extends HttpServlet {
             resp.getWriter().write(responseJson);
         } else {
             resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            resp.getWriter().write("Missing user verification.");
         }
     }
 }

@@ -8,12 +8,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import user.User;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @WebServlet(name = "UsersServlet", urlPatterns = {"/api/users"})
 public class GetAllUsersServlet extends HttpServlet {

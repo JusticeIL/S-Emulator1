@@ -2,7 +2,6 @@ package servlets;
 
 import com.google.gson.Gson;
 import controller.MultiUserModel;
-import dto.ProgramData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -12,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 @WebServlet(name = "SharedFunctionsServlet", urlPatterns = {"/api/shared/programs"})
 public class SharedProgramsServlet extends HttpServlet {
@@ -46,6 +43,7 @@ public class SharedProgramsServlet extends HttpServlet {
             resp.getWriter().write(responseJson);
         } else {
             resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            resp.getWriter().write("Missing user verification.");
         }
     }
 }

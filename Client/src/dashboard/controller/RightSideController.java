@@ -3,6 +3,7 @@ package dashboard.controller;
 import controller.SingleProgramController;
 import dashboard.model.FunctionTableEntry;
 import dashboard.model.ProgramTableEntry;
+import dashboard.refreshTasks.ProgramsTableRefresher;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,6 +13,10 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import okhttp3.OkHttpClient;
+
+import java.util.Timer;
+
+import static configuration.ClientConfiguration.REFRESH_RATE;
 
 public class RightSideController {
 
@@ -87,6 +92,11 @@ public class RightSideController {
         userFunctionOriginColumn.setCellValueFactory(new PropertyValueFactory<>("user"));
         instructionsCounterFunctionColumn.setCellValueFactory(new PropertyValueFactory<>("instructionsCounter"));
         functionMaxLevelColumn.setCellValueFactory(new PropertyValueFactory<>("maxProgramLevel"));
+
+        /* Timer tasks */
+        ProgramsTableRefresher programListRefreshTask = new ProgramsTableRefresher(programsTable);
+        Timer timer = new Timer();
+        timer.schedule(programListRefreshTask, REFRESH_RATE, REFRESH_RATE);
     }
 
     @FXML
