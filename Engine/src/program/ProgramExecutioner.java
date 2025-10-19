@@ -42,7 +42,8 @@ public class ProgramExecutioner {
             executionCost += user.decreaseCredits(currentInstruction.getCost());
         }
         Label nextLabel = currentInstruction.execute();
-        cycleCounter += currentInstruction.getCycles();
+        int usedCycles = currentInstruction.getCycles();
+        cycleCounter+= usedCycles;
 
         if (nextLabel.equals(Program.EMPTY_LABEL)) {
             currentCommandIndex++;
@@ -55,6 +56,18 @@ public class ProgramExecutioner {
 
         if (currentCommandIndex < program.getInstructionList().size()) {
             currentInstruction = program.getInstructionList().get(currentCommandIndex);
+        }
+
+        if(user!=null){
+            if(user.getCredits() < currentInstruction.getCost()){
+                executionCost += user.decreaseCredits(usedCycles);
+                program.setCycleCounter(cycleCounter);
+                if(isDebugMode){
+                    stopDebug();
+                }
+                return;
+            }
+            executionCost += user.decreaseCredits(usedCycles);
         }
 
         program.setCycleCounter(cycleCounter);

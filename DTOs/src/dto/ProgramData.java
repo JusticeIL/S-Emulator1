@@ -24,12 +24,23 @@ public final class ProgramData implements Serializable {
     private final int nextInstructionIdForDebug;
     private final boolean isDebugmode;
     private final List<String> functionNames;
+    private final String uploadingUser;
+    private final int numberOfZeroLevelInstructions;
+    private final int numberOfRuns;
+    private final float avarageCreditsPerRun;
+
+
 
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
+        int zeroLevelInstructionsCount = 0;
         for (Instruction instruction : program.getInstructionList()) {
             programInstructions.add(new InstructionDTO(instruction));
+            if(instruction.getLevel()==0){
+                zeroLevelInstructionsCount++;
+            }
         }
+        numberOfZeroLevelInstructions = zeroLevelInstructionsCount;
         for (Instruction instruction: program.getRuntimeExecutedInstructions()){
             runtimeExecutedInstructions.add(instruction.toString());
         }
@@ -70,6 +81,25 @@ public final class ProgramData implements Serializable {
         this.functionNames = new ArrayList<>();
         functionNames.add(program.getProgramName()); // Add primary program name
         program.getFunctions().forEach(function -> functionNames.add(function.getUserString())); // Add all function user-representation strings
+        this.uploadingUser = program.getUploadingUser();
+        this.numberOfRuns = program.getNumberOfRuns();
+        this.avarageCreditsPerRun = (float)program.getCostOfAllRuns()/(float)numberOfRuns;
+    }
+
+    public String getUploadingUser() {
+        return uploadingUser;
+    }
+
+    public int getNumberOfZeroLevelInstructions() {
+        return numberOfZeroLevelInstructions;
+    }
+
+    public int getNumberOfRuns() {
+        return numberOfRuns;
+    }
+
+    public float getAvarageCreditsPerRun() {
+        return avarageCreditsPerRun;
     }
 
     // Helper method for comparing variable names with numerical suffixes

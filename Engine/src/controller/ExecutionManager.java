@@ -95,4 +95,8 @@ public class ExecutionManager {
     public int getCostForLastExecution(User user) {
         return costForLastExecution.get(user);
     }
+
+    public boolean isInDebugMode(User user) {
+        return isCurrentlyInDebugMode.getOrDefault(user, false);
+    }
 }
