@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class CookiesAuthenticator {
 
-    public void checkForUsernameThenDo(HttpServletRequest req, HttpServletResponse resp, IORunnable onSuccess, IORunnable onFail) throws ServletException, IOException {
+    public void checkForUsernameThenDo(HttpServletRequest req, IORunnable onSuccess, IORunnable onFail) throws ServletException, IOException {
         if (hasUsernameCookie(req)) {
             onSuccess.run();
         }else{
@@ -17,7 +17,7 @@ public class CookiesAuthenticator {
         }
     }
 
-    public void checkForNoUsernameThenDo(HttpServletRequest req, HttpServletResponse resp,IORunnable onSuccess, IORunnable onFail) throws ServletException, IOException {
+    public void checkForNoUsernameThenDo(HttpServletRequest req,IORunnable onSuccess, IORunnable onFail) throws ServletException, IOException {
         if (!hasUsernameCookie(req)) {
             onSuccess.run();
         }else{

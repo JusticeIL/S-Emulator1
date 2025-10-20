@@ -19,7 +19,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
-        authenticator.checkForUsernameThenDo(req,resp,()->{
+        authenticator.checkForUsernameThenDo(req,()->{
             //onSuccess
             Cookie[] cookies = req.getCookies();
             String username = Arrays.stream(cookies)
@@ -50,7 +50,7 @@ public class UserServlet extends HttpServlet {
         // Expects the parameters to contain the username
         Set<String> users = (Set<String>) getServletContext().getAttribute("users");
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
-        authenticator.checkForNoUsernameThenDo(req, resp, () -> {
+        authenticator.checkForNoUsernameThenDo(req, () -> {
             //onSuccess
             String username = req.getParameter("username");
             synchronized (users) {
