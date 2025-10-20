@@ -1,5 +1,6 @@
 package program;
 
+import dto.ProgramData;
 import instruction.ArchitectureGeneration;
 import instruction.Instruction;
 import instruction.component.Label;
@@ -32,17 +33,8 @@ public class ProgramExecutioner {
 
     private void executeSingleInstruction() {
 
-        if(user!=null){
-            if(user.getCredits() < currentInstruction.getCost()){
-                executionCost += user.decreaseCredits(currentInstruction.getCost());
-                program.setCycleCounter(cycleCounter);
-                if(isDebugMode){
-                    stopDebug();
-                }
-                return;
-            }
-            executionCost += user.decreaseCredits(currentInstruction.getCost());
-        }
+        ProgramData savedState = new ProgramData(program);
+
         Label nextLabel = currentInstruction.execute();
         int usedCycles = currentInstruction.getCycles();
         cycleCounter+= usedCycles;
@@ -60,11 +52,10 @@ public class ProgramExecutioner {
             currentInstruction = program.getInstructionList().get(currentCommandIndex);
         }
 
-        if(user!=null){
-            if(user.getCredits() < currentInstruction.getCost()){
-                executionCost += user.decreaseCredits(usedCycles);
-                program.setCycleCounter(cycleCounter);
-                if(isDebugMode){
+        if(user!=null){//if activated by user
+            if(user.getCredits() < usedCycles){//if not enough credits
+                program.loadSavedState(savedState);//revert execution of last instruction
+                if(isDebugMode){//end execution
                     stopDebug();
                 }
                 return;
@@ -106,6 +97,10 @@ public class ProgramExecutioner {
 
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
+
+        if(isMainExecutioner){
+            user.decreaseCredits(architecture.getCost());
+        }
     }
 
     public void setMainExecutioner(User user, ArchitectureGeneration architecture) {
@@ -214,17 +209,13 @@ public class ProgramExecutioner {
     }
 
     private boolean canContinueExecution() {
-        boolean conditionA = currentCommandIndex < program.getInstructionList().size();
-        boolean conditionB = true;
-        boolean conditionC = true;
-        if(isMainExecutioner){
-            conditionB = user.getCredits() >= currentInstruction.getCost();
-        }
+        boolean programNotFinished = currentCommandIndex < program.getInstructionList().size();
+        boolean ifDebugThenNoBreakpoint = true;
         if(isDebugMode){
-           conditionC = !breakpoints.contains(currentInstruction.getNumber());
+           ifDebugThenNoBreakpoint = !breakpoints.contains(currentInstruction.getNumber());
         }
 
-        return conditionA && conditionB && conditionC;
+        return programNotFinished && ifDebugThenNoBreakpoint;
     }
 
     public boolean isInDebug() {

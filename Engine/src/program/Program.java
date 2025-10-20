@@ -1,6 +1,7 @@
 package program;
 
 import XMLandJaxB.*;
+import dto.ProgramData;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;
@@ -408,5 +409,13 @@ public class Program implements Serializable {
 
     public int getCostOfAllRuns() {
         return costOfAllRuns;
+    }
+
+    public void loadSavedState(ProgramData savedState) {
+        savedState.getProgramVariablesCurrentState().forEach(variable -> {
+            Variables.get(variable.getName()).setValue(variable.getValue());
+        });
+        this.cycleCounter = savedState.getCurrentCycles();
+        this.nextInstructionIdForDebug = savedState.getNextInstructionIdForDebug();
     }
 }
