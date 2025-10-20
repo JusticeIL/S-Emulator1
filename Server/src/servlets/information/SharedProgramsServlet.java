@@ -45,7 +45,7 @@ public class SharedProgramsServlet extends HttpServlet {
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(responseJson);
         } else {
-            resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("Missing user verification.");
         }
     }
