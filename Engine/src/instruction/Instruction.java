@@ -114,8 +114,8 @@ abstract public class Instruction implements Executable, Expandable, Serializabl
         return thisInstructionString;
     }
 
-    public String getArchitecture(){
-        return architecture.toString();
+    public ArchitectureGeneration getArchitecture(){
+        return architecture;
     }
 
     public int getCost(){

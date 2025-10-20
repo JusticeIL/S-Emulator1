@@ -28,6 +28,11 @@ public final class ProgramData implements Serializable {
     private final int numberOfZeroLevelInstructions;
     private final int numberOfRuns;
     private final float avarageCreditsPerRun;
+    private final String minimalArchitectureNeededForRun;
+
+    public String getMinimalArchitectureNeededForRun(){
+        return minimalArchitectureNeededForRun;
+    }
 
     public ProgramData(Program program) {
         this.programName = program.getProgramName();
@@ -82,6 +87,7 @@ public final class ProgramData implements Serializable {
         this.uploadingUser = program.getUploadingUser();
         this.numberOfRuns = program.getNumberOfRuns();
         this.avarageCreditsPerRun = numberOfRuns == 0 ? 0 : (float)program.getCostOfAllRuns() / (float)numberOfRuns;
+        this.minimalArchitectureNeededForRun = program.getMinimalArchitectureNeededForExecution().toString();
     }
 
     public String getUploadingUser() {

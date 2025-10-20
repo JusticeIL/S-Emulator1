@@ -2,6 +2,7 @@ package program;
 
 import XMLandJaxB.*;
 import dto.ProgramData;
+import instruction.ArchitectureGeneration;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;
@@ -51,6 +52,7 @@ public class Program implements Serializable {
     private int numberOfRuns = 0;
     private int costOfAllRuns;
     private String originProgramName = "";
+    private ArchitectureGeneration minimalArchitectureNeededForExecution;
 
     public String getOriginProgramName() {
         return originProgramName;
@@ -103,6 +105,7 @@ public class Program implements Serializable {
         if (!instructionList.isEmpty()) {
             this.currentInstruction = instructionList.getFirst();
         }
+        calculateMinimalArchitectureGeneration();
     }
 
     public Program(SInstructions sInstructions, String programName, FunctionsContainer functionsContainer,FunctionsContainer sharedFunctionContainer) throws FileNotFoundException {
@@ -147,6 +150,7 @@ public class Program implements Serializable {
         if (!missingLabels.isEmpty()) {
             throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
         }
+        calculateMinimalArchitectureGeneration();
     }
 
     // In Program.java
@@ -219,6 +223,23 @@ public class Program implements Serializable {
         this.usedXVariableNames = Variables.keySet().stream()
                 .filter(name -> name.startsWith("x"))
                 .collect(Collectors.toSet());
+
+        calculateMinimalArchitectureGeneration();
+    }
+
+    public ArchitectureGeneration getMinimalArchitectureNeededForExecution() {
+        return minimalArchitectureNeededForExecution;
+    }
+
+    private void calculateMinimalArchitectureGeneration() {
+        // ArchitectureGeneration.I is the lowest possible value.
+        // We use Comparator.naturalOrder() because the Enum values are defined in ascending order (I, II, III, IV)
+        // and Enum.compareTo uses the ordinal (position in the declaration).
+
+        this.minimalArchitectureNeededForExecution = instructionList.stream()
+                .map(Instruction::getArchitecture)
+                .max(Comparator.naturalOrder())
+                .orElse(ArchitectureGeneration.I);
     }
 
     public void loadProgram(String filePath) throws FileNotFoundException, JAXBException{

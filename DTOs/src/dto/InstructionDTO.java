@@ -32,7 +32,7 @@ public class InstructionDTO {
         this.fullExpandedStringRepresentation = instruction.toString();
         this.type = instruction.getInstructionType().toString();
         this.innerFunctionVariables = new HashSet<VariableDTO>();
-        this.ArchitectureGeneration = instruction.getArchitecture();
+        this.ArchitectureGeneration = instruction.getArchitecture().toString();
 
         innerFunctionVariables.addAll(instruction.getInnerFunctionVariables().stream()
                 .map(VariableDTO::new)
