@@ -58,7 +58,6 @@ public class LeftSideController {
         ObservableValue<UserTableEntry> selectedItemObs = Bindings.select(usersTable.selectionModelProperty(), "selectedItem");
         unselectUserBtn.disableProperty().bind(Bindings.createBooleanBinding(
                 () -> {
-
                     ObservableList<UserTableEntry> users = usersTable.getItems();
                     if (users == null || users.isEmpty()) return true;
                     return selectedItemObs.getValue() == null;

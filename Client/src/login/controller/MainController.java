@@ -60,7 +60,6 @@ public class MainController {
                                 dashboardScene.getStylesheets().clear();
                                 dashboardScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
 
-                                // Pass data to dashboard controller
                                 PrimaryController controller = loader.getController();
                                 Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
 

@@ -39,12 +39,12 @@ public final class ProgramData implements Serializable {
         int zeroLevelInstructionsCount = 0;
         for (Instruction instruction : program.getInstructionList()) {
             programInstructions.add(new InstructionDTO(instruction));
-            if(instruction.getLevel()==0){
+            if (instruction.getLevel()==0) {
                 zeroLevelInstructionsCount++;
             }
         }
         numberOfZeroLevelInstructions = zeroLevelInstructionsCount;
-        for (Instruction instruction: program.getRuntimeExecutedInstructions()){
+        for (Instruction instruction: program.getRuntimeExecutedInstructions()) {
             runtimeExecutedInstructions.add(instruction.toString());
         }
 
