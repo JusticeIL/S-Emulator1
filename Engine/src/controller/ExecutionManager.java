@@ -1,6 +1,7 @@
 package controller;
 
 import dto.VariableDTO;
+import instruction.ArchitectureGeneration;
 import program.Program;
 import program.ProgramExecutioner;
 import user.User;
@@ -16,24 +17,24 @@ public class ExecutionManager {
     private final Map<User,Boolean> isCurrentlyInDebugMode = new HashMap<>();
     private final Map<User,Integer> costForLastExecution = new HashMap<>();
 
-    public void runProgram(User user, Set<VariableDTO> args) {
+    public void runProgram(User user, Set<VariableDTO> args, ArchitectureGeneration architecture) {
         Program activeProgram = user.getActiveProgram();
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         executioners.put(user, programExecutioner);
         isCurrentlyInDebugMode.put(user, false);
-        programExecutioner.setMainExecutioner(user);
+        programExecutioner.setMainExecutioner(user, architecture);
         programExecutioner.setProgram(activeProgram);
         programExecutioner.executeProgram(args);
         costForLastExecution.put(user,programExecutioner.getExecutionCost());
         executioners.remove(user);
     }
 
-    public void startDebug(User user, Set<VariableDTO> args,Set<Integer> breakpoints) {
+    public void startDebug(User user, Set<VariableDTO> args,Set<Integer> breakpoints, ArchitectureGeneration architecture) {
         Program activeProgram = user.getActiveProgram();
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setDebugMode(true);
         programExecutioner.setProgram(activeProgram);
-        programExecutioner.setMainExecutioner(user);
+        programExecutioner.setMainExecutioner(user, architecture);
         programExecutioner.setUpDebugRun(args, breakpoints);
         isCurrentlyInDebugMode.put(user, true);
     }

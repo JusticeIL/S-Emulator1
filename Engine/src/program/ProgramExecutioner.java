@@ -1,5 +1,6 @@
 package program;
 
+import instruction.ArchitectureGeneration;
 import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
@@ -27,6 +28,7 @@ public class ProgramExecutioner {
     private final Set<Integer> breakpoints = new HashSet<>();
     private User user;
     private int executionCost;
+    private ArchitectureGeneration architecture;
 
     private void executeSingleInstruction() {
 
@@ -106,9 +108,10 @@ public class ProgramExecutioner {
         this.cycleCounter = 0;
     }
 
-    public void setMainExecutioner(User user) {
+    public void setMainExecutioner(User user, ArchitectureGeneration architecture) {
         isMainExecutioner = true;
         this.user = user;
+        this.architecture = architecture;
     }
 
     public void setMainExecutioner() {

@@ -2,6 +2,7 @@ package controller;
 
 import XMLandJaxB.SProgram;
 import dto.UserDTO;
+import instruction.ArchitectureGeneration;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -60,18 +61,20 @@ public class MultiUserController implements MultiUserModel, Serializable {
     }
 
     @Override
-    public void runProgram(String username, Set<VariableDTO> args) {
+    public void runProgram(String username, Set<VariableDTO> args,String architectureString) {
         User user = usersManager.getUser(username);
-        executionManager.runProgram(user, args);
+        ArchitectureGeneration architectureGeneration = ArchitectureGeneration.valueOf(architectureString);
+        executionManager.runProgram(user, args, architectureGeneration);
         String programName = user.getActiveProgram().getProgramName();
         int CostForLastExecution = executionManager.getCostForLastExecution(user);
         sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
     }
 
     @Override
-    public void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints) {
+    public void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints,String architectureString) {
         User user = usersManager.getUser(username);
-        executionManager.startDebug(user, args, breakpoints);
+        ArchitectureGeneration architectureGeneration = ArchitectureGeneration.valueOf(architectureString);
+        executionManager.startDebug(user, args, breakpoints,architectureGeneration);
     }
 
     @Override

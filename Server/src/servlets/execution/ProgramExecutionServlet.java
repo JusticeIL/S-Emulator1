@@ -24,6 +24,7 @@ public class ProgramExecutionServlet extends HttpServlet {
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
         // Expects the query parameters to contain the arguments for the program
 
+
         Cookie[] cookies = req.getCookies();
         boolean hasUsernameCookie = false;
         if (cookies != null) {
@@ -42,8 +43,9 @@ public class ProgramExecutionServlet extends HttpServlet {
                     .orElse(null);
 
             List<String> argNames = model.getProgramData(username).get().getProgramXArguments();
+            String architectureGeneration = req.getReader().readLine();
             Set<VariableDTO> args = argNames.stream().map(name -> new VariableDTO(name, Integer.parseInt(req.getParameter(name)))).collect(Collectors.toSet());
-            model.runProgram(username, args);
+            model.runProgram(username, args,architectureGeneration);
             resp.sendRedirect(req.getContextPath() + "/program");
         } else {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);

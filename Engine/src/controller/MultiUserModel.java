@@ -18,8 +18,8 @@ public interface MultiUserModel {
     boolean isProgramLoaded(String username);
     Optional<ProgramData> getProgramData(String username);
     void Expand(String username, int level) throws IllegalArgumentException;
-    void runProgram(String username, Set<VariableDTO> args);
-    void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints);
+    void runProgram(String username, Set<VariableDTO> args, String architectureString);
+    void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints, String architectureString);
     void addBreakpoint(String username, int lineNumber);
     void removeBreakpoint(String username, int lineNumber);
     void stepOver(String username);
