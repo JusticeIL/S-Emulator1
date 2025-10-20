@@ -55,7 +55,7 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Expects the parameters to contain the username
 
-        String username = req.getParameter("username");
+
         Set<String> users = (Set<String>) getServletContext().getAttribute("users");
 
         Cookie[] cookies = req.getCookies();
@@ -73,6 +73,7 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             resp.getWriter().write("Already logged in.");
         } else {
+            String username = req.getParameter("username");
             synchronized (users) {
                 if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);

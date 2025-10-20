@@ -14,5 +14,6 @@ public class EngineInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         sce.getServletContext().setAttribute("model", new MultiUserController());
         sce.getServletContext().setAttribute("users", new HashSet<String>());
+        sce.getServletContext().setAttribute("cookiesAuthenticator",new CookiesAuthenticator());
     }
 }
