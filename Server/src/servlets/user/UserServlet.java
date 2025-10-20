@@ -1,6 +1,7 @@
 package servlets.user;
 
 import com.google.gson.Gson;
+import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,18 +18,10 @@ import java.util.Set;
 public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasUsernameCookie) {
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req,resp,()->{
+            //onSuccess
+            Cookie[] cookies = req.getCookies();
             String username = Arrays.stream(cookies)
                     .filter(cookie -> "username".equals(cookie.getName()))
                     .findFirst()
@@ -44,35 +37,21 @@ public class UserServlet extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(responseJson);
-        } else {
+        },()->{
+            //onFail
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             resp.getWriter().write("Not logged in.");
-        }
+        });
     }
 
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Expects the parameters to contain the username
-
-
         Set<String> users = (Set<String>) getServletContext().getAttribute("users");
-
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasUsernameCookie) {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            resp.getWriter().write("Already logged in.");
-        } else {
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForNoUsernameThenDo(req, resp, () -> {
+            //onSuccess
             String username = req.getParameter("username");
             synchronized (users) {
                 if (users.contains(username)) {
@@ -85,10 +64,14 @@ public class UserServlet extends HttpServlet {
                     users.add(username);
                     resp.setStatus(HttpServletResponse.SC_CREATED);
                     resp.addCookie(new Cookie("username", username));
-                    MultiUserModel model = (MultiUserModel ) getServletContext().getAttribute("model");
+                    MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
                     model.addUser(username);
                 }
             }
-        }
+        }, () -> {
+            //onFail
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.getWriter().write("Already logged in.");
+        });
     }
 }

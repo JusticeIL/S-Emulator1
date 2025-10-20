@@ -6,36 +6,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.function.BiConsumer;
 
 public class CookiesAuthenticator {
 
-    public void checkForUsernameThenDo(HttpServletRequest req, HttpServletResponse resp,String massage, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) throws ServletException, IOException {
+    public void checkForUsernameThenDo(HttpServletRequest req, HttpServletResponse resp, IORunnable onSuccess, IORunnable onFail) throws ServletException, IOException {
         if (hasUsernameCookie(req)) {
-            consumer.accept(req,resp);
+            onSuccess.run();
         }else{
-            addMassageForDeniedAccessToResponse(resp,massage);
+            onFail.run();
         }
     }
 
-    public void checkForNoUsernameThenDo(HttpServletRequest req, HttpServletResponse resp,String massage,BiConsumer<HttpServletRequest,HttpServletResponse> consumer) throws ServletException, IOException {
+    public void checkForNoUsernameThenDo(HttpServletRequest req, HttpServletResponse resp,IORunnable onSuccess, IORunnable onFail) throws ServletException, IOException {
         if (!hasUsernameCookie(req)) {
-            consumer.accept(req,resp);
+            onSuccess.run();
         }else{
-            addMassageForDeniedAccessToResponse(resp,massage);
+            onFail.run();
         }
     }
-
-    public void checkForUsernameThenDo(HttpServletRequest req, HttpServletResponse resp, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) throws ServletException, IOException {
-        checkForUsernameThenDo(req,resp,null,consumer);
-    }
-
-    public void checkForNoUsernameThenDo(HttpServletRequest req, HttpServletResponse resp,BiConsumer<HttpServletRequest,HttpServletResponse> consumer) throws ServletException, IOException {
-        checkForNoUsernameThenDo(req,resp,null,consumer);
-    }
-
-
-
 
     private boolean hasUsernameCookie(HttpServletRequest req){
         Cookie[] cookies = req.getCookies();
@@ -51,10 +39,4 @@ public class CookiesAuthenticator {
         return hasUsernameCookie;
     }
 
-    private void addMassageForDeniedAccessToResponse(HttpServletResponse resp,String messageForDeniedAccess) throws IOException {
-        resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        if (messageForDeniedAccess != null) {
-            resp.getWriter().write(messageForDeniedAccess);
-        }
-    }
 }
