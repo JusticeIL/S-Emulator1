@@ -92,6 +92,11 @@ public class Function extends Program {
         return new ExpandedSyntheticInstructionArguments(newVariables,labelMap,instructions);
     }
 
+    @Override
+    public String getProgramName() {
+        return super.getProgramName();
+    }
+
     public String getName() {
         return getUserString();
     }

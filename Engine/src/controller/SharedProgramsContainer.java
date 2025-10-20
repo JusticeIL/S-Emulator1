@@ -55,7 +55,12 @@ public class SharedProgramsContainer {
     }
 
     public ProgramData getSharedProgramData(String programName) {
-        return new ProgramData(dummyProgramsForDashboard.get(programName));
+        String SearchableName = getSearchableName(programName);
+        return new ProgramData(dummyProgramsForDashboard.get(SearchableName));
+    }
+
+    private String getSearchableName(String name){
+        return getAllFunctionNames().contains(name)?sFunctions.get(name).getUserString():name;
     }
 
     public Collection<String> getAllProgramNames() {
@@ -70,7 +75,7 @@ public class SharedProgramsContainer {
         List<String> allFunctionNames = new ArrayList<>(getAllFunctionNames());
         int count = 0;
         for(String functionName : allFunctionNames) {
-            String functionUserString = sFunctions.get(functionName).getUserString();
+            String functionUserString = getSearchableName(functionName);
             if(dummyProgramsForDashboard.get(functionUserString).getUploadingUser().equals(username)) {
                 count++;
             }

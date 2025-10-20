@@ -112,6 +112,8 @@ public class Program implements Serializable {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
         this.functionsContainer = functionsContainer;
+        // Load program name
+        this.programName = programName;
 
         InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
         instructionFactory.setSharedFunctionsContainer(sharedFunctionContainer);
@@ -133,8 +135,7 @@ public class Program implements Serializable {
             Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
             Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
         }
-        // Load program name
-        this.programName = programName;
+
         Set<Label> missingLabels = instructionFactory.getMissingLabels();
 
         //this is for functions (their set is empty)
@@ -160,6 +161,8 @@ public class Program implements Serializable {
         this.variableFactory = new VariableFactory();
         this.functionsContainer = new FunctionsContainer();
         this.uploadingUser = user.getUsername();
+        this.programName = sProgram.getName();
+
         FunctionsContainer sharedFunctionsContainer = user.getFunctionsContainer();
 
         // 1. Handle functions if they exist. This part is fine.
