@@ -1,10 +1,10 @@
+package configuration;
+
 import controller.MultiUserController;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
-import user.User;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 @WebListener
