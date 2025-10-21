@@ -68,18 +68,6 @@ public class LeftSideController {
     @FXML
     public void initialize() {
 
-        // Initialize the max label
-        maxExpandLevel.textProperty().bind(
-                Bindings.when(
-                                Bindings.createBooleanBinding(
-                                        () -> primaryController.program != null,
-                                        maxLevel
-                                )
-                        )
-                        .then(Bindings.createStringBinding(() -> "/" + maxLevel.get(), maxLevel))
-                        .otherwise("/Max")
-        );
-
         instructionsTable.setRowFactory(tv -> {
             TableRow<InstructionTableEntry> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -122,6 +110,34 @@ public class LeftSideController {
 
     public void setPrimaryController(PrimaryController primaryController) {
         this.primaryController = primaryController;
+
+        // Initialize the max label
+        maxExpandLevel.textProperty().bind(
+                Bindings.when(
+                                Bindings.createBooleanBinding(
+                                        () -> primaryController.program != null,
+                                        maxLevel
+                                )
+                        )
+                        .then(Bindings.createStringBinding(() -> "/" + maxLevel.get(), maxLevel))
+                        .otherwise("/Max")
+        );
+
+        summaryLine.textProperty().bind(
+                Bindings.when(Bindings.createBooleanBinding(
+                                () -> primaryController.program != null,
+                                instructionsTable.getItems()
+                        ))
+                        .then(Bindings.createStringBinding(() ->
+                                        "Program contains " +
+                                                instructionsTable.getItems().stream().filter(entry -> "B".equals(entry.getType())).count() +
+                                                " Basic Instructions, " +
+                                                instructionsTable.getItems().stream().filter(entry -> "S".equals(entry.getType())).count() +
+                                                " Synthetic Instructions",
+                                instructionsTable.getItems()
+                        ))
+                        .otherwise("No program loaded.")
+        );
     }
 
     private void updateParentInstructionTable(InstructionDTO instruction) {
@@ -161,6 +177,8 @@ public class LeftSideController {
         }
     }
 
+
+
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;
 
@@ -191,22 +209,6 @@ public class LeftSideController {
                 event.consume(); // Block all other interactions
             }
         });
-
-        summaryLine.textProperty().bind(
-                Bindings.when(Bindings.createBooleanBinding(
-                                () -> primaryController.program != null,
-                                instructionsTable.getItems()
-                        ))
-                        .then(Bindings.createStringBinding(() ->
-                                        "Program contains " +
-                                                instructionsTable.getItems().stream().filter(entry -> "B".equals(entry.getType())).count() +
-                                                " Basic Instructions, " +
-                                                instructionsTable.getItems().stream().filter(entry -> "S".equals(entry.getType())).count() +
-                                                " Synthetic Instructions",
-                                instructionsTable.getItems()
-                        ))
-                        .otherwise("No program loaded.")
-        );
 
         // Add this in setRightController or appropriate initialization method
         chosenInstructionHistoryTable.placeholderProperty().bind(
@@ -343,8 +345,7 @@ public class LeftSideController {
                     label.prefWidthProperty().bind(expansionLevelMenu.widthProperty());
                     menuItem.setOnAction((ActionEvent event) -> {
                         int selectedLevel = (int) menuItem.getUserData();
-                        setCurrentLevel(selectedLevel);
-                        sendExpansionForActiveProgramRequest(currentLevel.get());
+                        sendExpansionForActiveProgramRequest(selectedLevel);
                     });
                     return menuItem;
                 })
@@ -508,7 +509,10 @@ public class LeftSideController {
                             Gson gson = new Gson();
                             primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
                             updateMainInstructionTable();
-                            Platform.runLater(() -> updateVariablesOrLabelSelectionMenu());
+                            Platform.runLater(() -> {
+                                updateVariablesOrLabelSelectionMenu();
+                                setCurrentLevel(level);
+                            });
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

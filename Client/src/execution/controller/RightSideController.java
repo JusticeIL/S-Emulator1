@@ -137,13 +137,6 @@ public class RightSideController{
                 currentCycles
         ));
 
-        variableTable.placeholderProperty().bind(
-                Bindings.when(Bindings.createBooleanBinding(
-                                () -> primaryController.program == null
-                        ))
-                        .then(new Label("No program loaded."))
-                        .otherwise(new Label("No variables state to present"))
-        );
         variableTable.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, Event::consume); // Disable selection from user only
 
         // Minimize tables' height to prevent vertical scrolling
@@ -260,6 +253,14 @@ public class RightSideController{
 
     public void setPrimaryController(PrimaryController primaryController) {
         this.primaryController = primaryController;
+
+        variableTable.placeholderProperty().bind(
+                Bindings.when(Bindings.createBooleanBinding(
+                                () -> primaryController.program == null
+                        ))
+                        .then(new Label("No program loaded."))
+                        .otherwise(new Label("No variables state to present"))
+        );
     }
 
     public void setTopController(TopComponentController topController) {
