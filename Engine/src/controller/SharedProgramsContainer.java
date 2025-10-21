@@ -86,4 +86,8 @@ public class SharedProgramsContainer {
     public Set<SFunction> getAllSFunctions() {
         return new HashSet<>(sFunctions.values());
     }
+
+    public SFunction getSFunctions(String programName) {
+        return sFunctions.get(programName);
+    }
 }

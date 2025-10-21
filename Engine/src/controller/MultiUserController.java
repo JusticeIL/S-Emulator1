@@ -135,9 +135,14 @@ public class MultiUserController implements MultiUserModel, Serializable {
             return;
         }
         user.pullSfunctions(sharedProgramsContainer.getAllSFunctions());
-        Program newProgramInstance = new Program(sharedProgramsContainer.getSProgram(programName), user);
-        usersManager.getUser(username).addProgram(newProgramInstance);
-        usersManager.getUser(username).setActiveProgram(programName);
+
+        if(sharedProgramsContainer.getAllFunctionNames().contains(programName)){
+            //is a function
+            user.activateNewProgram(sharedProgramsContainer.getSFunctions(programName));
+        }else{
+            //is a program
+            user.activateNewProgram(sharedProgramsContainer.getSProgram(programName));;
+        }
     }
 
     @Override
