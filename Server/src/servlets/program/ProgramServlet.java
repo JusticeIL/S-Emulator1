@@ -36,7 +36,8 @@ public class ProgramServlet extends HttpServlet {
                         try {
                             resp.getWriter().write(responseJson);
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            e.printStackTrace();
                         }
                     },
                     () -> {

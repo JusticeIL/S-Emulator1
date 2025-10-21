@@ -25,7 +25,11 @@ public class ExpandServlet extends HttpServlet {
             //onSuccess
             String username = authenticator.getUsername(req);
             model.Expand(username, level);
-            resp.sendRedirect(req.getContextPath() + "/program");
+
+            String contextPath = req.getContextPath();
+            System.out.println("Redirecting to: " + contextPath + "/api/program");
+
+            resp.sendRedirect(req.getContextPath() + "/api/program");
         });
     }
 }

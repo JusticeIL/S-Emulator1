@@ -117,7 +117,7 @@
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                           </columnResizePolicy>
                       </TableView>
-                  <Button fx:id="backToDashboardBtn" mnemonicParsing="false" text="Back to Dashboard" />
+                  <Button fx:id="backToDashboardBtn" mnemonicParsing="false" onAction="#returnToDashboardScreen" text="Back to Dashboard" />
                </children>
             </VBox>
             </children>

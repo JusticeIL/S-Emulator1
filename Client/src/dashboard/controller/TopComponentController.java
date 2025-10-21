@@ -174,7 +174,7 @@ public class TopComponentController{
             return;
         }
 
-        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + UPLOAD_PROGRAM_RESOURCE))
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + PROGRAM_RESOURCE))
                 .newBuilder();
         String finalURL = urlBuilder.build().toString();
 

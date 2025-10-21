@@ -212,7 +212,7 @@ public class RightSideController {
                                 primaryStage.show();
                             } catch (Exception ex) {
                                 Stage primaryStage = (Stage) functionsTable.getScene().getWindow();
-                                showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
+                                showAlert("Failed to load execution: " + ex.getMessage(), primaryStage);
                             }
                         });
                     } else {
@@ -305,7 +305,7 @@ public class RightSideController {
                                 primaryStage.show();
                             } catch (Exception ex) {
                                 Stage primaryStage = (Stage) programsTable.getScene().getWindow();
-                                showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
+                                showAlert("Failed to load execute: " + ex.getMessage(), primaryStage);
                             }
                         });
                     } else {
