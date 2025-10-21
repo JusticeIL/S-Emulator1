@@ -2,11 +2,7 @@ package execution.controller;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -38,7 +34,6 @@ public class RightSideController{
     private LeftSideController leftController;
     private Stage primaryStage;
     private final BooleanProperty isDebugMode = new SimpleBooleanProperty(false);
-    private final BooleanProperty isProgramLoaded = new SimpleBooleanProperty(false);
     private final IntegerProperty currentCycles = new SimpleIntegerProperty(-1);
     private final SimpleIntegerProperty nextInstructionIdForDebug = new SimpleIntegerProperty(0);
 
@@ -88,6 +83,9 @@ public class RightSideController{
     private Button backToDashboardBtn;
 
     @FXML
+    private MenuButton architectureMenu;
+
+    @FXML
     public void initialize() {
         argumentNamesColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         argumentValuesColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
@@ -122,14 +120,6 @@ public class RightSideController{
         StepOverDebugBtn.disableProperty().bind(isDebugMode.not());
         ResumeDebugBtn.disableProperty().bind(isDebugMode.not());
         StopDebugBtn.disableProperty().bind(isDebugMode.not());
-
-        SetUpRunBtn.disableProperty().bind(
-                isProgramLoaded.not().or(isDebugMode)
-        );
-
-        RunProgramBtn.disableProperty().bind(
-                isProgramLoaded.not().or(isDebugMode)
-        );
 
         // Initialize the cycles label
         cyclesLabel.textProperty().bind(Bindings.createStringBinding(
@@ -176,22 +166,6 @@ public class RightSideController{
                 alert.showAndWait();
             }
         }
-    }
-
-    @FXML
-    void StartDebugPressed(ActionEvent event) {
-        Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
-                .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
-                .collect(Collectors.toSet());
-        Set<Integer> breakpoints = leftController.getEntriesWithBreakpoints().stream()
-                .map(InstructionTableEntry::getId).collect(Collectors.toSet());
-        //model.startDebug(argumentValues, breakpoints);
-        //model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
-        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
-//        updateResultVariableTable();
-//        updateIsDebugProperty();
-        leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
-//        updateAfterDebugStep();
     }
 
     @FXML
@@ -261,6 +235,22 @@ public class RightSideController{
                         .then(new Label("No program loaded."))
                         .otherwise(new Label("No variables state to present"))
         );
+
+        SetUpRunBtn.disableProperty().bind(
+                Bindings.createBooleanBinding(
+                        () -> primaryController.program == null || isDebugMode.get(),
+                        new SimpleObjectProperty<>(primaryController.program),
+                        isDebugMode
+                )
+        );
+
+        RunProgramBtn.disableProperty().bind(
+                Bindings.createBooleanBinding(
+                        () -> primaryController.program == null || isDebugMode.get(),
+                        new SimpleObjectProperty<>(primaryController.program),
+                        isDebugMode
+                )
+        );
     }
 
     public void setTopController(TopComponentController topController) {
@@ -323,12 +313,19 @@ public class RightSideController{
         });
     }
 
-    public ObservableBooleanValue isProgramLoaded() {
-        return isProgramLoaded;
-    }
-
-    public BooleanProperty isProgramLoadedProperty() {
-        return isProgramLoaded;
+    void StartDebugPressed(ActionEvent event) {
+        Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
+                .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
+                .collect(Collectors.toSet());
+        Set<Integer> breakpoints = leftController.getEntriesWithBreakpoints().stream()
+                .map(InstructionTableEntry::getId).collect(Collectors.toSet());
+        //model.startDebug(argumentValues, breakpoints);
+        //model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
+        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+//        updateResultVariableTable();
+//        updateIsDebugProperty();
+        leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
+//        updateAfterDebugStep();
     }
 
 //    void updateAfterDebugStep() {

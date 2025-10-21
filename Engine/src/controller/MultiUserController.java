@@ -6,10 +6,8 @@ import instruction.ArchitectureGeneration;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
-import program.Program;
 import dto.ProgramData;
 import dto.VariableDTO;
-import program.function.FunctionsContainer;
 import user.User;
 import user.UsersManager;
 
@@ -99,7 +97,6 @@ public class MultiUserController implements MultiUserModel, Serializable {
             sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
         }
     }
-
 
     @Override
     public void stopDebug(String username) {

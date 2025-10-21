@@ -32,9 +32,28 @@ public class BreakPointServlet extends HttpServlet {
             }
 
             String username = authenticator.getUsername(req);
-            int lineNumber = jsonObject.get("lineNumber").getAsInt();
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-            model.removeBreakpoint(username, lineNumber);
+            try {
+                int lineNumber = jsonObject.get("lineNumber").getAsInt();
+                model.removeBreakpoint(username, lineNumber);
+            } catch (NumberFormatException e) {
+                String lines = jsonObject.get("lineNumber").getAsString();
+                if (lines.equals("all")) {
+                    model.getProgramData(username).ifPresentOrElse(program -> {
+                        program.getProgramInstructions().forEach(instruction -> {
+                                model.removeBreakpoint(username, instruction.getId());
+                        });
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                    }, () -> {
+                        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                    });
+                }
+                else {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().write("Invalid 'lineNumber' value");
+                }
+            }
+
         });
     }
 

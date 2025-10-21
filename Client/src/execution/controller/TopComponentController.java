@@ -224,7 +224,7 @@ public class TopComponentController{
 
     public void initAllFields() {
         if (primaryController.program != null) {
-            currentProgramName.setText(primaryController.program.getProgramName());
+            Platform.runLater(() -> currentProgramName.setText(primaryController.program.getProgramName()));
         }
     }
 }

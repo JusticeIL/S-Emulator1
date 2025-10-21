@@ -35,7 +35,6 @@ public class PrimaryController {
     public void initialize() {
         program = null;
 
-        SingleProgramController singleProgramController = new SingleProgramController();
         leftSideController.setRightController(rightSideController);
         leftSideController.setTopController(topComponentController);
         rightSideController.setLeftController(leftSideController);

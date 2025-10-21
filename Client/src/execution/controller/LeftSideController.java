@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -102,10 +103,7 @@ public class LeftSideController {
 
     @FXML
     public void clearAllBreakpoints(ActionEvent event) {
-        instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
-        Platform.runLater(() -> {
-            instructionsTable.refresh();
-        });
+        sendDeleteAllBreakpointsRequest();
     }
 
     public void setPrimaryController(PrimaryController primaryController) {
@@ -137,6 +135,18 @@ public class LeftSideController {
                                 instructionsTable.getItems()
                         ))
                         .otherwise("No program loaded.")
+        );
+
+        chosenInstructionHistoryTable.placeholderProperty().bind(
+                Bindings.createObjectBinding(() -> {
+                    if (primaryController.program == null) {
+                        return new Label("No program loaded.");
+                    } else if (instructionsTable.getSelectionModel().getSelectedItem() == null) {
+                        return new Label("Choose an instruction from the table above to present its history.");
+                    } else {
+                        return new Label("This instruction has no history");
+                    }
+                }, new SimpleObjectProperty<>(primaryController.program), instructionsTable.getSelectionModel().selectedItemProperty())
         );
     }
 
@@ -177,8 +187,6 @@ public class LeftSideController {
         }
     }
 
-
-
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;
 
@@ -209,19 +217,6 @@ public class LeftSideController {
                 event.consume(); // Block all other interactions
             }
         });
-
-        // Add this in setRightController or appropriate initialization method
-        chosenInstructionHistoryTable.placeholderProperty().bind(
-                Bindings.createObjectBinding(() -> {
-                    if (!rightController.isProgramLoadedProperty().get()) {
-                        return new Label("No program loaded.");
-                    } else if (instructionsTable.getSelectionModel().getSelectedItem() == null) {
-                        return new Label("Choose an instruction from the table above to present its history.");
-                    } else {
-                        return new Label("This instruction has no history");
-                    }
-                }, rightController.isProgramLoadedProperty(), instructionsTable.getSelectionModel().selectedItemProperty())
-        );
 
         // Set red circles implementation on idColumn for breakpoints
         instructionsTable.getColumns().stream()
@@ -311,7 +306,7 @@ public class LeftSideController {
                 .map(InstructionTableEntry::new) // Convert InstructionDTO -> InstructionTableEntry
                 .toList();
         Platform.runLater(() -> instructionsTable.getItems().setAll(entries)); // Replace items in the table
-        clearAllBreakpoints(null); // Clear all breakpoints when loading a new function, a new program or when changing the expansion level
+        sendDeleteAllBreakpointsRequest(); // Clear all breakpoints when loading a new function, a new program or when changing the expansion level
     }
 
     public void setCurrentLevel(int level) {
@@ -512,8 +507,8 @@ public class LeftSideController {
                             Platform.runLater(() -> {
                                 updateVariablesOrLabelSelectionMenu();
                                 setCurrentLevel(level);
-                                rightController.updateResultVariableTable();
                             });
+                                rightController.updateResultVariableTable();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -534,11 +529,63 @@ public class LeftSideController {
         });
     }
 
+    public void sendDeleteAllBreakpointsRequest() {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + BREAKPOINT_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Create a temporal object containing the amount of credits to charge as json
+        Gson gson = new Gson();
+        String json = gson.toJson(Map.of("lineNumber", "all"));
+
+        // Build the body sent to the server to include the creditRequest object
+        RequestBody body = RequestBody.create(
+                json,
+                MediaType.parse("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .delete(body)
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    if (response.code() == HttpServletResponse.SC_OK) {
+                        instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
+                        Platform.runLater(() -> {
+                            instructionsTable.refresh();
+                        });
+                    }
+                    else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
+                        showAlert("There is no program to delete breakpoints from.", (Stage) clearBreakpointsBtn.getScene().getWindow());
+                    }
+                    else {
+                        showAlert("Triggered a success response but is not conventional", (Stage) clearBreakpointsBtn.getScene().getWindow());
+                    }
+                }
+                else {
+                    showAlert("Failed to delete all breakpoints" + "\n" + "Code: " + response.code(), (Stage) clearBreakpointsBtn.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Failed to send a request to delete all breakpoints ", (Stage) clearBreakpointsBtn.getScene().getWindow());
+            }
+        });
+    }
+
     public void initAllFields() {
         if (primaryController.program != null) {
             updateMainInstructionTable();
-            maxLevel.set(primaryController.program.getMaxExpandLevel());
-            updateVariablesOrLabelSelectionMenu();
+            Platform.runLater(() -> {
+                maxLevel.set(primaryController.program.getMaxExpandLevel());
+                updateVariablesOrLabelSelectionMenu();
+            });
         }
 
     }
