@@ -43,7 +43,7 @@ public class UserServlet extends HttpServlet {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForNoUsernameThenDo(req, () -> {
             //onSuccess
-            String username = authenticator.getUsername(req);
+            String username = req.getParameter("username");
             synchronized (users) {
                 if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);
