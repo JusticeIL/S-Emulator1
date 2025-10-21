@@ -512,6 +512,7 @@ public class LeftSideController {
                             Platform.runLater(() -> {
                                 updateVariablesOrLabelSelectionMenu();
                                 setCurrentLevel(level);
+                                rightController.updateResultVariableTable();
                             });
                         } catch (Exception e) {
                             e.printStackTrace();

@@ -26,67 +26,70 @@ public class ProgramsTableRefresher extends TimerTask {
 
     @Override
     public void run() {
-        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + GET_ALL_PROGRAMS_RESOURCE))
-                .newBuilder();
-        String finalURL = urlBuilder.build().toString();
+        // Only if we're on the dashboard we want to send scheduled requests
+        if (programsTable.getScene().getWindow() != null) {
+            HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + GET_ALL_PROGRAMS_RESOURCE))
+                    .newBuilder();
+            String finalURL = urlBuilder.build().toString();
 
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .get()
-                .build();
+            Request request = new Request.Builder()
+                    .url(finalURL)
+                    .get()
+                    .build();
 
-        Call call = CLIENT.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            Call call = CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                try (ResponseBody body = response.body()) {
-                    if (response.isSuccessful()) {
-                        Gson gson = new Gson();
-                        String responseBody = Objects.requireNonNull(body).string();
-                        Type type = new TypeToken<List<ProgramData>>() {
-                        }.getType();
-                        List<ProgramData> programs = gson.fromJson(responseBody, type);
-                        List<ProgramTableEntry> fetchedPrograms = programs.stream()
-                                .map(ProgramTableEntry::new)
-                                //.sorted() TODO: decide sorting
-                                .toList();
+                    try (ResponseBody body = response.body()) {
+                        if (response.isSuccessful()) {
+                            Gson gson = new Gson();
+                            String responseBody = Objects.requireNonNull(body).string();
+                            Type type = new TypeToken<List<ProgramData>>() {
+                            }.getType();
+                            List<ProgramData> programs = gson.fromJson(responseBody, type);
+                            List<ProgramTableEntry> fetchedPrograms = programs.stream()
+                                    .map(ProgramTableEntry::new)
+                                    //.sorted() TODO: decide sorting
+                                    .toList();
 
-                        Platform.runLater(() -> {
-                            ObservableList<ProgramTableEntry> currentPrograms = programsTable.getItems();
-                            Map<String, Integer> programNameToIndex = new HashMap<>();
-                            for (int i = 0; i < currentPrograms.size(); i++) {
-                                programNameToIndex.put(currentPrograms.get(i).getProgramName(), i);
-                            }
-
-                            for (ProgramTableEntry fetchedProgram : fetchedPrograms) {
-                                String programName = fetchedProgram.getProgramName();
-                                Integer idx = programNameToIndex.get(programName);
-                                if (idx != null) {
-                                    ProgramTableEntry currentProgram = currentPrograms.get(idx);
-                                    if (!fetchedProgram.equals(currentProgram)) {
-                                        currentPrograms.set(idx, fetchedProgram);
-                                    }
-                                } else {
-                                    currentPrograms.add(fetchedProgram);
+                            Platform.runLater(() -> {
+                                ObservableList<ProgramTableEntry> currentPrograms = programsTable.getItems();
+                                Map<String, Integer> programNameToIndex = new HashMap<>();
+                                for (int i = 0; i < currentPrograms.size(); i++) {
+                                    programNameToIndex.put(currentPrograms.get(i).getProgramName(), i);
                                 }
-                            }
-                        });
 
-                    } else {
-                        String responseBody = Objects.requireNonNull(body).string();
-                        System.out.println("Failed to fetch program list: " + response.code());
-                        System.out.println(responseBody);
+                                for (ProgramTableEntry fetchedProgram : fetchedPrograms) {
+                                    String programName = fetchedProgram.getProgramName();
+                                    Integer idx = programNameToIndex.get(programName);
+                                    if (idx != null) {
+                                        ProgramTableEntry currentProgram = currentPrograms.get(idx);
+                                        if (!fetchedProgram.equals(currentProgram)) {
+                                            currentPrograms.set(idx, fetchedProgram);
+                                        }
+                                    } else {
+                                        currentPrograms.add(fetchedProgram);
+                                    }
+                                }
+                            });
+
+                        } else {
+                            String responseBody = Objects.requireNonNull(body).string();
+                            System.out.println("Failed to fetch program list: " + response.code());
+                            System.out.println(responseBody);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
+                }
+
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     e.printStackTrace();
                 }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-            }
-        });
+            });
+        }
     }
 }
