@@ -1,6 +1,7 @@
 package program.function;
 
 import XMLandJaxB.SFunction;
+import controller.SharedProgramsContainer;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.component.Label;
@@ -26,13 +27,22 @@ public class Function extends Program {
 
     public Function(SFunction sFunction,FunctionsContainer functionsContainer,FunctionsContainer sharedFunctionsContainer,Program originProgram) throws FileNotFoundException {
         super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer, sharedFunctionsContainer);
-        setUploadingUser(originProgram.getUploadingUser());
-        setOriginProgramName(originProgram.getProgramName());
+        Optional<Program> originProgramOptional = Optional.ofNullable(originProgram);
+        originProgramOptional.ifPresent(originProgram1 -> {
+            setUploadingUser(originProgram.getUploadingUser());
+            setOriginProgramName(originProgram.getProgramName());
+        });
         this.userString = sFunction.getUserString();
     }
 
-    public Function(SFunction sFunction, FunctionsContainer sharedFunctionsContainer, User user) throws FileNotFoundException {
-        super(sFunction.getSInstructions(), sFunction.getName(), new FunctionsContainer(), sharedFunctionsContainer);
+    public Function(SFunction sFunction, User user) throws FileNotFoundException {
+        super(sFunction.getSInstructions(), sFunction.getName(),new FunctionsContainer() ,user.getFunctionsContainer());
+        setUploadingUser(user.getUsername());
+        this.userString = sFunction.getUserString();
+    }
+
+    public Function(SFunction sFunction, FunctionsContainer sharedFunctionsContainer,User user) throws FileNotFoundException {
+        super(sFunction.getSInstructions(), sFunction.getName(),new FunctionsContainer() ,sharedFunctionsContainer);
         setUploadingUser(user.getUsername());
         this.userString = sFunction.getUserString();
     }

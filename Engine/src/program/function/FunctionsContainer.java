@@ -5,6 +5,7 @@ import program.Program;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FunctionsContainer {
 
@@ -23,6 +24,13 @@ public class FunctionsContainer {
 
     public void setup(Collection<SFunction> sFunctions, FunctionsContainer sharedFunctionsContainer,Program originProgram){
         sharedFunctionsContainer.setup(sFunctions);
+        sFunctions.forEach(sFunction -> {
+            this.functionNames.add(sFunction.getName());
+            this.sFunctions.putIfAbsent(sFunction.getName(), sFunction);
+        });
+        this.originProgram = originProgram;
+    }
+    public void setup(Collection<SFunction> sFunctions,Program originProgram){
         sFunctions.forEach(sFunction -> {
             this.functionNames.add(sFunction.getName());
             this.sFunctions.putIfAbsent(sFunction.getName(), sFunction);
@@ -71,11 +79,16 @@ public class FunctionsContainer {
             function = sharedFunctionsContainer.functions.get(name);
         }
         else {
+            setup(sharedFunctionsContainer.sFunctions.values().stream().filter(sFunction -> sFunction.getName().equals(name)).collect(Collectors.toSet()));
             function = new Function(sFunctions.get(name),this,sharedFunctionsContainer,originProgram);
             functions.put(name, function);
             sharedFunctionsContainer.functions.put(name, function);
         }
 
         return function;
+    }
+
+    public void setOriginProgram(Program program) {
+        originProgram = program;
     }
 }

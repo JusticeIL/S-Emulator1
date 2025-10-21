@@ -18,6 +18,7 @@ public class SharedProgramsContainer {
     private final Map<String,Integer> totalCreditsUsedPerProgram = new HashMap<>();
     private final Map<String,Integer> totalRunsPerProgram = new HashMap<>();
     private final Map<String, Program> dummyProgramsForDashboard = new HashMap<>();
+    private final FunctionsContainer sharedFunctionsContainer = new FunctionsContainer();
 
     public SProgram getSProgram(String programName) {
         return sPrograms.get(programName);
@@ -33,6 +34,7 @@ public class SharedProgramsContainer {
              programSFunctions.getSFunction().forEach(sFunction -> {
                  sFunctions.putIfAbsent(sFunction.getName(),sFunction);
              });
+             sharedFunctionsContainer.setup(sFunctions.values());
         });
         dummyProgram.getFunctions().forEach(function -> {
             dummyProgramsForDashboard.putIfAbsent(function.getName(),function);
@@ -89,5 +91,20 @@ public class SharedProgramsContainer {
 
     public SFunction getSFunctions(String programName) {
         return sFunctions.get(programName);
+    }
+
+    public void addSFunction(SFunction sFunction, String username) {
+        try {
+            sFunctions.putIfAbsent(sFunction.getName(), sFunction);
+            Program dummyProgram = null;
+            dummyProgram = new Function(sFunction, sharedFunctionsContainer,new User(username));
+            dummyProgramsForDashboard.putIfAbsent(sFunction.getName(), dummyProgram);
+            dummyProgram.setUploadingUser(username);
+            dummyProgram.getFunctions().forEach(function -> {
+                dummyProgramsForDashboard.putIfAbsent(function.getName(), function);
+            });
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

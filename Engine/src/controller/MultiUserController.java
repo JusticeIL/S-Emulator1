@@ -1,5 +1,6 @@
 package controller;
 
+import XMLandJaxB.SFunctions;
 import XMLandJaxB.SProgram;
 import dto.UserDTO;
 import instruction.ArchitectureGeneration;
@@ -36,6 +37,12 @@ public class MultiUserController implements MultiUserModel, Serializable {
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
                 sharedProgramsContainer.addSProgram(sProgram,username);
+                Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
+//                sFunctionsOpt.ifPresent(sFunctions -> {
+//                    sFunctions.getSFunction().forEach(sFunction -> {
+//                        sharedProgramsContainer.addSFunction(sFunction,username);
+//                    });
+//                });
             }
             usersManager.getUser(username).updateProgramsLoaded();
             usersManager.getUser(username).setFunctionsLoaded(sharedProgramsContainer.getNumberOfFunctions(username));

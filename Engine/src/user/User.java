@@ -151,7 +151,7 @@ public class User {
     public void activateNewProgram(SFunction sFunction){
         Program newProgramInstance = null;
         try {
-            newProgramInstance = new Function(sFunction,functionsContainer,this);
+            newProgramInstance = new Function(sFunction,this);
             addProgram(newProgramInstance);
             setActiveProgram(newProgramInstance.getProgramName());
         } catch (FileNotFoundException e) {

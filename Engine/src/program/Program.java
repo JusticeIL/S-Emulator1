@@ -112,6 +112,7 @@ public class Program implements Serializable {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
         this.functionsContainer = functionsContainer;
+
         // Load program name
         this.programName = programName;
 
