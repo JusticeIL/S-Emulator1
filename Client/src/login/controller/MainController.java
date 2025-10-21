@@ -32,7 +32,12 @@ public class MainController {
 
     @FXML
     public void initialize() {
-
+        // Allow pressing Enter to trigger registration
+        usernameField.setOnKeyPressed(event -> {
+            if (event.getCode() == javafx.scene.input.KeyCode.ENTER) {
+                registerUserBtn.fire(); // Triggers the ActionEvent
+            }
+        });
     }
 
     @FXML
