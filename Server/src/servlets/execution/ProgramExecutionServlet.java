@@ -1,6 +1,7 @@
 package servlets.execution;
 
 import com.google.gson.Gson;
+import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,34 +22,18 @@ public class ProgramExecutionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
-        MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
+
         // Expects the query parameters to contain the arguments for the program
-
-
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-        if (hasUsernameCookie) {
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
-
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req,resp,() -> {
+            //onSuccess
+            String username = authenticator.getUsername(req);
+            MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
             List<String> argNames = model.getProgramData(username).get().getProgramXArguments();
             String architectureGeneration = req.getReader().readLine();
             Set<VariableDTO> args = argNames.stream().map(name -> new VariableDTO(name, Integer.parseInt(req.getParameter(name)))).collect(Collectors.toSet());
-            model.runProgram(username, args,architectureGeneration);
+            model.runProgram(username, args, architectureGeneration);
             resp.sendRedirect(req.getContextPath() + "/program");
-        } else {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
+        });
     }
 }

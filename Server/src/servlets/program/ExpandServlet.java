@@ -1,5 +1,6 @@
 package servlets.program;
 
+import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,26 +19,13 @@ public class ExpandServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int level = req.getParameter("level") != null ? Integer.parseInt(req.getParameter("level")) : 0;
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-        if (hasUsernameCookie) {
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+
+        authenticator.checkForUsernameThenDo(req, resp,() -> {
+            //onSuccess
+            String username = authenticator.getUsername(req);
             model.Expand(username, level);
             resp.sendRedirect(req.getContextPath() + "/program");
-        }else {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
+        });
     }
 }

@@ -10,6 +10,7 @@ import instruction.component.VariableFactory;
 import program.Program;
 import program.ProgramExecutioner;
 import dto.VariableDTO;
+import user.User;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -27,6 +28,12 @@ public class Function extends Program {
         super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer, sharedFunctionsContainer);
         setUploadingUser(originProgram.getUploadingUser());
         setOriginProgramName(originProgram.getProgramName());
+        this.userString = sFunction.getUserString();
+    }
+
+    public Function(SFunction sFunction, FunctionsContainer sharedFunctionsContainer, User user) throws FileNotFoundException {
+        super(sFunction.getSInstructions(), sFunction.getName(), new FunctionsContainer(), sharedFunctionsContainer);
+        setUploadingUser(user.getUsername());
         this.userString = sFunction.getUserString();
     }
 

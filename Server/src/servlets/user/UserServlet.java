@@ -19,14 +19,9 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
-        authenticator.checkForUsernameThenDo(req,()->{
+        authenticator.checkForUsernameThenDo(req, resp, ()->{
             //onSuccess
-            Cookie[] cookies = req.getCookies();
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
+            String username = authenticator.getUsername(req);
 
             Set<String> users = (Set<String>) getServletContext().getAttribute("users");
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
@@ -37,10 +32,6 @@ public class UserServlet extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(responseJson);
-        },()->{
-            //onFail
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            resp.getWriter().write("Not logged in.");
         });
     }
 
@@ -52,7 +43,7 @@ public class UserServlet extends HttpServlet {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForNoUsernameThenDo(req, () -> {
             //onSuccess
-            String username = req.getParameter("username");
+            String username = authenticator.getUsername(req);
             synchronized (users) {
                 if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);

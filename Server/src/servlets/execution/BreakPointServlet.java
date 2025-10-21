@@ -1,5 +1,6 @@
 package servlets.execution;
 
+import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,29 +18,14 @@ public class BreakPointServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Expects the query parameters to contain the line number of the breakpoint to remove
 
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-        if (hasUsernameCookie) {
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
-
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req,resp, () -> {
+            //onSuccess
+            String username = authenticator.getUsername(req);
             int lineNumber = Integer.parseInt(req.getParameter("lineNumber"));
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
             model.removeBreakpoint(username, lineNumber);
-        }else{
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
+        });
     }
 
     @Override
@@ -47,28 +33,11 @@ public class BreakPointServlet extends HttpServlet {
         // Expects the query parameters to contain the line number of the breakpoint to add
         int lineNumber = Integer.parseInt(req.getParameter("lineNumber"));
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-        if (hasUsernameCookie) {
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req,resp, () -> {
+            //onSuccess
+            String username = authenticator.getUsername(req);
             model.addBreakpoint(username, lineNumber);
-        }else {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
-
+        });
     }
-
-
 }

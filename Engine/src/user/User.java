@@ -1,11 +1,14 @@
 package user;
 
 import XMLandJaxB.SFunction;
+import XMLandJaxB.SProgram;
 import controller.ProgramContainer;
 import dto.Statistics;
 import program.Program;
+import program.function.Function;
 import program.function.FunctionsContainer;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -137,5 +140,23 @@ public class User {
 
     public void pullSfunctions(Set<SFunction> allSFunctions) {
         functionsContainer.setup(allSFunctions);
+    }
+
+    public void activateNewProgram(SProgram sProgram) {
+        Program newProgramInstance = new Program(sProgram, this);
+        addProgram(newProgramInstance);
+        setActiveProgram(newProgramInstance.getProgramName());
+    }
+
+    public void activateNewProgram(SFunction sFunction){
+        Program newProgramInstance = null;
+        try {
+            newProgramInstance = new Function(sFunction,functionsContainer,this);
+            addProgram(newProgramInstance);
+            setActiveProgram(newProgramInstance.getProgramName());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("New Program Instance could not be created from Sfunction for user");
+        }
+
     }
 }

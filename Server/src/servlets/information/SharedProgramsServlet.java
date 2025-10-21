@@ -2,6 +2,7 @@ package servlets.information;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,23 +18,10 @@ import java.util.Arrays;
 public class SharedProgramsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasUsernameCookie) {
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req, resp,() -> {
+            //onSuccess
+            String username = authenticator.getUsername(req);
 
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
             Gson gson = new GsonBuilder()
@@ -44,9 +32,6 @@ public class SharedProgramsServlet extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().write(responseJson);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.getWriter().write("Missing user verification.");
-        }
+        });
     }
 }
