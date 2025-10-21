@@ -2,7 +2,7 @@ package program;
 
 import XMLandJaxB.*;
 import dto.ProgramData;
-import instruction.ArchitectureGeneration;
+import dto.ArchitectureGeneration;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;

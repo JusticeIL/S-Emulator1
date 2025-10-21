@@ -1,7 +1,7 @@
 package controller;
 
 import dto.VariableDTO;
-import instruction.ArchitectureGeneration;
+import dto.ArchitectureGeneration;
 import program.Program;
 import program.ProgramExecutioner;
 import user.User;

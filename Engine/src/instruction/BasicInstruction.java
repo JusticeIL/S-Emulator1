@@ -1,5 +1,6 @@
 package instruction;
 
+import dto.ArchitectureGeneration;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;

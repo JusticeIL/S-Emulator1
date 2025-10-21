@@ -3,7 +3,7 @@ package controller;
 import XMLandJaxB.SFunctions;
 import XMLandJaxB.SProgram;
 import dto.UserDTO;
-import instruction.ArchitectureGeneration;
+import dto.ArchitectureGeneration;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;

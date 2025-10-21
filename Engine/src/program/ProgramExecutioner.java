@@ -1,7 +1,7 @@
 package program;
 
 import dto.ProgramData;
-import instruction.ArchitectureGeneration;
+import dto.ArchitectureGeneration;
 import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;

@@ -1,6 +1,6 @@
 package instruction.synthetic;
 
-import instruction.ArchitectureGeneration;
+import dto.ArchitectureGeneration;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;

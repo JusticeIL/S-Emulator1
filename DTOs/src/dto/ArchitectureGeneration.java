@@ -1,4 +1,4 @@
-package instruction;
+package dto;
 
 public enum ArchitectureGeneration {
     I {

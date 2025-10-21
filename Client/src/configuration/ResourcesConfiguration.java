@@ -12,4 +12,5 @@ public class ResourcesConfiguration {
     public static final String ADD_CREDITS_RESOURCE = "/api/user/credit";
     public static final String BREAKPOINT_RESOURCE = "/api/program/debug/breakpoint";
     public static final String EXPAND_PROGRAM_RESOURCE = "/api/program/expand";
+    public static final String RUN_PROGRAM_RESOURCE = "/api/program/execute";
 }

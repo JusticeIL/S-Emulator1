@@ -1,6 +1,6 @@
 package instruction.synthetic.quoting;
 
-import instruction.ArchitectureGeneration;
+import dto.ArchitectureGeneration;
 import instruction.SyntheticInstruction;
 import instruction.component.Label;
 import instruction.component.Variable;

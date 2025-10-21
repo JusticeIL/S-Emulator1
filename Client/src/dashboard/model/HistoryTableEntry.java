@@ -2,7 +2,7 @@ package dashboard.model;
 
 import dto.ProgramType;
 import dto.Run;
-import instruction.ArchitectureGeneration;
+import dto.ArchitectureGeneration;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;

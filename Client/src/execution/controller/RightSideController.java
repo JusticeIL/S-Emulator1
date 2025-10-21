@@ -1,5 +1,9 @@
 package execution.controller;
 
+import com.google.gson.Gson;
+import dto.ArchitectureGeneration;
+import dto.ProgramData;
+import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -19,13 +23,17 @@ import javafx.util.converter.NumberStringConverter;
 import execution.model.ArgumentTableEntry;
 import execution.model.InstructionTableEntry;
 import dto.VariableDTO;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static configuration.ClientConfiguration.CLIENT;
 import static configuration.DialogUtils.showAlert;
+import static configuration.ResourcesConfiguration.*;
 
 public class RightSideController{
 
@@ -84,6 +92,7 @@ public class RightSideController{
 
     @FXML
     private MenuButton architectureMenu;
+    private String currentlyChosenArchitecture;
 
     @FXML
     public void initialize() {
@@ -132,6 +141,7 @@ public class RightSideController{
         // Minimize tables' height to prevent vertical scrolling
         variableTable.setPrefHeight(variableTable.getPrefHeight() * 0.85);
         executionArgumentInput.setPrefHeight(executionArgumentInput.getPrefHeight() * 0.85);
+        updateAvailableExpansionLevels();
     }
 
     @FXML
@@ -150,7 +160,7 @@ public class RightSideController{
 
             // Pass them to runProgram
             try {
-                //model.runProgram(argumentValues);
+                sendRunProgramRequest(argumentValues);
             } catch (Exception e) {
                 Alert alert = createErrorMessageOnRunProgram(e);
                 alert.showAndWait();
@@ -367,5 +377,80 @@ public class RightSideController{
             updateResultVariableTable();
             Platform.runLater(() -> currentCycles.set(primaryController.program.getCurrentCycles()));
         }
+    }
+
+    public void updateAvailableExpansionLevels() {
+        architectureMenu.getItems().clear();
+
+        // 1. קבלת כל ערכי ה-Enum באופן דינמי
+        Arrays.stream(ArchitectureGeneration.values())
+
+                // 2. מיפוי כל ערך Enum (כגון I, II) לפריט בתפריט (CustomMenuItem)
+                .map(architecture -> {
+                    String architectureName = architecture.toString();
+
+                    Label label = new Label(architectureName);
+                    label.setMaxWidth(Double.MAX_VALUE);
+                    label.setStyle("-fx-alignment: center;");
+
+                    CustomMenuItem menuItem = new CustomMenuItem(label, true);
+                    menuItem.setUserData(architectureName); // שמור את המחרוזת של הדור
+
+                    label.prefWidthProperty().bind(architectureMenu.widthProperty());
+
+                    // הגדרת הפעולה בלחיצה
+                    menuItem.setOnAction((ActionEvent event) -> {
+                        String chosenArchitecture = (String) menuItem.getUserData();
+                        currentlyChosenArchitecture = chosenArchitecture;
+                        // אפשר להוסיף כאן לוגיקה לעדכון הכפתור
+                    });
+                    return menuItem;
+                })
+
+                // 3. הוספת כל פריטי התפריט למניו בטון
+                .forEach(architectureMenu.getItems()::add);
+    }
+
+    public void sendRunProgramRequest(Set<VariableDTO> arguments) {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + RUN_PROGRAM_RESOURCE)
+                .newBuilder());
+
+        arguments.forEach(argument -> urlBuilder.addQueryParameter(argument.getName(),String.valueOf(argument.getValue())));
+        String finalURL = urlBuilder.build().toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    if (response.code() == HttpServletResponse.SC_OK) {
+                        try (ResponseBody responseBody = response.body()) {
+                            Gson gson = new Gson();
+                            primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
+                            leftController.updateMainInstructionTable();
+                            updateResultVariableTable();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
+                        showAlert("No program data detected for the user.", (Stage) runRadioButton.getScene().getWindow());
+                    }
+                } else {
+                    showAlert("Failed to execute program in" + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
+                            (Stage) runRadioButton.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Failed to send a request to execute the active program int " + currentlyChosenArchitecture,
+                        (Stage) runRadioButton.getScene().getWindow());
+            }
+        });
     }
 }
