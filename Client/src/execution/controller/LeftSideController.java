@@ -1,8 +1,11 @@
 package execution.controller;
 
-import controller.SingleProgramController;
+import com.google.gson.Gson;
+import dto.ProgramData;
+import jakarta.servlet.http.HttpServletResponse;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,22 +18,30 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import execution.model.InstructionTableEntry;
 import dto.InstructionDTO;
 import dto.Searchable;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static configuration.ClientConfiguration.CLIENT;
+import static configuration.DialogUtils.showAlert;
+import static configuration.ResourcesConfiguration.*;
+
 public class LeftSideController {
 
+    private PrimaryController primaryController;
     private RightSideController rightController;
     private TopComponentController topController;
-    private SingleProgramController model;
-    private final IntegerProperty currentLevel = new SimpleIntegerProperty(-1);
     private IntegerProperty maxLevel = new SimpleIntegerProperty(-1);
+    private final IntegerProperty currentLevel = new SimpleIntegerProperty(-1);
     private final int HISTORY_CHAIN_EFFECT_DURATION = 300; // milliseconds
 
     @FXML
@@ -49,13 +60,25 @@ public class LeftSideController {
     private Button clearBreakpointsBtn;
 
     @FXML
-    private Label summaryLine;
+    private Label summaryLine; //TODO: add architecture counters later
 
     @FXML
     private Label maxExpandLevel;
 
     @FXML
     public void initialize() {
+
+        // Initialize the max label
+        maxExpandLevel.textProperty().bind(
+                Bindings.when(
+                                Bindings.createBooleanBinding(
+                                        () -> primaryController.program != null,
+                                        maxLevel
+                                )
+                        )
+                        .then(Bindings.createStringBinding(() -> "/" + maxLevel.get(), maxLevel))
+                        .otherwise("/Max")
+        );
 
         instructionsTable.setRowFactory(tv -> {
             TableRow<InstructionTableEntry> row = new TableRow<>();
@@ -92,7 +115,13 @@ public class LeftSideController {
     @FXML
     public void clearAllBreakpoints(ActionEvent event) {
         instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
-        instructionsTable.refresh();
+        Platform.runLater(() -> {
+            instructionsTable.refresh();
+        });
+    }
+
+    public void setPrimaryController(PrimaryController primaryController) {
+        this.primaryController = primaryController;
     }
 
     private void updateParentInstructionTable(InstructionDTO instruction) {
@@ -132,20 +161,8 @@ public class LeftSideController {
         }
     }
 
-    public void setModel(SingleProgramController model) {
-        this.model = model;
-    }
-
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;
-
-        // Initialize the max label
-        maxExpandLevel.textProperty().bind(
-                Bindings.when(rightController.isProgramLoaded())
-                        .then(Bindings.createStringBinding(() -> "/" + maxLevel.get(), maxLevel
-                        ))
-                        .otherwise("/Max")
-        );
 
         highlightSelection.disableProperty().bind(
                 Bindings.isEmpty(highlightSelection.getItems())
@@ -176,11 +193,14 @@ public class LeftSideController {
         });
 
         summaryLine.textProperty().bind(
-                Bindings.when(rightController.isProgramLoaded())
+                Bindings.when(Bindings.createBooleanBinding(
+                                () -> primaryController.program != null,
+                                instructionsTable.getItems()
+                        ))
                         .then(Bindings.createStringBinding(() ->
                                         "Program contains " +
                                                 instructionsTable.getItems().stream().filter(entry -> "B".equals(entry.getType())).count() +
-                                                " Basic Instructions, and " +
+                                                " Basic Instructions, " +
                                                 instructionsTable.getItems().stream().filter(entry -> "S".equals(entry.getType())).count() +
                                                 " Synthetic Instructions",
                                 instructionsTable.getItems()
@@ -223,13 +243,13 @@ public class LeftSideController {
                                 isActive = !isActive;
                                 InstructionTableEntry entry = getTableRow().getItem();
                                 if (isActive) {
-                                    model.addBreakpoint(this.getItem().intValue()); // Remove any existing breakpoint first to avoid duplicates
+                                    sendAddBreakpointRequest(this.getItem().intValue());
                                     setText(null);
                                     setGraphic(wrapper);
                                     circle.setFill(Color.rgb(217, 83, 79, 1.0));
                                     if (entry != null) entry.setBreakpoint(true);
                                 } else {
-                                    model.removeBreakpoint(this.getItem().intValue());
+                                    sendDeleteBreakpointRequest(this.getItem().intValue()); // Remove any existing breakpoint first to avoid duplicates
                                     setText(getItem().toString());
                                     setGraphic(null);
                                     if (entry != null) entry.setBreakpoint(false);
@@ -266,14 +286,14 @@ public class LeftSideController {
 
                             InstructionTableEntry entry = getTableRow().getItem();
                             if (entry != null && entry.isBreakpoint()) {
-                                model.addBreakpoint(entry.getId());
+                                sendAddBreakpointRequest(entry.getId());
                                 isActive = true;
                                 setText(null);
                                 setGraphic(wrapper);
                                 circle.setFill(Color.rgb(217, 83, 79, 1.0));
                             } else {
                                 if (entry != null) {
-                                    model.removeBreakpoint(entry.getId());
+                                    sendDeleteBreakpointRequest(entry.getId());
                                 }
                                 isActive = false;
                                 setText(item.toString());
@@ -285,19 +305,11 @@ public class LeftSideController {
     }
 
     public void updateMainInstructionTable() {
-        model.getProgramData().ifPresent(programData -> {
-            List<InstructionTableEntry> entries = programData.getProgramInstructions().stream()
-                    .map(InstructionTableEntry::new) // Convert InstructionDTO -> InstructionTableEntry
-                    .toList();
-            instructionsTable.getItems().setAll(entries);// Replace items in the table
-            clearAllBreakpoints(null); // Clear all breakpoints when loading a new function, a new program or when changing the expansion level
-        });
-    }
-
-    public void updateMaxExpansionLevel() {
-        model.getProgramData().ifPresent(programData -> {
-            maxLevel.set(programData.getMaxExpandLevel());
-        });
+        List<InstructionTableEntry> entries = primaryController.program.getProgramInstructions().stream()
+                .map(InstructionTableEntry::new) // Convert InstructionDTO -> InstructionTableEntry
+                .toList();
+        Platform.runLater(() -> instructionsTable.getItems().setAll(entries)); // Replace items in the table
+        clearAllBreakpoints(null); // Clear all breakpoints when loading a new function, a new program or when changing the expansion level
     }
 
     public void setCurrentLevel(int level) {
@@ -332,9 +344,7 @@ public class LeftSideController {
                     menuItem.setOnAction((ActionEvent event) -> {
                         int selectedLevel = (int) menuItem.getUserData();
                         setCurrentLevel(selectedLevel);
-                        model.Expand(currentLevel.get());
-                        updateMainInstructionTable();
-                        updateVariablesOrLabelSelectionMenu();
+                        sendExpansionForActiveProgramRequest(currentLevel.get());
                     });
                     return menuItem;
                 })
@@ -397,5 +407,134 @@ public class LeftSideController {
         return instructionsTable.getItems().stream()
                 .filter(InstructionTableEntry::isBreakpoint)
                 .collect(Collectors.toSet());
+    }
+
+    public void sendAddBreakpointRequest(int breakpointRow) {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + BREAKPOINT_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Create a temporal object containing the amount of credits to charge as json
+        Gson gson = new Gson();
+        String json = gson.toJson(Map.of("lineNumber", breakpointRow));
+
+        // Build the body sent to the server to include the creditRequest object
+        RequestBody body = RequestBody.create(
+                json,
+                MediaType.parse("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .post(body)
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    showAlert("Failed to set a new breakpoint on line" + breakpointRow + "\n" + "Code: " + response.code(),
+                            (Stage) clearBreakpointsBtn.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Failed to send a request to set the breakpoint on line" + breakpointRow,
+                        (Stage) clearBreakpointsBtn.getScene().getWindow());
+            }
+        });
+    }
+
+    public void sendDeleteBreakpointRequest(int breakpointRow) {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + BREAKPOINT_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Create a temporal object containing the amount of credits to charge as json
+        Gson gson = new Gson();
+        String json = gson.toJson(Map.of("lineNumber", breakpointRow));
+
+        // Build the body sent to the server to include the creditRequest object
+        RequestBody body = RequestBody.create(
+                json,
+                MediaType.parse("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .delete(body)
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    showAlert("Failed to delete a breakpoint on line" + breakpointRow + "\n" + "Code: " + response.code(),
+                            (Stage) clearBreakpointsBtn.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        showAlert("Failed to send a request to delete the breakpoint on line" + breakpointRow,
+                                (Stage) clearBreakpointsBtn.getScene().getWindow())
+                );
+            }
+        });
+    }
+
+    public void sendExpansionForActiveProgramRequest(int level) {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + EXPAND_PROGRAM_RESOURCE))
+                .newBuilder()
+                .addQueryParameter("level", String.valueOf(level));
+        String finalURL = urlBuilder.build().toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    if (response.code() == HttpServletResponse.SC_OK) {
+                        try (ResponseBody responseBody = response.body()) {
+                            Gson gson = new Gson();
+                            primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
+                            updateMainInstructionTable();
+                            Platform.runLater(() -> updateVariablesOrLabelSelectionMenu());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
+                        showAlert("No program data detected for the user.", (Stage) expansionLevelMenu.getScene().getWindow());
+                    }
+                } else {
+                    showAlert("Failed to expand active program to " + level + "\n" + "Code: " + response.code(),
+                            (Stage) expansionLevelMenu.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Failed to send a request to expand the active program to " + level,
+                        (Stage) expansionLevelMenu.getScene().getWindow());
+            }
+        });
+    }
+
+    public void initAllFields() {
+        if (primaryController.program != null) {
+            updateMainInstructionTable();
+            maxLevel.set(primaryController.program.getMaxExpandLevel());
+            updateVariablesOrLabelSelectionMenu();
+        }
+
     }
 }

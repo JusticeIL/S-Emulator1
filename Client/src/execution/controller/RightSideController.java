@@ -1,6 +1,6 @@
 package execution.controller;
 
-import controller.SingleProgramController;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -10,9 +10,13 @@ import javafx.beans.value.ObservableBooleanValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
@@ -25,12 +29,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static configuration.DialogUtils.showAlert;
+
 public class RightSideController{
 
+    private PrimaryController primaryController;
     private TopComponentController topController;
     private LeftSideController leftController;
     private Stage primaryStage;
-    private SingleProgramController model;
     private final BooleanProperty isDebugMode = new SimpleBooleanProperty(false);
     private final BooleanProperty isProgramLoaded = new SimpleBooleanProperty(false);
     private final IntegerProperty currentCycles = new SimpleIntegerProperty(-1);
@@ -132,7 +138,9 @@ public class RightSideController{
         ));
 
         variableTable.placeholderProperty().bind(
-                Bindings.when(isProgramLoaded.not())
+                Bindings.when(Bindings.createBooleanBinding(
+                                () -> primaryController.program == null
+                        ))
                         .then(new Label("No program loaded."))
                         .otherwise(new Label("No variables state to present"))
         );
@@ -145,8 +153,8 @@ public class RightSideController{
 
     @FXML
     public void ResumeDebugPressed(ActionEvent event) {
-        model.resumeDebug();
-        updateAfterDebugStep();
+        //model.resumeDebug();
+//        updateAfterDebugStep();
     }
 
     @FXML
@@ -159,13 +167,13 @@ public class RightSideController{
 
             // Pass them to runProgram
             try {
-                model.runProgram(argumentValues);
+                //model.runProgram(argumentValues);
             } catch (Exception e) {
                 Alert alert = createErrorMessageOnRunProgram(e);
                 alert.showAndWait();
             }
-            updateResultVariableTable();
-            updateCycles();
+//            updateResultVariableTable();
+//            updateCycles();
         }
         else {
             try {
@@ -184,25 +192,25 @@ public class RightSideController{
                 .collect(Collectors.toSet());
         Set<Integer> breakpoints = leftController.getEntriesWithBreakpoints().stream()
                 .map(InstructionTableEntry::getId).collect(Collectors.toSet());
-        model.startDebug(argumentValues, breakpoints);
-        model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
+        //model.startDebug(argumentValues, breakpoints);
+        //model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
         leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
-        updateResultVariableTable();
-        updateIsDebugProperty();
+//        updateResultVariableTable();
+//        updateIsDebugProperty();
         leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
-        updateAfterDebugStep();
+//        updateAfterDebugStep();
     }
 
     @FXML
     void StepOverDebugPressed(ActionEvent event) {
-        model.stepOver();
-        updateAfterDebugStep();
+        //model.stepOver();
+//        updateAfterDebugStep();
     }
 
     @FXML
     void StopDebugPressed(ActionEvent event) {
-        model.stopDebug();
-        updateIsDebugProperty();
+        //model.stopDebug();
+//        updateIsDebugProperty();
         leftController.clearMarkInInstructionTable();
     }
 
@@ -213,15 +221,45 @@ public class RightSideController{
         currentCycles.set(0);
     }
 
-    public void setModel(SingleProgramController model) {
+    @FXML
+    void returnToDashboardScreen(ActionEvent event) {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard/resources/fxml/dashboard.fxml"));
+                Parent newRoot = loader.load();
+                Scene dashboardScene = new Scene(newRoot, 850, 600);
 
-        this.model = model;
-        isProgramLoaded.set(model.isProgramLoaded());
+                // Copy current scene stylesheets (preserves chosen skin)
+                Scene currentScene = backToDashboardBtn.getScene();
+
+                dashboardScene.getStylesheets().setAll(currentScene.getStylesheets());
+
+                // Fallback: ensure at least a default stylesheet if none copied
+                if (dashboardScene.getStylesheets().isEmpty()) { // Case: no stylesheet was copied because empty
+                    dashboardScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
+                }
+
+                dashboard.controller.PrimaryController controller = loader.getController();
+
+                // Close current window
+                ((Stage) currentScene.getWindow()).close();
+
+                controller.getTopComponentController().setPrimaryStage(primaryStage);
+                primaryStage.setScene(dashboardScene);
+                primaryStage.setTitle("S-embler - Dashboard");
+                primaryStage.getIcons().add(
+                        new Image(getClass().getResourceAsStream("/resources/icon.png"))
+                );
+                primaryStage.show();
+            } catch (Exception ex) {
+                Stage primaryStage = (Stage) backToDashboardBtn.getScene().getWindow();
+                showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
+            }
+        });
     }
 
-    public void OnProgramLoaded() {
-        updateCycles();
-        isProgramLoaded.set(true);
+    public void setPrimaryController(PrimaryController primaryController) {
+        this.primaryController = primaryController;
     }
 
     public void setTopController(TopComponentController topController) {
@@ -253,25 +291,23 @@ public class RightSideController{
     }
 
     public void updateArgumentTable() {
-        model.getProgramData().ifPresent(programData -> {
-            List<ArgumentTableEntry> entries = programData.getProgramXArguments().stream()
-                    .map(ArgumentTableEntry::new) // Convert ArgumentDTO -> ArgumentTableEntry
-                    .toList();
-            executionArgumentInput.getItems().setAll(entries);// Replace items in the table
-        })
-        ;
+        List<ArgumentTableEntry> entries = primaryController.program.getProgramXArguments().stream()
+                .map(ArgumentTableEntry::new) // Convert ArgumentDTO -> ArgumentTableEntry
+                .toList();
+        Platform.runLater(() -> executionArgumentInput.getItems().setAll(entries)); // Replace items in the table
     }
 
     public void updateResultVariableTable() {
-        model.getProgramData().ifPresent(programData -> {
+        Platform.runLater(() -> {
             List<ArgumentTableEntry> previousEntries = new ArrayList<>(variableTable.getItems());
-            List<ArgumentTableEntry> entries = programData.getProgramVariablesCurrentState().stream()
+            List<ArgumentTableEntry> newEntries = primaryController.program.getProgramVariablesCurrentState().stream()
                     .map(ArgumentTableEntry::new) // Convert VariableDTO -> ArgumentTableEntry
                     .toList();
-            variableTable.getItems().setAll(entries); // Replace items in the table
 
-            for (int i = 0; i < entries.size(); i++) {
-                ArgumentTableEntry newEntry = entries.get(i);
+            variableTable.getItems().setAll(newEntries); // Replace items in the table
+
+            for (int i = 0; i < newEntries.size(); i++) {
+                ArgumentTableEntry newEntry = newEntries.get(i);
                 if (i < previousEntries.size()) {
                     ArgumentTableEntry oldEntry = previousEntries.get(i);
                     // Compare by value
@@ -294,35 +330,30 @@ public class RightSideController{
         return isProgramLoaded;
     }
 
-    public void updateCycles() {
-        model.getProgramData().ifPresent(programData ->
-                currentCycles.set(programData.getCurrentCycles()));
-    }
+//    void updateAfterDebugStep() {
+//        model.getProgramData().ifPresent(model-> {
+//            nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug());
+//            if (!model.isDebugmode()){ // Debugging finished
+//                nextInstructionIdForDebug.set(0);
+//                leftController.clearMarkInInstructionTable();
+//
+//            }
+//            leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+//        });
+//        updateResultVariableTable();
+//        updateIsDebugProperty();
+//        updateCycles();
+//    }
 
-    void updateAfterDebugStep() {
-        model.getProgramData().ifPresent(model-> {
-            nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug());
-            if (!model.isDebugmode()){ // Debugging finished
-                nextInstructionIdForDebug.set(0);
-                leftController.clearMarkInInstructionTable();
-
-            }
-            leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
-        });
-        updateResultVariableTable();
-        updateIsDebugProperty();
-        updateCycles();
-    }
-
-    public void updateIsDebugProperty() {
-        if (model.isProgramLoaded()) {
-            model.getProgramData().ifPresent(data ->
-                    isDebugMode.set(data.isDebugmode())
-            );
-        } else {
-            isDebugMode.set(false);
-        }
-    }
+//    public void updateIsDebugProperty() {
+//        if (model.isProgramLoaded()) {
+//            model.getProgramData().ifPresent(data ->
+//                    isDebugMode.set(data.isDebugmode())
+//            );
+//        } else {
+//            isDebugMode.set(false);
+//        }
+//    }
 
     public BooleanProperty isInDebugModeProperty() {
         return isDebugMode;
@@ -330,5 +361,13 @@ public class RightSideController{
 
     public void clearVariableTable() {
         variableTable.getItems().clear();
+    }
+
+    public void initAllFields() {
+        if (primaryController.program != null) {
+            updateArgumentTable();
+            updateResultVariableTable();
+            Platform.runLater(() -> currentCycles.set(primaryController.program.getCurrentCycles()));
+        }
     }
 }
