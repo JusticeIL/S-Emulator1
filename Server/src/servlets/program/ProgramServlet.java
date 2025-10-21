@@ -1,6 +1,7 @@
 package servlets.program;
 
 import com.google.gson.Gson;
+import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -21,22 +22,10 @@ public class ProgramServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-        if (hasUsernameCookie) {
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req,resp, () -> {
+            //onSuccess
+            String username = authenticator.getUsername(req);
             Gson gson = new Gson();
             Optional<ProgramData> data = model.getProgramData(username);
             data.ifPresentOrElse(
@@ -54,9 +43,7 @@ public class ProgramServlet extends HttpServlet {
                         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
                     }
             );
-        } else {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
+        });
     }
 
     @Override
@@ -64,16 +51,6 @@ public class ProgramServlet extends HttpServlet {
         //Expects the body to contain the path to the program xml file
 
         MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
         Collection<Part> parts = req.getParts();
 
         // 2. Check if the part exists
@@ -86,12 +63,10 @@ public class ProgramServlet extends HttpServlet {
         Part xmlPart = parts.iterator().next();
         System.out.println("Found file part with name: '" + xmlPart.getName() + "' and file name: '" + xmlPart.getSubmittedFileName() + "'");
 
-        if (hasUsernameCookie) {
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req, resp,() -> {
+            //onSuccess
+            String username = authenticator.getUsername(req);
             try {
                 model.loadProgram(username, xmlPart.getInputStream());
             } catch (JAXBException e) {
@@ -99,10 +74,7 @@ public class ProgramServlet extends HttpServlet {
             } catch (IllegalArgumentException e) {
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
                 resp.getWriter().write("Error: " + e.getMessage());
-                return;
             }
-        } else {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
+        });
     }
 }

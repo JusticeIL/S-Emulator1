@@ -1,5 +1,6 @@
 package servlets.program;
 
+import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,26 +22,14 @@ public class FunctionSwitchServlet extends HttpServlet {
             // Switch to the specified function
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
 
-            Cookie[] cookies = req.getCookies();
-            boolean hasUsernameCookie = false;
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if ("username".equals(cookie.getName())) {
-                        hasUsernameCookie = true;
-                        break;
+            CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+            authenticator.checkForUsernameThenDo(req, resp, () -> {
+                        //onSuccess
+                        String username = authenticator.getUsername(req);
+                        model.switchFunction(username, functionName);
+                        resp.sendRedirect(req.getContextPath() + "/program");
                     }
-                }
-            }
-            if (hasUsernameCookie) {
-                String username = Arrays.stream(cookies)
-                        .filter(cookie -> "username".equals(cookie.getName()))
-                        .findFirst()
-                        .map(Cookie::getValue)
-                        .orElse(null);
-                model.switchFunction(username, functionName);
-                 resp.sendRedirect(req.getContextPath() + "/program");}else{
-                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            }
+            );
         } else {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

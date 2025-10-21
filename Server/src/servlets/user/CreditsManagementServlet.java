@@ -2,6 +2,7 @@ package servlets.user;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,19 +20,9 @@ public class CreditsManagementServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Check for username cookie
-        Cookie[] cookies = req.getCookies();
-        boolean hasUsernameCookie = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    hasUsernameCookie = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasUsernameCookie) {
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req, resp,() -> {
+            //onSuccess
             // Parse JSON request body
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
@@ -49,11 +40,7 @@ public class CreditsManagementServlet extends HttpServlet {
             }
 
             // Extract username from cookie
-            String username = Arrays.stream(cookies)
-                    .filter(cookie -> "username".equals(cookie.getName()))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .orElse(null);
+            String username = authenticator.getUsername(req);
 
             if (username == null) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -78,9 +65,6 @@ public class CreditsManagementServlet extends HttpServlet {
             String responseJson = gson.toJson(model.getUserData(username));
             resp.setContentType("application/json");
             resp.getWriter().write(responseJson);
-        }
-        else {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }
+        });
     }
 }
