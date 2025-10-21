@@ -36,6 +36,7 @@ public class FunctionsTableRefresher extends TimerTask {
                 .build();
 
         Call call = CLIENT.newCall(request);
+
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {

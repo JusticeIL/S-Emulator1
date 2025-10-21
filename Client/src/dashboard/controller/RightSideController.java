@@ -132,17 +132,105 @@ public class RightSideController {
 
         /* Timer tasks */
         ProgramsTableRefresher programListRefreshTask = new ProgramsTableRefresher(programsTable);
-        Timer timer1 = new Timer();
+        Timer timer1 = new Timer(true);
         timer1.schedule(programListRefreshTask, REFRESH_RATE, REFRESH_RATE);
 
         FunctionsTableRefresher functionListRefreshTask = new FunctionsTableRefresher(functionsTable);
-        Timer timer2 = new Timer();
+        Timer timer2 = new Timer(true);
         timer2.schedule(functionListRefreshTask, REFRESH_RATE, REFRESH_RATE);
     }
 
     @FXML
     void executeFunction(ActionEvent event) {
 
+        Stage primaryStage = (Stage) functionsTable.getScene().getWindow();
+
+        if (functionsTable.getSelectionModel().getSelectedItem() == null) {
+            showAlert("No program selected", primaryStage);
+            return;
+        } else {
+            FunctionTableEntry selectedItem = functionsTable.getSelectionModel().getSelectedItem();
+            String programName = selectedItem.getFunctionName();
+
+            Gson gson = new Gson();
+            String json = gson.toJson(Map.of("programName", programName));
+
+            RequestBody body = RequestBody.create(
+                    json,
+                    MediaType.parse("application/json")
+            );
+
+            HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + SET_ACTIVE_PROGRAM_RESOURCE))
+                    .newBuilder();
+            String finalURL = urlBuilder.build().toString();
+
+            Request request = new Request.Builder()
+                    .url(finalURL)
+                    .put(body)
+                    .build();
+
+            Call call = CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                    if (response.isSuccessful()) {
+                        Platform.runLater(() -> {
+                            try {
+                                Stage primaryStage = (Stage) functionsTable.getScene().getWindow();
+
+                                if (!primaryStage.isFocused()) {
+                                    return;
+                                }
+
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/execution/resources/fxml/execution.fxml"));
+                                Parent newRoot = loader.load();
+                                // Create new scene
+                                Scene executionScene = new Scene(newRoot, 850, 600);
+
+                                // Copy current scene stylesheets (preserves chosen skin)
+                                Scene currentScene = functionsTable.getScene();
+
+                                executionScene.getStylesheets().setAll(currentScene.getStylesheets());
+
+                                // Fallback: ensure at least a default stylesheet if none copied
+                                if (executionScene.getStylesheets().isEmpty()) { // Case: no stylesheet was copied because empty
+                                    executionScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
+                                }
+
+                                PrimaryController controller = loader.getController();
+
+                                // Close current window
+                                ((Stage) functionsTable.getScene().getWindow()).close();
+
+                                controller.getTopComponentController().setPrimaryStage(primaryStage);
+                                primaryStage.setScene(executionScene);
+                                primaryStage.setTitle("S-embler - Execution");
+                                primaryStage.getIcons().add(
+                                        new Image(getClass().getResourceAsStream("/resources/icon.png"))
+                                );
+                                primaryStage.show();
+                            } catch (Exception ex) {
+                                Stage primaryStage = (Stage) functionsTable.getScene().getWindow();
+                                showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
+                            }
+                        });
+                    } else {
+                        try (ResponseBody body = response.body()) {
+                            String responseBody = Objects.requireNonNull(body).string();
+                            showAlert("Failed to set an active program: " + response.code() + "\n" + responseBody, primaryStage);
+                        } catch (Exception e) {
+                            showAlert("Failed to set an active program: " + response.code(), primaryStage);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     @FXML
@@ -182,6 +270,12 @@ public class RightSideController {
                     if (response.isSuccessful()) {
                         Platform.runLater(() -> {
                             try {
+                                Stage primaryStage = (Stage) programsTable.getScene().getWindow();
+
+                                if (!primaryStage.isFocused()) {
+                                    return;
+                                }
+
                                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/execution/resources/fxml/execution.fxml"));
                                 Parent newRoot = loader.load();
                                 // Create new scene
@@ -189,6 +283,7 @@ public class RightSideController {
 
                                 // Copy current scene stylesheets (preserves chosen skin)
                                 Scene currentScene = programsTable.getScene();
+
                                 executionScene.getStylesheets().setAll(currentScene.getStylesheets());
 
                                 // Fallback: ensure at least a default stylesheet if none copied
@@ -197,7 +292,6 @@ public class RightSideController {
                                 }
 
                                 PrimaryController controller = loader.getController();
-                                Stage primaryStage = (Stage) programsTable.getScene().getWindow();
 
                                 // Close current window
                                 ((Stage) programsTable.getScene().getWindow()).close();

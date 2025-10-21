@@ -80,7 +80,7 @@ public class LeftSideController {
 
         /* Timer tasks */
         UserListRefresher userListRefreshTask = new UserListRefresher(usersTable);
-        Timer timer = new Timer();
+        Timer timer = new Timer(true);
         timer.schedule(userListRefreshTask, REFRESH_RATE, REFRESH_RATE);
     }
 
