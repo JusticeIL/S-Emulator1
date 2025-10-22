@@ -23,7 +23,7 @@ public class User {
     private final String username;
     private final Statistics history;
     private final ProgramContainer programContainer;
-    private final FunctionsContainer functionsContainer;
+    private FunctionsContainer functionsContainer;
     private Program activeProgram;
 
     public User(String username) {
@@ -158,5 +158,9 @@ public class User {
             throw new RuntimeException("New Program Instance could not be created from Sfunction for user");
         }
 
+    }
+
+    public void setFunctionContainer(FunctionsContainer functionsContainer) {
+        this.functionsContainer = functionsContainer;
     }
 }

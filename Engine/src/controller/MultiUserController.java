@@ -26,14 +26,16 @@ public class MultiUserController implements MultiUserModel, Serializable {
 
     @Override
     public void loadProgram(String username, InputStream path) throws FileNotFoundException, JAXBException {
-        if(sharedProgramsContainer.getAllProgramNames().contains(username)){
-            throw new IllegalArgumentException("Program already loaded by another user");
-        }
+
         try {
             synchronized (sharedProgramsContainer) {
                 JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
+                if(sharedProgramsContainer.getAllProgramNames().contains(sProgram.getName())){
+                    throw new IllegalArgumentException("Program already loaded");
+                }
+
                 sharedProgramsContainer.addSProgram(sProgram,username);
                 Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
 //                sFunctionsOpt.ifPresent(sFunctions -> {

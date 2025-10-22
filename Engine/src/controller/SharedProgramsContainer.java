@@ -11,6 +11,7 @@ import user.User;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SharedProgramsContainer {
     private final Map<String, SProgram> sPrograms = new HashMap<>();
@@ -26,7 +27,9 @@ public class SharedProgramsContainer {
 
    synchronized public void addSProgram(SProgram sProgram, String username){
         sPrograms.putIfAbsent(sProgram.getName(),sProgram);
-        Program dummyProgram = new Program(sProgram,new User(username));
+        User dummyUser = new User(username);
+        dummyUser.setFunctionContainer(sharedFunctionsContainer);
+        Program dummyProgram = new Program(sProgram,dummyUser);
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
         dummyProgram.setUploadingUser(username);
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
