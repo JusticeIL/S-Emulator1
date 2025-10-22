@@ -2,6 +2,7 @@ package execution.controller;
 
 import com.google.gson.Gson;
 import dto.ArchitectureGeneration;
+import dto.ExecutionPayload;
 import dto.ProgramData;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
@@ -27,6 +28,7 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.net.http.HttpRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -247,19 +249,11 @@ public class RightSideController{
         );
 
         SetUpRunBtn.disableProperty().bind(
-                Bindings.createBooleanBinding(
-                        () -> primaryController.program == null || isDebugMode.get(),
-                        new SimpleObjectProperty<>(primaryController.program),
-                        isDebugMode
-                )
+                isDebugMode
         );
 
-        RunProgramBtn.disableProperty().bind(
-                Bindings.createBooleanBinding(
-                        () -> primaryController.program == null || isDebugMode.get(),
-                        new SimpleObjectProperty<>(primaryController.program),
-                        isDebugMode
-                )
+        RunProgramBtn.disableProperty().bind(isDebugMode
+
         );
     }
 
@@ -375,7 +369,10 @@ public class RightSideController{
         if (primaryController.program != null) {
             updateArgumentTable();
             updateResultVariableTable();
-            Platform.runLater(() -> currentCycles.set(primaryController.program.getCurrentCycles()));
+            Platform.runLater(() -> {
+                currentCycles.set(primaryController.program.getCurrentCycles());
+                updateBindings();
+            });
         }
     }
 
@@ -412,15 +409,26 @@ public class RightSideController{
     }
 
     public void sendRunProgramRequest(Set<VariableDTO> arguments) {
-        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + RUN_PROGRAM_RESOURCE)
-                .newBuilder());
 
-        arguments.forEach(argument -> urlBuilder.addQueryParameter(argument.getName(),String.valueOf(argument.getValue())));
+        ExecutionPayload executionPayload = new ExecutionPayload(arguments,currentlyChosenArchitecture);
+
+        Gson gson = new Gson();
+        String jsonPayload = gson.toJson(executionPayload);
+
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + RUN_PROGRAM_RESOURCE))
+                .newBuilder();
         String finalURL = urlBuilder.build().toString();
 
+        // 2. בניית ה-RequestBody עם ה-JSON
+        RequestBody body = RequestBody.create(
+                jsonPayload,
+                MediaType.parse("application/json")
+        );
+
+        // 3. בניית הבקשה ושליחת הגוף באמצעות post(body)
         Request request = new Request.Builder()
                 .url(finalURL)
-                .get()
+                .post(body)
                 .build();
 
         Call call = CLIENT.newCall(request);
@@ -452,5 +460,13 @@ public class RightSideController{
                         (Stage) runRadioButton.getScene().getWindow());
             }
         });
+    }
+
+    private void updateBindings() {
+        // הפעלת ה-get() מכריחה את ה-Bindings לבדוק מחדש את התנאי,
+        // כולל בדיקת הערך העדכני של primaryController.program
+        RunProgramBtn.disableProperty().get();
+        SetUpRunBtn.disableProperty().get();
+        variableTable.placeholderProperty().get();
     }
 }
