@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -442,6 +443,8 @@ public class RightSideController{
                             primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
                             leftController.updateMainInstructionTable();
                             updateResultVariableTable();
+                        } catch (InvalidParameterException e) {
+                            showAlert(e.getMessage(), (Stage) runRadioButton.getScene().getWindow());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -449,8 +452,15 @@ public class RightSideController{
                         showAlert("No program data detected for the user.", (Stage) runRadioButton.getScene().getWindow());
                     }
                 } else {
-                    showAlert("Failed to execute program in" + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
-                            (Stage) runRadioButton.getScene().getWindow());
+                    if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED) {
+                        showAlert("Architecture Generation ("
+                                +currentlyChosenArchitecture
+                                + ") to Low for Program execution ("
+                                +primaryController.program.getMinimalArchitectureNeededForRun()+")", (Stage) runRadioButton.getScene().getWindow());
+                    } else {
+                        showAlert("Failed to execute program in" + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
+                                (Stage) runRadioButton.getScene().getWindow());
+                    }
                 }
             }
 

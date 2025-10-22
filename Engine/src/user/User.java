@@ -130,7 +130,7 @@ public class User {
     public int decreaseCredits(int cost) {
         int actualCost = cost <= credits.get() ? cost : credits.get();
         this.credits.getAndAdd(-cost);
-        if(cost<0) {
+        if(cost>getCredits()) {
             this.credits = new AtomicInteger(0);
         }
 

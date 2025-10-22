@@ -6,6 +6,7 @@ import program.Program;
 import program.ProgramExecutioner;
 import user.User;
 
+import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +20,12 @@ public class ExecutionManager {
 
     public void runProgram(User user, Set<VariableDTO> args, ArchitectureGeneration architecture) {
         Program activeProgram = user.getActiveProgram();
+
+        if(architecture.getCost()<activeProgram.getMinimalArchitectureNeededForExecution().getCost()){
+            throw new InvalidParameterException("Tried running level " +
+                    activeProgram.getMinimalArchitectureNeededForExecution() +
+                    " program in "+ architecture + " architecture");
+        }
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         executioners.put(user, programExecutioner);
         isCurrentlyInDebugMode.put(user, false);

@@ -14,6 +14,7 @@ import dto.VariableDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -27,15 +28,20 @@ public class ProgramExecutionServlet extends HttpServlet {
 
         // Expects the query parameters to contain the arguments for the program
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
-        authenticator.checkForUsernameThenDo(req,resp,() -> {
+        authenticator.checkForUsernameThenDo(req, resp, () -> {
             //onSuccess
             ExecutionPayload executionPayload = parsePayload(req);
             String username = authenticator.getUsername(req);
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
             final Set<VariableDTO> args = executionPayload.getArguments();
             final String architectureGeneration = executionPayload.getArchitecture();
-            model.runProgram(username, args, architectureGeneration);
-            resp.sendRedirect(req.getContextPath() + "/api/program");
+            try {
+                model.runProgram(username, args, architectureGeneration);
+                resp.sendRedirect(req.getContextPath() + "/api/program");
+            } catch (InvalidParameterException e) {
+                resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
+            }
+
         });
     }
 
