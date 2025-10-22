@@ -400,6 +400,7 @@ public class RightSideController{
                     menuItem.setOnAction((ActionEvent event) -> {
                         String chosenArchitecture = (String) menuItem.getUserData();
                         currentlyChosenArchitecture = chosenArchitecture;
+                        architectureMenu.setText(chosenArchitecture);
                         // אפשר להוסיף כאן לוגיקה לעדכון הכפתור
                     });
                     return menuItem;
