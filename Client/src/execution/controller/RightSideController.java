@@ -42,6 +42,7 @@ public class RightSideController{
     private TopComponentController topController;
     private LeftSideController leftController;
     private Stage primaryStage;
+    private String currentlyChosenArchitecture;
     private final BooleanProperty isDebugMode = new SimpleBooleanProperty(false);
     private final IntegerProperty currentCycles = new SimpleIntegerProperty(-1);
     private final SimpleIntegerProperty nextInstructionIdForDebug = new SimpleIntegerProperty(0);
@@ -93,7 +94,6 @@ public class RightSideController{
 
     @FXML
     private MenuButton architectureMenu;
-    private String currentlyChosenArchitecture;
 
     @FXML
     public void initialize() {
@@ -143,6 +143,9 @@ public class RightSideController{
         variableTable.setPrefHeight(variableTable.getPrefHeight() * 0.85);
         executionArgumentInput.setPrefHeight(executionArgumentInput.getPrefHeight() * 0.85);
         updateAvailableExpansionLevels();
+
+        /* Menu Buttons */
+        architectureMenu.disableProperty().bind(isDebugMode);
     }
 
     @FXML
@@ -407,6 +410,12 @@ public class RightSideController{
     }
 
     void StartDebugPressed(ActionEvent event) {
+
+        if (currentlyChosenArchitecture == null) {
+            showAlert("Please choose the architecture to start debug.", primaryStage);
+            return;
+        }
+
         Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
                 .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
                 .collect(Collectors.toSet());
