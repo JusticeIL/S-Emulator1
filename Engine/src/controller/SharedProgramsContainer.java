@@ -28,7 +28,7 @@ public class SharedProgramsContainer {
    synchronized public void addSProgram(SProgram sProgram, String username){
         sPrograms.putIfAbsent(sProgram.getName(),sProgram);
         User dummyUser = new User(username);
-        dummyUser.pullSfunctions(new HashSet<>(sFunctions.values()));
+        dummyUser.setFunctionContainer(sharedFunctionsContainer);
         Program dummyProgram = new Program(sProgram,dummyUser);
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
         dummyProgram.setUploadingUser(username);
