@@ -1,34 +1,25 @@
 O.O.B:
 
-1. Create Client module and finish javafx GUI
-2. Handle TODOs in the code
-3. Save set<SProgram> instead of set <Program> for the recipes in order to create a program from sProgram; change program constructor or have a method.
-4. functions container needs to sit inside the model to help 3
-5. synchronize on function invoking instructions such as JEF and quotation.
-6. Solve nested maps inside a new class (like we did with history of class statistics)
-7. Create a module for the DTO from the existing dto of the DTOs.
+1. Handle TODOs in the code <Gal, Eitan?>
+2. Save set<SProgram> instead of set <Program> for the recipes in order to create a program from sProgram; change program constructor or have a method. <Eitan?>
+3. functions container needs to sit inside the model to help 2 <Eitan?>
+5. Solve nested maps inside a new class (like we did with history of class statistics) <Eitan?>
 ---
-8. Make the credits button load credits
-9. For each run / debug, need to check if there's enough credits
-10. Implement architecture generation enum for each program / function
-11. Login system with user (check if there's a user, if not create one and allow the user to login else error)
-12. The user should file upload each program (by uploading a xml file) and read it as a part and then as stream
-13. Stack the programs instead of throw it away
-14. Add rerun and show statistics again
-15. validation of programs and functions should happen as in exercise 1 and not as in exercise 2
-16. Programs CAN use other functions in the system, else is not valid
-17. Cannot load function with same name (user-string is ok but won't be checked; function is same if has same name)
-18. if a program is loaded valid or invalid, both should return a message to the client
-19. file xml upload should happen ASYNCHRONOUSLY
-20. Functions table, Programs table, Users table and each user table should be updated with a pull request from the server each period of time, less than 2 secs
-21. Each instruction should present its minimum architecture generation
-22. the summary line should now present the instructions that fall to each architecture generation,
-and if there are instructions that cannot be run in any architecture generation, this information should be red to be seen by the user.
-Solution: expand the program so the user can run in the architecture or change architecture generation
-23. Each instruction knows its architecture generation | idea: create enum for this as protected data member in Instruction or implement an empty interface named "Gen1", "Gen2" etc
-24. if the credits are over or not sufficient, the user should be informed, we stop the program, and move the user back to the dashboard
-25. Run option should calculate the cost for credits, and if the user has enough credits, we run the program, else we inform the user and don't let him run it
-26. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard
-27. If the user credits amount is smaller than avg cost for this program/function, we should not let him debug or run it (and inform the user)
-28. add a util class (probably named "Utils") in Client that holds refresh rate constant, base url constant and the open error dialog method (?)
-29. Handle thrown exceptions on the server side when parsing the program xml file.
+6. For each run / debug, need to check if there's enough credits <Eitan?>
+7. validation of programs and functions should happen as in exercise 1 and not as in exercise 2 <Eitan?>
+8. Programs CAN use other functions in the system, else is not valid <Eitan?>
+9. Cannot load function with same name (user-string is ok but won't be checked; function is same if has same name) <Eitan?>
+10. if a program is loaded valid or invalid, both should return a message to the client <Gal?>
+11. User history table should be updated with a pull request from the server each period of time, less than 2 secs <Gal?>
+12. the summary line should now present the instructions that fall to each architecture generation,
+and if there are instructions that cannot be run in any architecture generation, this information should be red to be seen by the user. <Gal?>
+Solution: expand the program so the user can run in the architecture or change architecture generation <Gal, Eitan?>
+13. if the credits are not sufficient, the user should be informed, we stop the program, and move the user back to the dashboard <Eitan?>
+14. Run option should calculate the cost for credits, and if the user has enough credits, we run the program, else we inform the user and don't let him run it <Eitan?>
+15. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Eitan?>
+16. If the user credits amount is smaller than avg cost for this program/function, we should not let him debug or run it (and inform the user) <Eitan, Aviad?>
+17. Handle thrown exceptions on the server side when parsing the program xml file. <Eitan?>
+18. Program has unique name <Eitan?>
+19. Funtion collision between uploaded and current functions in intolerable <Eitan?>
+20. Statistics per user, including Program/Function, programName / user-string, Architecture type <Eitan?>
+21. Set 0 to be the default value for expansion level. <Gal?>
