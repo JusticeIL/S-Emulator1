@@ -2,22 +2,22 @@ O.O.B:
 
 1. Handle TODOs in the code <Gal, Eitan?>
 ---
-6. For each run / debug, need to check if there's enough credits <Eitan?>
-7. validation of programs and functions should happen as in exercise 1 and not as in exercise 2 <Eitan?>
-8. Programs CAN use other functions in the system, else is not valid <Eitan?>
-9. Cannot load function with same name (user-string is ok but won't be checked; function is same if has same name) <Eitan?>
-10. if a program is loaded valid or invalid, both should return a message to the client <Gal?>
-11. User history table should be updated with a pull request from the server each period of time, less than 2 secs <Gal?>
-12. the summary line should now present the instructions that fall to each architecture generation,
+2. For each run / debug, need to check if there's enough credits <Eitan?>
+3. validation of programs and functions should happen as in exercise 1 and not as in exercise 2 <Eitan?>
+4. Programs CAN use other functions in the system, else is not valid <Eitan?>
+5. Cannot load function with same name (user-string is ok but won't be checked; function is same if has same name) <Eitan?>
+6. if a program is loaded valid or invalid, both should return a message to the client <Gal?>
+7. User history table should be updated with a pull request from the server each period of time, less than 2 secs <Gal?>
+8. the summary line should now present the instructions that fall to each architecture generation,
 and if there are instructions that cannot be run in any architecture generation, this information should be red to be seen by the user. <Gal?>
 Solution: expand the program so the user can run in the architecture or change architecture generation <Gal, Eitan?>
-13. if the credits are not sufficient, the user should be informed, we stop the program, and move the user back to the dashboard <Eitan?>
-14. Run option should calculate the cost for credits, and if the user has enough credits, we run the program, else we inform the user and don't let him run it <Eitan?>
-15. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Eitan?>
-16. If the user credits amount is smaller than avg cost for this program/function, we should not let him debug or run it (and inform the user) <Eitan?>
-17. Program has unique name <Eitan?>
-18. Function collision between uploaded and current functions is intolerable <Eitan?>
-19. Statistics per user, including Program/Function, programName / user-string, Architecture type <Eitan?>
-20. Set 0 to be the default value for expansion level. <Gal?>
-21. Check avg cost SHOULD NOT take into account the architecture generation <Eitan?>
-22. Change credits everywhere to be BigInteger / long <Eitan?>
+9. if the credits are not sufficient, the user should be informed, we stop the program, and move the user back to the dashboard <Eitan?>
+10. Run option should calculate the cost for credits, and if the user has enough credits, we run the program, else we inform the user and don't let him run it <Eitan?>
+11. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Eitan?>
+12. If the user credits amount is smaller than avg cost for this program/function, we should not let him debug or run it (and inform the user) <Eitan?>
+13. Program has unique name <Eitan?>
+14. Function collision between uploaded and current functions is intolerable <Eitan?>
+15. Statistics per user, including Program/Function, programName / user-string, Architecture type <Eitan?>
+16. Set 0 to be the default value for expansion level. <Gal?>
+17. Check avg cost SHOULD NOT take into account the architecture generation <Eitan?>
+18. Change credits everywhere to be BigInteger / long <Eitan?>
