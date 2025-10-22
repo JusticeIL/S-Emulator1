@@ -6,6 +6,7 @@ import program.Program;
 import program.ProgramExecutioner;
 import user.User;
 
+import javax.naming.InsufficientResourcesException;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,5 +107,12 @@ public class ExecutionManager {
 
     public boolean isInDebugMode(User user) {
         return isCurrentlyInDebugMode.getOrDefault(user, false);
+    }
+
+    public void CheckForCreditsAboveProgramAverage(User user, ArchitectureGeneration architecture, SharedProgramsContainer sharedProgramsContainer) throws InsufficientResourcesException {
+        float avgCost = sharedProgramsContainer.getAvgCost(user.getActiveProgram().getProgramName());
+        if(user.getCredits()-architecture.getCost()<avgCost){
+            throw new InsufficientResourcesException("User credit total, less than active program average cost");
+        }
     }
 }

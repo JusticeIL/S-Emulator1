@@ -12,6 +12,7 @@ import dto.VariableDTO;
 import user.User;
 import user.UsersManager;
 
+import javax.naming.InsufficientResourcesException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -68,9 +69,11 @@ public class MultiUserController implements MultiUserModel, Serializable {
     }
 
     @Override
-    public void runProgram(String username, Set<VariableDTO> args,String architectureString) {
+    public void runProgram(String username, Set<VariableDTO> args,String architectureString) throws InsufficientResourcesException {
         User user = usersManager.getUser(username);
         ArchitectureGeneration architectureGeneration = ArchitectureGeneration.valueOf(architectureString);
+
+        executionManager.CheckForCreditsAboveProgramAverage(user,architectureGeneration,sharedProgramsContainer);
         executionManager.runProgram(user, args, architectureGeneration);
         String programName = user.getActiveProgram().getProgramName();
         int CostForLastExecution = executionManager.getCostForLastExecution(user);

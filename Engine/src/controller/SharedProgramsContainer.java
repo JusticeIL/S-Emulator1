@@ -110,4 +110,10 @@ public class SharedProgramsContainer {
             throw new RuntimeException(e);
         }
     }
+
+    public float getAvgCost(String programName) {
+        float totalCost = totalCreditsUsedPerProgram.get(programName);
+        float totalRuns = totalRunsPerProgram.get(programName);
+        return totalCost/totalRuns;
+    }
 }

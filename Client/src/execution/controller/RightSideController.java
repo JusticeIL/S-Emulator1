@@ -575,8 +575,13 @@ public class RightSideController{
                         showAlert("Architecture Generation ("
                                 +currentlyChosenArchitecture
                                 + ") to Low for Program execution ("
-                                +primaryController.program.getMinimalArchitectureNeededForRun()+")", (Stage) runRadioButton.getScene().getWindow());
-                    } else {
+                                +primaryController.program.getMinimalArchitectureNeededForRun()+")"
+                                , (Stage) runRadioButton.getScene().getWindow());
+                    }else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
+                        showAlert("User credits to Low for Program execution (less than average cost)"
+                                , (Stage) runRadioButton.getScene().getWindow());
+                    }
+                    else {
                         showAlert("Failed to execute program in" + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
                                 (Stage) runRadioButton.getScene().getWindow());
                     }

@@ -6,6 +6,7 @@ import dto.ProgramData;
 import dto.VariableDTO;
 import user.User;
 
+import javax.naming.InsufficientResourcesException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public interface MultiUserModel {
     boolean isProgramLoaded(String username);
     Optional<ProgramData> getProgramData(String username);
     void Expand(String username, int level) throws IllegalArgumentException;
-    void runProgram(String username, Set<VariableDTO> args, String architectureString);
+    void runProgram(String username, Set<VariableDTO> args, String architectureString) throws InsufficientResourcesException;
     void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints, String architectureString);
     void addBreakpoint(String username, int lineNumber);
     void removeBreakpoint(String username, int lineNumber);

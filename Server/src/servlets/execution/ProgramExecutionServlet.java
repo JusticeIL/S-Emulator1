@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dto.VariableDTO;
 
+import javax.naming.InsufficientResourcesException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -40,6 +41,8 @@ public class ProgramExecutionServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + "/api/program");
             } catch (InvalidParameterException e) {
                 resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
+            } catch (InsufficientResourcesException e) {
+                resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
             }
 
         });
