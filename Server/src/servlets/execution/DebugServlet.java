@@ -1,21 +1,20 @@
 package servlets.execution;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dto.VariableDTO;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Type;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @WebServlet(name = "DebugServlet", urlPatterns = {"/api/program/debug"})
 public class DebugServlet extends HttpServlet {
@@ -29,15 +28,29 @@ public class DebugServlet extends HttpServlet {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForUsernameThenDo(req,resp,() -> {
                     //onSuccess
-                    String username = authenticator.getUsername(req);
-                    MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-                    List<String> argNames = model.getProgramData(username).get().getProgramXArguments();
-                    Set<VariableDTO> args = argNames.stream().map(name -> new VariableDTO(name, Integer.parseInt(req.getParameter(name)))).collect(Collectors.toSet());
-                    String architectureGeneration = req.getReader().readLine();
-                    Set<Integer> breakpoints = req.getReader().lines().skip(1).map(Integer::parseInt).collect(Collectors.toSet());
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
+            if (!jsonObject.has("arguments") || !jsonObject.has("breakpoints") || !jsonObject.has("architectureGeneration")) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("Missing fields");
+                return;
+            }
 
-                    model.startDebug(username, args, breakpoints, architectureGeneration);
-                    resp.sendRedirect(req.getContextPath() + "/program");
-                });
+            // Parse arguments, breakpoints and architecture generation
+            Type argumentsType = new TypeToken<Set<VariableDTO>>() {}.getType();
+            Set<VariableDTO> arguments = gson.fromJson(jsonObject.get("arguments"), argumentsType);
+
+            Type breakpointsType = new TypeToken<Set<Integer>>() {}.getType();
+            Set<Integer> breakpoints = gson.fromJson(jsonObject.get("breakpoints"), breakpointsType);
+
+            String architectureGeneration = jsonObject.get("architectureGeneration").getAsString();
+
+            // Extract username from cookie
+            String username = authenticator.getUsername(req);
+
+            MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
+            model.startDebug(username, arguments, breakpoints, architectureGeneration);
+            resp.sendRedirect(req.getContextPath() + "/api/program");
+        });
     }
 }

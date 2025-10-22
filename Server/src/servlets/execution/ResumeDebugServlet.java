@@ -22,7 +22,7 @@ public class ResumeDebugServlet extends HttpServlet {
             String username = authenticator.getUsername(req);
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
             model.resumeDebug(username);
-            resp.sendRedirect(req.getContextPath() + "/program");
+            resp.sendRedirect(req.getContextPath() + "/api/program");
         });
     }
 }

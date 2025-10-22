@@ -13,4 +13,8 @@ public class ResourcesConfiguration {
     public static final String BREAKPOINT_RESOURCE = "/api/program/debug/breakpoint";
     public static final String EXPAND_PROGRAM_RESOURCE = "/api/program/expand";
     public static final String RUN_PROGRAM_RESOURCE = "/api/program/execute";
+    public static final String START_DEBUG_RESOURCE = "/api/program/debug";
+    public static final String RESUME_DEBUG_RESOURCE = "/api/program/debug/resume";
+    public static final String STEP_OVER_RESOURCE = "/api/program/debug/stepover";
+    public static final String STOP_DEBUG_RESOURCE = "/api/program/debug/stop";
 }

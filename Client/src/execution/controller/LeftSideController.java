@@ -319,13 +319,15 @@ public class LeftSideController {
     }
 
     public void markEntryInInstructionTable(int entryId) {
-        instructionsTable.getSelectionModel().clearAndSelect(entryId);
-        instructionsTable.getFocusModel().focus(entryId);
-        instructionsTable.scrollTo(entryId);
+        Platform.runLater(() -> {
+            instructionsTable.getSelectionModel().clearAndSelect(entryId);
+            instructionsTable.getFocusModel().focus(entryId);
+            instructionsTable.scrollTo(entryId);
+        });
     }
 
     public void clearMarkInInstructionTable() {
-        instructionsTable.getSelectionModel().clearSelection();
+        Platform.runLater(() -> instructionsTable.getSelectionModel().clearSelection());
     }
 
     public void updateAvailableExpansionLevels(int maxLevel) {
@@ -396,7 +398,7 @@ public class LeftSideController {
     }
 
     public void clearHistoryChainTable() {
-        chosenInstructionHistoryTable.getItems().clear();
+        Platform.runLater(() -> chosenInstructionHistoryTable.getItems().clear());
     }
 
     public Set<InstructionTableEntry> getEntriesWithBreakpoints() {

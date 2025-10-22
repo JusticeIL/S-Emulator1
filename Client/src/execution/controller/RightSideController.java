@@ -28,11 +28,9 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.http.HttpRequest;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static configuration.ClientConfiguration.CLIENT;
 import static configuration.DialogUtils.showAlert;
@@ -149,8 +147,38 @@ public class RightSideController{
 
     @FXML
     public void ResumeDebugPressed(ActionEvent event) {
-        //model.resumeDebug();
-//        updateAfterDebugStep();
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + RESUME_DEBUG_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try (ResponseBody body = response.body()) {
+                        Gson gson = new Gson();
+                        primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
+                        updateAfterDebugStep();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    showAlert("Resume debug failed with code: " + response.code(),
+                            (Stage) ResumeDebugBtn.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -165,40 +193,100 @@ public class RightSideController{
             try {
                 sendRunProgramRequest(argumentValues);
             } catch (Exception e) {
-                Alert alert = createErrorMessageOnRunProgram(e);
-                alert.showAndWait();
+                showAlert(e.getMessage(), (Stage)runRadioButton.getScene().getWindow());
             }
-//            updateResultVariableTable();
-//            updateCycles();
+            updateResultVariableTable();
+            updateCycles();
         }
         else {
             try {
                 StartDebugPressed(event);
             } catch (Exception e) {
-                Alert alert = createErrorMessageOnRunProgram(e);
-                alert.showAndWait();
+                showAlert(e.getMessage(), (Stage)runRadioButton.getScene().getWindow());
             }
         }
     }
 
     @FXML
     void StepOverDebugPressed(ActionEvent event) {
-        //model.stepOver();
-//        updateAfterDebugStep();
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + STEP_OVER_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try (ResponseBody body = response.body()) {
+                        Gson gson = new Gson();
+                        primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
+                        updateAfterDebugStep();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    showAlert("Step over failed with code: " + response.code(),
+                            (Stage) StepOverDebugBtn.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
     void StopDebugPressed(ActionEvent event) {
-        //model.stopDebug();
-//        updateIsDebugProperty();
-        leftController.clearMarkInInstructionTable();
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + STOP_DEBUG_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try (ResponseBody body = response.body()) {
+                        Gson gson = new Gson();
+                        primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
+                        updateIsDebugProperty();
+                        leftController.clearMarkInInstructionTable();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    showAlert("Stop debug failed with code: " + response.code(),
+                            (Stage) StepOverDebugBtn.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
     void SetupNewRunPressed(ActionEvent event) {
-        variableTable.getItems().clear();
-        executionArgumentInput.getItems().forEach(entry->{entry.valueProperty().set(0);});
-        currentCycles.set(0);
+        Platform.runLater(() -> {
+            variableTable.getItems().clear();
+            executionArgumentInput.getItems().forEach(entry->{ entry.valueProperty().set(0); });
+            currentCycles.set(0);
+        });
     }
 
     @FXML
@@ -324,56 +412,75 @@ public class RightSideController{
                 .collect(Collectors.toSet());
         Set<Integer> breakpoints = leftController.getEntriesWithBreakpoints().stream()
                 .map(InstructionTableEntry::getId).collect(Collectors.toSet());
-        //model.startDebug(argumentValues, breakpoints);
-        //model.getProgramData().ifPresent(model->nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug()));
-        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
-//        updateResultVariableTable();
-//        updateIsDebugProperty();
-        leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
-//        updateAfterDebugStep();
+
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + START_DEBUG_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Create a temporal object containing arguments and breakpoints to charge as json
+        Gson gson = new Gson();
+        String json = gson.toJson(Map.of("arguments", argumentValues,
+                "breakpoints", breakpoints,
+                "architectureGeneration", currentlyChosenArchitecture));
+
+        // Build the body sent to the server to include the debug required object
+        RequestBody body = RequestBody.create(
+                json,
+                MediaType.parse("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .post(body)
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try (ResponseBody body = response.body()) {
+                        Gson gson = new Gson();
+                        primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
+                        nextInstructionIdForDebug.set(primaryController.program.getNextInstructionIdForDebug());
+                        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+                        updateResultVariableTable();
+                        updateIsDebugProperty();
+                        leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
+                        updateAfterDebugStep();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    showAlert("Start debug failed with code: " + response.code(),
+                            (Stage) ResumeDebugBtn.getScene().getWindow());
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-//    void updateAfterDebugStep() {
-//        model.getProgramData().ifPresent(model-> {
-//            nextInstructionIdForDebug.set(model.getNextInstructionIdForDebug());
-//            if (!model.isDebugmode()){ // Debugging finished
-//                nextInstructionIdForDebug.set(0);
-//                leftController.clearMarkInInstructionTable();
-//
-//            }
-//            leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
-//        });
-//        updateResultVariableTable();
-//        updateIsDebugProperty();
-//        updateCycles();
-//    }
-
-//    public void updateIsDebugProperty() {
-//        if (model.isProgramLoaded()) {
-//            model.getProgramData().ifPresent(data ->
-//                    isDebugMode.set(data.isDebugmode())
-//            );
-//        } else {
-//            isDebugMode.set(false);
-//        }
-//    }
-
-    public BooleanProperty isInDebugModeProperty() {
-        return isDebugMode;
+    void updateAfterDebugStep() {
+            nextInstructionIdForDebug.set(primaryController.program.getNextInstructionIdForDebug());
+            if (!primaryController.program.isDebugmode()){ // Debugging finished
+                nextInstructionIdForDebug.set(0);
+                leftController.clearMarkInInstructionTable();
+            }
+            leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+        updateResultVariableTable();
+        updateIsDebugProperty();
+        updateCycles();
     }
 
-    public void clearVariableTable() {
-        variableTable.getItems().clear();
-    }
-
-    public void initAllFields() {
+    public void updateIsDebugProperty() {
         if (primaryController.program != null) {
-            updateArgumentTable();
-            updateResultVariableTable();
-            Platform.runLater(() -> {
-                currentCycles.set(primaryController.program.getCurrentCycles());
-                updateBindings();
-            });
+            isDebugMode.set(primaryController.program.isDebugmode());
+        } else {
+            isDebugMode.set(false);
         }
     }
 
@@ -479,5 +586,20 @@ public class RightSideController{
         RunProgramBtn.disableProperty().get();
         SetUpRunBtn.disableProperty().get();
         variableTable.placeholderProperty().get();
+    }
+
+    public BooleanProperty isInDebugModeProperty() {
+        return isDebugMode;
+    }
+
+    public void updateCycles() { Platform.runLater(() -> currentCycles.set(primaryController.program.getCurrentCycles())); }
+
+    public void initAllFields() {
+        if (primaryController.program != null) {
+            updateArgumentTable();
+            updateResultVariableTable();
+            updateCycles();
+            Platform.runLater(this::updateBindings);
+        }
     }
 }
