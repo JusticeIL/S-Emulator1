@@ -474,15 +474,16 @@ public class RightSideController{
     }
 
     void updateAfterDebugStep() {
-            nextInstructionIdForDebug.set(primaryController.program.getNextInstructionIdForDebug());
-            if (!primaryController.program.isDebugmode()){ // Debugging finished
-                nextInstructionIdForDebug.set(0);
-                leftController.clearMarkInInstructionTable();
-            }
-            leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+        nextInstructionIdForDebug.set(primaryController.program.getNextInstructionIdForDebug());
+        if (!primaryController.program.isDebugmode()){ // Debugging finished
+            nextInstructionIdForDebug.set(0);
+            leftController.clearMarkInInstructionTable();
+        }
+        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
         updateResultVariableTable();
         updateIsDebugProperty();
         updateCycles();
+        topController.sendUpdateCreditsRequest();
     }
 
     public void updateIsDebugProperty() {
@@ -560,6 +561,7 @@ public class RightSideController{
                             primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
                             leftController.updateMainInstructionTable();
                             updateResultVariableTable();
+                            topController.sendUpdateCreditsRequest();
                         } catch (InvalidParameterException e) {
                             showAlert(e.getMessage(), (Stage) runRadioButton.getScene().getWindow());
                         } catch (Exception e) {

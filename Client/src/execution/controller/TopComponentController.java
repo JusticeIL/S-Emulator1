@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -220,6 +221,50 @@ public class TopComponentController{
 
     public BooleanProperty isAnimationAllowedProperty() {
         return allowAnimationBox.selectedProperty();
+    }
+
+    public void sendUpdateCreditsRequest() {
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Building the request based on the body from above
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try (ResponseBody responseBody = response.body()) {
+                        Gson gson = new Gson();
+                        UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                        Platform.runLater(() -> {
+                            currentCredits.setText("Available Credits: " + user.getCredits());
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    try (ResponseBody body = response.body()) {
+                        String responseBody = Objects.requireNonNull(body).string();
+                        showAlert("Failed to retrieve user data: " + response.code() + "\n" + responseBody, primaryStage);
+                    } catch (Exception e) {
+                        showAlert("Failed to retrieve user data: " + response.code(), primaryStage);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void initAllFields() {
