@@ -204,9 +204,9 @@ public class RightSideController{
         }
         else {
             try {
-                StartDebugPressed(event);
+                StartDebugPressed();
             } catch (Exception e) {
-                showAlert(e.getMessage(), (Stage)runRadioButton.getScene().getWindow());
+                showAlert(e.getMessage(), (Stage)debugRadioButton.getScene().getWindow());
             }
         }
     }
@@ -411,7 +411,7 @@ public class RightSideController{
         });
     }
 
-    void StartDebugPressed(ActionEvent event) {
+    void StartDebugPressed() {
 
         if (currentlyChosenArchitecture == null) {
             showAlert("Please choose the architecture to start debug.", primaryStage);

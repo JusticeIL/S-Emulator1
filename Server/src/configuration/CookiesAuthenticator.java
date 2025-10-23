@@ -13,7 +13,7 @@ public class CookiesAuthenticator {
     public void checkForUsernameThenDo(HttpServletRequest req,HttpServletResponse resp, IORunnable onSuccess, IORunnable onFail) throws ServletException, IOException {
         if (hasUsernameCookie(req)) {
             onSuccess.run();
-        }else{
+        } else {
             onFail.run();
         }
     }
@@ -29,7 +29,7 @@ public class CookiesAuthenticator {
     public void checkForNoUsernameThenDo(HttpServletRequest req,IORunnable onSuccess, IORunnable onFail) throws ServletException, IOException {
         if (!hasUsernameCookie(req)) {
             onSuccess.run();
-        }else{
+        } else {
             onFail.run();
         }
     }

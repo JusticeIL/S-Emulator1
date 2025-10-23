@@ -23,7 +23,7 @@ public class StopDebugServlet extends HttpServlet {
                     String username = authenticator.getUsername(req);
                     MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
                     model.stopDebug(username);
-                    resp.sendRedirect(req.getContextPath() + "/program");
+                    resp.sendRedirect(req.getContextPath() + "/api/program");
                 });
     }
 }
