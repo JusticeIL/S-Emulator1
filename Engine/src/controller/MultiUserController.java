@@ -38,12 +38,6 @@ public class MultiUserController implements MultiUserModel, Serializable {
                 }
 
                 sharedProgramsContainer.addSProgram(sProgram,username);
-                Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
-//                sFunctionsOpt.ifPresent(sFunctions -> {
-//                    sFunctions.getSFunction().forEach(sFunction -> {
-//                        sharedProgramsContainer.addSFunction(sFunction,username);
-//                    });
-//                });
             }
             usersManager.getUser(username).updateProgramsLoaded();
             usersManager.getUser(username).setFunctionsLoaded(sharedProgramsContainer.getNumberOfFunctions(username));

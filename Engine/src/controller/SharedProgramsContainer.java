@@ -26,10 +26,10 @@ public class SharedProgramsContainer {
     }
 
    synchronized public void addSProgram(SProgram sProgram, String username){
-        sPrograms.putIfAbsent(sProgram.getName(),sProgram);
         User dummyUser = new User(username);
         dummyUser.setFunctionContainer(sharedFunctionsContainer);
         Program dummyProgram = new Program(sProgram,dummyUser);
+        sPrograms.putIfAbsent(sProgram.getName(),sProgram);
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
         totalRunsPerProgram.putIfAbsent(sProgram.getName(),0);
         totalCreditsUsedPerProgram.putIfAbsent(sProgram.getName(),0);

@@ -2,7 +2,6 @@ O.O.B:
 
 1. Handle TODOs in the code <Gal, Eitan?>
 ---
-2. For each run / debug, need to check if there's enough credits <Eitan?>
 3. validation of programs and functions should happen as in exercise 1 and not as in exercise 2 <Eitan?>
 4. Programs CAN use other functions in the system, else is not valid <Eitan?>
 5. Cannot load function with same name (user-string is ok but won't be checked; function is same if has same name) <Eitan?>
