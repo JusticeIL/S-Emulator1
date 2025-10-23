@@ -72,7 +72,6 @@ public class MultiUserController implements MultiUserModel, Serializable {
     public void runProgram(String username, Set<VariableDTO> args,String architectureString) throws InsufficientResourcesException {
         User user = usersManager.getUser(username);
         ArchitectureGeneration architectureGeneration = ArchitectureGeneration.valueOf(architectureString);
-
         executionManager.CheckForCreditsAboveProgramAverage(user,architectureGeneration,sharedProgramsContainer);
         executionManager.runProgram(user, args, architectureGeneration);
         String programName = user.getActiveProgram().getProgramName();

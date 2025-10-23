@@ -570,6 +570,7 @@ public class RightSideController{
                     } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
                         showAlert("No program data detected for the user.", (Stage) runRadioButton.getScene().getWindow());
                     }
+                    topController.sendUpdateCreditsRequest();
                 } else {
                     if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED) {
                         showAlert("Architecture Generation ("

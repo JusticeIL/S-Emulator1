@@ -31,6 +31,8 @@ public class SharedProgramsContainer {
         dummyUser.setFunctionContainer(sharedFunctionsContainer);
         Program dummyProgram = new Program(sProgram,dummyUser);
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
+        totalRunsPerProgram.putIfAbsent(sProgram.getName(),0);
+        totalCreditsUsedPerProgram.putIfAbsent(sProgram.getName(),0);
         dummyProgram.setUploadingUser(username);
         Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
         sFunctionsOpt.ifPresent(programSFunctions -> {
@@ -41,6 +43,8 @@ public class SharedProgramsContainer {
         });
         dummyProgram.getFunctions().forEach(function -> {
             dummyProgramsForDashboard.putIfAbsent(function.getName(),function);
+            totalRunsPerProgram.putIfAbsent(function.getName(),0);
+            totalCreditsUsedPerProgram.putIfAbsent(function.getName(),0);
         });
     }
 
@@ -112,8 +116,9 @@ public class SharedProgramsContainer {
     }
 
     public float getAvgCost(String programName) {
-        float totalCost = totalCreditsUsedPerProgram.get(programName);
-        float totalRuns = totalRunsPerProgram.get(programName);
-        return totalCost/totalRuns;
+        Program program = dummyProgramsForDashboard.get(programName);
+        float totalCost = program.getCostOfAllRuns();
+        float totalRuns = program.getNumberOfRuns();
+        return totalRuns == 0 ? 0 : totalCost / totalRuns;
     }
 }
