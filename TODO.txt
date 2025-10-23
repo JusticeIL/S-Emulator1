@@ -3,7 +3,6 @@ O.O.B:
 1. Handle TODOs in the code <Gal, Eitan?>
 ---
 3. validation of programs and functions should happen as in exercise 1 and not as in exercise 2 <Eitan?>
-4. Programs CAN use other functions in the system, else is not valid <Eitan?>
 5. Cannot load function with same name (user-string is ok but won't be checked; function is same if has same name) <Eitan?>
 6. if a program is loaded valid or invalid, both should return a message to the client <Gal?>
 7. User history table should be updated with a pull request from the server each period of time, less than 2 secs <Gal?>

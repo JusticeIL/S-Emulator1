@@ -28,6 +28,7 @@ public class SharedProgramsContainer {
    synchronized public void addSProgram(SProgram sProgram, String username){
         User dummyUser = new User(username);
         dummyUser.setFunctionContainer(sharedFunctionsContainer);
+        checkForDuplicateFunctions(sProgram);
         Program dummyProgram = new Program(sProgram,dummyUser);
         sPrograms.putIfAbsent(sProgram.getName(),sProgram);
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
@@ -45,6 +46,18 @@ public class SharedProgramsContainer {
             dummyProgramsForDashboard.putIfAbsent(function.getName(),function);
             totalRunsPerProgram.putIfAbsent(function.getName(),0);
             totalCreditsUsedPerProgram.putIfAbsent(function.getName(),0);
+        });
+    }
+
+    private void checkForDuplicateFunctions(SProgram sProgram) {
+        Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
+        sFunctionsOpt.ifPresent(programSFunctions -> {
+            programSFunctions.getSFunction().forEach(sFunction -> {
+                if(sFunctions.containsKey(sFunction.getName())) {
+                    throw new IllegalArgumentException("Duplicate Function Found:\n " +
+                            "Function " + sFunction.getName() + " is already loaded in the system");
+                }
+            });
         });
     }
 
