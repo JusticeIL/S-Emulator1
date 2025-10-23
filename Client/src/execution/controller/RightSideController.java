@@ -234,6 +234,7 @@ public class RightSideController{
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    topController.sendUpdateCreditsRequest();
                 } else {
                     showAlert("Step over failed with code: " + response.code(),
                             (Stage) StepOverDebugBtn.getScene().getWindow());
@@ -558,13 +559,11 @@ public class RightSideController{
                 .newBuilder();
         String finalURL = urlBuilder.build().toString();
 
-        // 2. בניית ה-RequestBody עם ה-JSON
         RequestBody body = RequestBody.create(
                 jsonPayload,
                 MediaType.parse("application/json")
         );
 
-        // 3. בניית הבקשה ושליחת הגוף באמצעות post(body)
         Request request = new Request.Builder()
                 .url(finalURL)
                 .post(body)
@@ -581,7 +580,6 @@ public class RightSideController{
                             primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
                             leftController.updateMainInstructionTable();
                             updateResultVariableTable();
-                            topController.sendUpdateCreditsRequest();
                         } catch (InvalidParameterException e) {
                             showAlert(e.getMessage(), (Stage) runRadioButton.getScene().getWindow());
                         } catch (Exception e) {

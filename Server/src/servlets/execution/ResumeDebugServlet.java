@@ -33,7 +33,6 @@ public class ResumeDebugServlet extends HttpServlet {
             } catch (InputMismatchException e){
                 resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
             }
-
         });
     }
 }
