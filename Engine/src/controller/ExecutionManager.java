@@ -48,6 +48,7 @@ public class ExecutionManager {
                     " program in "+ architecture + " architecture");
         }
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
+        executioners.put(user, programExecutioner);
         programExecutioner.setDebugMode(true);
         programExecutioner.setProgram(activeProgram);
         programExecutioner.setMainExecutioner(user, architecture);

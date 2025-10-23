@@ -7,13 +7,8 @@ O.O.B:
 8. the summary line should now present the instructions that fall to each architecture generation,
 and if there are instructions that cannot be run in any architecture generation, this information should be red to be seen by the user. <Gal?>
 Solution: expand the program so the user can run in the architecture or change architecture generation <Gal, Eitan?>
-9. if the credits are not sufficient, the user should be informed, we stop the program, and move the user back to the dashboard <Eitan?>
-10. Run option should calculate the cost for credits, and if the user has enough credits, we run the program, else we inform the user and don't let him run it <Eitan?>
-11. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Eitan?>
-12. If the user credits amount is smaller than avg cost for this program/function, we should not let him debug or run it (and inform the user) <Eitan?>
-13. Program has unique name <Eitan?>
-14. Function collision between uploaded and current functions is intolerable <Eitan?>
+
+11. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Gal!! just make the request and handle as I did in RUN>
 15. Statistics per user, including Program/Function, programName / user-string, Architecture type <Eitan?>
 16. Set 0 to be the default value for expansion level. <Gal?>
-17. Check avg cost SHOULD NOT take into account the architecture generation <Eitan?>
 18. Change credits everywhere to be BigInteger / long <Eitan?>
