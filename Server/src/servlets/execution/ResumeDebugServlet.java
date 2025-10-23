@@ -1,10 +1,10 @@
 package servlets.execution;
 
 import configuration.CookiesAuthenticator;
+import configuration.HTTPCodes;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.naming.InsufficientResourcesException;
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 
 @WebServlet(name = "ResumeDebugServlet", urlPatterns = {"/api/program/debug/resume"})
@@ -28,11 +27,11 @@ public class ResumeDebugServlet extends HttpServlet {
                 model.resumeDebug(username);
                 resp.sendRedirect(req.getContextPath() + "/api/program");
             } catch (InvalidParameterException e) {
-                resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
+                resp.setStatus(HTTPCodes.UNPROCESSABLE_ENTITY);
             } catch (InsufficientResourcesException e) {
                 resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
             } catch (InputMismatchException e){
-                resp.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+                resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
             }
 
         });

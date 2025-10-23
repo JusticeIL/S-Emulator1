@@ -3,15 +3,12 @@ package user;
 import XMLandJaxB.SFunction;
 import XMLandJaxB.SProgram;
 import controller.ProgramContainer;
-import dto.ProgramData;
 import dto.Statistics;
 import program.Program;
 import program.function.Function;
 import program.function.FunctionsContainer;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 

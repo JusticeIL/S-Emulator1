@@ -42,7 +42,6 @@ public class LeftSideController {
     private RightSideController rightController;
     private TopComponentController topController;
     private IntegerProperty maxLevel = new SimpleIntegerProperty(-1);
-    private final IntegerProperty currentLevel = new SimpleIntegerProperty(-1);
     private final int HISTORY_CHAIN_EFFECT_DURATION = 300; // milliseconds
 
     @FXML
@@ -310,8 +309,7 @@ public class LeftSideController {
     }
 
     public void setCurrentLevel(int level) {
-        currentLevel.set(level);
-        expansionLevelMenu.setText(String.valueOf(level));
+        Platform.runLater(() -> expansionLevelMenu.setText(String.valueOf(level)));
     }
 
     public void setTopController(TopComponentController topController) {
@@ -588,7 +586,7 @@ public class LeftSideController {
                 maxLevel.set(primaryController.program.getMaxExpandLevel());
                 updateVariablesOrLabelSelectionMenu();
             });
+            setCurrentLevel(0);
         }
-
     }
 }

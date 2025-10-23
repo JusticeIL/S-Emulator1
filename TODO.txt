@@ -10,5 +10,4 @@ Solution: expand the program so the user can run in the architecture or change a
 
 11. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Gal!! just make the request and handle as I did in RUN>
 15. Statistics per user, including Program/Function, programName / user-string, Architecture type <Eitan?>
-16. Set 0 to be the default value for expansion level. <Gal?>
 18. Change credits everywhere to be BigInteger / long <Eitan?>

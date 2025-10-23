@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import configuration.CookiesAuthenticator;
+import configuration.HTTPCodes;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -56,13 +57,12 @@ public class DebugServlet extends HttpServlet {
                 model.startDebug(username, arguments, breakpoints, architectureGeneration);
                 resp.sendRedirect(req.getContextPath() + "/api/program");
             }  catch (InvalidParameterException e) {
-                resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
+                resp.setStatus(HTTPCodes.UNPROCESSABLE_ENTITY);
             } catch (InsufficientResourcesException e) {
                 resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
             } catch (InputMismatchException e){
-                resp.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+                resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
             }
-
         });
     }
 }

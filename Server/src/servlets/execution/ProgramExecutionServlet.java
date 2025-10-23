@@ -2,11 +2,11 @@ package servlets.execution;
 
 import com.google.gson.Gson;
 import configuration.CookiesAuthenticator;
+import configuration.HTTPCodes;
 import controller.MultiUserModel;
 import dto.ExecutionPayload;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,11 +16,8 @@ import javax.naming.InsufficientResourcesException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @WebServlet(name = "ProgramExecutionServlet", urlPatterns = {"/api/program/execute"})
 public class ProgramExecutionServlet extends HttpServlet {
@@ -41,11 +38,11 @@ public class ProgramExecutionServlet extends HttpServlet {
                 model.runProgram(username, args, architectureGeneration);
                 resp.sendRedirect(req.getContextPath() + "/api/program");
             } catch (InvalidParameterException e) {
-                resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
+                resp.setStatus(HTTPCodes.UNPROCESSABLE_ENTITY);
             } catch (InsufficientResourcesException e) {
                 resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
             } catch (InputMismatchException e){
-                resp.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+                resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
             }
 
         });

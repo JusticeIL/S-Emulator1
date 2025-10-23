@@ -1,6 +1,7 @@
 package execution.controller;
 
 import com.google.gson.Gson;
+import configuration.HTTPCodes;
 import dto.ArchitectureGeneration;
 import dto.ExecutionPayload;
 import dto.ProgramData;
@@ -461,20 +462,20 @@ public class RightSideController{
                         e.printStackTrace();
                     }
                 } else {
-                    if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED) {
+                    if (response.code() == HTTPCodes.UNPROCESSABLE_ENTITY) {
                         showAlert("Architecture Generation ("
                                         +currentlyChosenArchitecture
-                                        + ") to Low for Program execution ("
+                                        + ") too low for Program execution ("
                                         +primaryController.program.getMinimalArchitectureNeededForRun()+")"
                                 , (Stage) runRadioButton.getScene().getWindow());
-                    }else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
-                        showAlert("User credits to low for Program execution"
+                    } else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
+                        showAlert("User credits too low for Program execution"
                                 , (Stage) runRadioButton.getScene().getWindow());
                     }
-                    else if(response.code() == HttpServletResponse.SC_EXPECTATION_FAILED){
+                    else if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
                         Stage executionStage = (Stage) runRadioButton.getScene().getWindow();
                         returnToDashboardScreen(new ActionEvent());
-                        showAlert("User credits to low for Program execution - Credits were not sufficient to execute the entire program"
+                        showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
                                 , (Stage) runRadioButton.getScene().getWindow());
 
 
@@ -517,10 +518,7 @@ public class RightSideController{
     public void updateAvailableExpansionLevels() {
         architectureMenu.getItems().clear();
 
-        // 1. קבלת כל ערכי ה-Enum באופן דינמי
         Arrays.stream(ArchitectureGeneration.values())
-
-                // 2. מיפוי כל ערך Enum (כגון I, II) לפריט בתפריט (CustomMenuItem)
                 .map(architecture -> {
                     String architectureName = architecture.toString();
 
@@ -529,25 +527,27 @@ public class RightSideController{
                     label.setStyle("-fx-alignment: center;");
 
                     CustomMenuItem menuItem = new CustomMenuItem(label, true);
-                    menuItem.setUserData(architectureName); // שמור את המחרוזת של הדור
+                    menuItem.setUserData(architectureName);
 
                     label.prefWidthProperty().bind(architectureMenu.widthProperty());
 
-                    // הגדרת הפעולה בלחיצה
                     menuItem.setOnAction((ActionEvent event) -> {
                         String chosenArchitecture = (String) menuItem.getUserData();
                         currentlyChosenArchitecture = chosenArchitecture;
                         architectureMenu.setText(chosenArchitecture);
-                        // אפשר להוסיף כאן לוגיקה לעדכון הכפתור
                     });
                     return menuItem;
                 })
 
-                // 3. הוספת כל פריטי התפריט למניו בטון
                 .forEach(architectureMenu.getItems()::add);
     }
 
     public void sendRunProgramRequest(Set<VariableDTO> arguments) {
+
+        if (currentlyChosenArchitecture == null) {
+            showAlert("You must choose an architecture before running the program.", primaryStage);
+            return;
+        }
 
         ExecutionPayload executionPayload = new ExecutionPayload(arguments,currentlyChosenArchitecture);
 
@@ -592,20 +592,19 @@ public class RightSideController{
                     }
                     topController.sendUpdateCreditsRequest();
                 } else {
-                    if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED) {
+                    if (response.code() == HTTPCodes.UNPROCESSABLE_ENTITY) {
                         showAlert("Architecture Generation ("
                                 +currentlyChosenArchitecture
-                                + ") to Low for Program execution ("
+                                + ") too low for Program execution ("
                                 +primaryController.program.getMinimalArchitectureNeededForRun()+")"
                                 , (Stage) runRadioButton.getScene().getWindow());
-                    }else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
-                        showAlert("User credits to low for Program execution - Lower than average cost for program"
+                    } else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
+                        showAlert("User credits too low for Program execution - Lower than average cost for program"
                                 , (Stage) runRadioButton.getScene().getWindow());
-                    }else if(response.code() == HttpServletResponse.SC_EXPECTATION_FAILED){
+                    } else if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
                         returnToDashboardScreen(new ActionEvent());
-                        showAlert("User credits to low for Program execution - Credits were not sufficient to execute the entire program"
+                        showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
                                 , (Stage) runRadioButton.getScene().getWindow());
-
                     }
                     else {
                         showAlert("Failed to execute program in architecture " + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
@@ -623,8 +622,7 @@ public class RightSideController{
     }
 
     private void updateBindings() {
-        // הפעלת ה-get() מכריחה את ה-Bindings לבדוק מחדש את התנאי,
-        // כולל בדיקת הערך העדכני של primaryController.program
+        // get() invoke triggers bind re-evaluation including re-evaluation of primaryController.program current value
         RunProgramBtn.disableProperty().get();
         SetUpRunBtn.disableProperty().get();
         variableTable.placeholderProperty().get();
