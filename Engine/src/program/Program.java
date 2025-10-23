@@ -443,4 +443,8 @@ public class Program implements Serializable {
         this.cycleCounter = savedState.getCurrentCycles();
         this.nextInstructionIdForDebug = savedState.getNextInstructionIdForDebug();
     }
+
+    public String getType() {
+        return "Program";
+    }
 }
