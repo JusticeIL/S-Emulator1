@@ -31,7 +31,7 @@ public class CreditsManagementServlet extends HttpServlet {
                 resp.getWriter().write("Missing 'addCredits' field");
                 return;
             }
-            int creditsToAdd = jsonObject.get("addCredits").getAsInt();
+            long creditsToAdd = jsonObject.get("addCredits").getAsLong();
 
             if (creditsToAdd <= 0) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -6,7 +6,7 @@ public class UserDTO {
     private final String username;
     private final int programsLoaded;
     private final int functionsLoaded;
-    private final int credits;
+    private final long credits;
     private final int creditsUsed;
     private final int programExecutionsCounter;
     private final Statistics history;
@@ -33,7 +33,7 @@ public class UserDTO {
         return functionsLoaded;
     }
 
-    public int getCredits() {
+    public long getCredits() {
         return credits;
     }
 

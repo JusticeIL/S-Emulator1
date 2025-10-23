@@ -1,16 +1,13 @@
 package dashboard.model;
 
 import dto.UserDTO;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 public class UserTableEntry implements Comparable<UserTableEntry> {
     private final StringProperty username;
     private final IntegerProperty programsLoaded;
     private final IntegerProperty functionsLoaded;
-    private final IntegerProperty credits;
+    private final LongProperty credits;
     private final IntegerProperty creditsUsed;
     private final IntegerProperty programExecutionsCounter;
 
@@ -18,7 +15,7 @@ public class UserTableEntry implements Comparable<UserTableEntry> {
         this.username = new SimpleStringProperty(user.getUsername());
         this.programsLoaded = new SimpleIntegerProperty(user.getProgramsLoaded());
         this.functionsLoaded = new SimpleIntegerProperty(user.getFunctionsLoaded());
-        this.credits = new SimpleIntegerProperty(user.getCredits());
+        this.credits = new SimpleLongProperty(user.getCredits());
         this.creditsUsed = new SimpleIntegerProperty(user.getCreditsUsed());
         this.programExecutionsCounter = new SimpleIntegerProperty(user.getProgramExecutionsCounter());
     }
@@ -36,7 +33,7 @@ public class UserTableEntry implements Comparable<UserTableEntry> {
         return this.username.get().equals(other.username.get()) &&
                 Integer.valueOf(this.programsLoaded.get()).equals(other.programsLoaded.get()) &&
                 Integer.valueOf(this.functionsLoaded.get()).equals(other.functionsLoaded.get()) &&
-                Integer.valueOf(this.credits.get()).equals(other.credits.get()) &&
+                Long.valueOf(this.credits.get()).equals(other.credits.get()) &&
                 Integer.valueOf(this.creditsUsed.get()).equals(other.creditsUsed.get()) &&
                 Integer.valueOf(this.programExecutionsCounter.get()).equals(other.programExecutionsCounter.get());
     }
@@ -66,9 +63,9 @@ public class UserTableEntry implements Comparable<UserTableEntry> {
     public void setFunctionsLoaded(int functionsLoadedAmount) { functionsLoaded.set(functionsLoadedAmount); }
     public IntegerProperty functionsLoadedProperty() { return functionsLoaded; }
 
-    public int getCredits() { return credits.get(); }
+    public long getCredits() { return credits.get(); }
     public void setCredits(int creditsAmount) { credits.set(creditsAmount); }
-    public IntegerProperty creditsProperty() { return credits; }
+    public LongProperty creditsProperty() { return credits; }
 
     public int getCreditsUsed() { return creditsUsed.get(); }
     public void setCreditsUsed(int creditsUsedAmount) { creditsUsed.set(creditsUsedAmount); }

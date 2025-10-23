@@ -225,9 +225,9 @@ public class TopComponentController{
             return;
         }
         // Parse from text to int
-        int chargeAmount = 0;
+        long chargeAmount = 0;
         try {
-            chargeAmount = Integer.parseInt(chargeAmountAsText);
+            chargeAmount = Long.parseLong(chargeAmountAsText);
         } catch (NumberFormatException e) {
             showAlert("Error " + e.getMessage() + " because it is not an acceptable number", primaryStage);
             creditsTextField.clear();

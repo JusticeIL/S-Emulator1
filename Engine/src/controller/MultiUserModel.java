@@ -30,7 +30,7 @@ public interface MultiUserModel {
     void setActiveProgram(String username, String programName);
     void addUser(String username);
     Set<UserDTO> getAllUsers();
-    void addCredits(String username, int creditsToAdd);
+    void addCredits(String username, long creditsToAdd);
     UserDTO getUserData(String username);
     List<ProgramData> getAllSharedProgramsData();
     List<ProgramData> getAllSharedFunctionsData();

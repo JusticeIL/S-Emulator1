@@ -187,7 +187,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
     }
 
     @Override
-    public void addCredits(String username, int creditsToAdd) {
+    public void addCredits(String username, long creditsToAdd) {
         usersManager.getUser(username).addCredits(creditsToAdd);
     }
 

@@ -11,11 +11,12 @@ import program.function.FunctionsContainer;
 import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class User {
     private int programsLoaded;
     private int functionsLoaded;
-    private AtomicInteger credits;
+    private AtomicLong credits;
     private int creditsUsed;
     private int programExecutionsCounter;
     private final String username;
@@ -28,7 +29,7 @@ public class User {
         this.username = username;
         this.programsLoaded = 0;
         this.functionsLoaded = 0;
-        this.credits = new AtomicInteger(0);
+        this.credits = new AtomicLong(0);
         this.creditsUsed = 0;
         this.programExecutionsCounter = 0;
         this.history = new Statistics();
@@ -78,7 +79,7 @@ public class User {
         this.functionsLoaded = functionsLoaded;
     }
 
-    public int getCredits() {
+    public long getCredits() {
         return credits.get();
     }
 
@@ -94,7 +95,7 @@ public class User {
         return history;
     }
 
-    public void addCredits(int credits) {
+    public void addCredits(long credits) {
         this.credits.getAndAdd(credits);
     }
 
@@ -125,11 +126,11 @@ public class User {
         return programContainer.getFullProgramContainer(programName) != null;
     }
 
-    public int decreaseCredits(int cost) {
-        int actualCost = cost <= credits.get() ? cost : credits.get();
+    public long decreaseCredits(long cost) {
+        long actualCost = cost <= credits.get() ? cost : credits.get();
         this.credits.getAndAdd(-cost);
-        if(cost>getCredits()) {
-            this.credits = new AtomicInteger(0);
+        if (cost > getCredits()) {
+            this.credits = new AtomicLong(0);
         }
 
         this.creditsUsed += cost;
