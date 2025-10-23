@@ -156,12 +156,12 @@ public class TopComponentController{
                 if (!creditsToAddAsString.isEmpty()) {
                     Integer.parseInt(creditsTextField.getText());
                 }
+                addCreditsBtn.fire(); // Triggers the ActionEvent
             } catch (NumberFormatException e) {
                 showAlert("Please enter a number", primaryStage);
                 creditsTextField.clear();
             }
         });
-
     }
 
     @FXML
