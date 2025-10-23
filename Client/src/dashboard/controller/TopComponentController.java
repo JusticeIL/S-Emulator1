@@ -27,6 +27,7 @@ import java.util.jar.JarFile;
 
 import static configuration.ClientConfiguration.CLIENT;
 import static configuration.DialogUtils.showAlert;
+import static configuration.DialogUtils.showOK;
 import static configuration.ResourcesConfiguration.*;
 
 public class TopComponentController{
@@ -197,6 +198,7 @@ public class TopComponentController{
                     Platform.runLater(() -> {
                         currentLoadedProgramPath.setText(selectedFile.getAbsolutePath());
                     });
+                    showOK("Program successfully loaded!", primaryStage);
                 } else {
                     try (ResponseBody body = response.body()) {
                         String responseBody = Objects.requireNonNull(body).string();

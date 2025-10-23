@@ -24,4 +24,19 @@ public class DialogUtils {
             alert.showAndWait();
         });
     }
+
+    public static void showOK(String message, Stage primaryStage) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK); // Helps access and style the ok button
+            okButton.getStyleClass().add("ok-button-success");
+            alert.initOwner(primaryStage);
+            alert.initModality(Modality.NONE);
+            alert.setTitle("Success");
+            alert.setHeaderText("Operation Successful");
+            alert.setContentText(message);
+
+            alert.show();
+        });
+    }
 }
