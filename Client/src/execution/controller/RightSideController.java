@@ -98,6 +98,7 @@ public class RightSideController{
 
     @FXML
     public void initialize() {
+        /* Tables */
         argumentNamesColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         argumentValuesColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         resultVariableNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -121,32 +122,38 @@ public class RightSideController{
         executionArgumentInput.setEditable(true);
         executionArgumentInput.getSelectionModel().setCellSelectionEnabled(true);
 
+        variableTable.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, Event::consume); // Disable selection from user only
+
+        // Minimize tables' height to prevent vertical scrolling
+        variableTable.setPrefHeight(variableTable.getPrefHeight() * 0.85);
+        executionArgumentInput.setPrefHeight(executionArgumentInput.getPrefHeight() * 0.85);
+
         /* Buttons initialization */
         // Radio buttons
         ToggleGroup modeToggleGroup = new ToggleGroup();
         debugRadioButton.setToggleGroup(modeToggleGroup);
         runRadioButton.setToggleGroup(modeToggleGroup);
 
+        // Menu buttons
+        updateAvailableArchitecture();
+        architectureMenu.disableProperty().bind(isDebugMode);
+
         // Debugging buttons
         StepOverDebugBtn.disableProperty().bind(isDebugMode.not());
         ResumeDebugBtn.disableProperty().bind(isDebugMode.not());
         StopDebugBtn.disableProperty().bind(isDebugMode.not());
 
+        // Regular buttons
+        SetUpRunBtn.disableProperty().bind(
+                isDebugMode
+        );
+
+        /* Labels */
         // Initialize the cycles label
         cyclesLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> (currentCycles.get() < 0) ? "Cycles: ---" : "Cycles: " + currentCycles.get(),
                 currentCycles
         ));
-
-        variableTable.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, Event::consume); // Disable selection from user only
-
-        // Minimize tables' height to prevent vertical scrolling
-        variableTable.setPrefHeight(variableTable.getPrefHeight() * 0.85);
-        executionArgumentInput.setPrefHeight(executionArgumentInput.getPrefHeight() * 0.85);
-        updateAvailableExpansionLevels();
-
-        /* Menu Buttons */
-        architectureMenu.disableProperty().bind(isDebugMode);
     }
 
     @FXML
@@ -341,14 +348,6 @@ public class RightSideController{
                         .then(new Label("No program loaded."))
                         .otherwise(new Label("No variables state to present"))
         );
-
-        SetUpRunBtn.disableProperty().bind(
-                isDebugMode
-        );
-
-        RunProgramBtn.disableProperty().bind(isDebugMode
-
-        );
     }
 
     public void setTopController(TopComponentController topController) {
@@ -361,6 +360,10 @@ public class RightSideController{
 
     public void setLeftController(LeftSideController leftController) {
         this.leftController = leftController;
+
+        RunProgramBtn.disableProperty().bind(
+                isDebugMode.or(leftController.getInsufficientArhitecutureCountProperty().greaterThan(0))
+        );
     }
 
     private Alert createErrorMessageOnRunProgram(Exception e) {
@@ -516,7 +519,7 @@ public class RightSideController{
         }
     }
 
-    public void updateAvailableExpansionLevels() {
+    public void updateAvailableArchitecture() {
         architectureMenu.getItems().clear();
 
         Arrays.stream(ArchitectureGeneration.values())
@@ -535,7 +538,8 @@ public class RightSideController{
                     menuItem.setOnAction((ActionEvent event) -> {
                         String chosenArchitecture = (String) menuItem.getUserData();
                         currentlyChosenArchitecture = chosenArchitecture;
-                        architectureMenu.setText(chosenArchitecture);
+                        Platform.runLater(() -> architectureMenu.setText(chosenArchitecture));
+                        leftController.refreshInstructionTable();
                     });
                     return menuItem;
                 })
@@ -631,6 +635,10 @@ public class RightSideController{
     }
 
     public void updateCycles() { Platform.runLater(() -> currentCycles.set(primaryController.program.getCurrentCycles())); }
+
+    public String getSelectedArchitecture() {
+        return architectureMenu.getText();
+    }
 
     public void initAllFields() {
         if (primaryController.program != null) {

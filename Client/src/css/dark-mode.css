@@ -81,6 +81,18 @@ FlowPane, StackPane, AnchorPane {
     -fx-text-fill: white;
 }
 
+.table-row-cell.insufficient-architecture-row {
+    -fx-background-color: #9d423f;
+}
+
+.table-view .table-row-cell:odd.insufficient-architecture-row {
+    -fx-background-color: #9d423f;
+}
+
+.table-view .table-row-cell:even.insufficient-architecture-row {
+    -fx-background-color: #9d423f;
+}
+
 /* Selected row should have a brighter dark bg and readable color*/
 .table-row-cell:selected {
     -fx-background-color: #404144;
@@ -493,7 +505,6 @@ FlowPane, StackPane, AnchorPane {
     -fx-prompt-text-fill: #9b9b9b; /* color of placeholder text */
     -fx-background-radius: 6;
 }
-
 
 /* Focus ring for inputs / buttons */
 *:focused {

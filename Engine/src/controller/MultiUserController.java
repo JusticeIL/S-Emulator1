@@ -1,6 +1,5 @@
 package controller;
 
-import XMLandJaxB.SFunctions;
 import XMLandJaxB.SProgram;
 import dto.UserDTO;
 import dto.ArchitectureGeneration;

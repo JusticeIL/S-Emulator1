@@ -3,8 +3,6 @@ O.O.B:
 1. Handle TODOs in the code <Gal, Eitan?>
 ---
 2. User history table should be updated with a pull request from the server each period of time, less than 2 secs <Gal?>
-3. the summary line should now present the instructions that fall to each architecture generation,
-and if there are instructions that cannot be run in any architecture generation, this information should be red to be seen by the user. <Gal?>
 
-4. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Check and tell me if that's what you wanted?>
-5. Statistics per user, including Program/Function, programName / user-string, Architecture type <Eitan?>
+3. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Check and tell me if that's what you wanted?>
+4. Statistics per user, including Program/Function, programName / user-string, Architecture type <Eitan?>

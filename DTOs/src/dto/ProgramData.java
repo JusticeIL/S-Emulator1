@@ -92,22 +92,6 @@ public final class ProgramData implements Serializable {
         this.originProgramName = program.getOriginProgramName();
     }
 
-    public String getUploadingUser() {
-        return uploadingUser;
-    }
-
-    public int getNumberOfZeroLevelInstructions() {
-        return numberOfZeroLevelInstructions;
-    }
-
-    public int getNumberOfRuns() {
-        return numberOfRuns;
-    }
-
-    public float getAvarageCreditsPerRun() {
-        return avarageCreditsPerRun;
-    }
-
     // Helper method for comparing variable names with numerical suffixes
     private int extractNumber(String name) {
         String digits = name.replaceAll("^[a-zA-Z]+", "");
@@ -163,6 +147,22 @@ public final class ProgramData implements Serializable {
 
     public Statistics getStatistics() {
         return statistics;
+    }
+
+    public String getUploadingUser() {
+        return uploadingUser;
+    }
+
+    public int getNumberOfZeroLevelInstructions() {
+        return numberOfZeroLevelInstructions;
+    }
+
+    public int getNumberOfRuns() {
+        return numberOfRuns;
+    }
+
+    public float getAvarageCreditsPerRun() {
+        return avarageCreditsPerRun;
     }
 
     public List<String> getAllFunctionNames() {

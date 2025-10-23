@@ -1,6 +1,7 @@
 package execution.controller;
 
 import com.google.gson.Gson;
+import dto.ArchitectureGeneration;
 import dto.ProgramData;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.animation.FadeTransition;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import execution.model.InstructionTableEntry;
@@ -42,6 +44,7 @@ public class LeftSideController {
     private RightSideController rightController;
     private TopComponentController topController;
     private IntegerProperty maxLevel = new SimpleIntegerProperty(-1);
+    private final IntegerProperty insufficientArchitectureCount = new SimpleIntegerProperty(0);
     private final int HISTORY_CHAIN_EFFECT_DURATION = 300; // milliseconds
 
     @FXML
@@ -60,7 +63,7 @@ public class LeftSideController {
     private Button clearBreakpointsBtn;
 
     @FXML
-    private Label summaryLine; //TODO: add architecture counters later
+    private Label summaryLine;
 
     @FXML
     private Label maxExpandLevel;
@@ -68,15 +71,42 @@ public class LeftSideController {
     @FXML
     public void initialize() {
 
-        instructionsTable.setRowFactory(tv -> {
-            TableRow<InstructionTableEntry> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (!row.isEmpty()) {
-                    updateParentInstructionTable(row.getItem().getInstructionDTO());
+        instructionsTable.setRowFactory(tv -> new TableRow<>() {
+            private boolean currentlyInsufficient = false;
+
+            @Override
+            protected void updateItem(InstructionTableEntry item, boolean empty) {
+                super.updateItem(item, empty);
+                boolean shouldBeInsufficient = false;
+                getStyleClass().removeAll("insufficient-architecture-row");
+
+                if (item != null && !empty) {
+                    if (rightController != null) {
+                        if (!isArchitectureEnough(rightController.getSelectedArchitecture(), item.getArchitecture())) {
+                            getStyleClass().add("insufficient-architecture-row");
+                            shouldBeInsufficient = true;
+                        } else {
+                            getStyleClass().remove("insufficient-architecture-row");
+                        }
+                    }
                 }
-            });
-            return row;
-        });
+
+                if (shouldBeInsufficient != currentlyInsufficient) {
+                    if (shouldBeInsufficient) { // Was sufficient, now insufficient
+                        insufficientArchitectureCount.set(insufficientArchitectureCount.get() + 1);
+                    } else { // Was insufficient, now sufficient
+                        insufficientArchitectureCount.set(insufficientArchitectureCount.get() - 1);
+                    }
+                    currentlyInsufficient = shouldBeInsufficient;
+                }
+
+                this.setOnMouseClicked(event -> {
+                    if (!this.isEmpty()) {
+                        updateParentInstructionTable(this.getItem().getInstructionDTO());
+                    }
+                });
+            }
+    });
 
         // Initialize the menu button of the expansion levels
         expansionLevelMenu.getItems().clear();
@@ -98,6 +128,9 @@ public class LeftSideController {
         // Minimize tables' height to prevent vertical scrolling
         instructionsTable.setPrefHeight(instructionsTable.getPrefHeight() * 0.85);
         chosenInstructionHistoryTable.setPrefHeight(chosenInstructionHistoryTable.getPrefHeight() * 0.85);
+
+        // Align summary line to center
+        summaryLine.setTextAlignment(TextAlignment.CENTER);
     }
 
     @FXML
@@ -130,7 +163,16 @@ public class LeftSideController {
                                                 instructionsTable.getItems().stream().filter(entry -> "B".equals(entry.getType())).count() +
                                                 " Basic Instructions, " +
                                                 instructionsTable.getItems().stream().filter(entry -> "S".equals(entry.getType())).count() +
-                                                " Synthetic Instructions",
+                                                " Synthetic Instructions," +
+                                                "\n" +
+                                                instructionsTable.getItems().stream().filter(entry -> ArchitectureGeneration.IV.toString().equals(entry.getArchitecture())).count() +
+                                                " Instructions in Architecture IV, " +
+                                                instructionsTable.getItems().stream().filter(entry -> ArchitectureGeneration.III.toString().equals(entry.getArchitecture())).count() +
+                                                " Instructions in Architecture III, " +
+                                                instructionsTable.getItems().stream().filter(entry -> ArchitectureGeneration.II.toString().equals(entry.getArchitecture())).count() +
+                                                " Instructions in Architecture II and " +
+                                                instructionsTable.getItems().stream().filter(entry -> ArchitectureGeneration.I.toString().equals(entry.getArchitecture())).count() +
+                                                " Instructions in Architecture I." ,
                                 instructionsTable.getItems()
                         ))
                         .otherwise("No program loaded.")
@@ -298,6 +340,22 @@ public class LeftSideController {
                         }
                     });
                 });
+
+//        rightController.getSelectedArchitectureProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue == null) {
+//                return;
+//            }
+//
+//            instructionsTable.getItems().forEach(entry -> {
+//                if (!isArchitectureEnough(newValue, entry.getArchitecture())) {
+//                    entry.getClass().getStyleClass().add("insufficient-architecture-row");
+//                } else {
+//                    entry.setDisabled(true);
+//                }
+//            })
+//      });
+            Platform.runLater(() -> instructionsTable.refresh());
+
     }
 
     public void updateMainInstructionTable() {
@@ -577,6 +635,22 @@ public class LeftSideController {
                 showAlert("Failed to send a request to delete all breakpoints ", (Stage) clearBreakpointsBtn.getScene().getWindow());
             }
         });
+    }
+
+    private boolean isArchitectureEnough(String currentArchitecture, String entryArchitecture) {
+        try {
+            return (ArchitectureGeneration.valueOf(currentArchitecture).compareTo(ArchitectureGeneration.valueOf(entryArchitecture)) >= 0);
+        } catch (IllegalArgumentException e) {
+            return true; // Assuming the only case architecture is not an enum is before user choice
+        }
+    }
+
+    public void refreshInstructionTable() {
+        Platform.runLater(() -> instructionsTable.refresh());
+    }
+
+    public IntegerProperty getInsufficientArhitecutureCountProperty() {
+        return insufficientArchitectureCount;
     }
 
     public void initAllFields() {
