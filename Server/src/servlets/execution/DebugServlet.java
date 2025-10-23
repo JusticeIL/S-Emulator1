@@ -12,8 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dto.VariableDTO;
 
+import javax.naming.InsufficientResourcesException;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.security.InvalidParameterException;
+import java.util.InputMismatchException;
 import java.util.Set;
 
 @WebServlet(name = "DebugServlet", urlPatterns = {"/api/program/debug"})
@@ -49,8 +52,17 @@ public class DebugServlet extends HttpServlet {
             String username = authenticator.getUsername(req);
 
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
-            model.startDebug(username, arguments, breakpoints, architectureGeneration);
-            resp.sendRedirect(req.getContextPath() + "/api/program");
+            try {
+                model.startDebug(username, arguments, breakpoints, architectureGeneration);
+                resp.sendRedirect(req.getContextPath() + "/api/program");
+            }  catch (InvalidParameterException e) {
+                resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
+            } catch (InsufficientResourcesException e) {
+                resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            } catch (InputMismatchException e){
+                resp.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+            }
+
         });
     }
 }

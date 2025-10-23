@@ -31,6 +31,12 @@ public class ProgramExecutioner {
     private int executionCost;
     private ArchitectureGeneration architecture;
 
+    public boolean isProgramExecutionFailed() {
+        return programExecutionFailed;
+    }
+
+    private boolean programExecutionFailed;
+
     private void executeSingleInstruction() {
 
         ProgramData savedState = new ProgramData(program);
@@ -58,12 +64,17 @@ public class ProgramExecutioner {
                 if(isDebugMode){//end execution
                     stopDebug();
                 }
+                setProgramExecutionFailed();
                 return;
             }
             executionCost += user.decreaseCredits(usedCycles);
         }
 
         program.setCycleCounter(cycleCounter);
+    }
+
+    private void setProgramExecutionFailed() {
+        programExecutionFailed = true;
     }
 
     private void setUpNewRun(Set<VariableDTO> args){

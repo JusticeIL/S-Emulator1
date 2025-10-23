@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,6 +44,8 @@ public class ProgramExecutionServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_PAYMENT_REQUIRED);
             } catch (InsufficientResourcesException e) {
                 resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            } catch (InputMismatchException e){
+                resp.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
             }
 
         });

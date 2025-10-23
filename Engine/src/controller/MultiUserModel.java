@@ -20,12 +20,12 @@ public interface MultiUserModel {
     Optional<ProgramData> getProgramData(String username);
     void Expand(String username, int level) throws IllegalArgumentException;
     void runProgram(String username, Set<VariableDTO> args, String architectureString) throws InsufficientResourcesException;
-    void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints, String architectureString);
+    void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints, String architectureString) throws InsufficientResourcesException;
     void addBreakpoint(String username, int lineNumber);
     void removeBreakpoint(String username, int lineNumber);
-    void stepOver(String username);
+    void stepOver(String username) throws InsufficientResourcesException;
     void stopDebug(String username);
-    void resumeDebug(String username);
+    void resumeDebug(String username) throws InsufficientResourcesException;
     void switchFunction(String username, String functionName);
     void setActiveProgram(String username, String programName);
     void addUser(String username);

@@ -461,8 +461,28 @@ public class RightSideController{
                         e.printStackTrace();
                     }
                 } else {
-                    showAlert("Start debug failed with code: " + response.code(),
-                            (Stage) ResumeDebugBtn.getScene().getWindow());
+                    if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED) {
+                        showAlert("Architecture Generation ("
+                                        +currentlyChosenArchitecture
+                                        + ") to Low for Program execution ("
+                                        +primaryController.program.getMinimalArchitectureNeededForRun()+")"
+                                , (Stage) runRadioButton.getScene().getWindow());
+                    }else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
+                        showAlert("User credits to low for Program execution"
+                                , (Stage) runRadioButton.getScene().getWindow());
+                    }
+                    else if(response.code() == HttpServletResponse.SC_EXPECTATION_FAILED){
+                        Stage executionStage = (Stage) runRadioButton.getScene().getWindow();
+                        returnToDashboardScreen(new ActionEvent());
+                        showAlert("User credits to low for Program execution - Credits were not sufficient to execute the entire program"
+                                , (Stage) runRadioButton.getScene().getWindow());
+
+
+                    }
+                    else {
+                        showAlert("Failed to execute program in architecture " + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
+                                (Stage) runRadioButton.getScene().getWindow());
+                    }
                 }
             }
 
@@ -579,11 +599,16 @@ public class RightSideController{
                                 +primaryController.program.getMinimalArchitectureNeededForRun()+")"
                                 , (Stage) runRadioButton.getScene().getWindow());
                     }else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
-                        showAlert("User credits to Low for Program execution (less than average cost)"
+                        showAlert("User credits to low for Program execution - Lower than average cost for program"
                                 , (Stage) runRadioButton.getScene().getWindow());
+                    }else if(response.code() == HttpServletResponse.SC_EXPECTATION_FAILED){
+                        returnToDashboardScreen(new ActionEvent());
+                        showAlert("User credits to low for Program execution - Credits were not sufficient to execute the entire program"
+                                , (Stage) runRadioButton.getScene().getWindow());
+
                     }
                     else {
-                        showAlert("Failed to execute program in" + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
+                        showAlert("Failed to execute program in architecture " + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
                                 (Stage) runRadioButton.getScene().getWindow());
                     }
                 }

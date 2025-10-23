@@ -33,11 +33,11 @@ public class MultiUserController implements MultiUserModel, Serializable {
                 JAXBContext jaxbContext = JAXBContext.newInstance(SProgram.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 SProgram sProgram = (SProgram) jaxbUnmarshaller.unmarshal(path);
-                if(sharedProgramsContainer.getAllProgramNames().contains(sProgram.getName())){
+                if (sharedProgramsContainer.getAllProgramNames().contains(sProgram.getName())) {
                     throw new IllegalArgumentException("Program already loaded");
                 }
 
-                sharedProgramsContainer.addSProgram(sProgram,username);
+                sharedProgramsContainer.addSProgram(sProgram, username);
             }
             usersManager.getUser(username).updateProgramsLoaded();
             usersManager.getUser(username).setFunctionsLoaded(sharedProgramsContainer.getNumberOfFunctions(username));
@@ -63,21 +63,35 @@ public class MultiUserController implements MultiUserModel, Serializable {
     }
 
     @Override
-    public void runProgram(String username, Set<VariableDTO> args,String architectureString) throws InsufficientResourcesException {
+    public void runProgram(String username, Set<VariableDTO> args, String architectureString) throws InsufficientResourcesException {
         User user = usersManager.getUser(username);
         ArchitectureGeneration architectureGeneration = ArchitectureGeneration.valueOf(architectureString);
-        executionManager.CheckForCreditsAboveProgramAverage(user,architectureGeneration,sharedProgramsContainer);
+        executionManager.CheckForCreditsAboveProgramAverage(user, architectureGeneration, sharedProgramsContainer);
         executionManager.runProgram(user, args, architectureGeneration);
         String programName = user.getActiveProgram().getProgramName();
         int CostForLastExecution = executionManager.getCostForLastExecution(user);
         sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
+        if (executionManager.checkInsufficientCredits(user)) {
+            throw new InputMismatchException();
+        }
     }
 
     @Override
-    public void startDebug(String username, Set<VariableDTO> args,Set<Integer> breakpoints,String architectureString) {
+    public void startDebug(String username, Set<VariableDTO> args, Set<Integer> breakpoints, String architectureString) throws InsufficientResourcesException {
         User user = usersManager.getUser(username);
         ArchitectureGeneration architectureGeneration = ArchitectureGeneration.valueOf(architectureString);
-        executionManager.startDebug(user, args, breakpoints,architectureGeneration);
+        executionManager.startDebug(user, args, breakpoints, architectureGeneration);
+        if (executionManager.checkInsufficientCredits(user)) {
+            int CostForLastExecution = executionManager.getCostForLastExecution(user);
+            String programName = user.getActiveProgram().getProgramName();
+            sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
+            throw new InputMismatchException();
+        }
+        if (!executionManager.isInDebugMode(user)) {
+            int CostForLastExecution = executionManager.getCostForLastExecution(user);
+            String programName = user.getActiveProgram().getProgramName();
+            sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
+        }
     }
 
     @Override
@@ -93,10 +107,16 @@ public class MultiUserController implements MultiUserModel, Serializable {
     }
 
     @Override
-    public void stepOver(String username) {
+    public void stepOver(String username) throws InsufficientResourcesException {
         User user = usersManager.getUser(username);
         executionManager.stepOver(user);
-        if(executionManager.isInDebugMode(user)) {
+        if (executionManager.checkInsufficientCredits(user)) {
+            int CostForLastExecution = executionManager.getCostForLastExecution(user);
+            String programName = user.getActiveProgram().getProgramName();
+            sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
+            throw new InputMismatchException();
+        }
+        if (!executionManager.isInDebugMode(user)) {
             int CostForLastExecution = executionManager.getCostForLastExecution(user);
             String programName = user.getActiveProgram().getProgramName();
             sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
@@ -113,14 +133,22 @@ public class MultiUserController implements MultiUserModel, Serializable {
     }
 
     @Override
-    public void resumeDebug(String username) {
+    public void resumeDebug(String username) throws InsufficientResourcesException {
         User user = usersManager.getUser(username);
         executionManager.resumeDebug(user);
-        if(executionManager.isInDebugMode(user)) {
+
+        if (executionManager.checkInsufficientCredits(user)) {
+            int CostForLastExecution = executionManager.getCostForLastExecution(user);
+            String programName = user.getActiveProgram().getProgramName();
+            sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
+            throw new InputMismatchException();
+        }
+        if (!executionManager.isInDebugMode(user)) {
             int CostForLastExecution = executionManager.getCostForLastExecution(user);
             String programName = user.getActiveProgram().getProgramName();
             sharedProgramsContainer.addRunForProgram(programName, CostForLastExecution);
         }
+
     }
 
     @Override
@@ -130,20 +158,21 @@ public class MultiUserController implements MultiUserModel, Serializable {
 
     @Override
     public void setActiveProgram(String username, String programName) {
-        User user  = usersManager.getUser(username);
-        executionManager.setDebugMode(user,false);
-        if(user.hasProgram(programName)){
+        User user = usersManager.getUser(username);
+        executionManager.setDebugMode(user, false);
+        if (user.hasProgram(programName)) {
             user.setActiveProgram(programName);
             return;
         }
         user.pullSfunctions(sharedProgramsContainer.getAllSFunctions());
 
-        if(sharedProgramsContainer.getAllFunctionNames().contains(programName)){
+        if (sharedProgramsContainer.getAllFunctionNames().contains(programName)) {
             //is a function
             user.activateNewProgram(sharedProgramsContainer.getSFunctions(programName));
-        }else{
+        } else {
             //is a program
-            user.activateNewProgram(sharedProgramsContainer.getSProgram(programName));;
+            user.activateNewProgram(sharedProgramsContainer.getSProgram(programName));
+            ;
         }
     }
 
@@ -188,5 +217,4 @@ public class MultiUserController implements MultiUserModel, Serializable {
         }
         return programDataList;
     }
-
 }

@@ -18,6 +18,7 @@ public class ExecutionManager {
     private final Map<User, ProgramExecutioner> executioners = new HashMap<>();
     private final Map<User,Boolean> isCurrentlyInDebugMode = new HashMap<>();
     private final Map<User,Integer> costForLastExecution = new HashMap<>();
+    private final Map<User,Boolean> lastProgramExecutionFailed = new HashMap<>();
 
     public void runProgram(User user, Set<VariableDTO> args, ArchitectureGeneration architecture) {
         Program activeProgram = user.getActiveProgram();
@@ -34,17 +35,26 @@ public class ExecutionManager {
         programExecutioner.setProgram(activeProgram);
         programExecutioner.executeProgram(args);
         costForLastExecution.put(user,programExecutioner.getExecutionCost());
+        checkProgramExecutionFailedOnCredits(user);
         executioners.remove(user);
     }
 
     public void startDebug(User user, Set<VariableDTO> args,Set<Integer> breakpoints, ArchitectureGeneration architecture) {
         Program activeProgram = user.getActiveProgram();
+
+        if(architecture.getCost()<activeProgram.getMinimalArchitectureNeededForExecution().getCost()){
+            throw new InvalidParameterException("Tried running level " +
+                    activeProgram.getMinimalArchitectureNeededForExecution() +
+                    " program in "+ architecture + " architecture");
+        }
         ProgramExecutioner programExecutioner = new ProgramExecutioner();
         programExecutioner.setDebugMode(true);
         programExecutioner.setProgram(activeProgram);
         programExecutioner.setMainExecutioner(user, architecture);
-        programExecutioner.setUpDebugRun(args, breakpoints);
         isCurrentlyInDebugMode.put(user, true);
+        programExecutioner.setUpDebugRun(args, breakpoints);
+        checkProgramExecutionFailedOnCredits(user);
+        checkForEndOfDebug(user);
     }
 
     public void addBreakpoint(User user, int lineNumber) {
@@ -61,6 +71,7 @@ public class ExecutionManager {
         if(isCurrentlyInDebugMode.get(user)) {
             Optional<ProgramExecutioner> executionerOpt = Optional.ofNullable(executioners.get(user));
             executionerOpt.ifPresent(ProgramExecutioner::stepOver);
+            checkProgramExecutionFailedOnCredits(user);
             checkForEndOfDebug(user);
         }
     }
@@ -68,7 +79,7 @@ public class ExecutionManager {
     private void checkForEndOfDebug(User user) {
         Optional<ProgramExecutioner> executionerOpt = Optional.ofNullable(executioners.get(user));
         executionerOpt.ifPresent(executioner -> {
-            if(!executioner.isInDebug()) {
+            if(!executioner.isInDebug()||executioner.isProgramExecutionFailed()) {
                 isCurrentlyInDebugMode.put(user, false);
                 costForLastExecution.put(user,executioner.getExecutionCost());
                 executioners.remove(user);
@@ -86,6 +97,7 @@ public class ExecutionManager {
                 executioners.remove(user);
             });
 
+
         }
     }
 
@@ -93,6 +105,7 @@ public class ExecutionManager {
     public void resumeDebug(User user) {
         Optional<ProgramExecutioner> executionerOpt = Optional.ofNullable(executioners.get(user));
         executionerOpt.ifPresent(ProgramExecutioner::resumeDebug);
+        checkProgramExecutionFailedOnCredits(user);
         checkForEndOfDebug(user);
     }
 
@@ -114,5 +127,14 @@ public class ExecutionManager {
         if(user.getCredits()-architecture.getCost()<avgCost){
             throw new InsufficientResourcesException("User credit total, less than active program average cost");
         }
+    }
+
+    private void checkProgramExecutionFailedOnCredits(User user){
+        lastProgramExecutionFailed.put(user,executioners.get(user).isProgramExecutionFailed());
+    }
+
+    public boolean checkInsufficientCredits(User user) {
+
+        return lastProgramExecutionFailed.getOrDefault(user, false);
     }
 }
