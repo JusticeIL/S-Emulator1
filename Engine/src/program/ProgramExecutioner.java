@@ -68,7 +68,7 @@ public class ProgramExecutioner {
                 setProgramExecutionFailed();
                 return;
             }
-            executionCost += user.decreaseCredits(usedCycles);
+            executionCost += (int) user.decreaseCredits(usedCycles);
         }
         cycleCounter+= usedCycles;
         program.setCycleCounter(cycleCounter);
@@ -92,7 +92,7 @@ public class ProgramExecutioner {
             variable.setValue(0);
         }
 
-        // Check if variables and functions in args exist in program
+        // Check if variables and functions in args exist in the program
         for (VariableDTO arg : args) {
             if (Variables.containsKey(arg.getName())) { // Case: variable argument
                 Variables.get(arg.getName()).setValue(arg.getValue());

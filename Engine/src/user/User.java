@@ -129,11 +129,11 @@ public class User {
     public long decreaseCredits(long cost) {
         long actualCost = cost <= credits.get() ? cost : credits.get();
         this.credits.getAndAdd(-cost);
-        if (cost > getCredits()) {
+        if (getCredits()<0) {
             this.credits = new AtomicLong(0);
         }
 
-        this.creditsUsed += cost;
+        this.creditsUsed += (int) actualCost;
         return actualCost;
     }
 
