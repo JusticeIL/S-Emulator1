@@ -637,7 +637,7 @@ public class LeftSideController {
         });
     }
 
-    private boolean isArchitectureEnough(String currentArchitecture, String entryArchitecture) {
+    public boolean isArchitectureEnough(String currentArchitecture, String entryArchitecture) {
         try {
             return (ArchitectureGeneration.valueOf(currentArchitecture).compareTo(ArchitectureGeneration.valueOf(entryArchitecture)) >= 0);
         } catch (IllegalArgumentException e) {
@@ -649,8 +649,8 @@ public class LeftSideController {
         Platform.runLater(() -> instructionsTable.refresh());
     }
 
-    public IntegerProperty getInsufficientArhitecutureCountProperty() {
-        return insufficientArchitectureCount;
+    public MenuButton getExpansionLevelMenu() {
+        return expansionLevelMenu;
     }
 
     public void initAllFields() {

@@ -374,24 +374,21 @@ public class RightSideController{
         this.leftController = leftController;
 
         RunProgramBtn.disableProperty().bind(
-                isDebugMode.or(leftController.getInsufficientArhitecutureCountProperty().greaterThan(0))
+                isDebugMode.or(
+                        Bindings.createBooleanBinding(() -> {
+                                    if (primaryController == null || primaryController.program == null) {
+                                        return true; // Disable if dependencies are not injected
+                                    }
+                                    // Disable if architecture is not enough
+                                    return !leftController.isArchitectureEnough(
+                                            architectureMenu.getText(),
+                                            primaryController.program.getMinimalArchitectureNeededForRun()
+                                    );
+                                },
+                                architectureMenu.textProperty(),
+                                leftController.getExpansionLevelMenu().textProperty())
+                )
         );
-    }
-
-    private Alert createErrorMessageOnRunProgram(Exception e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK); // Helps access and style the ok button
-        okButton.setId("ok-button");
-        alert.initOwner(primaryStage);
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.setTitle("Error");
-        alert.setHeaderText("Program Run Failed");
-        alert.setContentText(e.getMessage());
-
-        // Ensure the dialog is focused
-        alert.setOnShown(dialogEvent -> alert.getDialogPane().requestFocus());
-
-        return alert;
     }
 
     public void updateArgumentTable() {
