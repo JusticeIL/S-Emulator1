@@ -44,7 +44,7 @@ public class ProgramExecutioner {
 
         Label nextLabel = currentInstruction.execute();
         int usedCycles = currentInstruction.getCycles();
-        cycleCounter+= usedCycles;
+
 
         if (nextLabel.equals(Program.EMPTY_LABEL)) {
             currentCommandIndex++;
@@ -70,7 +70,7 @@ public class ProgramExecutioner {
             }
             executionCost += user.decreaseCredits(usedCycles);
         }
-
+        cycleCounter+= usedCycles;
         program.setCycleCounter(cycleCounter);
         if(isDebugMode&&nextLabel.equals(Program.EXIT_LABEL)){
             stopDebug();

@@ -180,8 +180,14 @@ public class RightSideController{
                         e.printStackTrace();
                     }
                 } else {
+                    if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
+                        returnToDashboardScreen(new ActionEvent());
+                        showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
+                                , (Stage) runRadioButton.getScene().getWindow());
+                    }else{
                     showAlert("Resume debug failed with code: " + response.code(),
                             (Stage) ResumeDebugBtn.getScene().getWindow());
+                    }
                 }
             }
 
@@ -243,8 +249,14 @@ public class RightSideController{
                     }
                     topController.sendUpdateCreditsRequest();
                 } else {
-                    showAlert("Step over failed with code: " + response.code(),
-                            (Stage) StepOverDebugBtn.getScene().getWindow());
+                    if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
+                        returnToDashboardScreen(new ActionEvent());
+                        showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
+                                , (Stage) runRadioButton.getScene().getWindow());
+                    }else {
+                        showAlert("Step over failed with code: " + response.code(),
+                                (Stage) StepOverDebugBtn.getScene().getWindow());
+                    }
                 }
             }
 
