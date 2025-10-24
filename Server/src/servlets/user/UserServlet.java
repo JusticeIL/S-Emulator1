@@ -1,6 +1,7 @@
 package servlets.user;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
@@ -48,7 +49,9 @@ public class UserServlet extends HttpServlet {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForNoUsernameThenDo(req, () -> {
             //onSuccess
-            String username = req.getParameter("username");
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
+            String username = jsonObject.get("username").getAsString();
             synchronized (users) {
                 if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);

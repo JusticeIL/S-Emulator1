@@ -20,12 +20,12 @@ import static configuration.ResourcesConfiguration.*;
 public class HistoryTableRefresher extends TimerTask {
     private final String username;
     private final TableView<HistoryTableEntry> historyTable;
-    private final TableView<UserTableEntry> userTable;
+    private final TableView<UserTableEntry> usersTable;
 
-    public HistoryTableRefresher(TableView<HistoryTableEntry> table, String username, TableView<UserTableEntry> userTable) {
+    public HistoryTableRefresher(TableView<HistoryTableEntry> table, String username, TableView<UserTableEntry> usersTable) {
         this.username = username;
         this.historyTable = table;
-        this.userTable = userTable;
+        this.usersTable = usersTable;
     }
 
     @Override
@@ -34,8 +34,8 @@ public class HistoryTableRefresher extends TimerTask {
         if (historyTable.getScene().getWindow() != null) {
             HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
                     .newBuilder()
-                    .addQueryParameter("username", userTable.getSelectionModel().getSelectedItem() != null ?
-                            userTable.getSelectionModel().getSelectedItem().getUsername() :
+                    .addQueryParameter("username", usersTable.getSelectionModel().getSelectedItem() != null ?
+                            usersTable.getSelectionModel().getSelectedItem().getUsername() :
                             username);
             String finalURL = urlBuilder.build().toString();
 

@@ -367,4 +367,8 @@ public class TopComponentController{
         int i = s.lastIndexOf('.');
         return (i == -1) ? s : s.substring(0, i);
     }
+
+    public String getUsername() {
+        return userNameDisplay.getText();
+    }
 }

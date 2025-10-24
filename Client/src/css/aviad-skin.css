@@ -199,6 +199,10 @@ FlowPane, StackPane, AnchorPane {
     -fx-alignment: CENTER;
 }
 
+#userExecutionsTable .table-cell {
+    -fx-alignment: CENTER;
+}
+
 /* ---------- Buttons (primary) ---------- */
 .button {
     -fx-background-color: #70ad47;

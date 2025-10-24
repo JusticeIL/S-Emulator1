@@ -28,11 +28,36 @@ public class HistoryTableEntry {
         this.cycles = new SimpleIntegerProperty(run.getRunCycles());
         this.allVariables = new HashMap<>();
         allVariables.putAll(run.getFinalStateOfAllVariables());
+        this.type = ProgramType.valueOf(run.getProgramType());
+        this.programName = new SimpleStringProperty(run.getProgramName());
+        this.architectureType = run.getArchitectureGeneration();
+    }
 
-        //TODO: change all of these to use real data from Run object
-        type = ProgramType.Function;
-        programName = new SimpleStringProperty("ExampleProgram");
-        architectureType = ArchitectureGeneration.IV;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HistoryTableEntry)) return false;
+        HistoryTableEntry other = (HistoryTableEntry) o;
+        return Integer.valueOf(this.run.get()).equals(other.run.get()) &&
+                this.type.equals(other.type) &&
+                this.programName.get().equals(other.programName.get()) &&
+                this.architectureType.equals(other.architectureType) &&
+                Integer.valueOf(this.level.get()).equals(other.level.get()) &&
+                Integer.valueOf(this.y.get()).equals(other.y.get()) &&
+                Integer.valueOf(this.cycles.get()).equals(other.cycles.get());
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(
+                run.get(),
+                type,
+                programName.get(),
+                architectureType,
+                level.get(),
+                y.get(),
+                cycles.get()
+        );
     }
 
     // getters and setters (needed by PropertyValueFactory)

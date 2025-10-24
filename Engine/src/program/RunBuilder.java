@@ -9,7 +9,6 @@ import java.util.Map;
 public class RunBuilder {
 
     private int runCycles;
-
     private int expansionLevel;
     private Map<String,Integer> inputArgs;
     private Map<String,Integer> finalStateOfAllVariables;
@@ -52,9 +51,7 @@ public class RunBuilder {
         return this;
     }
 
-
-
     public dto.Run build(Statistics statistics) {
-        return new Run(statistics.getHistory().size(),expansionLevel, inputArgs, finalStateOfAllVariables,runCycles,programType,programName, architectureGeneration);
+        return new Run(statistics.getHistory().size()+1, expansionLevel, inputArgs, finalStateOfAllVariables, runCycles, programType, programName, architectureGeneration);
         }
 }

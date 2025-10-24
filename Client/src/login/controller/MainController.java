@@ -1,5 +1,6 @@
 package login.controller;
 
+import com.google.gson.Gson;
 import dashboard.controller.PrimaryController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import okhttp3.*;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static configuration.ClientConfiguration.CLIENT;
@@ -42,55 +44,65 @@ public class MainController {
 
     @FXML
     void tryRegisterUserBtn(ActionEvent event) {
-            HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
-                    .newBuilder();
-            String finalURL = urlBuilder.build().toString();
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
 
-            Request request = new Request.Builder()
-                    .url(finalURL)
-                    .post(RequestBody.create(new byte[]{}))
-                    .build();
+        // Create a temporal object containing the username to get the user data for, as json
+        Gson gson = new Gson();
+        String json = gson.toJson(Map.of("username", usernameField.getText()));
 
-            Call call = CLIENT.newCall(request);
+        // Build the body sent to the server to include the username
+        RequestBody body = RequestBody.create(
+                json,
+                MediaType.parse("application/json")
+        );
 
-            new Thread(() -> {
-                try (Response response = call.execute()) {
-                    if (response.isSuccessful()) {
-                        Platform.runLater(() -> {
-                            try {
-                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard/resources/fxml/dashboard.fxml"));
-                                Parent newRoot = loader.load();
-                                Scene dashboardScene = new Scene(newRoot, 850, 600);
-                                dashboardScene.getStylesheets().clear();
-                                dashboardScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .post(body)
+                .build();
 
-                                PrimaryController controller = loader.getController();
-                                Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
+        Call call = CLIENT.newCall(request);
 
-                                // Close current window
-                                ((Stage) registerUserBtn.getScene().getWindow()).close();
+        new Thread(() -> {
+            try (Response response = call.execute()) {
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard/resources/fxml/dashboard.fxml"));
+                            Parent newRoot = loader.load();
+                            Scene dashboardScene = new Scene(newRoot, 850, 600);
+                            dashboardScene.getStylesheets().clear();
+                            dashboardScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
 
-                                controller.getTopComponentController().setPrimaryStage(primaryStage);
-                                primaryStage.setScene(dashboardScene);
-                                primaryStage.setTitle("S-embler - Dashboard");
-                                primaryStage.getIcons().add(
-                                        new Image(getClass().getResourceAsStream("/resources/icon.png"))
-                                );
-                                primaryStage.show();
-                            } catch (Exception ex) {
-                                Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
-                                showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
-                            }
-                        });
-                    } else {
-                        Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
-                        String errorMsg = response.body() != null ? response.body().string() : "Unknown error";
-                        showAlert(errorMsg, primaryStage);
-                    }
-                } catch (Exception e) {
+                            PrimaryController controller = loader.getController();
+                            Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
+
+                            // Close current window
+                            ((Stage) registerUserBtn.getScene().getWindow()).close();
+
+                            controller.getTopComponentController().setPrimaryStage(primaryStage);
+                            primaryStage.setScene(dashboardScene);
+                            primaryStage.setTitle("S-embler - Dashboard");
+                            primaryStage.getIcons().add(
+                                    new Image(getClass().getResourceAsStream("/resources/icon.png"))
+                            );
+                            primaryStage.show();
+                        } catch (Exception ex) {
+                            Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
+                            showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
+                        }
+                    });
+                } else {
                     Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
-                    showAlert("Error: " + e.getMessage(), primaryStage);
+                    String errorMsg = response.body() != null ? response.body().string() : "Unknown error";
+                    showAlert(errorMsg, primaryStage);
                 }
-            }).start();
+            } catch (Exception e) {
+                Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
+                showAlert("Error: " + e.getMessage(), primaryStage);
+            }
+        }).start();
     }
 }
