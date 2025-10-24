@@ -137,6 +137,10 @@ FlowPane, StackPane, AnchorPane {
     -fx-alignment: CENTER;
 }
 
+#userExecutionsTable .table-cell {
+    -fx-alignment: CENTER;
+}
+
 .table-cell:selected {
     -fx-background-color: #484b6a;
     -fx-text-fill: #fafafa;

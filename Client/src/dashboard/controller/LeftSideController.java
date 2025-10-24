@@ -1,7 +1,12 @@
 package dashboard.controller;
 
+import dashboard.model.HistoryTableEntry;
 import dashboard.model.UserTableEntry;
+import dashboard.refreshTasks.HistoryTableRefresher;
 import dashboard.refreshTasks.UserListRefresher;
+import dto.ArchitectureGeneration;
+import dto.ProgramType;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -23,7 +28,28 @@ public class LeftSideController {
     private Button unselectUserBtn;
 
     @FXML
-    private TableView<?> userExecutionsTable;
+    private TableView<HistoryTableEntry> userExecutionsTable;
+
+    @FXML
+    private TableColumn<HistoryTableEntry, Integer> runIdColumn;
+
+    @FXML
+    private TableColumn<HistoryTableEntry, ProgramType> programTypeColumn;
+
+    @FXML
+    private TableColumn<HistoryTableEntry, String> programNameColumn;
+
+    @FXML
+    private TableColumn<HistoryTableEntry, ArchitectureGeneration> architectureColumn;
+
+    @FXML
+    private TableColumn<HistoryTableEntry, Integer> runLevelColumn;
+
+    @FXML
+    private TableColumn<HistoryTableEntry, Integer> yValueColumn;
+
+    @FXML
+    private TableColumn<HistoryTableEntry, Integer> cyclesConsumedColumn;
 
     @FXML
     private Button RerunBtn;
@@ -78,6 +104,30 @@ public class LeftSideController {
         creditsUsedColumn.setCellValueFactory(new PropertyValueFactory<>("creditsUsed"));
         programExecutionsCounterColumn.setCellValueFactory(new PropertyValueFactory<>("programExecutionsCounter"));
 
+        usersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldUser, newUser) -> {
+            Platform.runLater(() -> userExecutionsTable.getItems().clear());
+        });
+
+        userExecutionsTable.setRowFactory(tv -> new TableRow<>());
+
+        runIdColumn.setCellValueFactory(new PropertyValueFactory<>("run"));
+        programTypeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        programNameColumn.setCellValueFactory(new PropertyValueFactory<>("programName"));
+        architectureColumn.setCellValueFactory(new PropertyValueFactory<>("architectureType"));
+        runLevelColumn.setCellValueFactory(new PropertyValueFactory<>("level"));
+        yValueColumn.setCellValueFactory(new PropertyValueFactory<>("y"));
+        cyclesConsumedColumn.setCellValueFactory(new PropertyValueFactory<>("cycles"));
+
+        userExecutionsTable.placeholderProperty().bind(
+                Bindings.createObjectBinding(() -> {
+                    if (usersTable.getSelectionModel().getSelectedItem() == null) {
+                        return new Label("Current user has no history data");
+                    } else {
+                        return new Label("This user has no history");
+                    }
+                }, usersTable.getSelectionModel().selectedItemProperty())
+        );
+
         /* Timer tasks */
         UserListRefresher userListRefreshTask = new UserListRefresher(usersTable);
         Timer timer = new Timer(true);
@@ -86,7 +136,10 @@ public class LeftSideController {
 
     @FXML
     void unselectUser(ActionEvent event) {
-        usersTable.getSelectionModel().clearSelection();
+        Platform.runLater(() -> {
+            usersTable.getSelectionModel().clearSelection();
+            userExecutionsTable.getItems().clear();
+        });
     }
 
     @FXML
@@ -101,6 +154,11 @@ public class LeftSideController {
 
     public void setTopController(TopComponentController topController) {
         this.topController = topController;
+
+        /* Timer tasks */
+        HistoryTableRefresher userHistoryTableRefresher = new HistoryTableRefresher(userExecutionsTable, topController.getUsername(), usersTable);
+        Timer timer = new Timer(true);
+        timer.schedule(userHistoryTableRefresher, REFRESH_RATE, REFRESH_RATE);
     }
 
     public void setRightController(RightSideController rightController) {

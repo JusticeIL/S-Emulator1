@@ -15,7 +15,7 @@ public class FunctionTableEntry {
 
     public FunctionTableEntry(ProgramData dto) {
         this.functionName = new SimpleStringProperty(dto.getProgramName());
-        this.programOrigin = new SimpleStringProperty(dto.getOriginProgram()); //TODO: dto.getProgramOrigin()
+        this.programOrigin = new SimpleStringProperty(dto.getOriginProgram());
         this.user = new SimpleStringProperty(dto.getUploadingUser());
         this.instructionsCounter = new SimpleIntegerProperty(dto.getNumberOfZeroLevelInstructions());
         this.maxProgramLevel = new SimpleIntegerProperty(dto.getMaxExpandLevel());

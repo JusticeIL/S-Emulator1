@@ -1,6 +1,7 @@
 package servlets.user;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
@@ -21,9 +22,14 @@ public class UserServlet extends HttpServlet {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForUsernameThenDo(req, resp, ()->{
             //onSuccess
-            String username = authenticator.getUsername(req);
+            String username = req.getParameter("username");
 
-            Set<String> users = (Set<String>) getServletContext().getAttribute("users");
+            if (username == null) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("Missing username parameter.");
+                return;
+            }
+
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
 
             Gson gson = new Gson();
@@ -43,7 +49,9 @@ public class UserServlet extends HttpServlet {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForNoUsernameThenDo(req, () -> {
             //onSuccess
-            String username = req.getParameter("username");
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
+            String username = jsonObject.get("username").getAsString();
             synchronized (users) {
                 if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);

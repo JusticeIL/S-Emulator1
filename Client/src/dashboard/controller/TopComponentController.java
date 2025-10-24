@@ -70,7 +70,8 @@ public class TopComponentController{
         }
 
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
-                .newBuilder();
+                .newBuilder()
+                .addQueryParameter("username", userNameDisplay.getText());
         String finalURL = urlBuilder.build().toString();
 
         // Building the request based on the body from above
@@ -365,5 +366,9 @@ public class TopComponentController{
     private String removeExtension(String s) {
         int i = s.lastIndexOf('.');
         return (i == -1) ? s : s.substring(0, i);
+    }
+
+    public String getUsername() {
+        return userNameDisplay.getText();
     }
 }
