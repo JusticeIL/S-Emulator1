@@ -72,6 +72,9 @@ public class ProgramExecutioner {
         }
 
         program.setCycleCounter(cycleCounter);
+        if(isDebugMode&&nextLabel.equals(Program.EXIT_LABEL)){
+            stopDebug();
+        }
     }
 
     private void setProgramExecutionFailed() {
@@ -183,7 +186,9 @@ public class ProgramExecutioner {
         if(programNotFinished) {
             executeSingleInstruction();
             program.setNextInstructionIdForDebug(currentInstruction.getNumber());
+
         }
+
         if (!programNotFinished && isDebugMode) {
             stopDebug();
         }
