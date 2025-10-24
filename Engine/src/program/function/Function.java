@@ -117,4 +117,9 @@ public class Function extends Program {
     public String getName() {
         return getUserString();
     }
+
+    @Override
+    public String getType() {
+        return "Function";
+    }
 }

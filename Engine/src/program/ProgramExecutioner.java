@@ -2,6 +2,7 @@ package program;
 
 import dto.ProgramData;
 import dto.ArchitectureGeneration;
+import dto.Run;
 import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
@@ -153,10 +154,7 @@ public class ProgramExecutioner {
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
 
         if (isMainExecutioner) {
-            program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
-            if(user != null) {
-                user.getHistory().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
-            }
+            saveRunToHistory(finalStateOfAllVariables, currentRunLevel, xInitializedVariables);
         }
         if (wasCalledFromFunction) {
             callerFunctionInstance.setCycles(cycleCounter);
@@ -195,7 +193,23 @@ public class ProgramExecutioner {
         Map<String,Integer> finalStateOfAllVariables = program.getVariables().stream()
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
 
-        program.getStatistics().addRunToHistory(currentRunLevelForDebug, xInitializedVariablesForDebug, finalStateOfAllVariables, cycleCounter);
+        saveRunToHistory(finalStateOfAllVariables, currentRunLevelForDebug, xInitializedVariablesForDebug);
+    }
+
+    private void saveRunToHistory(Map<String, Integer> finalStateOfAllVariables, int currentRunLevelForDebug, Map<String, Integer> xInitializedVariablesForDebug) {
+        if(user!=null){
+            RunBuilder runBuilder = new RunBuilder();
+            Run run = runBuilder.setRunCycles(cycleCounter)
+                    .setExpansionLevel(currentRunLevelForDebug)
+                    .setFinalStateOfAllVariables(finalStateOfAllVariables)
+                    .setInputArgs(xInitializedVariablesForDebug)
+                    .setProgramName(program.getProgramName())
+                    .setProgramType(program.getType())
+                    .setArchitectureGeneration(architecture)
+                    .build(user.getHistory());
+
+            user.getHistory().addRunToHistory(run);
+        }
     }
 
     public void resumeDebug() {
