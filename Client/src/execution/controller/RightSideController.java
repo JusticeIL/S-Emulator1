@@ -180,11 +180,10 @@ public class RightSideController{
                         e.printStackTrace();
                     }
                 } else {
-                    if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                        returnToDashboardScreen(new ActionEvent());
+                    if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
                         showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
                                 , (Stage) runRadioButton.getScene().getWindow());
-                    }else{
+                    } else {
                     showAlert("Resume debug failed with code: " + response.code(),
                             (Stage) ResumeDebugBtn.getScene().getWindow());
                     }
@@ -250,7 +249,6 @@ public class RightSideController{
                     topController.sendUpdateCreditsRequest();
                 } else {
                     if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                        returnToDashboardScreen(new ActionEvent());
                         showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
                                 , (Stage) runRadioButton.getScene().getWindow());
                     }else {
@@ -487,7 +485,6 @@ public class RightSideController{
                     }
                     else if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
                         Stage executionStage = (Stage) runRadioButton.getScene().getWindow();
-                        returnToDashboardScreen(new ActionEvent());
                         showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
                                 , (Stage) runRadioButton.getScene().getWindow());
 
@@ -613,7 +610,6 @@ public class RightSideController{
                         showAlert("User credits too low for Program execution - Lower than average cost for program"
                                 , (Stage) runRadioButton.getScene().getWindow());
                     } else if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                        returnToDashboardScreen(new ActionEvent());
                         showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
                                 , (Stage) runRadioButton.getScene().getWindow());
                     }
