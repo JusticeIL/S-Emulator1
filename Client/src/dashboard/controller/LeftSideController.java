@@ -6,15 +6,29 @@ import dashboard.refreshTasks.HistoryTableRefresher;
 import dashboard.refreshTasks.UserListRefresher;
 import dto.ArchitectureGeneration;
 import dto.ProgramType;
+import dto.VariableDTO;
+import execution.model.ArgumentTableEntry;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 
 import static configuration.ClientConfiguration.REFRESH_RATE;
@@ -23,6 +37,7 @@ public class LeftSideController {
 
     private RightSideController rightController;
     private TopComponentController topController;
+    private boolean isShowHistoryDialogOpen = false;
 
     @FXML
     private Button unselectUserBtn;
@@ -149,7 +164,14 @@ public class LeftSideController {
 
     @FXML
     void ShowStatisticsPressed(ActionEvent event) {
-
+        if (!isShowHistoryDialogOpen && !userExecutionsTable.getSelectionModel().isEmpty()) {
+            isShowHistoryDialogOpen = true;
+            HistoryTableEntry entry = userExecutionsTable.getSelectionModel().getSelectedItem();
+            Map<String, Integer> allEntryVariables = entry.getAllVariables();
+            Stage dialogStage = createVariablesTableDialog(allEntryVariables);
+            dialogStage.setOnCloseRequest(closeEvent -> isShowHistoryDialogOpen = false);
+            dialogStage.show();
+        }
     }
 
     public void setTopController(TopComponentController topController) {
@@ -163,5 +185,122 @@ public class LeftSideController {
 
     public void setRightController(RightSideController rightController) {
         this.rightController = rightController;
+    }
+
+    private Stage createVariablesTableDialog(Map<String, Integer> allEntryVariables) {
+        BorderPane root = new BorderPane();
+        root.setPrefSize(600, 400);
+        root.setOpacity(0);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.BOTTOM_RIGHT);
+
+        ColumnConstraints col = new ColumnConstraints();
+        col.setHalignment(javafx.geometry.HPos.RIGHT);
+        col.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
+        col.setMinWidth(10);
+        col.setPrefWidth(100);
+        grid.getColumnConstraints().add(col);
+
+        RowConstraints row1 = new RowConstraints();
+        row1.setMinHeight(10);
+        row1.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
+        RowConstraints row2 = new RowConstraints();
+        row2.setMinHeight(50);
+        row2.setMaxHeight(100);
+        row2.setValignment(javafx.geometry.VPos.BOTTOM);
+        row2.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
+        grid.getRowConstraints().addAll(row1, row2);
+
+        TableView<Object> tableView = new TableView<>();
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.setEditable(true);
+        tableView.setPrefSize(200, 200);
+        tableView.setPadding(new Insets(20, 20, 50, 20));
+        tableView.setId("runAllVariablesTable");
+
+        TableColumn<Object, String> colName = new TableColumn<>("Variable Name");
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colName.setMinWidth(50);
+        TableColumn<Object, String> colValue = new TableColumn<>("Variable Value");
+        colValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        colValue.setMinWidth(50);
+        tableView.getColumns().addAll(colName, colValue);
+
+        List<ArgumentTableEntry> sortedEntries = allEntryVariables.keySet().stream()
+                .sorted((a, b) -> {
+                    if (a.equals("y")) return -1;
+                    if (b.equals("y")) return 1;
+                    boolean aIsX = a.startsWith("x");
+                    boolean bIsX = b.startsWith("x");
+                    boolean aIsZ = a.startsWith("z");
+                    boolean bIsZ = b.startsWith("z");
+                    if (aIsX && bIsX) {
+                        return Integer.compare(
+                                Integer.parseInt(a.substring(1)),
+                                Integer.parseInt(b.substring(1))
+                        );
+                    }
+                    if (aIsZ && bIsZ) {
+                        return Integer.compare(
+                                Integer.parseInt(a.substring(1)),
+                                Integer.parseInt(b.substring(1))
+                        );
+                    }
+                    if (aIsX) return -1;
+                    if (bIsX) return 1;
+                    if (aIsZ) return -1;
+                    if (bIsZ) return 1;
+                    return a.compareTo(b);
+                })
+                .map(key -> new ArgumentTableEntry(new VariableDTO(key, allEntryVariables.get(key))))
+                .toList();
+        tableView.getItems().setAll(sortedEntries);
+
+        Button closeBtn = new Button("✖ Close");
+        closeBtn.setId("closeBtn");
+        closeBtn.setAlignment(Pos.CENTER);
+        GridPane.setMargin(closeBtn, new Insets(0, 20, 20, 0));
+        GridPane.setRowIndex(closeBtn, 1);
+
+        grid.add(tableView, 0, 0);
+        grid.add(closeBtn, 0, 1);
+
+        root.setCenter(grid);
+
+        Scene scene = new Scene(root, 600, 400);
+        scene.getStylesheets().add(userExecutionsTable.getScene().getStylesheets().getFirst());
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Variables table");
+        dialogStage.setScene(scene);
+
+        // Fade-in transition
+        dialogStage.setOnShown(e -> {
+            if (topController.isAnimationAllowedProperty().get()) { // Case: animation allowed
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(250), root);
+                fadeIn.setFromValue(0);
+                fadeIn.setToValue(1);
+                fadeIn.play();
+            } else { // Case: user requests no animations
+                root.setOpacity(1);
+            }
+        });
+
+        // Fade-out transition on close
+        closeBtn.setOnAction(e -> {
+            isShowHistoryDialogOpen = false;
+            if (topController.isAnimationAllowedProperty().get()) { // Case: animation allowed
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(250), root);
+                fadeOut.setFromValue(1);
+                fadeOut.setToValue(0);
+                fadeOut.setOnFinished(ev -> dialogStage.close());
+                fadeOut.play();
+            } else { // Case: user requests no animations
+                dialogStage.close();
+            }
+        });
+
+        return dialogStage;
     }
 }

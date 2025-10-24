@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dto.UserDTO;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -42,6 +43,9 @@ public class TopComponentController{
 
     @FXML
     private Label currentCredits;
+
+    @FXML
+    private CheckBox allowAnimationBox;
 
     @FXML
     private MenuButton skinMenu;
@@ -370,5 +374,9 @@ public class TopComponentController{
 
     public String getUsername() {
         return userNameDisplay.getText();
+    }
+
+    public BooleanProperty isAnimationAllowedProperty() {
+        return allowAnimationBox.selectedProperty();
     }
 }
