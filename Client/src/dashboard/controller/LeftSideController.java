@@ -8,7 +8,6 @@ import dto.ArchitectureGeneration;
 import dto.ProgramType;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -128,8 +127,6 @@ public class LeftSideController {
                     }
                 }, usersTable.getSelectionModel().selectedItemProperty())
         );
-
-
 
         /* Timer tasks */
         UserListRefresher userListRefreshTask = new UserListRefresher(usersTable);
