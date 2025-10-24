@@ -10,6 +10,7 @@ import javafx.beans.property.StringProperty;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HistoryTableEntry {
     private final IntegerProperty run;
@@ -20,6 +21,7 @@ public class HistoryTableEntry {
     private final IntegerProperty y;
     private final IntegerProperty cycles;
     private final Map<String, Integer> allVariables;
+    private final StringProperty args;
 
     public HistoryTableEntry(Run run) {
         this.run = new SimpleIntegerProperty(run.getRunID());
@@ -31,6 +33,9 @@ public class HistoryTableEntry {
         this.type = ProgramType.valueOf(run.getProgramType());
         this.programName = new SimpleStringProperty(run.getProgramName());
         this.architectureType = run.getArchitectureGeneration();
+        this.args = new SimpleStringProperty(run.getInputArgs().entrySet().stream()
+                .map(entry -> entry.getKey() + " = " + entry.getValue())
+                .collect(Collectors.joining(", ", "[", "]")));
     }
 
     @Override
@@ -88,4 +93,8 @@ public class HistoryTableEntry {
     public Map<String, Integer> getAllVariables() {
         return allVariables;
     }
+
+    public String getArgs() { return args.get(); }
+    public void setArgs(String arguments) { args.set(arguments); }
+    public StringProperty argsProperty() { return args; }
 }

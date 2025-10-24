@@ -645,12 +645,22 @@ public class RightSideController{
         return architectureMenu.getText();
     }
 
+    public TableView<ArgumentTableEntry> getExecutionArgumentInput() {
+        return executionArgumentInput;
+    }
+
+    public MenuButton getArchitectureMenu() {
+        return architectureMenu;
+    }
+
     public void initAllFields() {
         if (primaryController.program != null) {
             updateArgumentTable();
             updateResultVariableTable();
-            updateCycles();
-            Platform.runLater(this::updateBindings);
+            Platform.runLater(() -> {
+                currentCycles.set(0);
+                updateBindings();
+            });
         }
     }
 }

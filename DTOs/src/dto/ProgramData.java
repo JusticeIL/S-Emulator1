@@ -13,6 +13,7 @@ import java.util.List;
 public final class ProgramData implements Serializable {
 
     private final int currentCycles;
+    private final int programLevel;
     private final int maxExpandLevel;
     private final List<InstructionDTO> programInstructions = new ArrayList<>();
     private final List<String> programLabels = new ArrayList<>();
@@ -78,6 +79,7 @@ public final class ProgramData implements Serializable {
             programLabels.add(label.toString());
         }
         this.maxExpandLevel = program.getMaxProgramLevel();
+        this.programLevel = program.getCurrentProgramLevel();
         this.currentCycles = program.getProgramCycles();
         this.statistics = program.getStatistics();
         this.nextInstructionIdForDebug = program.getNextInstructionIdForDebug();
@@ -135,6 +137,10 @@ public final class ProgramData implements Serializable {
 
     public List<InstructionDTO> getProgramInstructions() {
         return programInstructions;
+    }
+
+    public int getProgramLevel() {
+        return programLevel;
     }
 
     public int getMaxExpandLevel() {

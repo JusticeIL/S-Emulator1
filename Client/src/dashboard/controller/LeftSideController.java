@@ -1,5 +1,6 @@
 package dashboard.controller;
 
+import com.google.gson.Gson;
 import dashboard.model.HistoryTableEntry;
 import dashboard.model.UserTableEntry;
 import dashboard.refreshTasks.HistoryTableRefresher;
@@ -7,6 +8,7 @@ import dashboard.refreshTasks.UserListRefresher;
 import dto.ArchitectureGeneration;
 import dto.ProgramType;
 import dto.VariableDTO;
+import execution.controller.PrimaryController;
 import execution.model.ArgumentTableEntry;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -15,23 +17,30 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
+import java.io.IOException;
+import java.util.*;
 
+import static configuration.ClientConfiguration.CLIENT;
 import static configuration.ClientConfiguration.REFRESH_RATE;
+import static configuration.DialogUtils.showAlert;
+import static configuration.ResourcesConfiguration.*;
 
 public class LeftSideController {
 
@@ -159,7 +168,96 @@ public class LeftSideController {
 
     @FXML
     void RerunPressed(ActionEvent event) {
+        Stage primaryStage = (Stage) userExecutionsTable.getScene().getWindow();
 
+        if (userExecutionsTable.getSelectionModel().getSelectedItem() == null) {
+            showAlert("No run has been selected", primaryStage);
+            return;
+        } else {
+            HistoryTableEntry selectedItem = userExecutionsTable.getSelectionModel().getSelectedItem();
+            String programName = selectedItem.getProgramName();
+
+            Gson gson = new Gson();
+            String json = gson.toJson(Map.of("programName", programName));
+
+            RequestBody body = RequestBody.create(
+                    json,
+                    MediaType.parse("application/json")
+            );
+
+            HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + SET_ACTIVE_PROGRAM_RESOURCE))
+                    .newBuilder();
+            String finalURL = urlBuilder.build().toString();
+
+            Request request = new Request.Builder()
+                    .url(finalURL)
+                    .put(body)
+                    .build();
+
+            Call call = CLIENT.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                    if (response.isSuccessful()) {
+                        Platform.runLater(() -> {
+                            try {
+                                Stage primaryStage = (Stage) userExecutionsTable.getScene().getWindow();
+
+                                if (!primaryStage.isFocused()) {
+                                    return;
+                                }
+
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/execution/resources/fxml/execution.fxml"));
+                                Parent newRoot = loader.load();
+                                // Create new scene
+                                Scene executionScene = new Scene(newRoot, 850, 600);
+
+                                // Copy current scene stylesheets (preserves chosen skin)
+                                Scene currentScene = userExecutionsTable.getScene();
+
+                                executionScene.getStylesheets().setAll(currentScene.getStylesheets());
+
+                                // Fallback: ensure at least a default stylesheet if none copied
+                                if (executionScene.getStylesheets().isEmpty()) { // Case: no stylesheet was copied because empty
+                                    executionScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
+                                }
+
+                                PrimaryController controller = loader.getController();
+                                // Close current window
+                                ((Stage) userExecutionsTable.getScene().getWindow()).close();
+
+                                new Thread(() -> {
+                                    controller.getTopComponentController().setPrimaryStage(primaryStage);
+                                    controller.getLeftSideController().sendExpansionForActiveProgramRequest(selectedItem.getLevel(), selectedItem);
+                                }).start();
+                                primaryStage.setScene(executionScene);
+                                primaryStage.setTitle("S-embler - Execution");
+                                primaryStage.getIcons().add(
+                                        new Image(getClass().getResourceAsStream("/resources/icon.png"))
+                                );
+                                primaryStage.show();
+                            } catch (Exception ex) {
+                                Stage primaryStage = (Stage) userExecutionsTable.getScene().getWindow();
+                                showAlert("Failed to load execution: " + ex.getMessage(), primaryStage);
+                            }
+                        });
+                    } else {
+                        try (ResponseBody body = response.body()) {
+                            String responseBody = Objects.requireNonNull(body).string();
+                            showAlert("Failed to set an active program: " + response.code() + "\n" + responseBody, primaryStage);
+                        } catch (Exception e) {
+                            showAlert("Failed to set an active program: " + response.code(), primaryStage);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     @FXML

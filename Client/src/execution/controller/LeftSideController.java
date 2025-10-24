@@ -1,8 +1,9 @@
 package execution.controller;
 
 import com.google.gson.Gson;
-import dto.ArchitectureGeneration;
-import dto.ProgramData;
+import dashboard.model.HistoryTableEntry;
+import dto.*;
+import execution.model.ArgumentTableEntry;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -24,8 +25,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import execution.model.InstructionTableEntry;
-import dto.InstructionDTO;
-import dto.Searchable;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -340,22 +339,7 @@ public class LeftSideController {
                         }
                     });
                 });
-
-//        rightController.getSelectedArchitectureProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue == null) {
-//                return;
-//            }
-//
-//            instructionsTable.getItems().forEach(entry -> {
-//                if (!isArchitectureEnough(newValue, entry.getArchitecture())) {
-//                    entry.getClass().getStyleClass().add("insufficient-architecture-row");
-//                } else {
-//                    entry.setDisabled(true);
-//                }
-//            })
-//      });
             Platform.runLater(() -> instructionsTable.refresh());
-
     }
 
     public void updateMainInstructionTable() {
@@ -398,7 +382,7 @@ public class LeftSideController {
                     label.prefWidthProperty().bind(expansionLevelMenu.widthProperty());
                     menuItem.setOnAction((ActionEvent event) -> {
                         int selectedLevel = (int) menuItem.getUserData();
-                        sendExpansionForActiveProgramRequest(selectedLevel);
+                        sendExpansionForActiveProgramRequest(selectedLevel, null);
                     });
                     return menuItem;
                 })
@@ -541,7 +525,7 @@ public class LeftSideController {
         });
     }
 
-    public void sendExpansionForActiveProgramRequest(int level) {
+    public void sendExpansionForActiveProgramRequest(int level, HistoryTableEntry runEntry) {
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + EXPAND_PROGRAM_RESOURCE))
                 .newBuilder()
                 .addQueryParameter("level", String.valueOf(level));
@@ -567,6 +551,35 @@ public class LeftSideController {
                                 setCurrentLevel(level);
                             });
                                 rightController.updateResultVariableTable();
+
+                            if (runEntry != null) { // Case: information from rerun
+                                Platform.runLater(() -> {
+                                    rightController.getArchitectureMenu().getItems().stream()
+                                            .filter(item -> item.getUserData().equals(runEntry.getArchitectureType().toString()))
+                                            .findFirst()
+                                            .ifPresent(MenuItem::fire);
+                                });
+
+                                List<ArgumentTableEntry> argsList = new ArrayList<>();
+
+                                String argsString = runEntry.getArgs();
+                                if (argsString.startsWith("[") && argsString.endsWith("]")) {
+                                    argsString = argsString.substring(1, argsString.length() - 1); // strip [ ]
+                                }
+
+                                String[] pairs = argsString.split(", ");
+                                for (String pair : pairs) {
+                                    String[] kv = pair.split(" = ");
+                                    if (kv.length == 2) {
+                                        String name = kv[0].trim();
+                                        int value = Integer.parseInt(kv[1].trim());
+                                        argsList.add(new ArgumentTableEntry(name) {{
+                                            setValue(value);
+                                        }});
+                                    }
+                                }
+                                Platform.runLater(() -> primaryController.getRightSideController().getExecutionArgumentInput().getItems().setAll(argsList));
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -660,7 +673,7 @@ public class LeftSideController {
                 maxLevel.set(primaryController.program.getMaxExpandLevel());
                 updateVariablesOrLabelSelectionMenu();
             });
-            setCurrentLevel(0);
+            setCurrentLevel(primaryController.program.getProgramLevel());
         }
     }
 }

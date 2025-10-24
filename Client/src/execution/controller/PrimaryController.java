@@ -1,7 +1,6 @@
 package execution.controller;
 
 import com.google.gson.Gson;
-import controller.SingleProgramController;
 import dto.ProgramData;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.fxml.FXML;
@@ -87,5 +86,13 @@ public class PrimaryController {
 
     public TopComponentController getTopComponentController() {
         return topComponentController;
+    }
+
+    public LeftSideController getLeftSideController() {
+        return leftSideController;
+    }
+
+    public RightSideController getRightSideController() {
+        return rightSideController;
     }
 }
