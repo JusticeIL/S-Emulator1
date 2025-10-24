@@ -178,11 +178,13 @@ public class ProgramExecutioner {
     }
 
     public void stepOver() {
-        if(canContinueExecution()) {
+        boolean programNotFinished = currentCommandIndex < program.getInstructionList().size();
+
+        if(programNotFinished) {
             executeSingleInstruction();
             program.setNextInstructionIdForDebug(currentInstruction.getNumber());
         }
-        if (!canContinueExecution() && isDebugMode) {
+        if (!programNotFinished && isDebugMode) {
             stopDebug();
         }
     }
@@ -213,10 +215,13 @@ public class ProgramExecutioner {
     }
 
     public void resumeDebug() {
-        if(user == null || user.getCredits() > 0) {
-            do {
+        boolean programNotFinished = currentCommandIndex < program.getInstructionList().size();
+        do {
                 stepOver();
             } while (canContinueExecution());
+
+        if (!programNotFinished) {
+            stopDebug();
         }
     }
 
