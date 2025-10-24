@@ -21,9 +21,14 @@ public class UserServlet extends HttpServlet {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForUsernameThenDo(req, resp, ()->{
             //onSuccess
-            String username = authenticator.getUsername(req);
+            String username = req.getParameter("username");
 
-            Set<String> users = (Set<String>) getServletContext().getAttribute("users");
+            if (username == null) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("Missing username parameter.");
+                return;
+            }
+
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
 
             Gson gson = new Gson();

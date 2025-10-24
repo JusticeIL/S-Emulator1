@@ -43,8 +43,7 @@ public class MainController {
     @FXML
     void tryRegisterUserBtn(ActionEvent event) {
             HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
-                    .newBuilder()
-                    .addQueryParameter("username", usernameField.getText());
+                    .newBuilder();
             String finalURL = urlBuilder.build().toString();
 
             Request request = new Request.Builder()

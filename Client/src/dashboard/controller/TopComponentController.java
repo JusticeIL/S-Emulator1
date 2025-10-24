@@ -70,7 +70,8 @@ public class TopComponentController{
         }
 
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
-                .newBuilder();
+                .newBuilder()
+                .addQueryParameter("username", userNameDisplay.getText());
         String finalURL = urlBuilder.build().toString();
 
         // Building the request based on the body from above
