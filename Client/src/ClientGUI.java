@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import static configuration.ClientConfiguration.CLIENT;
+
 public class ClientGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
@@ -21,6 +23,14 @@ public class ClientGUI extends Application {
             primaryScene.getStylesheets().clear();
             primaryScene.getStylesheets().add(getClass().getResource("login/resources/css/login.css").toExternalForm());
             primaryStage.setScene(primaryScene);
+
+            primaryStage.setOnCloseRequest(event -> {
+                new Thread(() -> {
+                    CLIENT.dispatcher().executorService().shutdown();
+                    CLIENT.connectionPool().evictAll();
+                }).start();
+            });
+
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
