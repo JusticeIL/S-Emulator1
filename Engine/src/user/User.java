@@ -53,6 +53,7 @@ public class User {
         activeProgram = programContainer.getProgramExpansions(program).get(0);
         programContainer.setActiveProgramContainer(program);
         programContainer.setActiveProgramExpansionsByLevel(program);
+        activeProgram.resetVariablesValues();
     }
 
     public void addProgram(Program program) {

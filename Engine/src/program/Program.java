@@ -447,4 +447,8 @@ public class Program implements Serializable {
     public String getType() {
         return "Program";
     }
+
+    public void resetVariablesValues() {
+        Variables.values().forEach(variable -> variable.setValue(0));
+    }
 }

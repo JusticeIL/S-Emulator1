@@ -419,6 +419,8 @@ public class RightSideController{
                     }
                 }
             }
+
+
         });
     }
 
@@ -658,6 +660,7 @@ public class RightSideController{
         if (primaryController.program != null) {
             updateArgumentTable();
             updateResultVariableTable();
+            variableTable.getItems().forEach(item -> item.setValue(0));
             Platform.runLater(() -> {
                 currentCycles.set(0);
                 updateBindings();
