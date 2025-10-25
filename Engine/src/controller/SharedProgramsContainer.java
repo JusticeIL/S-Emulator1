@@ -62,7 +62,7 @@ public class SharedProgramsContainer {
     }
 
     public void addRunForProgram(String programName,int costForLastExecution) {
-        Program program = dummyProgramsForDashboard.get(programName);
+        Program program = dummyProgramsForDashboard.get(getSearchableName(programName));
         synchronized (program) {
             program.updateNumberOfRuns();
             program.updateCostOfAllRuns(costForLastExecution);
@@ -129,7 +129,7 @@ public class SharedProgramsContainer {
     }
 
     public float getAvgCost(String programName) {
-        Program program = dummyProgramsForDashboard.get(programName);
+        Program program = dummyProgramsForDashboard.get(getSearchableName(programName));
         float totalCost = program.getCostOfAllRuns();
         float totalRuns = program.getNumberOfRuns();
         return totalRuns == 0 ? 0 : totalCost / totalRuns;

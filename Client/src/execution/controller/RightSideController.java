@@ -154,6 +154,7 @@ public class RightSideController{
                 () -> (currentCycles.get() < 0) ? "Cycles: ---" : "Cycles: " + currentCycles.get(),
                 currentCycles
         ));
+
     }
 
     @FXML
@@ -662,5 +663,9 @@ public class RightSideController{
                 updateBindings();
             });
         }
+    }
+
+    public void clearVariablesTable() {
+        variableTable.getItems().forEach(item -> item.setValue(0));
     }
 }

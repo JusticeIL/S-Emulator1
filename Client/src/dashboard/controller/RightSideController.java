@@ -209,6 +209,7 @@ public class RightSideController {
                                 primaryStage.getIcons().add(
                                         new Image(getClass().getResourceAsStream("/resources/icon.png"))
                                 );
+                                controller.getRightSideController().clearVariablesTable();
                                 primaryStage.show();
                             } catch (Exception ex) {
                                 Stage primaryStage = (Stage) functionsTable.getScene().getWindow();
@@ -302,6 +303,7 @@ public class RightSideController {
                                 primaryStage.getIcons().add(
                                         new Image(getClass().getResourceAsStream("/resources/icon.png"))
                                 );
+                                controller.getRightSideController().clearVariablesTable();
                                 primaryStage.show();
                             } catch (Exception ex) {
                                 Stage primaryStage = (Stage) programsTable.getScene().getWindow();
