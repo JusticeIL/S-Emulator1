@@ -1,8 +1,12 @@
 O.O.B:
 
 1. Handle TODOs in the code <Gal, Eitan?>
----
 2.Gal sends mail tp Aviad about the breakpoints
-  (if no breakpoints -> as if breakpoint on first instruction) <Gal?>
+  (if no breakpoints -> as if breakpoint on first instruction) <Gal>
 3.send mail to aviad about requests for executing programs of large caliber (f.e. divide level 10 x1 = 1000, x2 = 200)
   getting timeout and failing on the client side
+4. Check about connection leaks of the client <Gal>
+5. User needs to hold its own executions counter <Eitan>
+6. Instructions per program/function should be calculated on all instructions in level 0, not only basic nor synthetic <Eitan>
+7. Make pulling request for long time requests <Gal>
+8. Bind boolean property to disable the run button when an http request for the run program is open <Eitan>
