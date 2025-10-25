@@ -96,6 +96,8 @@ public class HistoryTableRefresher extends TimerTask {
                     e.printStackTrace();
                 }
             });
+        } else {
+            cancel();
         }
     }
 }

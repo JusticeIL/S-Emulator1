@@ -4,5 +4,4 @@ O.O.B:
 4. Check about connection leaks of the client <Gal>
 5. User needs to hold its own executions counter <Eitan>
 6. Instructions per program/function should be calculated on all instructions in level 0, not only basic nor synthetic <Eitan>
-7. Make pulling request for long time requests <Gal>
 8. Bind boolean property to disable the run button when an http request for the run program is open <Eitan>

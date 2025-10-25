@@ -5,6 +5,7 @@ import configuration.HTTPCodes;
 import dto.ArchitectureGeneration;
 import dto.ExecutionPayload;
 import dto.ProgramData;
+import execution.refreshTasks.PullProgramInfoTask;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -19,7 +20,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import execution.model.ArgumentTableEntry;
@@ -193,7 +193,10 @@ public class RightSideController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+                // Open a timer task for pulling information about execution
+                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController);
+                Timer timer = new Timer(true);
+                timer.schedule(pullProgramInfoTask, 2000, 2000);
             }
         });
     }
@@ -259,7 +262,10 @@ public class RightSideController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+                // Open a timer task for pulling information about execution
+                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController);
+                Timer timer = new Timer(true);
+                timer.schedule(pullProgramInfoTask, 2000, 2000);
             }
         });
     }
@@ -624,8 +630,10 @@ public class RightSideController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                showAlert("Failed to send a request to execute the active program int " + currentlyChosenArchitecture,
-                        (Stage) runRadioButton.getScene().getWindow());
+                // Open a timer task for pulling information about execution
+                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController);
+                Timer timer = new Timer(true);
+                timer.schedule(pullProgramInfoTask, 2000, 2000);
             }
         });
     }

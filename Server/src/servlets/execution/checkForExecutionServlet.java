@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Map;
 
 @WebServlet(name = "checkForExecutionServlet", urlPatterns = {"/api/program/checkExecution"})
 public class checkForExecutionServlet extends HttpServlet {
@@ -29,7 +30,7 @@ public class checkForExecutionServlet extends HttpServlet {
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
 
             Gson gson = new Gson();
-            String responseJson = gson.toJson(model.isCurrentlyInExecution(username));
+            String responseJson = gson.toJson(Map.of("status", model.isCurrentlyInExecution(username)));
 
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");

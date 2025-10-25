@@ -89,6 +89,8 @@ public class UserListRefresher extends TimerTask {
                     e.printStackTrace();
                 }
             });
+        } else {
+            cancel();
         }
     }
 }

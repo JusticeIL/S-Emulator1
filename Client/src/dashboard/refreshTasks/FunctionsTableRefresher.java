@@ -90,6 +90,8 @@ public class FunctionsTableRefresher extends TimerTask {
                     e.printStackTrace();
                 }
             });
+        } else {
+            cancel();
         }
     }
 }

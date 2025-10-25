@@ -89,6 +89,8 @@ public class ProgramsTableRefresher extends TimerTask {
                     e.printStackTrace();
                 }
             });
+        } else {
+            cancel();
         }
     }
 }
