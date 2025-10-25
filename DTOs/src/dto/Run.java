@@ -1,7 +1,5 @@
 package dto;
 
-import program.Program;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,10 +7,9 @@ import java.util.Map;
 public class Run implements Serializable {
 
     private final int runID;
-    // private final ProgramType programType; TODO: ctor needs to be adapted
     private final String programType;
-    private final String programName;// TODO: ctor needs to be adapted
-    private final ArchitectureGeneration architectureGeneration; //TODO: ctor needs to be adapted
+    private final String programName;
+    private final ArchitectureGeneration architectureGeneration;
     private final int expansionLevel;
     private final int yValue;
     private final int runCycles;

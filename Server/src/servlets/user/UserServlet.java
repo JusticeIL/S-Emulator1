@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Set;
 
 @WebServlet(name = "UserServlet", urlPatterns = {"/api/user"})
@@ -51,14 +50,22 @@ public class UserServlet extends HttpServlet {
             //onSuccess
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
-            String username = jsonObject.get("username").getAsString();
+
+            String username = null;
+            if (jsonObject != null && jsonObject.has("username")) {
+                username = jsonObject.get("username").getAsString();
+            }
+
+            if (username == null || username.trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("Missing or empty username.");
+                return;
+            }
+
             synchronized (users) {
                 if (users.contains(username)) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);
                     resp.getWriter().write("Username " + username + " already taken.");
-                } else if (username == null || username.trim().isEmpty()) {
-                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    resp.getWriter().write("Missing or empty username.");
                 } else {
                     users.add(username);
                     resp.setStatus(HttpServletResponse.SC_CREATED);

@@ -7,7 +7,6 @@ import dto.ProgramData;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
-import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +52,6 @@ public class FunctionsTableRefresher extends TimerTask {
                             List<ProgramData> functions = gson.fromJson(responseBody, type);
                             List<FunctionTableEntry> fetchedFunctions = functions.stream()
                                     .map(FunctionTableEntry::new)
-                                    //.sorted() TODO: decide sorting
                                     .toList();
 
                             Platform.runLater(() -> {

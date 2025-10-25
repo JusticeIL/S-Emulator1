@@ -51,7 +51,6 @@ public class ProgramsTableRefresher extends TimerTask {
                             List<ProgramData> programs = gson.fromJson(responseBody, type);
                             List<ProgramTableEntry> fetchedPrograms = programs.stream()
                                     .map(ProgramTableEntry::new)
-                                    //.sorted() TODO: decide sorting
                                     .toList();
 
                             Platform.runLater(() -> {

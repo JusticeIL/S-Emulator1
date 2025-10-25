@@ -24,5 +24,5 @@ public class UsersManager {
 
     public UserDTO getUserData(String username) {
         return new UserDTO(users.get(username));
-    } //TODO: maybe add exception if user not found or return optional or use not null annotation
+    }
 }
