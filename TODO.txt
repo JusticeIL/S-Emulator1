@@ -2,5 +2,7 @@ O.O.B:
 
 1. Handle TODOs in the code <Gal, Eitan?>
 ---
-2. Gal sends mail tp Aviad about the breakpoints<Gal?>
-3. Debug option should calculate the cost for credits per step over; if the user has enough credits for the step over, we run the program a step, else we inform the user and move the user back to the dashboard <Check and tell me if that's what you wanted?>
+2.Gal sends mail tp Aviad about the breakpoints
+  (if no breakpoints -> as if breakpoint on first instruction) <Gal?>
+3.send mail to aviad about requests for executing programs of large caliber (f.e. divide level 10 x1 = 1000, x2 = 200)
+  getting timeout and failing on the client side
