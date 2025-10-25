@@ -116,6 +116,8 @@ public class ProgramExecutioner {
         if(isMainExecutioner){
             user.decreaseCredits(architecture.getCost());
         }
+
+        user.updateProgramsExecuted();
     }
 
     public void setMainExecutioner(User user, ArchitectureGeneration architecture) {

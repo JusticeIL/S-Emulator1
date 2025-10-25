@@ -165,4 +165,7 @@ public class User {
         this.functionsContainer = functionsContainer;
     }
 
+    public void updateProgramsExecuted() {
+        programExecutionsCounter++;
+    }
 }

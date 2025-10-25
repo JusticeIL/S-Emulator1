@@ -34,5 +34,6 @@ public interface MultiUserModel {
     UserDTO getUserData(String username);
     List<ProgramData> getAllSharedProgramsData();
     List<ProgramData> getAllSharedFunctionsData();
+    boolean isCurrentlyInExecution(String username);
 
 }

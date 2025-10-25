@@ -138,4 +138,8 @@ public class ExecutionManager {
 
         return lastProgramExecutionFailed.getOrDefault(user, false);
     }
+
+    public boolean isInExecution(User user) {
+        return executioners.containsKey(user);
+    }
 }
