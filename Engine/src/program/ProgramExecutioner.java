@@ -59,7 +59,7 @@ public class ProgramExecutioner {
             currentInstruction = program.getInstructionList().get(currentCommandIndex);
         }
 
-        if(user!=null){//if activated by user
+        if (user != null){//if activated by user
             if(user.getCredits() < usedCycles){//if not enough credits
                 program.loadSavedState(savedState);//revert execution of last instruction
                 if(isDebugMode){//end execution
@@ -72,7 +72,7 @@ public class ProgramExecutioner {
         }
         cycleCounter+= usedCycles;
         program.setCycleCounter(cycleCounter);
-        if(isDebugMode&&nextLabel.equals(Program.EXIT_LABEL)){
+        if (isDebugMode&&nextLabel.equals(Program.EXIT_LABEL)){
             stopDebug();
         }
     }
@@ -113,11 +113,13 @@ public class ProgramExecutioner {
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
 
-        if(isMainExecutioner){
+        if (isMainExecutioner){
             user.decreaseCredits(architecture.getCost());
         }
 
-        user.updateProgramsExecuted();
+        if (user != null) {
+            user.updateProgramsExecuted();
+        }
     }
 
     public void setMainExecutioner(User user, ArchitectureGeneration architecture) {
@@ -185,7 +187,7 @@ public class ProgramExecutioner {
     public void stepOver() {
         boolean programNotFinished = currentCommandIndex < program.getInstructionList().size();
 
-        if(programNotFinished) {
+        if (programNotFinished) {
             executeSingleInstruction();
             program.setNextInstructionIdForDebug(currentInstruction.getNumber());
 
@@ -206,7 +208,7 @@ public class ProgramExecutioner {
     }
 
     private void saveRunToHistory(Map<String, Integer> finalStateOfAllVariables, int currentRunLevelForDebug, Map<String, Integer> xInitializedVariablesForDebug) {
-        if(user!=null){
+        if (user != null){
             RunBuilder runBuilder = new RunBuilder();
             Run run = runBuilder.setRunCycles(cycleCounter)
                     .setExpansionLevel(currentRunLevelForDebug)
@@ -248,7 +250,7 @@ public class ProgramExecutioner {
     private boolean canContinueExecution() {
         boolean programNotFinished = currentCommandIndex < program.getInstructionList().size();
         boolean ifDebugThenNoBreakpoint = true;
-        if(isDebugMode){
+        if (isDebugMode){
            ifDebugThenNoBreakpoint = !breakpoints.contains(currentInstruction.getNumber());
         }
 

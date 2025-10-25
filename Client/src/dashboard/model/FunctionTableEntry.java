@@ -17,7 +17,7 @@ public class FunctionTableEntry {
         this.functionName = new SimpleStringProperty(dto.getProgramName());
         this.programOrigin = new SimpleStringProperty(dto.getOriginProgram());
         this.user = new SimpleStringProperty(dto.getUploadingUser());
-        this.instructionsCounter = new SimpleIntegerProperty(dto.getNumberOfZeroLevelInstructions());
+        this.instructionsCounter = new SimpleIntegerProperty(dto.getProgramInstructions().size());
         this.maxProgramLevel = new SimpleIntegerProperty(dto.getMaxExpandLevel());
     }
 

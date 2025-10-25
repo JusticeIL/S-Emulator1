@@ -14,7 +14,7 @@ public class ProgramTableEntry {
     public ProgramTableEntry(ProgramData dto) {
         this.programName = new SimpleStringProperty(dto.getProgramName());
         this.user = new SimpleStringProperty(dto.getUploadingUser());
-        this.instructionsCounter = new SimpleIntegerProperty(dto.getNumberOfZeroLevelInstructions());
+        this.instructionsCounter = new SimpleIntegerProperty(dto.getProgramInstructions().size());
         this.maxProgramLevel = new SimpleIntegerProperty(dto.getMaxExpandLevel());
         this.executionsCounter = new SimpleIntegerProperty(dto.getNumberOfRuns());
         this.averageExecutionCost = new SimpleDoubleProperty(dto.getAvarageCreditsPerRun());
