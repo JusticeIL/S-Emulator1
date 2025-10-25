@@ -644,7 +644,6 @@ public class RightSideController{
                         else {
                             showAlert("Failed to execute program in architecture " + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
                                     (Stage) runRadioButton.getScene().getWindow());
-                            System.out.println(Objects.requireNonNull(response.body()).string());
                         }
                     }
                 } catch (Exception e) {
