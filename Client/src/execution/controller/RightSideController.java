@@ -212,8 +212,6 @@ public class RightSideController{
             } catch (Exception e) {
                 showAlert(e.getMessage(), (Stage)runRadioButton.getScene().getWindow());
             }
-            updateResultVariableTable();
-            updateCycles();
         }
         else {
             try {
@@ -593,6 +591,7 @@ public class RightSideController{
                             primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
                             leftController.updateMainInstructionTable();
                             updateResultVariableTable();
+                            updateCycles();
                         } catch (InvalidParameterException e) {
                             showAlert(e.getMessage(), (Stage) runRadioButton.getScene().getWindow());
                         } catch (Exception e) {

@@ -102,6 +102,7 @@ public class User {
 
     public void ExpandCurrentProgram(int level) {
         activeProgram = programContainer.ExpandProgram(activeProgram.getProgramName(), level) ;
+        activeProgram.resetVariablesValues();
     }
 
     public void switchToFunction(String functionName) {
