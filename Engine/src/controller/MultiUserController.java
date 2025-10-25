@@ -216,4 +216,9 @@ public class MultiUserController implements MultiUserModel, Serializable {
         }
         return programDataList;
     }
+
+    @Override
+    public boolean isCurrentlyInExecution(String username) {
+        return executionManager.isInExecution(usersManager.getUser(username));
+    }
 }

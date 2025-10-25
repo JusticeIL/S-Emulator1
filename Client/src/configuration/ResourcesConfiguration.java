@@ -17,4 +17,5 @@ public class ResourcesConfiguration {
     public static final String RESUME_DEBUG_RESOURCE = "/api/program/debug/resume";
     public static final String STEP_OVER_RESOURCE = "/api/program/debug/stepover";
     public static final String STOP_DEBUG_RESOURCE = "/api/program/debug/stop";
+    public static final String CHECK_EXECUTION_RESOURCE = "/api/program/checkExecution";
 }
