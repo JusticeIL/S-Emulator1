@@ -670,7 +670,7 @@ public class LeftSideController {
         if (primaryController.program != null) {
             updateMainInstructionTable();
             Platform.runLater(() -> {
-                maxLevel.set(primaryController.program.getMaxExpandLevel());
+                maxLevel.set(primaryController.program.getAbsoluteMaxExpandLevel());
                 updateVariablesOrLabelSelectionMenu();
             });
             setCurrentLevel(primaryController.program.getProgramLevel());

@@ -6,5 +6,5 @@ public class ClientConfiguration {
     public static final OkHttpClient CLIENT = new OkHttpClient.Builder()
             .cookieJar(new SimpleCookieManager())
             .build();
-    public static final int REFRESH_RATE = 1500; // in milliseconds
+    public static final int REFRESH_RATE = 1000; // in milliseconds
 }
