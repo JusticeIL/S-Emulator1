@@ -199,56 +199,60 @@ public class LeftSideController {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                    if (response.isSuccessful()) {
-                        Platform.runLater(() -> {
-                            try {
-                                Stage primaryStage = (Stage) userExecutionsTable.getScene().getWindow();
+                    try (response) {
+                        if (response.isSuccessful()) {
+                            Platform.runLater(() -> {
+                                try {
+                                    Stage primaryStage = (Stage) userExecutionsTable.getScene().getWindow();
 
-                                if (!primaryStage.isFocused()) {
-                                    return;
+                                    if (!primaryStage.isFocused()) {
+                                        return;
+                                    }
+
+                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/execution/resources/fxml/execution.fxml"));
+                                    Parent newRoot = loader.load();
+                                    // Create new scene
+                                    Scene executionScene = new Scene(newRoot, 850, 600);
+
+                                    // Copy current scene stylesheets (preserves chosen skin)
+                                    Scene currentScene = userExecutionsTable.getScene();
+
+                                    executionScene.getStylesheets().setAll(currentScene.getStylesheets());
+
+                                    // Fallback: ensure at least a default stylesheet if none copied
+                                    if (executionScene.getStylesheets().isEmpty()) { // Case: no stylesheet was copied because empty
+                                        executionScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
+                                    }
+
+                                    PrimaryController controller = loader.getController();
+                                    // Close current window
+                                    ((Stage) userExecutionsTable.getScene().getWindow()).close();
+
+                                    new Thread(() -> {
+                                        controller.getTopComponentController().setPrimaryStage(primaryStage);
+                                        controller.getLeftSideController().sendExpansionForActiveProgramRequest(selectedItem.getLevel(), selectedItem);
+                                    }).start();
+                                    primaryStage.setScene(executionScene);
+                                    primaryStage.setTitle("S-embler - Execution");
+                                    primaryStage.getIcons().add(
+                                            new Image(getClass().getResourceAsStream("/resources/icon.png"))
+                                    );
+                                    primaryStage.show();
+                                } catch (Exception ex) {
+                                    Stage primaryStage = (Stage) userExecutionsTable.getScene().getWindow();
+                                    showAlert("Failed to load execution: " + ex.getMessage(), primaryStage);
                                 }
-
-                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/execution/resources/fxml/execution.fxml"));
-                                Parent newRoot = loader.load();
-                                // Create new scene
-                                Scene executionScene = new Scene(newRoot, 850, 600);
-
-                                // Copy current scene stylesheets (preserves chosen skin)
-                                Scene currentScene = userExecutionsTable.getScene();
-
-                                executionScene.getStylesheets().setAll(currentScene.getStylesheets());
-
-                                // Fallback: ensure at least a default stylesheet if none copied
-                                if (executionScene.getStylesheets().isEmpty()) { // Case: no stylesheet was copied because empty
-                                    executionScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
-                                }
-
-                                PrimaryController controller = loader.getController();
-                                // Close current window
-                                ((Stage) userExecutionsTable.getScene().getWindow()).close();
-
-                                new Thread(() -> {
-                                    controller.getTopComponentController().setPrimaryStage(primaryStage);
-                                    controller.getLeftSideController().sendExpansionForActiveProgramRequest(selectedItem.getLevel(), selectedItem);
-                                }).start();
-                                primaryStage.setScene(executionScene);
-                                primaryStage.setTitle("S-embler - Execution");
-                                primaryStage.getIcons().add(
-                                        new Image(getClass().getResourceAsStream("/resources/icon.png"))
-                                );
-                                primaryStage.show();
-                            } catch (Exception ex) {
-                                Stage primaryStage = (Stage) userExecutionsTable.getScene().getWindow();
-                                showAlert("Failed to load execution: " + ex.getMessage(), primaryStage);
+                            });
+                        } else {
+                            try (ResponseBody body = response.body()) {
+                                String responseBody = Objects.requireNonNull(body).string();
+                                showAlert("Failed to set an active program: " + response.code() + "\n" + responseBody, primaryStage);
+                            } catch (Exception e) {
+                                showAlert("Failed to set an active program: " + response.code(), primaryStage);
                             }
-                        });
-                    } else {
-                        try (ResponseBody body = response.body()) {
-                            String responseBody = Objects.requireNonNull(body).string();
-                            showAlert("Failed to set an active program: " + response.code() + "\n" + responseBody, primaryStage);
-                        } catch (Exception e) {
-                            showAlert("Failed to set an active program: " + response.code(), primaryStage);
                         }
+                    } catch (Exception e) {
+                        showAlert("Failed to close the connection properly", primaryStage);
                     }
                 }
 

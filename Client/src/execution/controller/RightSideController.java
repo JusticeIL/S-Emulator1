@@ -172,22 +172,27 @@ public class RightSideController{
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try (ResponseBody body = response.body()) {
-                        Gson gson = new Gson();
-                        primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
-                        updateAfterDebugStep();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                        showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
-                                , (Stage) runRadioButton.getScene().getWindow());
+
+                try (response) {
+                    if (response.isSuccessful()) {
+                        try (ResponseBody body = response.body()) {
+                            Gson gson = new Gson();
+                            primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
+                            updateAfterDebugStep();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                    showAlert("Resume debug failed with code: " + response.code(),
-                            (Stage) ResumeDebugBtn.getScene().getWindow());
+                        if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
+                            showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
+                                    , (Stage) runRadioButton.getScene().getWindow());
+                        } else {
+                        showAlert("Resume debug failed with code: " + response.code(),
+                                (Stage) ResumeDebugBtn.getScene().getWindow());
+                        }
                     }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
                 }
             }
 
@@ -240,23 +245,27 @@ public class RightSideController{
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try (ResponseBody body = response.body()) {
-                        Gson gson = new Gson();
-                        primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
-                        updateAfterDebugStep();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                try (response) {
+                    if (response.isSuccessful()) {
+                        try (ResponseBody body = response.body()) {
+                            Gson gson = new Gson();
+                            primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
+                            updateAfterDebugStep();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        topController.sendUpdateCreditsRequest();
+                    } else {
+                        if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
+                            showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
+                                    , (Stage) runRadioButton.getScene().getWindow());
+                        }else {
+                            showAlert("Step over failed with code: " + response.code(),
+                                    (Stage) StepOverDebugBtn.getScene().getWindow());
+                        }
                     }
-                    topController.sendUpdateCreditsRequest();
-                } else {
-                    if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                        showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
-                                , (Stage) runRadioButton.getScene().getWindow());
-                    }else {
-                        showAlert("Step over failed with code: " + response.code(),
-                                (Stage) StepOverDebugBtn.getScene().getWindow());
-                    }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
                 }
             }
 
@@ -285,18 +294,23 @@ public class RightSideController{
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try (ResponseBody body = response.body()) {
-                        Gson gson = new Gson();
-                        primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
-                        updateIsDebugProperty();
-                        leftController.clearMarkInInstructionTable();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+                try (response) {
+                    if (response.isSuccessful()) {
+                        try (ResponseBody body = response.body()) {
+                            Gson gson = new Gson();
+                            primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
+                            updateIsDebugProperty();
+                            leftController.clearMarkInInstructionTable();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        showAlert("Stop debug failed with code: " + response.code(),
+                                (Stage) StepOverDebugBtn.getScene().getWindow());
                     }
-                } else {
-                    showAlert("Stop debug failed with code: " + response.code(),
-                            (Stage) StepOverDebugBtn.getScene().getWindow());
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
                 }
             }
 
@@ -466,41 +480,46 @@ public class RightSideController{
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try (ResponseBody body = response.body()) {
-                        Gson gson = new Gson();
-                        primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
-                        nextInstructionIdForDebug.set(primaryController.program.getNextInstructionIdForDebug());
-                        leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
-                        updateResultVariableTable();
-                        updateIsDebugProperty();
-                        leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
-                        updateAfterDebugStep();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    if (response.code() == HTTPCodes.UNPROCESSABLE_ENTITY) {
-                        showAlert("Architecture Generation ("
-                                        +currentlyChosenArchitecture
-                                        + ") too low for Program execution ("
-                                        +primaryController.program.getMinimalArchitectureNeededForRun()+")"
-                                , (Stage) runRadioButton.getScene().getWindow());
-                    } else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
-                        showAlert("User credits too low for Program execution"
-                                , (Stage) runRadioButton.getScene().getWindow());
-                    }
-                    else if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                        Stage executionStage = (Stage) runRadioButton.getScene().getWindow();
-                        showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
-                                , (Stage) runRadioButton.getScene().getWindow());
+
+                try (response) {
+                    if (response.isSuccessful()) {
+                        try (ResponseBody body = response.body()) {
+                            Gson gson = new Gson();
+                            primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
+                            nextInstructionIdForDebug.set(primaryController.program.getNextInstructionIdForDebug());
+                            leftController.markEntryInInstructionTable(nextInstructionIdForDebug.get()-1);
+                            updateResultVariableTable();
+                            updateIsDebugProperty();
+                            leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
+                            updateAfterDebugStep();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        if (response.code() == HTTPCodes.UNPROCESSABLE_ENTITY) {
+                            showAlert("Architecture Generation ("
+                                            +currentlyChosenArchitecture
+                                            + ") too low for Program execution ("
+                                            +primaryController.program.getMinimalArchitectureNeededForRun()+")"
+                                    , (Stage) runRadioButton.getScene().getWindow());
+                        } else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
+                            showAlert("User credits too low for Program execution"
+                                    , (Stage) runRadioButton.getScene().getWindow());
+                        }
+                        else if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
+                            Stage executionStage = (Stage) runRadioButton.getScene().getWindow();
+                            showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
+                                    , (Stage) runRadioButton.getScene().getWindow());
 
 
+                        }
+                        else {
+                            showAlert("Failed to execute program in architecture " + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
+                                    (Stage) runRadioButton.getScene().getWindow());
+                        }
                     }
-                    else {
-                        showAlert("Failed to execute program in architecture " + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
-                                (Stage) runRadioButton.getScene().getWindow());
-                    }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
                 }
             }
 
@@ -590,41 +609,46 @@ public class RightSideController{
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    if (response.code() == HttpServletResponse.SC_OK) {
-                        try (ResponseBody responseBody = response.body()) {
-                            Gson gson = new Gson();
-                            primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
-                            leftController.updateMainInstructionTable();
-                            updateResultVariableTable();
-                            updateCycles();
-                        } catch (InvalidParameterException e) {
-                            showAlert(e.getMessage(), (Stage) runRadioButton.getScene().getWindow());
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                try (response) {
+                    if (response.isSuccessful()) {
+                        if (response.code() == HttpServletResponse.SC_OK) {
+                            try (ResponseBody responseBody = response.body()) {
+                                Gson gson = new Gson();
+                                primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
+                                leftController.updateMainInstructionTable();
+                                updateResultVariableTable();
+                                updateCycles();
+                            } catch (InvalidParameterException e) {
+                                showAlert(e.getMessage(), (Stage) runRadioButton.getScene().getWindow());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
+                            showAlert("No program data detected for the user.", (Stage) runRadioButton.getScene().getWindow());
                         }
-                    } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
-                        showAlert("No program data detected for the user.", (Stage) runRadioButton.getScene().getWindow());
+                        topController.sendUpdateCreditsRequest();
+                    } else {
+                        if (response.code() == HTTPCodes.UNPROCESSABLE_ENTITY) {
+                            showAlert("Architecture Generation ("
+                                    +currentlyChosenArchitecture
+                                    + ") too low for Program execution ("
+                                    +primaryController.program.getMinimalArchitectureNeededForRun()+")"
+                                    , (Stage) runRadioButton.getScene().getWindow());
+                        } else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
+                            showAlert("User credits too low for Program execution - Lower than average cost for program"
+                                    , (Stage) runRadioButton.getScene().getWindow());
+                        } else if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
+                            showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
+                                    , (Stage) runRadioButton.getScene().getWindow());
+                        }
+                        else {
+                            showAlert("Failed to execute program in architecture " + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
+                                    (Stage) runRadioButton.getScene().getWindow());
+                            System.out.println(Objects.requireNonNull(response.body()).string());
+                        }
                     }
-                    topController.sendUpdateCreditsRequest();
-                } else {
-                    if (response.code() == HTTPCodes.UNPROCESSABLE_ENTITY) {
-                        showAlert("Architecture Generation ("
-                                +currentlyChosenArchitecture
-                                + ") too low for Program execution ("
-                                +primaryController.program.getMinimalArchitectureNeededForRun()+")"
-                                , (Stage) runRadioButton.getScene().getWindow());
-                    } else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
-                        showAlert("User credits too low for Program execution - Lower than average cost for program"
-                                , (Stage) runRadioButton.getScene().getWindow());
-                    } else if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                        showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
-                                , (Stage) runRadioButton.getScene().getWindow());
-                    }
-                    else {
-                        showAlert("Failed to execute program in architecture " + currentlyChosenArchitecture + "\n" + "Code: " + response.code(),
-                                (Stage) runRadioButton.getScene().getWindow());
-                    }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
                 }
             }
 

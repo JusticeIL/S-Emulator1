@@ -58,10 +58,10 @@ public class PullProgramInfoTask extends TimerTask {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                    try (ResponseBody body = response.body()) {
+                    try (response) {
                         if (response.isSuccessful()) {
                             Gson gson = new Gson();
-                            JsonObject jsonObject = gson.fromJson(Objects.requireNonNull(body).string(), JsonObject.class);
+                            JsonObject jsonObject = gson.fromJson(Objects.requireNonNull(response.body()).string(), JsonObject.class);
                             if (jsonObject.has("status")) {
                                 boolean isInExecution = jsonObject.get("status").getAsBoolean();
                                 if (!isInExecution) {

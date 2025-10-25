@@ -1,7 +1,6 @@
 O.O.B:
 
 1. Handle TODOs in the code (in CreditsManagementServlet) <Eitan?>
-4. Check about connection leaks of the client <Gal>
-5. User needs to hold its own executions counter <Eitan>
-6. Instructions per program/function should be calculated on all instructions in level 0, not only basic nor synthetic <Eitan>
-8. Bind boolean property to disable the run button when an http request for the run program is open <Eitan>
+2. User needs to hold its own executions counter <Eitan>
+3. Instructions per program/function should be calculated on all instructions in level 0, not only basic nor synthetic <Eitan>
+4. Bind boolean property to disable the run button when an http request for the run program is open <Eitan>

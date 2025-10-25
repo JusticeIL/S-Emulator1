@@ -77,29 +77,31 @@ public class TopComponentController{
 
         Call call = CLIENT.newCall(request);
 
-        try (Response response = call.execute()) {
-            if (response.isSuccessful()) {
-                try (ResponseBody responseBody = response.body()) {
-                    Gson gson = new Gson();
-                    UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
-                    Platform.runLater(() -> {
-                        currentCredits.setText("Available Credits: " + user.getCredits());
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try (Response response = call.execute()) {
+                if (response.isSuccessful()) {
+                    try (ResponseBody responseBody = response.body()) {
+                        Gson gson = new Gson();
+                        UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                        Platform.runLater(() -> {
+                            currentCredits.setText("Available Credits: " + user.getCredits());
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-            } else {
-                try (ResponseBody body = response.body()) {
-                    String responseBody = Objects.requireNonNull(body).string();
-                    showAlert("Failed to retrieve user data: " + response.code() + "\n" + responseBody, primaryStage);
-                } catch (Exception e) {
-                    showAlert("Failed to retrieve user data: " + response.code(), primaryStage);
+                } else {
+                    try (ResponseBody body = response.body()) {
+                        String responseBody = Objects.requireNonNull(body).string();
+                        showAlert("Failed to retrieve user data: " + response.code() + "\n" + responseBody, primaryStage);
+                    } catch (Exception e) {
+                        showAlert("Failed to retrieve user data: " + response.code(), primaryStage);
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
     public void setRightController(RightSideController rightController) {
@@ -241,24 +243,28 @@ public class TopComponentController{
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try (ResponseBody responseBody = response.body()) {
-                        Gson gson = new Gson();
-                        UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
-                        Platform.runLater(() -> {
-                            currentCredits.setText("Available Credits: " + user.getCredits());
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                try (response) {
+                    if (response.isSuccessful()) {
+                        try (ResponseBody responseBody = response.body()) {
+                            Gson gson = new Gson();
+                            UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                            Platform.runLater(() -> {
+                                currentCredits.setText("Available Credits: " + user.getCredits());
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                } else {
-                    try (ResponseBody body = response.body()) {
-                        String responseBody = Objects.requireNonNull(body).string();
-                        showAlert("Failed to retrieve user data: " + response.code() + "\n" + responseBody, primaryStage);
-                    } catch (Exception e) {
-                        showAlert("Failed to retrieve user data: " + response.code(), primaryStage);
+                    } else {
+                        try (ResponseBody body = response.body()) {
+                            String responseBody = Objects.requireNonNull(body).string();
+                            showAlert("Failed to retrieve user data: " + response.code() + "\n" + responseBody, primaryStage);
+                        } catch (Exception e) {
+                            showAlert("Failed to retrieve user data: " + response.code(), primaryStage);
+                        }
                     }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
                 }
             }
 

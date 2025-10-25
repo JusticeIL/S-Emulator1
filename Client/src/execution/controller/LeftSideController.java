@@ -471,9 +471,13 @@ public class LeftSideController {
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    showAlert("Failed to set a new breakpoint on line" + breakpointRow + "\n" + "Code: " + response.code(),
-                            (Stage) clearBreakpointsBtn.getScene().getWindow());
+                try (response) {
+                    if (!response.isSuccessful()) {
+                        showAlert("Failed to set a new breakpoint on line" + breakpointRow + "\n" + "Code: " + response.code(),
+                                (Stage) clearBreakpointsBtn.getScene().getWindow());
+                    }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", (Stage) clearBreakpointsBtn.getScene().getWindow());
                 }
             }
 
@@ -509,9 +513,13 @@ public class LeftSideController {
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    showAlert("Failed to delete a breakpoint on line" + breakpointRow + "\n" + "Code: " + response.code(),
-                            (Stage) clearBreakpointsBtn.getScene().getWindow());
+                try (response) {
+                    if (!response.isSuccessful()) {
+                        showAlert("Failed to delete a breakpoint on line" + breakpointRow + "\n" + "Code: " + response.code(),
+                                (Stage) clearBreakpointsBtn.getScene().getWindow());
+                    }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", (Stage) clearBreakpointsBtn.getScene().getWindow());
                 }
             }
 
@@ -540,55 +548,60 @@ public class LeftSideController {
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    if (response.code() == HttpServletResponse.SC_OK) {
-                        try (ResponseBody responseBody = response.body()) {
-                            Gson gson = new Gson();
-                            primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
-                            updateMainInstructionTable();
-                            Platform.runLater(() -> {
-                                updateVariablesOrLabelSelectionMenu();
-                                setCurrentLevel(level);
-                            });
-                                rightController.updateResultVariableTable();
 
-                            if (runEntry != null) { // Case: information from rerun
+                try (response) {
+                    if (response.isSuccessful()) {
+                        if (response.code() == HttpServletResponse.SC_OK) {
+                            try (ResponseBody responseBody = response.body()) {
+                                Gson gson = new Gson();
+                                primaryController.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
+                                updateMainInstructionTable();
                                 Platform.runLater(() -> {
-                                    rightController.getArchitectureMenu().getItems().stream()
-                                            .filter(item -> item.getUserData().equals(runEntry.getArchitectureType().toString()))
-                                            .findFirst()
-                                            .ifPresent(MenuItem::fire);
+                                    updateVariablesOrLabelSelectionMenu();
+                                    setCurrentLevel(level);
                                 });
+                                    rightController.updateResultVariableTable();
 
-                                List<ArgumentTableEntry> argsList = new ArrayList<>();
+                                if (runEntry != null) { // Case: information from rerun
+                                    Platform.runLater(() -> {
+                                        rightController.getArchitectureMenu().getItems().stream()
+                                                .filter(item -> item.getUserData().equals(runEntry.getArchitectureType().toString()))
+                                                .findFirst()
+                                                .ifPresent(MenuItem::fire);
+                                    });
 
-                                String argsString = runEntry.getArgs();
-                                if (argsString.startsWith("[") && argsString.endsWith("]")) {
-                                    argsString = argsString.substring(1, argsString.length() - 1); // strip [ ]
-                                }
+                                    List<ArgumentTableEntry> argsList = new ArrayList<>();
 
-                                String[] pairs = argsString.split(", ");
-                                for (String pair : pairs) {
-                                    String[] kv = pair.split(" = ");
-                                    if (kv.length == 2) {
-                                        String name = kv[0].trim();
-                                        int value = Integer.parseInt(kv[1].trim());
-                                        argsList.add(new ArgumentTableEntry(name) {{
-                                            setValue(value);
-                                        }});
+                                    String argsString = runEntry.getArgs();
+                                    if (argsString.startsWith("[") && argsString.endsWith("]")) {
+                                        argsString = argsString.substring(1, argsString.length() - 1); // strip [ ]
                                     }
+
+                                    String[] pairs = argsString.split(", ");
+                                    for (String pair : pairs) {
+                                        String[] kv = pair.split(" = ");
+                                        if (kv.length == 2) {
+                                            String name = kv[0].trim();
+                                            int value = Integer.parseInt(kv[1].trim());
+                                            argsList.add(new ArgumentTableEntry(name) {{
+                                                setValue(value);
+                                            }});
+                                        }
+                                    }
+                                    Platform.runLater(() -> primaryController.getRightSideController().getExecutionArgumentInput().getItems().setAll(argsList));
                                 }
-                                Platform.runLater(() -> primaryController.getRightSideController().getExecutionArgumentInput().getItems().setAll(argsList));
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
+                            showAlert("No program data detected for the user.", (Stage) expansionLevelMenu.getScene().getWindow());
                         }
-                    } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
-                        showAlert("No program data detected for the user.", (Stage) expansionLevelMenu.getScene().getWindow());
+                    } else {
+                        showAlert("Failed to expand active program to " + level + "\n" + "Code: " + response.code(),
+                                (Stage) expansionLevelMenu.getScene().getWindow());
                     }
-                } else {
-                    showAlert("Failed to expand active program to " + level + "\n" + "Code: " + response.code(),
-                            (Stage) expansionLevelMenu.getScene().getWindow());
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", (Stage) expansionLevelMenu.getScene().getWindow());
                 }
             }
 
@@ -624,22 +637,26 @@ public class LeftSideController {
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    if (response.code() == HttpServletResponse.SC_OK) {
-                        instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
-                        Platform.runLater(() -> {
-                            instructionsTable.refresh();
-                        });
-                    }
-                    else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
-                        showAlert("There is no program to delete breakpoints from.", (Stage) clearBreakpointsBtn.getScene().getWindow());
+                try (response) {
+                    if (response.isSuccessful()) {
+                        if (response.code() == HttpServletResponse.SC_OK) {
+                            instructionsTable.getItems().forEach(entry -> { entry.setBreakpoint(false); });
+                            Platform.runLater(() -> {
+                                instructionsTable.refresh();
+                            });
+                        }
+                        else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
+                            showAlert("There is no program to delete breakpoints from.", (Stage) clearBreakpointsBtn.getScene().getWindow());
+                        }
+                        else {
+                            showAlert("Triggered a success response but is not conventional", (Stage) clearBreakpointsBtn.getScene().getWindow());
+                        }
                     }
                     else {
-                        showAlert("Triggered a success response but is not conventional", (Stage) clearBreakpointsBtn.getScene().getWindow());
+                        showAlert("Failed to delete all breakpoints" + "\n" + "Code: " + response.code(), (Stage) clearBreakpointsBtn.getScene().getWindow());
                     }
-                }
-                else {
-                    showAlert("Failed to delete all breakpoints" + "\n" + "Code: " + response.code(), (Stage) clearBreakpointsBtn.getScene().getWindow());
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", (Stage) clearBreakpointsBtn.getScene().getWindow());
                 }
             }
 

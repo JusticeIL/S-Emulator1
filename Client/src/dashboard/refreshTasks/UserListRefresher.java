@@ -43,10 +43,10 @@ public class UserListRefresher extends TimerTask {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                    try (ResponseBody body = response.body()) {
+                    try (response) {
                         if (response.isSuccessful()) {
                             Gson gson = new Gson();
-                            String responseBody = Objects.requireNonNull(body).string();
+                            String responseBody = Objects.requireNonNull(response.body()).string();
                             Type type = new TypeToken<Set<UserDTO>>() {
                             }.getType();
                             Set<UserDTO> users = gson.fromJson(responseBody, type);

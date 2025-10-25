@@ -199,18 +199,22 @@ public class TopComponentController{
         call.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    Platform.runLater(() -> {
-                        currentLoadedProgramPath.setText(selectedFile.getAbsolutePath());
-                    });
-                    showOK("Program successfully loaded!", primaryStage);
-                } else {
-                    try (ResponseBody body = response.body()) {
-                        String responseBody = Objects.requireNonNull(body).string();
-                        showAlert("Failed to send program to server: " + response.code() + "\n" + responseBody, primaryStage);
-                    } catch (Exception e) {
-                        showAlert("Failed to send program to server: " + response.code(), primaryStage);
+                try (response) {
+                    if (response.isSuccessful()) {
+                        Platform.runLater(() -> {
+                            currentLoadedProgramPath.setText(selectedFile.getAbsolutePath());
+                        });
+                        showOK("Program successfully loaded!", primaryStage);
+                    } else {
+                        try (ResponseBody body = response.body()) {
+                            String responseBody = Objects.requireNonNull(body).string();
+                            showAlert("Failed to send program to server: " + response.code() + "\n" + responseBody, primaryStage);
+                        } catch (Exception e) {
+                            showAlert("Failed to send program to server: " + response.code(), primaryStage);
+                        }
                     }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
                 }
             }
 
@@ -272,24 +276,28 @@ public class TopComponentController{
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                if (response.isSuccessful()) {
-                    try (ResponseBody responseBody = response.body()) {
-                        Gson gson = new Gson();
-                        UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
-                        Platform.runLater(() -> {
-                            currentCredits.setText("Available Credits: " + user.getCredits());
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                try (response) {
+                    if (response.isSuccessful()) {
+                        try (ResponseBody responseBody = response.body()) {
+                            Gson gson = new Gson();
+                            UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                            Platform.runLater(() -> {
+                                currentCredits.setText("Available Credits: " + user.getCredits());
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                } else {
-                    try (ResponseBody body = response.body()) {
-                        String responseBody = Objects.requireNonNull(body).string();
-                        showAlert("Failed to add credits to user: " + response.code() + "\n" + responseBody, primaryStage);
-                    } catch (Exception e) {
-                        showAlert("Failed to add credits to user: " + response.code(), primaryStage);
+                    } else {
+                        try (ResponseBody body = response.body()) {
+                            String responseBody = Objects.requireNonNull(body).string();
+                            showAlert("Failed to add credits to user: " + response.code() + "\n" + responseBody, primaryStage);
+                        } catch (Exception e) {
+                            showAlert("Failed to add credits to user: " + response.code(), primaryStage);
+                        }
                     }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
                 }
             }
 

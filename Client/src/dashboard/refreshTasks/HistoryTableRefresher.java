@@ -50,10 +50,10 @@ public class HistoryTableRefresher extends TimerTask {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                    try (ResponseBody responseBody = response.body()) {
+                    try (response) {
                         if (response.isSuccessful()) {
                             Gson gson = new Gson();
-                            UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                            UserDTO user = gson.fromJson(Objects.requireNonNull(response.body()).string(), UserDTO.class);
                             Statistics userHistory = user.getHistory();
                             List<HistoryTableEntry> fetchedHistory = userHistory.getHistory().stream()
                                     .map(HistoryTableEntry::new)
@@ -82,7 +82,7 @@ public class HistoryTableRefresher extends TimerTask {
                             });
 
                         } else {
-                            String body = Objects.requireNonNull(responseBody).string();
+                            String body = Objects.requireNonNull(response.body()).string();
                             System.out.println("Failed to fetch function list: " + response.code());
                             System.out.println(body);
                         }

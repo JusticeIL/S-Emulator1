@@ -43,10 +43,10 @@ public class FunctionsTableRefresher extends TimerTask {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                    try (ResponseBody body = response.body()) {
+                    try (response) {
                         if (response.isSuccessful()) {
                             Gson gson = new Gson();
-                            String responseBody = Objects.requireNonNull(body).string();
+                            String responseBody = Objects.requireNonNull(response.body()).string();
                             Type type = new TypeToken<List<ProgramData>>() {
                             }.getType();
                             List<ProgramData> functions = gson.fromJson(responseBody, type);
@@ -76,7 +76,7 @@ public class FunctionsTableRefresher extends TimerTask {
                             });
 
                         } else {
-                            String responseBody = Objects.requireNonNull(body).string();
+                            String responseBody = Objects.requireNonNull(response.body()).string();
                             System.out.println("Failed to fetch function list: " + response.code());
                             System.out.println(responseBody);
                         }

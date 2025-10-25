@@ -42,10 +42,10 @@ public class ProgramsTableRefresher extends TimerTask {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-                    try (ResponseBody body = response.body()) {
+                    try (response) {
                         if (response.isSuccessful()) {
                             Gson gson = new Gson();
-                            String responseBody = Objects.requireNonNull(body).string();
+                            String responseBody = Objects.requireNonNull(response.body()).string();
                             Type type = new TypeToken<List<ProgramData>>() {
                             }.getType();
                             List<ProgramData> programs = gson.fromJson(responseBody, type);
@@ -75,7 +75,7 @@ public class ProgramsTableRefresher extends TimerTask {
                             });
 
                         } else {
-                            String responseBody = Objects.requireNonNull(body).string();
+                            String responseBody = Objects.requireNonNull(response.body()).string();
                             System.out.println("Failed to fetch program list: " + response.code());
                             System.out.println(responseBody);
                         }
