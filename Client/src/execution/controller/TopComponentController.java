@@ -60,7 +60,7 @@ public class TopComponentController{
 
         for (Cookie cookie : cookies) {
             if ("username".equals(cookie.name())) {
-                userNameDisplay.setText(cookie.value());
+                userNameDisplay.setText(cookie.value().replace('_', ' '));
             }
         }
 

@@ -69,7 +69,7 @@ public class UserServlet extends HttpServlet {
                 } else {
                     users.add(username);
                     resp.setStatus(HttpServletResponse.SC_CREATED);
-                    resp.addCookie(new Cookie("username", username));
+                    resp.addCookie(new Cookie("username", username.replace(' ', '_')));
                     MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
                     model.addUser(username);
                 }

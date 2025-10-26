@@ -53,7 +53,7 @@ public class CookiesAuthenticator {
         return Arrays.stream(cookies)
                 .filter(cookie -> "username".equals(cookie.getName()))
                 .findFirst()
-                .map(Cookie::getValue)
+                .map(cookie -> cookie.getValue().replace('_', ' '))
                 .orElse(null);
     }
 
