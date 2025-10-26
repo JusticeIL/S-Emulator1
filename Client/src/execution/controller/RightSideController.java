@@ -45,6 +45,8 @@ public class RightSideController{
     private Stage primaryStage;
     private String currentlyChosenArchitecture;
     private final BooleanProperty isDebugMode = new SimpleBooleanProperty(false);
+    private final BooleanProperty isRunning = new SimpleBooleanProperty(false);
+    private final BooleanProperty isExecutingDebugStep = new SimpleBooleanProperty(false);
     private final IntegerProperty currentCycles = new SimpleIntegerProperty(-1);
     private final SimpleIntegerProperty nextInstructionIdForDebug = new SimpleIntegerProperty(0);
 
@@ -139,8 +141,8 @@ public class RightSideController{
         architectureMenu.disableProperty().bind(isDebugMode);
 
         // Debugging buttons
-        StepOverDebugBtn.disableProperty().bind(isDebugMode.not());
-        ResumeDebugBtn.disableProperty().bind(isDebugMode.not());
+        StepOverDebugBtn.disableProperty().bind(isDebugMode.not().and(isExecutingDebugStep.not()));
+        ResumeDebugBtn.disableProperty().bind(isDebugMode.not().and(isExecutingDebugStep.not()));
         StopDebugBtn.disableProperty().bind(isDebugMode.not());
 
         // Regular buttons
@@ -159,6 +161,7 @@ public class RightSideController{
 
     @FXML
     public void ResumeDebugPressed(ActionEvent event) {
+        isExecutingDebugStep.set(true);
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + RESUME_DEBUG_RESOURCE))
                 .newBuilder();
         String finalURL = urlBuilder.build().toString();
@@ -193,13 +196,15 @@ public class RightSideController{
                     }
                 } catch (Exception e) {
                     showAlert("Failed to close the connection properly", primaryStage);
+                }finally {
+                    isExecutingDebugStep.set(false);
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 // Open a timer task for pulling information about execution
-                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController);
+                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController,isRunning,isExecutingDebugStep);
                 Timer timer = new Timer(true);
                 timer.schedule(pullProgramInfoTask, 2000, 2000);
             }
@@ -232,6 +237,7 @@ public class RightSideController{
 
     @FXML
     void StepOverDebugPressed(ActionEvent event) {
+        isExecutingDebugStep.set(true);
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + STEP_OVER_RESOURCE))
                 .newBuilder();
         String finalURL = urlBuilder.build().toString();
@@ -266,13 +272,15 @@ public class RightSideController{
                     }
                 } catch (Exception e) {
                     showAlert("Failed to close the connection properly", primaryStage);
+                }finally {
+                    isExecutingDebugStep.set(false);
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 // Open a timer task for pulling information about execution
-                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController);
+                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController,isRunning,isExecutingDebugStep);
                 Timer timer = new Timer(true);
                 timer.schedule(pullProgramInfoTask, 2000, 2000);
             }
@@ -404,7 +412,7 @@ public class RightSideController{
                                 },
                                 architectureMenu.textProperty(),
                                 leftController.getExpansionLevelMenu().textProperty())
-                )
+                ).or(isRunning)
         );
     }
 
@@ -448,6 +456,7 @@ public class RightSideController{
             showAlert("Please choose the architecture to start debug.", primaryStage);
             return;
         }
+        isRunning.set(true);
 
         Set<VariableDTO> argumentValues = executionArgumentInput.getItems().stream()
                 .map(entry-> new VariableDTO(entry.getName(), entry.getValue())) // ArgumentTableEntry -> VariableDTO
@@ -521,6 +530,9 @@ public class RightSideController{
                 } catch (Exception e) {
                     showAlert("Failed to close the connection properly", primaryStage);
                 }
+                finally {
+                    isRunning.set(false);
+                }
             }
 
             @Override
@@ -585,6 +597,7 @@ public class RightSideController{
             showAlert("You must choose an architecture before running the program.", primaryStage);
             return;
         }
+        isRunning.set(true);
 
         ExecutionPayload executionPayload = new ExecutionPayload(arguments,currentlyChosenArchitecture);
 
@@ -649,12 +662,15 @@ public class RightSideController{
                 } catch (Exception e) {
                     showAlert("Failed to close the connection properly", primaryStage);
                 }
+                finally {
+                    isRunning.set(false);
+                }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 // Open a timer task for pulling information about execution
-                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController);
+                PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController,isRunning,isExecutingDebugStep);
                 Timer timer = new Timer(true);
                 timer.schedule(pullProgramInfoTask, 2000, 2000);
             }

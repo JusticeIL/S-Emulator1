@@ -79,6 +79,7 @@ public class MultiUserController implements MultiUserModel, Serializable {
     public void startDebug(String username, Set<VariableDTO> args, Set<Integer> breakpoints, String architectureString) throws InsufficientResourcesException {
         User user = usersManager.getUser(username);
         ArchitectureGeneration architectureGeneration = ArchitectureGeneration.valueOf(architectureString);
+        executionManager.CheckForCreditsAboveProgramAverage(user, architectureGeneration, sharedProgramsContainer);
         executionManager.startDebug(user, args, breakpoints, architectureGeneration);
         if (executionManager.checkInsufficientCredits(user)) {
             int CostForLastExecution = executionManager.getCostForLastExecution(user);

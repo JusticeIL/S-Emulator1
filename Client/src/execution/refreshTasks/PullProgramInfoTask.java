@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import dto.ProgramData;
 import execution.controller.PrimaryController;
 import jakarta.servlet.http.HttpServletResponse;
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import okhttp3.*;
@@ -20,10 +21,14 @@ import static configuration.ResourcesConfiguration.*;
 public class PullProgramInfoTask extends TimerTask {
     private final Button runButton;
     private final PrimaryController primaryController;
+    private final BooleanProperty isRunning;
+    private final BooleanProperty isExecutingDebugStep;
 
-    public PullProgramInfoTask(Button runButton, PrimaryController primaryController) {
+    public PullProgramInfoTask(Button runButton, PrimaryController primaryController, BooleanProperty isRunning,BooleanProperty isExecutingDebugStep) {
+        this.isRunning = isRunning;
         this.runButton = runButton;
         this.primaryController = primaryController;
+        this.isExecutingDebugStep = isExecutingDebugStep;
     }
 
     @Override
@@ -66,6 +71,8 @@ public class PullProgramInfoTask extends TimerTask {
                                 boolean isInExecution = jsonObject.get("status").getAsBoolean();
                                 if (!isInExecution) {
                                     sendGetProgramRequest();
+                                    isRunning.set(false);
+                                    isExecutingDebugStep.set(false);
                                     cancel();
                                 }
                             }

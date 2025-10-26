@@ -179,7 +179,7 @@ public class ProgramExecutioner {
         currentRunLevelForDebug = program.getCurrentProgramLevel();
         program.setInDebugMode(true);
         program.setCycleCounter(cycleCounter);
-        if (!breakpoints.contains(currentInstruction.getNumber())) {
+        if (!breakpoints.isEmpty() &&!breakpoints.contains(currentInstruction.getNumber())) {
             resumeDebug();
         }
     }
