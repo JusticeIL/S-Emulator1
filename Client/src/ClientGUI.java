@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import login.controller.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import static configuration.ClientConfiguration.CLIENT;
+import static configuration.DialogUtils.showAlert;
 
 public class ClientGUI extends Application {
     @Override
@@ -33,7 +35,18 @@ public class ClientGUI extends Application {
 
             primaryStage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            // Case: a problem on start-up, but nowhere to log it to.
+            new Thread(() -> {
+                try {
+                    CLIENT.dispatcher().executorService().shutdown();
+                    CLIENT.connectionPool().evictAll();
+                } catch (Exception ignored) {
+                }
+            }).start();
+            try {
+                Platform.exit();
+            } catch (Exception ignored) {
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import dto.UserDTO;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static configuration.ClientConfiguration.CLIENT;
+import static configuration.DialogUtils.showAlert;
 import static configuration.ResourcesConfiguration.*;
 
 public class HistoryTableRefresher extends TimerTask {
@@ -82,18 +84,16 @@ public class HistoryTableRefresher extends TimerTask {
                             });
 
                         } else {
-                            String body = Objects.requireNonNull(response.body()).string();
-                            System.out.println("Failed to fetch function list: " + response.code());
-                            System.out.println(body);
+                            showAlert("Failed to fetch history table list: " + response.code() + "\n" + Objects.requireNonNull(response.body()).string(), (Stage) historyTable.getScene().getWindow());
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        showAlert("Failed to close the connection properly", (Stage) historyTable.getScene().getWindow());
                     }
                 }
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    e.printStackTrace();
+                    showAlert("Failed to get the response from the server, " + e.getMessage(), (Stage) historyTable.getScene().getWindow());
                 }
             });
         } else {

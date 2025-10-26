@@ -37,7 +37,7 @@ import static configuration.ClientConfiguration.CLIENT;
 import static configuration.DialogUtils.showAlert;
 import static configuration.ResourcesConfiguration.*;
 
-public class RightSideController{
+public class RightSideController {
 
     private PrimaryController primaryController;
     private TopComponentController topController;
@@ -183,7 +183,7 @@ public class RightSideController{
                             primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
                             updateAfterDebugStep();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                         }
                     } else {
                         if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
@@ -198,13 +198,14 @@ public class RightSideController{
                     }
                 } catch (Exception e) {
                     showAlert("Failed to close the connection properly", primaryStage);
-                }finally {
+                } finally {
                     isExecutingDebugStep.set(false);
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Server took too long to respond to the run!" + "\n" + "Started pulling process from the server until the program execution is done", primaryStage);
                 // Open a timer task for pulling information about execution
                 PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController,isRunning,isExecutingDebugStep);
                 Timer timer = new Timer(true);
@@ -260,7 +261,7 @@ public class RightSideController{
                             primaryController.program = gson.fromJson(Objects.requireNonNull(body).string(), ProgramData.class);
                             updateAfterDebugStep();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                         }
                         topController.sendUpdateCreditsRequest();
                     } else {
@@ -282,6 +283,7 @@ public class RightSideController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Server took too long to respond to the run!" + "\n" + "Started pulling process from the server until the program execution is done", primaryStage);
                 // Open a timer task for pulling information about execution
                 PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController,isRunning,isExecutingDebugStep);
                 Timer timer = new Timer(true);
@@ -314,7 +316,7 @@ public class RightSideController{
                             updateIsDebugProperty();
                             leftController.clearMarkInInstructionTable();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                         }
                     } else {
                         showAlert("Stop debug failed with code: " + response.code(),
@@ -327,7 +329,7 @@ public class RightSideController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+                showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
             }
         });
     }
@@ -505,7 +507,7 @@ public class RightSideController{
                             leftController.clearHistoryChainTable(); // Clear history chain table on new debug start
                             updateAfterDebugStep();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                         }
                     } else {
                         if (response.code() == HTTPCodes.UNPROCESSABLE_ENTITY) {
@@ -540,7 +542,7 @@ public class RightSideController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+                showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
             }
         });
     }
@@ -637,7 +639,7 @@ public class RightSideController{
                             } catch (InvalidParameterException e) {
                                 showAlert(e.getMessage(), (Stage) runRadioButton.getScene().getWindow());
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                             }
                         } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
                             showAlert("No program data detected for the user.", (Stage) runRadioButton.getScene().getWindow());
@@ -672,6 +674,7 @@ public class RightSideController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Server took too long to respond to the run!" + "\n" + "Started pulling process from the server until the program execution is done", primaryStage);
                 // Open a timer task for pulling information about execution
                 PullProgramInfoTask pullProgramInfoTask = new PullProgramInfoTask(RunProgramBtn, primaryController,isRunning,isExecutingDebugStep);
                 Timer timer = new Timer(true);

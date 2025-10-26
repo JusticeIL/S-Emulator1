@@ -593,7 +593,7 @@ public class LeftSideController {
                                     Platform.runLater(() -> primaryController.getRightSideController().getExecutionArgumentInput().getItems().setAll(argsList));
                                 }
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                showAlert("Failed to close the body stream correctly, " + e.getMessage(), (Stage) expansionLevelMenu.getScene().getWindow());
                             }
                         } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
                             showAlert("No program data detected for the user.", (Stage) expansionLevelMenu.getScene().getWindow());

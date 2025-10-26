@@ -226,7 +226,7 @@ public class RightSideController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    e.printStackTrace();
+                    showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
                 }
             });
         }
@@ -324,7 +324,7 @@ public class RightSideController {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    e.printStackTrace();
+                    showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
                 }
             });
         }

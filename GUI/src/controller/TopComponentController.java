@@ -84,7 +84,6 @@ public class TopComponentController{
                     updateMessage("Done.");
                     return model.isProgramLoaded();
                 } catch (JAXBException | FileNotFoundException | InterruptedException e) {
-                    e.printStackTrace();
                     updateMessage("Error: " + e.getMessage());
                     return false;
                 }

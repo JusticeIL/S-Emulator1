@@ -62,6 +62,12 @@ FlowPane, StackPane, AnchorPane, VBox {
     -fx-border-color: #1e88e5;
 }
 
+#registerUserBtn:disabled {
+    -fx-background-color: #73b0e6;
+    -fx-text-fill: #bcbec3;
+    -fx-border-color: #73b0e6;
+}
+
 /* Hover and pressed states */
 .button:hover {
     -fx-background-color: #1565c0; /* slightly darker blue */

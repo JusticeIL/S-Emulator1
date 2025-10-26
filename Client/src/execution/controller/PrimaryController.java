@@ -66,19 +66,16 @@ public class PrimaryController {
                             leftSideController.initAllFields();
                             rightSideController.initAllFields();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), (Stage) root.getScene().getWindow());
                         }
                     } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
-                        Stage primaryStage = (Stage) root.getScene().getWindow();
-                        showAlert("No program data detected for the user.", primaryStage);
+                        showAlert("No program data detected for the user.", (Stage) root.getScene().getWindow());
                     }
                 } else {
-                    Stage primaryStage = (Stage) root.getScene().getWindow();
-                    showAlert("Failed to retrieve program data. HTTP Code: " + response.code(), primaryStage);
+                    showAlert("Failed to retrieve program data. HTTP Code: " + response.code(), (Stage) root.getScene().getWindow());
                 }
             } catch (Exception e) {
-                Stage primaryStage = (Stage) root.getScene().getWindow();
-                showAlert("Error: " + e.getMessage(), primaryStage);
+                showAlert("Error: " + e.getMessage(), (Stage) root.getScene().getWindow());
             }
         }).start();
     }

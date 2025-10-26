@@ -36,7 +36,6 @@ public class ProgramServlet extends HttpServlet {
                             resp.getWriter().write(responseJson);
                         } catch (IOException e) {
                             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                            e.printStackTrace();
                         }
                     },
                     () -> {
@@ -61,7 +60,6 @@ public class ProgramServlet extends HttpServlet {
         }
 
         Part xmlPart = parts.iterator().next();
-        System.out.println("Found file part with name: '" + xmlPart.getName() + "' and file name: '" + xmlPart.getSubmittedFileName() + "'");
 
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForUsernameThenDo(req, resp,() -> {

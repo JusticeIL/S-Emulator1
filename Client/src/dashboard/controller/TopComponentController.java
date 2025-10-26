@@ -89,11 +89,10 @@ public class TopComponentController{
                 try (ResponseBody responseBody = response.body()) {
                     Gson gson = new Gson();
                     UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
-                    Platform.runLater(() -> {
-                        currentCredits.setText("Available Credits: " + user.getCredits());
-                    });
+                    Platform.runLater(() -> currentCredits.setText("Available Credits: " + user.getCredits()));
+
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                 }
 
             } else {
@@ -105,7 +104,7 @@ public class TopComponentController{
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            showAlert("Failed to close the response correctly, " + e.getMessage(), primaryStage);
         }
 
         availableCSSFileNames = listCssFiles();
@@ -218,7 +217,7 @@ public class TopComponentController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+                showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
             }
         });
     }
@@ -283,7 +282,7 @@ public class TopComponentController{
                                 currentCredits.setText("Available Credits: " + user.getCredits());
                             });
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                         }
 
                     } else {
@@ -301,7 +300,7 @@ public class TopComponentController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+                showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
             }
         });
     }
@@ -356,7 +355,7 @@ public class TopComponentController{
             } else { // Case: resourcePath not found; check whether you packaged CSS under a different path.
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            showAlert("Failed to load resources: " + ex.getMessage(), primaryStage);
         }
 
         Collections.sort(cssFiles);

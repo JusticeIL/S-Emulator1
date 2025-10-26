@@ -7,6 +7,7 @@ import dto.ProgramData;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +16,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import static configuration.ClientConfiguration.CLIENT;
+import static configuration.DialogUtils.showAlert;
 import static configuration.ResourcesConfiguration.*;
 
 public class FunctionsTableRefresher extends TimerTask {
@@ -76,18 +78,16 @@ public class FunctionsTableRefresher extends TimerTask {
                             });
 
                         } else {
-                            String responseBody = Objects.requireNonNull(response.body()).string();
-                            System.out.println("Failed to fetch function list: " + response.code());
-                            System.out.println(responseBody);
+                            showAlert("Failed to fetch function list: " + response.code() + "\n" + Objects.requireNonNull(response.body()).string(), (Stage) functionsTable.getScene().getWindow());
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        showAlert("Failed to close the connection properly", (Stage) functionsTable.getScene().getWindow());
                     }
                 }
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    e.printStackTrace();
+                    showAlert("Failed to get the response from the server, " + e.getMessage(), (Stage) functionsTable.getScene().getWindow());
                 }
             });
         } else {

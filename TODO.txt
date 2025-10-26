@@ -1,4 +1,2 @@
 O.O.B:
-
-1. Handle TODOs in the code (in CreditsManagementServlet) <Eitan?>
-2. User needs to hold its own executions counter <Eitan>
+Compile to WAR :)

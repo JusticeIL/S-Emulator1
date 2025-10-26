@@ -34,6 +34,8 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        registerUserBtn.disableProperty().bind(usernameField.textProperty().isEmpty());
+
         // Allow pressing Enter to trigger registration
         usernameField.setOnKeyPressed(event -> {
             if (event.getCode() == javafx.scene.input.KeyCode.ENTER) {

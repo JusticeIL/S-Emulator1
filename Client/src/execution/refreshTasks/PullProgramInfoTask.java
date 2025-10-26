@@ -78,16 +78,16 @@ public class PullProgramInfoTask extends TimerTask {
                             }
 
                         } else {
-                            System.out.println("Failed to fetch if user is busy, code: " + response.code());
+                            showAlert("Failed to fetch if the user is busy, error code: " + response.code(), (Stage) runButton.getScene().getWindow());
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        showAlert("Failed to close the connection properly", (Stage) runButton.getScene().getWindow());
                     }
                 }
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    e.printStackTrace();
+                    showAlert("Failed to get the response from the server, " + e.getMessage(), (Stage) runButton.getScene().getWindow());
                 }
             });
         }
@@ -115,7 +115,7 @@ public class PullProgramInfoTask extends TimerTask {
                         primaryController.getRightSideController().updateResultVariableTable();
                         primaryController.getTopComponentController().sendUpdateCreditsRequest();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        showAlert("Failed to close the body stream correctly, " + e.getMessage(), (Stage) runButton.getScene().getWindow());
                     }
                 } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
                     Stage primaryStage = (Stage) runButton.getScene().getWindow();

@@ -86,7 +86,7 @@ public class TopComponentController{
                             currentCredits.setText("Available Credits: " + user.getCredits());
                         });
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                     }
 
                 } else {
@@ -98,7 +98,7 @@ public class TopComponentController{
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                showAlert("Failed to close the connection properly", primaryStage);
             }
         }).start();
     }
@@ -203,7 +203,7 @@ public class TopComponentController{
             } else { // Case: resourcePath not found; check whether you packaged CSS under a different path.
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            showAlert("Failed to load resources: " + ex.getMessage(), primaryStage);
         }
 
         Collections.sort(cssFiles);
@@ -247,7 +247,7 @@ public class TopComponentController{
                                 currentCredits.setText("Available Credits: " + user.getCredits());
                             });
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
                         }
 
                     } else {
@@ -265,7 +265,7 @@ public class TopComponentController{
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+                showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
             }
         });
     }
