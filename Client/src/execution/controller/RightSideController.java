@@ -187,9 +187,10 @@ public class RightSideController{
                         }
                     } else {
                         if (response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                            returnToDashboardScreen(new ActionEvent());
+                            StopDebugPressed(new ActionEvent());
                             showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
                                     , (Stage) runRadioButton.getScene().getWindow());
+
                         } else {
                         showAlert("Resume debug failed with code: " + response.code(),
                                 (Stage) ResumeDebugBtn.getScene().getWindow());
@@ -264,7 +265,7 @@ public class RightSideController{
                         topController.sendUpdateCreditsRequest();
                     } else {
                         if(response.code() == HttpServletResponse.SC_PAYMENT_REQUIRED){
-                            returnToDashboardScreen(new ActionEvent());
+                            StopDebugPressed(new ActionEvent());
                             showAlert("User credits too low for Program execution - Credits were not sufficient to execute the entire program"
                                     , (Stage) runRadioButton.getScene().getWindow());
                         }else {
@@ -514,7 +515,6 @@ public class RightSideController{
                                             +primaryController.program.getMinimalArchitectureNeededForRun()+")"
                                     , (Stage) runRadioButton.getScene().getWindow());
                         } else if (response.code() == HttpServletResponse.SC_NOT_ACCEPTABLE) {
-                            returnToDashboardScreen(new ActionEvent());
                             showAlert("User credits too low for Program execution"
                                     , (Stage) runRadioButton.getScene().getWindow());
                         }
