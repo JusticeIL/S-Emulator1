@@ -129,6 +129,18 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-color: #bb5753 !important;
 }
 
+.table-row-cell.sufficient-architecture-row {
+    -fx-background-color: #3f9e3f !important;
+}
+
+.table-view .table-row-cell:odd.sufficient-architecture-row {
+    -fx-background-color: #3f9e3f !important;
+}
+
+.table-view .table-row-cell:even.sufficient-architecture-row {
+    -fx-background-color: #3f9e3f !important;
+}
+
 #executionArgumentInput {
     -fx-background-color: #5b9bd5 !important;
     -fx-border-color: #2f528f;

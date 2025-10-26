@@ -105,6 +105,18 @@ FlowPane, StackPane, AnchorPane {
     -fx-background-color: #bb5753;
 }
 
+.table-row-cell.sufficient-architecture-row {
+    -fx-background-color: #3f9e3f;
+}
+
+.table-view .table-row-cell:odd.sufficient-architecture-row {
+    -fx-background-color: #3f9e3f;
+}
+
+.table-view .table-row-cell:even.sufficient-architecture-row {
+    -fx-background-color: #3f9e3f;
+}
+
 #variableTable .table-cell, #executionArgumentInput .table-cell, #StatisticsTable .table-cell, #runAllVariablesTable .table-cell  {
     -fx-alignment: CENTER;
     -fx-font-size: 13px;

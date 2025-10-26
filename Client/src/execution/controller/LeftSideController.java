@@ -77,15 +77,17 @@ public class LeftSideController {
             protected void updateItem(InstructionTableEntry item, boolean empty) {
                 super.updateItem(item, empty);
                 boolean shouldBeInsufficient = false;
-                getStyleClass().removeAll("insufficient-architecture-row");
+                getStyleClass().removeAll("insufficient-architecture-row", "sufficient-architecture-row");
 
                 if (item != null && !empty) {
                     if (rightController != null) {
-                        if (!isArchitectureEnough(rightController.getSelectedArchitecture(), item.getArchitecture())) {
-                            getStyleClass().add("insufficient-architecture-row");
-                            shouldBeInsufficient = true;
-                        } else {
-                            getStyleClass().remove("insufficient-architecture-row");
+                        if (rightController.getArchitectureMenu().getText() != null && !rightController.getArchitectureMenu().getText().equals("Architecture Selection")) {
+                            if (!isArchitectureEnough(rightController.getSelectedArchitecture(), item.getArchitecture())) {
+                                getStyleClass().add("insufficient-architecture-row");
+                                shouldBeInsufficient = true;
+                            } else {
+                                getStyleClass().add("sufficient-architecture-row");
+                            }
                         }
                     }
                 }
