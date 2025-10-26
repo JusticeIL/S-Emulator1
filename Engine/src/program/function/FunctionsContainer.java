@@ -38,7 +38,7 @@ public class FunctionsContainer {
         this.originProgram = originProgram;
     }
 
-    public Function tryGetFunction(String name) throws FileNotFoundException {
+    public Function tryGetFunction(String name) throws FileNotFoundException,IllegalArgumentException {
         if (!functionNames.contains(name)) {
             throw new IllegalArgumentException("Function " + name + " not found");
         }

@@ -72,7 +72,7 @@ public class ProgramServlet extends HttpServlet {
                 model.loadProgram(username, xmlPart.getInputStream());
             } catch (JAXBException e) {
                 resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-            } catch (IllegalArgumentException e) {
+            } catch (Exception e) {
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
                 resp.getWriter().write("Error: " + e.getMessage());
             }
