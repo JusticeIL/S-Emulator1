@@ -48,7 +48,6 @@ public class CreditsManagementServlet extends HttpServlet {
 
             // Retrieve user from context
 
-            //TODO CHANGE TO USE METHOD IN ENGINE CONTROLLER
             Set<String> usersSet = (Set<String>) getServletContext().getAttribute("users");
             if (!usersSet.contains(username)) {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -14,6 +14,9 @@ public class FunctionsContainer {
     private final Map<String, SFunction> sFunctions = new HashMap<>();
     private Program originProgram;
 
+    public Map<String, SFunction> getsFunctions() {
+        return sFunctions;
+    }
 
     public void setup(Collection<SFunction> sFunctions){
         sFunctions.forEach(sFunction -> {
@@ -30,6 +33,18 @@ public class FunctionsContainer {
         });
         this.originProgram = originProgram;
     }
+
+    public void copy(FunctionsContainer functionsContainer){
+        functions.clear();
+        sFunctions.clear();
+        functionNames.clear();
+
+        functions.putAll(functionsContainer.getFunctions());
+        sFunctions.putAll(functionsContainer.getsFunctions());
+        functionNames.addAll(functionsContainer.getFunctionNames());
+        this.originProgram = functionsContainer.originProgram;
+    }
+
     public void setup(Collection<SFunction> sFunctions,Program originProgram){
         sFunctions.forEach(sFunction -> {
             this.functionNames.add(sFunction.getName());

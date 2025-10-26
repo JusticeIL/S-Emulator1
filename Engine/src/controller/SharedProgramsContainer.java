@@ -27,9 +27,12 @@ public class SharedProgramsContainer {
 
    synchronized public void addSProgram(SProgram sProgram, String username){
         User dummyUser = new User(username);
-        dummyUser.setFunctionContainer(sharedFunctionsContainer);
+        FunctionsContainer workingFunctionsContainer = new FunctionsContainer();
+        workingFunctionsContainer.copy(sharedFunctionsContainer);
+        dummyUser.setFunctionContainer(workingFunctionsContainer);
         checkForDuplicateFunctions(sProgram);
         Program dummyProgram = new Program(sProgram,dummyUser);
+        sharedFunctionsContainer.copy(workingFunctionsContainer);
         sPrograms.putIfAbsent(sProgram.getName(),sProgram);
         dummyProgramsForDashboard.putIfAbsent(sProgram.getName(),dummyProgram);
         totalRunsPerProgram.putIfAbsent(sProgram.getName(),0);
