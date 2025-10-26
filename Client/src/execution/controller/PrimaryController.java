@@ -38,7 +38,6 @@ public class PrimaryController {
         leftSideController.setTopController(topComponentController);
         rightSideController.setLeftController(leftSideController);
         rightSideController.setTopController(topComponentController);
-        topComponentController.setLeftController(leftSideController);
         topComponentController.setRightController(rightSideController);
         topComponentController.setPrimaryController(this);
         leftSideController.setPrimaryController(this);

@@ -52,6 +52,6 @@ public class RunBuilder {
     }
 
     public dto.Run build(Statistics statistics) {
-        return new Run(statistics.getHistory().size()+1, expansionLevel, inputArgs, finalStateOfAllVariables, runCycles, programType, programName, architectureGeneration);
+        return new Run(statistics.getHistory().size() + 1, expansionLevel, inputArgs, finalStateOfAllVariables, runCycles, programType, programName, architectureGeneration);
         }
 }

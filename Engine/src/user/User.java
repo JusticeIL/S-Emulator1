@@ -10,7 +10,6 @@ import program.function.FunctionsContainer;
 
 import java.io.FileNotFoundException;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class User {
@@ -158,7 +157,6 @@ public class User {
         } catch (FileNotFoundException e) {
             throw new RuntimeException("New Program Instance could not be created from Sfunction for user");
         }
-
     }
 
     public void setFunctionContainer(FunctionsContainer functionsContainer) {

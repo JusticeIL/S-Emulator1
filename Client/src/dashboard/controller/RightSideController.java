@@ -1,7 +1,6 @@
 package dashboard.controller;
 
 import com.google.gson.Gson;
-import controller.SingleProgramController;
 import dashboard.model.FunctionTableEntry;
 import dashboard.model.ProgramTableEntry;
 import dashboard.refreshTasks.FunctionsTableRefresher;
@@ -37,11 +36,6 @@ import static configuration.DialogUtils.showAlert;
 import static configuration.ResourcesConfiguration.*;
 
 public class RightSideController {
-
-    private TopComponentController topController;
-    private LeftSideController leftController;
-    private SingleProgramController model;
-    private OkHttpClient client;
 
     @FXML
     private TableView<ProgramTableEntry> programsTable;
@@ -334,17 +328,5 @@ public class RightSideController {
                 }
             });
         }
-    }
-
-    public void setClient(OkHttpClient client) {
-        this.client = client;
-    }
-
-    public void setTopController(TopComponentController topController) {
-        this.topController = topController;
-    }
-
-    public void setLeftController(LeftSideController leftController) {
-        this.leftController = leftController;
     }
 }

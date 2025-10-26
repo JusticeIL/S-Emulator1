@@ -44,7 +44,6 @@ import static configuration.ResourcesConfiguration.*;
 
 public class LeftSideController {
 
-    private RightSideController rightController;
     private TopComponentController topController;
     private boolean isShowHistoryDialogOpen = false;
 
@@ -283,10 +282,6 @@ public class LeftSideController {
         HistoryTableRefresher userHistoryTableRefresher = new HistoryTableRefresher(userExecutionsTable, topController.getUsername(), usersTable);
         Timer timer = new Timer(true);
         timer.schedule(userHistoryTableRefresher, REFRESH_RATE, REFRESH_RATE);
-    }
-
-    public void setRightController(RightSideController rightController) {
-        this.rightController = rightController;
     }
 
     private Stage createVariablesTableDialog(Map<String, Integer> allEntryVariables) {

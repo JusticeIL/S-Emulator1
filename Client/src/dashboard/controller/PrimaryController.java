@@ -15,12 +15,7 @@ public class PrimaryController {
 
     @FXML
     public void initialize() {
-        leftSideController.setRightController(rightSideController);
         leftSideController.setTopController(topComponentController);
-        rightSideController.setLeftController(leftSideController);
-        rightSideController.setTopController(topComponentController);
-        topComponentController.setLeftController(leftSideController);
-        topComponentController.setRightController(rightSideController);
     }
 
     public TopComponentController getTopComponentController() {

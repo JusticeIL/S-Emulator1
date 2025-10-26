@@ -34,8 +34,6 @@ import static configuration.ResourcesConfiguration.*;
 public class TopComponentController{
 
     private Stage primaryStage;
-    private RightSideController rightController;
-    private LeftSideController leftController;
     private List<String> availableCSSFileNames;
 
     @FXML
@@ -306,14 +304,6 @@ public class TopComponentController{
                 e.printStackTrace();
             }
         });
-    }
-
-    public void setRightController(RightSideController rightController) {
-        this.rightController = rightController;
-    }
-
-    public void setLeftController(LeftSideController leftController) {
-        this.leftController = leftController;
     }
 
     public void setPrimaryStage(Stage primaryStage) {

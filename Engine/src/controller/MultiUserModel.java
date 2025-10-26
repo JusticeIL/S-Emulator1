@@ -4,12 +4,10 @@ import dto.UserDTO;
 import jakarta.xml.bind.JAXBException;
 import dto.ProgramData;
 import dto.VariableDTO;
-import user.User;
 
 import javax.naming.InsufficientResourcesException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

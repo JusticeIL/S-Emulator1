@@ -19,7 +19,6 @@ import java.util.*;
 
 public class MultiUserController implements MultiUserModel, Serializable {
 
-
     private final SharedProgramsContainer sharedProgramsContainer = new SharedProgramsContainer();
     private final UsersManager usersManager = new UsersManager();
     private final ExecutionManager executionManager = new ExecutionManager();

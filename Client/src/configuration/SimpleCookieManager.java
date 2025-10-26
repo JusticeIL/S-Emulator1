@@ -42,5 +42,4 @@ public class SimpleCookieManager implements CookieJar {
                     });
         }
     }
-
 }

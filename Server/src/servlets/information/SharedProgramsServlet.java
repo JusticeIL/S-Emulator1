@@ -6,13 +6,11 @@ import configuration.CookiesAuthenticator;
 import controller.MultiUserModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 @WebServlet(name = "SharedProgramsServlet", urlPatterns = {"/api/shared/programs"})
 public class SharedProgramsServlet extends HttpServlet {

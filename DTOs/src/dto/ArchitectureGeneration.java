@@ -27,7 +27,6 @@ public enum ArchitectureGeneration {
     };
 
     /**
-     * Abstract method to be implemented by each enum constant.
      * Returns a constant cost value associated with the architecture generation.
      */
     public abstract int getCost();

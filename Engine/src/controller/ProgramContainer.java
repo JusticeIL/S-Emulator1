@@ -10,13 +10,12 @@ public class ProgramContainer {
     private Map<String,Map<Integer,Program>> activeProgramContainer = new HashMap<>();
     private Map<Integer, Program> activeProgramExpansionsByLevel = new HashMap<>();
 
-
     public ProgramContainer() {
         this.mainContainer = new java.util.HashMap<>();
     }
 
     public void addProgram(Program program){
-        if(mainContainer.containsKey(program.getProgramName())){
+        if (mainContainer.containsKey(program.getProgramName())) {
             return;
         }
 

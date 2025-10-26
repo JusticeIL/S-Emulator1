@@ -96,9 +96,9 @@ public class SharedProgramsContainer {
     public int getNumberOfFunctions(String username) {
         List<String> allFunctionNames = new ArrayList<>(getAllFunctionNames());
         int count = 0;
-        for(String functionName : allFunctionNames) {
+        for (String functionName : allFunctionNames) {
             String functionUserString = getSearchableName(functionName);
-            if(dummyProgramsForDashboard.get(functionUserString).getUploadingUser().equals(username)) {
+            if (dummyProgramsForDashboard.get(functionUserString).getUploadingUser().equals(username)) {
                 count++;
             }
         }

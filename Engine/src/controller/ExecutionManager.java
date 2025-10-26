@@ -23,7 +23,7 @@ public class ExecutionManager {
     public void runProgram(User user, Set<VariableDTO> args, ArchitectureGeneration architecture) {
         Program activeProgram = user.getActiveProgram();
 
-        if(architecture.getCost()<activeProgram.getMinimalArchitectureNeededForExecution().getCost()){
+        if (architecture.getCost()<activeProgram.getMinimalArchitectureNeededForExecution().getCost()) {
             throw new InvalidParameterException("Tried running level " +
                     activeProgram.getMinimalArchitectureNeededForExecution() +
                     " program in "+ architecture + " architecture");
@@ -102,14 +102,12 @@ public class ExecutionManager {
         }
     }
 
-
     public void resumeDebug(User user) {
         Optional<ProgramExecutioner> executionerOpt = Optional.ofNullable(executioners.get(user));
         executionerOpt.ifPresent(ProgramExecutioner::resumeDebug);
         checkProgramExecutionFailedOnCredits(user);
         checkForEndOfDebug(user);
     }
-
 
     public void setDebugMode(User user, boolean isDebugMode) {
         isCurrentlyInDebugMode.put(user, isDebugMode);
@@ -125,7 +123,7 @@ public class ExecutionManager {
 
     public void CheckForCreditsAboveProgramAverage(User user, ArchitectureGeneration architecture, SharedProgramsContainer sharedProgramsContainer) throws InsufficientResourcesException {
         float avgCost = sharedProgramsContainer.getAvgCost(user.getActiveProgram().getProgramName());
-        if(user.getCredits()-architecture.getCost()<avgCost){
+        if (user.getCredits()-architecture.getCost()<avgCost) {
             throw new InsufficientResourcesException("User credit total, less than active program average cost");
         }
     }

@@ -33,7 +33,6 @@ public class TopComponentController{
     private Stage primaryStage;
     private PrimaryController primaryController;
     private RightSideController rightController;
-    private LeftSideController leftController;
     private List<String> availableCSSFileNames;
 
     @FXML
@@ -149,10 +148,6 @@ public class TopComponentController{
                         .then("No Available Skin")
                         .otherwise("Choose a Skin")
         );
-    }
-
-    public void setLeftController(LeftSideController leftController) {
-        this.leftController = leftController;
     }
 
     public void setPrimaryController(PrimaryController primaryController) {
