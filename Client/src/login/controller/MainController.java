@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import okhttp3.*;
 
+import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
 
@@ -72,11 +73,11 @@ public class MainController {
                 if (response.isSuccessful()) {
                     Platform.runLater(() -> {
                         try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard/resources/fxml/dashboard.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard/resources/fxml/dashboard.fxml"));
                             Parent newRoot = loader.load();
                             Scene dashboardScene = new Scene(newRoot, 850, 600);
                             dashboardScene.getStylesheets().clear();
-                            dashboardScene.getStylesheets().add(getClass().getResource("/css/dark-mode.css").toExternalForm());
+                            dashboardScene.getStylesheets().add(getClass().getResource("/css/light-mode.css").toExternalForm());
 
                             PrimaryController controller = loader.getController();
                             Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
