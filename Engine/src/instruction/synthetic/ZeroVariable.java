@@ -1,5 +1,6 @@
 package instruction.synthetic;
 
+import dto.ArchitectureGeneration;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.SyntheticInstruction;
@@ -21,12 +22,14 @@ public class ZeroVariable extends SyntheticInstruction {
         super(num, variable, CYCLES, label, destinationLabel);
         command = variable.getName() + " <- " + "0";
         level = 1;
+        architecture = ArchitectureGeneration.II;
     }
 
     public ZeroVariable(int num, Variable variable, Label label, Label destinationLabel, Instruction parentInstruction) {
         super(num, variable, CYCLES, label, destinationLabel, parentInstruction);
         command = variable.getName() + " <- " + "0";
         level = 1;
+        architecture = ArchitectureGeneration.II;
     }
 
     @Override

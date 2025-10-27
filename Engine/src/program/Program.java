@@ -1,6 +1,8 @@
 package program;
 
 import XMLandJaxB.*;
+import dto.ProgramData;
+import dto.ArchitectureGeneration;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.InstructionFactory;
@@ -13,6 +15,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import program.function.Function;
 import program.function.FunctionsContainer;
+import user.User;
 
 import java.io.File;
 import java.util.Map;
@@ -45,6 +48,19 @@ public class Program implements Serializable {
     private final VariableFactory variableFactory;
     private int nextInstructionIdForDebug;
     private boolean isInDebugMode = false;
+    private String uploadingUser;
+    private int numberOfRuns = 0;
+    private int costOfAllRuns;
+    private String originProgramName = "";
+    private ArchitectureGeneration minimalArchitectureNeededForExecution;
+
+    public String getOriginProgramName() {
+        return originProgramName;
+    }
+
+    protected void setOriginProgramName(String originProgramName) {
+        this.originProgramName = originProgramName;
+    }
 
     public Program(String filePath) throws FileNotFoundException, JAXBException {
         this.labelFactory = new LabelFactory();
@@ -89,14 +105,19 @@ public class Program implements Serializable {
         if (!instructionList.isEmpty()) {
             this.currentInstruction = instructionList.getFirst();
         }
+        calculateMinimalArchitectureGeneration();
     }
 
-    public Program(SInstructions sInstructions, String programName, FunctionsContainer functionsContainer) throws FileNotFoundException {
+    public Program(SInstructions sInstructions, String programName, FunctionsContainer functionsContainer,FunctionsContainer sharedFunctionContainer) throws FileNotFoundException {
         this.labelFactory = new LabelFactory();
         this.variableFactory = new VariableFactory();
         this.functionsContainer = functionsContainer;
 
+        // Load program name
+        this.programName = programName;
+
         InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
+        instructionFactory.setSharedFunctionsContainer(sharedFunctionContainer);
         int instructionCounter = 1;
         boolean containsExit = false;
 
@@ -115,8 +136,7 @@ public class Program implements Serializable {
             Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
             Labels.put(EXIT_LABEL, ExitInstruction); // Special case: EXIT label
         }
-        // Load program name
-        this.programName = programName;
+
         Set<Label> missingLabels = instructionFactory.getMissingLabels();
 
         //this is for functions (their set is empty)
@@ -132,6 +152,98 @@ public class Program implements Serializable {
         if (!missingLabels.isEmpty()) {
             throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
         }
+        calculateMinimalArchitectureGeneration();
+    }
+
+    // In Program.java
+
+    public Program(SProgram sProgram, User user) {
+        this.labelFactory = new LabelFactory();
+        this.variableFactory = new VariableFactory();
+        this.functionsContainer = new FunctionsContainer();
+        this.uploadingUser = user.getUsername();
+        this.programName = sProgram.getName();
+
+        FunctionsContainer sharedFunctionsContainer = user.getFunctionsContainer();
+
+        // 1. Handle functions if they exist. This part is fine.
+        Optional<SFunctions> sFunctionsOpt = Optional.ofNullable(sProgram.getSFunctions());
+        sFunctionsOpt.ifPresent(sFunctions -> {
+
+            functionsContainer.setup(sFunctions.getSFunction(), sharedFunctionsContainer, this);
+
+
+            functionsContainer.getFunctionNames().forEach(functionName -> {
+                try {
+                    synchronized (sharedFunctionsContainer) {
+                        functionsContainer.tryGetFunction(functionName, sharedFunctionsContainer);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        });
+
+        // 2. Load instructions INDEPENDENTLY of functions. ✅
+        List<SInstruction> sInstructions = sProgram.getSInstructions().getSInstruction();
+        InstructionFactory instructionFactory = new InstructionFactory(Variables, labelFactory, variableFactory, functionsContainer);
+        instructionFactory.setSharedFunctionsContainer(sharedFunctionsContainer);
+        int instructionCounter = 1;
+        boolean containsExit = false;
+
+        for (SInstruction sInstr : sInstructions) {
+            Instruction newInstruction = instructionFactory.GenerateInstruction(sInstr, instructionCounter);
+            instructionList.add(newInstruction);
+            if (!newInstruction.getLabel().equals(EMPTY_LABEL)) {
+                Labels.put(newInstruction.getLabel(), newInstruction);
+            }
+            if (newInstruction.getDestinationLabel().equals(EXIT_LABEL)) {
+                containsExit = true;
+            }
+            instructionCounter++;
+        }
+        if (containsExit) {
+            Instruction ExitInstruction = instructionFactory.GenerateExitInstruction(instructionList.size());
+            Labels.put(EXIT_LABEL, ExitInstruction);
+        }
+        programName = sProgram.getName();
+        Set<Label> missingLabels = instructionFactory.getMissingLabels();
+        if (!missingLabels.isEmpty()) {
+            throw new IllegalArgumentException("The following labels are used but not defined: " + missingLabels);
+        }
+
+        // 3. The rest of the setup
+        this.statistics = new Statistics();
+        this.cycleCounter = 0;
+
+        // This line is now safe, as long as the XML has at least one instruction.
+        if (!instructionList.isEmpty()) {
+            this.currentInstruction = instructionList.getFirst();
+        }
+
+        this.runCounter = 1;
+        this.currentProgramLevel = 0;
+        this.maxProgramLevel = calculateMaxProgramLevel();
+        this.usedXVariableNames = Variables.keySet().stream()
+                .filter(name -> name.startsWith("x"))
+                .collect(Collectors.toSet());
+
+        calculateMinimalArchitectureGeneration();
+    }
+
+    public ArchitectureGeneration getMinimalArchitectureNeededForExecution() {
+        return minimalArchitectureNeededForExecution;
+    }
+
+    private void calculateMinimalArchitectureGeneration() {
+        // ArchitectureGeneration.I is the lowest possible value.
+        // We use Comparator.naturalOrder() because the Enum values are defined in ascending order (I, II, III, IV)
+        // and Enum.compareTo uses the ordinal (position in the declaration).
+
+        this.minimalArchitectureNeededForExecution = instructionList.stream()
+                .map(Instruction::getArchitecture)
+                .max(Comparator.naturalOrder())
+                .orElse(ArchitectureGeneration.I);
     }
 
     public void loadProgram(String filePath) throws FileNotFoundException, JAXBException{
@@ -156,6 +268,7 @@ public class Program implements Serializable {
                     }
                 });
             });
+
 
 
 
@@ -297,5 +410,45 @@ public class Program implements Serializable {
         if (!Variables.containsKey("y")) {
             Variables.put("y", new Variable("y", 0));
         }
+    }
+
+    public String getUploadingUser() {
+        return uploadingUser;
+    }
+
+    public void setUploadingUser(String uploadingUser) {
+        this.uploadingUser = uploadingUser;
+    }
+
+    public void updateNumberOfRuns() {
+        numberOfRuns ++;
+    }
+
+    public int getNumberOfRuns() {
+        return numberOfRuns;
+    }
+
+    public void updateCostOfAllRuns(int costForLastExecution) {
+        this.costOfAllRuns += costForLastExecution;
+    }
+
+    public int getCostOfAllRuns() {
+        return costOfAllRuns;
+    }
+
+    public void loadSavedState(ProgramData savedState) {
+        savedState.getProgramVariablesCurrentState().forEach(variable -> {
+            Variables.get(variable.getName()).setValue(variable.getValue());
+        });
+        this.cycleCounter = savedState.getCurrentCycles();
+        this.nextInstructionIdForDebug = savedState.getNextInstructionIdForDebug();
+    }
+
+    public String getType() {
+        return "Program";
+    }
+
+    public void resetVariablesValues() {
+        Variables.values().forEach(variable -> variable.setValue(0));
     }
 }

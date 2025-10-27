@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="execution.controller.LeftSideController">
+
+    <!-- TOP: grid with 5 columns (left: expansion menu+label, center: clear button, right: highlight menu) -->
+    <top>
+        <GridPane prefHeight="50.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <!-- column 0: content-sized (left-aligned) -->
+                <ColumnConstraints hgrow="NEVER" minWidth="0.0" prefWidth="-1.0" />
+                <!-- column 1: empty flexible spacer (grows) -->
+                <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" prefWidth="0.0" />
+                <!-- column 2: center column for button -->
+                <ColumnConstraints hgrow="NEVER" minWidth="0.0" prefWidth="-1.0" />
+                <!-- column 3: empty flexible spacer (grows) -->
+                <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" prefWidth="0.0" />
+                <!-- column 4: content-sized (right-aligned) -->
+                <ColumnConstraints hgrow="NEVER" minWidth="0.0" prefWidth="-1.0" />
+            </columnConstraints>
+
+            <children>
+                <!-- left: expansion menu + max label stuck to column 0 -->
+                <HBox alignment="CENTER_LEFT" spacing="6.0" GridPane.columnIndex="0">
+                    <children>
+                        <MenuButton fx:id="expansionLevelMenu" minWidth="50.0" mnemonicParsing="false" text="Select expansion level">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Action 1" />
+                                <MenuItem mnemonicParsing="false" text="Action 2" />
+                            </items>
+                        </MenuButton>
+                        <Label fx:id="maxExpandLevel" text="/Max" />
+                    </children>
+                </HBox>
+
+                <!-- center: clear all breakpoints button in column 2 -->
+                <Button fx:id="clearBreakpointsBtn" mnemonicParsing="false" onAction="#clearAllBreakpoints" text="Clear all breakpoints" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+                    <graphic>
+                        <HBox alignment="CENTER" spacing="10">
+                            <children>
+                                <SVGPath fx:id="clear_breakpoints_icon" content="M10 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10m-6 5a6 6 0 1 1 12 0a6 6 0 0 1-12 0 M1.15 1.878a.514.514 0 0 1 .728-.727l16.971 16.971a.514.514 0 0 1-.727.727z" fill="white" rotate="90" scaleX="0.8" scaleY="0.8" stroke="transparent" style="-fx-stroke-width:1;" />
+                            </children>
+                        </HBox>
+                    </graphic>
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                </Button>
+
+                <!-- right: highlight selection menu stuck to column 4 and aligned right -->
+                <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="4">
+                    <children>
+                        <MenuButton fx:id="highlightSelection" text="Select Var/Label">
+                            <items>
+                                <MenuItem text="Action 1" />
+                                <MenuItem text="Action 2" />
+                            </items>
+                        </MenuButton>
+                    </children>
+                </HBox>
+            </children>
+
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+         <rowConstraints>
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+    </top>
+    <center>
+        <SplitPane dividerPositions="0.7" orientation="VERTICAL">
+            <items>
+                <!-- top area -->
+                <AnchorPane>
+                    <children>
+                  <VBox alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                              <!-- include the instruction table; anchors make it stretch to the anchorpane -->
+                              <fx:include fx:id="instructionsTable" source="InstructionTableComponent.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS" />
+
+                           <!-- Summary line centered -->
+                           <Label fx:id="summaryLine" alignment="CENTER" mouseTransparent="true" text="Summary Line" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                  </VBox>
+                    </children>
+                </AnchorPane>
+
+                <!-- bottom area: history include -->
+                <AnchorPane>
+                    <children>
+                        <fx:include fx:id="chosenInstructionHistoryTable" source="InstructionTableComponent.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    </children>
+                </AnchorPane>
+            </items>
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" />
+         </BorderPane.margin>
+        </SplitPane>
+    </center>
+
+</BorderPane>

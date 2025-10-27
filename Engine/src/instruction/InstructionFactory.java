@@ -33,6 +33,11 @@ public class InstructionFactory {
     private final Set<Label> sourceLabelSet = new HashSet<>();
     private final Map<String, Variable> variables;
     private final FunctionsContainer functions;
+    private FunctionsContainer sharedFunctionsContainer;
+
+    public void setSharedFunctionsContainer(FunctionsContainer sharedFunctionsContainer) {
+        this.sharedFunctionsContainer = sharedFunctionsContainer;
+    }
 
     public InstructionFactory(Map<String, Variable> variables, LabelFactory labelFactory, VariableFactory variableFactory, FunctionsContainer functions) {
         this.variables = variables;
@@ -171,7 +176,13 @@ public class InstructionFactory {
             return null;
         }
         try {
-            return functions.tryGetFunction(functionName);
+            if( sharedFunctionsContainer == null){
+                return functions.tryGetFunction(functionName);
+            }else{
+            }
+            synchronized (sharedFunctionsContainer) {
+                return functions.tryGetFunction(functionName, sharedFunctionsContainer);
+            }
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
@@ -226,7 +237,13 @@ public class InstructionFactory {
 
         Function func = null;
         try {
-            func = functions.tryGetFunction(functionName);
+            if( sharedFunctionsContainer == null){
+                func = functions.tryGetFunction(functionName);
+            }else{
+            }
+            synchronized (sharedFunctionsContainer) {
+                func = functions.tryGetFunction(functionName, sharedFunctionsContainer);
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

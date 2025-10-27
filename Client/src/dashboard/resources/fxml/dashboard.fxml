@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<ScrollPane fx:id="root" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboard.controller.PrimaryController">
+<content>
+    <BorderPane maxHeight="Infinity" maxWidth="Infinity">
+
+        <top>
+            <!-- top bar included -->
+            <fx:include fx:id="topComponent" source="topComponent.fxml" />
+        </top>
+
+        <!-- center: left / right split -->
+        <center>
+            <SplitPane dividerPositions="0.33" BorderPane.alignment="CENTER">
+                <items>
+                    <!-- LEFT slot -->
+                    <AnchorPane>
+                        <children>
+                            <fx:include fx:id="leftSide" source="leftSide.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        </children>
+                    </AnchorPane>
+
+                    <!-- RIGHT slot -->
+                    <AnchorPane>
+                        <children>
+                            <fx:include fx:id="rightSide" source="rightSide.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        </children>
+                    </AnchorPane>
+                </items>
+            </SplitPane>
+        </center>
+
+    </BorderPane>
+</content>
+</ScrollPane>

@@ -27,7 +27,7 @@ import javafx.util.converter.NumberStringConverter;
 import model.ArgumentTableEntry;
 import model.HistoryTableEntry;
 import model.InstructionTableEntry;
-import program.data.VariableDTO;
+import dto.VariableDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -483,7 +483,6 @@ public class RightSideController{
         tableView.setEditable(true);
         tableView.setPrefSize(200, 200);
         tableView.setPadding(new Insets(20, 20, 50, 20));
-        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tableView.setId("runAllVariablesTable");
 
         TableColumn<Object, String> colName = new TableColumn<>("Variable Name");

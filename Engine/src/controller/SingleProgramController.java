@@ -3,8 +3,8 @@ package controller;
 import jakarta.xml.bind.JAXBException;
 import program.Program;
 import program.ProgramExecutioner;
-import program.data.ProgramData;
-import program.data.VariableDTO;
+import dto.ProgramData;
+import dto.VariableDTO;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -54,17 +54,17 @@ public class SingleProgramController implements Model, Serializable {
     @Override
     public void Expand(int level) {
         int maxLevel = activeProgramExpansionsByLevel.get(0).getMaxProgramLevel();
-        if(level > maxLevel) {
+        if (level > maxLevel) {
             throw new IllegalArgumentException("Level exceeds maximum program level of " + maxLevel);
         }
         else if (level < 0) {
             throw new IllegalArgumentException("Level is a negative number! the level number should be between 0 and " + activeProgram.getMaxProgramLevel());
         }
-        if(activeProgramExpansionsByLevel.containsKey(level)) {
+        if (activeProgramExpansionsByLevel.containsKey(level)) {
             activeProgram = activeProgramExpansionsByLevel.get(level);
         } else {
             Program expandedProgram = activeProgramExpansionsByLevel.get(0).expand(level);
-            if(expandedProgram != null) {
+            if (expandedProgram != null) {
                 activeProgramExpansionsByLevel.put(level, expandedProgram);
                 activeProgram = expandedProgram;
             }

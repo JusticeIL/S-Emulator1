@@ -1,6 +1,7 @@
 package program.function;
 
 import XMLandJaxB.SFunction;
+import controller.SharedProgramsContainer;
 import instruction.ExpandedSyntheticInstructionArguments;
 import instruction.Instruction;
 import instruction.component.Label;
@@ -9,7 +10,8 @@ import instruction.component.Variable;
 import instruction.component.VariableFactory;
 import program.Program;
 import program.ProgramExecutioner;
-import program.data.VariableDTO;
+import dto.VariableDTO;
+import user.User;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -19,7 +21,29 @@ public class Function extends Program {
     private final String userString;
 
     public Function(SFunction sFunction,FunctionsContainer functionsContainer) throws FileNotFoundException {
-        super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer);
+        super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer,null);
+        this.userString = sFunction.getUserString();
+    }
+
+    public Function(SFunction sFunction,FunctionsContainer functionsContainer,FunctionsContainer sharedFunctionsContainer,Program originProgram) throws FileNotFoundException {
+        super(sFunction.getSInstructions(), sFunction.getName(), functionsContainer, sharedFunctionsContainer);
+        Optional<Program> originProgramOptional = Optional.ofNullable(originProgram);
+        originProgramOptional.ifPresent(originProgram1 -> {
+            setUploadingUser(originProgram.getUploadingUser());
+            setOriginProgramName(originProgram.getProgramName());
+        });
+        this.userString = sFunction.getUserString();
+    }
+
+    public Function(SFunction sFunction, User user) throws FileNotFoundException {
+        super(sFunction.getSInstructions(), sFunction.getName(),new FunctionsContainer() ,user.getFunctionsContainer());
+        setUploadingUser(user.getUsername());
+        this.userString = sFunction.getUserString();
+    }
+
+    public Function(SFunction sFunction, FunctionsContainer sharedFunctionsContainer,User user) throws FileNotFoundException {
+        super(sFunction.getSInstructions(), sFunction.getName(),new FunctionsContainer() ,sharedFunctionsContainer);
+        setUploadingUser(user.getUsername());
         this.userString = sFunction.getUserString();
     }
 
@@ -40,9 +64,13 @@ public class Function extends Program {
             verifiedArgumentList.add(functionArgument);
             argumentCounter++;
         }
+        int returnValue;
+        synchronized (this){
+            programExecutioner.executeProgram(new HashSet<>(verifiedArgumentList));
+            returnValue = getVariables().stream().filter(var->var.getName().equals("y")).toList().getFirst().getValue();
+        }
 
-        programExecutioner.executeProgram(new HashSet<>(verifiedArgumentList));
-        return getVariables().stream().filter(var->var.getName().equals("y")).toList().getFirst().getValue();
+        return returnValue;
     }
 
     public ExpandedSyntheticInstructionArguments open(LabelFactory labelFactory, VariableFactory variableFactory, Map<Label,Label> LabelTransitionsOldToNew , Map<String, Variable> VariableTransitionsOldToNew){
@@ -81,7 +109,17 @@ public class Function extends Program {
         return new ExpandedSyntheticInstructionArguments(newVariables,labelMap,instructions);
     }
 
+    @Override
+    public String getProgramName() {
+        return super.getProgramName();
+    }
+
     public String getName() {
         return getUserString();
+    }
+
+    @Override
+    public String getType() {
+        return "Function";
     }
 }

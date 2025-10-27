@@ -1,0 +1,67 @@
+package servlets.user;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import configuration.CookiesAuthenticator;
+import controller.MultiUserModel;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.util.Set;
+
+@WebServlet(name = "CreditsManagementServlet", urlPatterns = {"/api/user/credit"})
+public class CreditsManagementServlet extends HttpServlet {
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req, resp,() -> {
+            //onSuccess
+            // Parse JSON request body
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
+            if (!jsonObject.has("addCredits")) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("Missing 'addCredits' field");
+                return;
+            }
+            long creditsToAdd = jsonObject.get("addCredits").getAsLong();
+
+            if (creditsToAdd <= 0) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("The credits amount must be a positive number");
+                return;
+            }
+
+            // Extract username from cookie
+            String username = authenticator.getUsername(req);
+
+            if (username == null) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("Missing or invalid username cookie");
+                return;
+            }
+
+            // Retrieve user from context
+
+            Set<String> usersSet = (Set<String>) getServletContext().getAttribute("users");
+            if (!usersSet.contains(username)) {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("User not found");
+                return;
+            }
+            MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
+            // Add credits to user
+            model.addCredits(username, creditsToAdd);
+
+            // Send the updated credit amount in the response
+            String responseJson = gson.toJson(model.getUserData(username));
+            resp.setContentType("application/json");
+            resp.getWriter().write(responseJson);
+        });
+    }
+}

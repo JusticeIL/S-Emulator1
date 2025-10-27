@@ -11,7 +11,7 @@
 
 This project is a simple emulator for the S-language, developed as part of a university Java programming assignment. It includes:
 
-- A **GUI module** that provides an interactive GUI, handles user input, and displays program output better than a console.
+- A **GUI module** **JavaFX**-based GUI that handles user input and provides an interactive interface.
 - An **engine module** that holds the emulator logic:
   - program representation (model).
   - instruction expansion.
@@ -20,16 +20,19 @@ This project is a simple emulator for the S-language, developed as part of a uni
   - program execution.
   - Highlighting labels and variables.
   - statistics.
+  - credits handling.
+  - architecture handling.
+  - user data and user logic.
 
 The architecture follows the **Model–View–Controller (MVC)** design pattern:
-  - Model → Program data, instructions, and statistics (engine).
+  - Model → User data, Program data, instructions, and statistics (engine).
   - View → **JavaFX**-based GUI.
-  - Controller → Connects user actions in the GUI with the engine logic.
+  - Controller → Connects user actions in the GUI with the engine logic, composed of variety types of DTOs (**D**ata **T**ransfer **O**bjects).
 
 The emulator now supports:
-- **Function invocation** allowing functions to be called with arguments.
-- **Quotation** and **JEF** (**J**ump **E**qual **F**unction) instructions, for inserting function calls as arguments into other functions.
-- Controller → Connects user actions in the GUI with the engine logic.
+- Credits usage.
+- Different architectures.
+- Run other user's programs and runs.
 
 ---
 
@@ -39,28 +42,46 @@ The emulator now supports:
    ```bash
    git clone https://github.com/JusticeIL/S-Emulator1.git
    ```
-
-2. **Copy .jar files**  
-   Copy the two jars (`Engine.jar` and `GUI.jar`) into a new folder (named in English).
-
-3. **Copy essential dependencies**  
-   Copy the `lib` folder into the newly created folder.
-
-4. **Open the new folder**  
-   Open the newly created folder from the terminal:  
+   
+2. **Enter the correct folder**  
+   If you are using Windows, navigate to the `Windows` folder:
    ```bash
-   cd <newly-created-folder-name>
+   cd S-Emulator1/S-embly 3/Windows
+   ```  
+   If you are using Mac, navigate to the `Mac` folder:
+   ```bash
+   cd S-Emulator1/S-embly 3/Mac
    ```
 
-5. **Run the GUI S-Emulator program**  
-   Run the following command in the terminal:  
+3.**Copy .war file**  
+   Copy the .WAR file from the `S-embly 3` folder (`S-emulator.war`) into the pre-defined tomcat webapps folder (`lib/tomcat/apache-tomcat-10.1.46/webapps`).
+
+4.**Deploy the tomcat server**  
+   Start the tomcat server by running the `startup.bat` script (Windows) or `startup.sh` script (Mac) from the `lib/tomcat/apache-tomcat-10.1.46/bin` folder:  
    ```bash
-   java -jar GUI.jar
+   # Windows
+   cd lib/tomcat/apache-tomcat-10.1.46/bin
+   startup.bat
+
+   # Mac
+   cd lib/tomcat/apache-tomcat-10.1.46/bin
+   ./startup.sh
+   ```
+
+5.**Run the GUI S-Emulator program**  
+   If you are using Windows, run the `run.bat` script from the `Windows` folder:
+   ```bash
+   run.bat
+   ```  
+   If you are using Mac, run the `run.sh` script from the `Mac` folder:
+   ```bash
+   ./run.sh
    ```
 
 > 🔥 **Important:**  
 > This project requires Java 21 or later (Oracle JDK).  
 > The emulator only supports `.xml` program files that conform to a provided XML Schema (`.xsd`).
+> Make sure the tomcat server is running on `localhost:8080` before starting the GUI.
 
 ---
 
@@ -68,10 +89,9 @@ The emulator now supports:
 
 - **Load XML Program:**  
   Load an S-language program definition from an XML file using JAXB.
-  The program replaces any previously loaded program only if the new one is valid.
 
 - **Show Program:**  
-  Display the program name, variables, labels, and all instructions with cycle counts.
+  Display the program name, variables, labels, and all instructions with cycle counts, in a dedicated "execution" window.
 
 - **Expand Program:**  
   Expand synthetic instructions into basic instructions up to a user-specified expansion level.
@@ -83,7 +103,7 @@ The emulator now supports:
   Allowing expansion up to the program’s maximum allowed level.
   
 - **Run History / Statistics:**  
-  Stores all executed runs, including run ID, expansion level, all arguments, final y value, and cycles.
+  Each user stores all executed runs, including run ID, expansion level, all arguments, final y value, and cycles inside the server.
   
 - **Highlighting Instruction Components**  
   Allow the user to highlight instructions that use certain labels and variables in the program's instructions table.
@@ -98,6 +118,9 @@ The emulator now supports:
 - **CSS Skins**  
     Change the GUI appearance using different CSS stylesheets for better user experience and personal customization.
 
+- **Use another user's history**  
+  It is possible to rerun and execute another user's program or function from his dedicated statistics window.
+
 ---
 
 ## Notes
@@ -105,6 +128,7 @@ The emulator now supports:
 - The emulator parses XML files using **JAXB (Jakarta XML Binding)**.
 - Labels are automatically sorted lexicographically, with `EXIT` always printed last.
 - Expansion is supported up to each program’s maximum defined level.
+- Both server and client sides uses HTTP protocol for network communication.
 
 ---
 

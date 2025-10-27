@@ -1,5 +1,6 @@
 package instruction;
 
+import dto.ArchitectureGeneration;
 import instruction.component.Label;
 import instruction.component.LabelFactory;
 import instruction.component.Variable;
@@ -15,11 +16,13 @@ abstract public class SyntheticInstruction extends Instruction {
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel) {
         super(num, cycles ,label, destinationLabel,InstructionType.S, variable);
         this.isExpanded = false;
+        architecture = ArchitectureGeneration.III;
     }
 
     public SyntheticInstruction(int num, Variable variable, int cycles, Label label, Label destinationLabel, Instruction parentInstruction) {
         super(num, cycles ,label, destinationLabel,InstructionType.S, variable, parentInstruction);
         this.isExpanded = false;
+        architecture = ArchitectureGeneration.III;
     }
 
     public ExpandedSyntheticInstructionArguments generateExpandedInstructions(LabelFactory labelFactory, VariableFactory variableFactory) {

@@ -1,0 +1,379 @@
+package dashboard.controller;
+
+import com.google.gson.Gson;
+import dto.UserDTO;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+import static configuration.ClientConfiguration.CLIENT;
+import static configuration.DialogUtils.showAlert;
+import static configuration.DialogUtils.showOK;
+import static configuration.ResourcesConfiguration.*;
+
+public class TopComponentController{
+
+    private Stage primaryStage;
+    private List<String> availableCSSFileNames;
+
+    @FXML
+    private Label userNameDisplay;
+
+    @FXML
+    private Label currentCredits;
+
+    @FXML
+    private CheckBox allowAnimationBox;
+
+    @FXML
+    private MenuButton skinMenu;
+
+    @FXML
+    private Button loadFileBtn;
+
+    @FXML
+    private Label currentLoadedProgramPath;
+
+    @FXML
+    private Button addCreditsBtn;
+
+    @FXML
+    private TextField creditsTextField;
+
+    @FXML
+    public void initialize() {
+        HttpUrl url = HttpUrl.parse(BASE_URL);
+        List<Cookie> cookies = CLIENT.cookieJar().loadForRequest(Objects.requireNonNull(url));
+
+        for (Cookie cookie : cookies) {
+            if ("username".equals(cookie.name())) {
+                userNameDisplay.setText(cookie.value().replace('_', ' '));
+            }
+        }
+
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + USER_RESOURCE))
+                .newBuilder()
+                .addQueryParameter("username", userNameDisplay.getText());
+        String finalURL = urlBuilder.build().toString();
+
+        // Building the request based on the body from above
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+
+        try (Response response = call.execute()) {
+            if (response.isSuccessful()) {
+                try (ResponseBody responseBody = response.body()) {
+                    Gson gson = new Gson();
+                    UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                    Platform.runLater(() -> currentCredits.setText("Available Credits: " + user.getCredits()));
+
+                } catch (Exception e) {
+                    showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
+                }
+
+            } else {
+                try (ResponseBody body = response.body()) {
+                    String responseBody = Objects.requireNonNull(body).string();
+                    showAlert("Failed to retrieve user data: " + response.code() + "\n" + responseBody, primaryStage);
+                } catch (Exception e) {
+                    showAlert("Failed to retrieve user data: " + response.code(), primaryStage);
+                }
+            }
+        } catch (IOException e) {
+            showAlert("Failed to close the response correctly, " + e.getMessage(), primaryStage);
+        }
+
+        availableCSSFileNames = listCssFiles();
+
+        // Initialize the skin chooser menu
+        skinMenu.getItems().clear();
+        skinMenu.disableProperty().bind(
+                Bindings.isEmpty(skinMenu.getItems())
+        );
+        availableCSSFileNames.stream().forEach(fileName -> {
+            MenuItem menuItem = new MenuItem(fileName);
+            menuItem.setOnAction(event -> {
+                Scene scene = primaryStage.getScene();
+                if (scene == null) { // Case: No scene available on primaryStage
+                    return;
+                }
+
+                // Build candidate resource paths (absolute for Class.getResource)
+                String[] candidates = new String[] {
+                        "/css/" + fileName + ".css",
+                        "/css/" + fileName + ".css"
+                };
+
+                URL cssUrl = null;
+                for (String p : candidates) {
+                    cssUrl = getClass().getResource(p);
+                    if (cssUrl != null) break;
+                }
+
+                if (cssUrl == null) { // Case: CSS file not found
+                    return;
+                }
+
+                scene.getStylesheets().clear();
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            });
+
+            skinMenu.getItems().add(menuItem);
+        });
+
+        // Bind the text property based on whether items are empty or not
+        skinMenu.textProperty().bind(
+                Bindings.when(Bindings.isEmpty(skinMenu.getItems()))
+                        .then("No Available Skin")
+                        .otherwise("Choose a Skin")
+        );
+
+        // Handle cases when user preses enter on the credits text field
+        creditsTextField.setOnAction(event -> {
+            try {
+                String creditsToAddAsString = creditsTextField.getText();
+                if (!creditsToAddAsString.isEmpty()) {
+                    Integer.parseInt(creditsTextField.getText());
+                }
+                addCreditsBtn.fire(); // Triggers the ActionEvent
+            } catch (NumberFormatException e) {
+                showAlert("Please enter a number", primaryStage);
+                creditsTextField.clear();
+            }
+        });
+    }
+
+    @FXML
+    void loadProgramPressed(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Program");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Program File", "*.xml"));
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        if (selectedFile == null) {
+            return;
+        }
+
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + PROGRAM_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Building the body sent to the server to include the xml file
+        RequestBody body = new MultipartBody.Builder()
+                .addFormDataPart("program", selectedFile.getName(), RequestBody.create(selectedFile, MediaType.parse("multipart/form-data")))
+                .build();
+
+        // Building the request based on the body from above
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .post(body)
+                .build();
+
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (response) {
+                    if (response.isSuccessful()) {
+                        Platform.runLater(() -> {
+                            currentLoadedProgramPath.setText(selectedFile.getAbsolutePath());
+                        });
+                        showOK("Program successfully loaded!", primaryStage);
+                    } else {
+                        try (ResponseBody body = response.body()) {
+                            String responseBody = Objects.requireNonNull(body).string();
+                            showAlert("Failed to send program to server: " + response.code() + "\n" + responseBody, primaryStage);
+                        } catch (Exception e) {
+                            showAlert("Failed to send program to server: " + response.code(), primaryStage);
+                        }
+                    }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
+            }
+        });
+    }
+
+    @FXML
+    void addCredits(ActionEvent event) {
+
+        String chargeAmountAsText = creditsTextField.getText();
+        if (chargeAmountAsText.isEmpty()) { // Case: no amount entered
+            showAlert("Please enter a credit amount", primaryStage);
+            return;
+        }
+        // Parse from text to int
+        long chargeAmount = 0;
+        try {
+            chargeAmount = Long.parseLong(chargeAmountAsText);
+        } catch (NumberFormatException e) {
+            showAlert("Error " + e.getMessage() + " because it is not an acceptable number", primaryStage);
+            creditsTextField.clear();
+            return;
+        }
+
+        if (chargeAmount <= 0) { // Case: non-positive amount entered
+            showAlert("Please enter a positive credit amount", primaryStage);
+            creditsTextField.clear();
+            return;
+        }
+
+        // Build URL
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + ADD_CREDITS_RESOURCE))
+                .newBuilder();
+        String finalURL = urlBuilder.build().toString();
+
+        // Create a temporal object containing the amount of credits to charge as json
+        Gson gson = new Gson();
+        String json = gson.toJson(Map.of("addCredits", chargeAmount));
+
+        // Build the body sent to the server to include the creditRequest object
+        RequestBody body = RequestBody.create(
+                json,
+                MediaType.parse("application/json")
+        );
+
+        // Building the request based on the body from above
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .put(body)
+                .build();
+
+        // Send request
+        Call call = CLIENT.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                try (response) {
+                    if (response.isSuccessful()) {
+                        try (ResponseBody responseBody = response.body()) {
+                            Gson gson = new Gson();
+                            UserDTO user = gson.fromJson(Objects.requireNonNull(responseBody).string(), UserDTO.class);
+                            Platform.runLater(() -> {
+                                currentCredits.setText("Available Credits: " + user.getCredits());
+                            });
+                        } catch (Exception e) {
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), primaryStage);
+                        }
+
+                    } else {
+                        try (ResponseBody body = response.body()) {
+                            String responseBody = Objects.requireNonNull(body).string();
+                            showAlert("Failed to add credits to user: " + response.code() + "\n" + responseBody, primaryStage);
+                        } catch (Exception e) {
+                            showAlert("Failed to add credits to user: " + response.code(), primaryStage);
+                        }
+                    }
+                } catch (Exception e) {
+                    showAlert("Failed to close the connection properly", primaryStage);
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                showAlert("Failed to get the response from the server, " + e.getMessage(), primaryStage);
+            }
+        });
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    public void setUsername(String text) {
+        userNameDisplay.setText(text);
+    }
+
+    public List<String> listCssFiles() {
+        final String resourcePath = "css"; // adjust if your CSS ends up at a different path in the JAR
+        List<String> cssFiles = new ArrayList<>();
+
+        try {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            URL dirURL = cl.getResource(resourcePath);
+
+            if (dirURL != null) {
+                String protocol = dirURL.getProtocol();
+
+                if ("file".equals(protocol)) { // Case: IDE / filesystem
+                    Path folder = Paths.get(dirURL.toURI());
+                    try (DirectoryStream<Path> ds = Files.newDirectoryStream(folder, "*.css")) {
+                        for (Path p : ds) cssFiles.add(removeExtension(p.getFileName().toString()));
+                    }
+                } else if ("jar".equals(protocol)) { // Case: jar entry
+                    String fullPath = dirURL.getPath();
+                    String jarPath = fullPath.substring(5, fullPath.indexOf("!"));
+                    jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+                    try (JarFile jar = new JarFile(jarPath)) {
+                        Enumeration<JarEntry> entries = jar.entries();
+                        String prefix = resourcePath + "/";
+                        while (entries.hasMoreElements()) {
+                            JarEntry entry = entries.nextElement();
+                            String name = entry.getName();
+                            if (name.startsWith(prefix) && name.endsWith(".css") && !entry.isDirectory()) {
+                                String fileName = name.substring(prefix.length());
+                                cssFiles.add(removeExtension(fileName));
+                            }
+                        }
+                    }
+                } else { // Case: unknown protocol
+                    Enumeration<URL> urls = cl.getResources(resourcePath);
+                    while (urls.hasMoreElements()) {
+                        URL u = urls.nextElement();
+                    }
+                }
+            } else { // Case: resourcePath not found; check whether you packaged CSS under a different path.
+            }
+        } catch (Exception ex) {
+            showAlert("Failed to load resources: " + ex.getMessage(), primaryStage);
+        }
+
+        Collections.sort(cssFiles);
+        Collections.reverse(cssFiles);
+        return cssFiles;
+    }
+
+    // helper:
+    private String removeExtension(String s) {
+        int i = s.lastIndexOf('.');
+        return (i == -1) ? s : s.substring(0, i);
+    }
+
+    public String getUsername() {
+        return userNameDisplay.getText();
+    }
+
+    public BooleanProperty isAnimationAllowedProperty() {
+        return allowAnimationBox.selectedProperty();
+    }
+}

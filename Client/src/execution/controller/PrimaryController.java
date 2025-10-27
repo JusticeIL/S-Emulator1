@@ -1,0 +1,94 @@
+package execution.controller;
+
+import com.google.gson.Gson;
+import dto.ProgramData;
+import jakarta.servlet.http.HttpServletResponse;
+import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
+import javafx.stage.Stage;
+import okhttp3.*;
+
+import java.util.Objects;
+
+import static configuration.ClientConfiguration.CLIENT;
+import static configuration.DialogUtils.showAlert;
+import static configuration.ResourcesConfiguration.*;
+
+public class PrimaryController {
+
+    public ProgramData program;
+
+    @FXML
+    private ScrollPane root;
+
+    @FXML
+    private LeftSideController leftSideController;
+
+    @FXML
+    private RightSideController rightSideController;
+
+    @FXML
+    private TopComponentController topComponentController;
+
+    @FXML
+    public void initialize() {
+        program = null;
+
+        leftSideController.setRightController(rightSideController);
+        leftSideController.setTopController(topComponentController);
+        rightSideController.setLeftController(leftSideController);
+        rightSideController.setTopController(topComponentController);
+        topComponentController.setRightController(rightSideController);
+        topComponentController.setPrimaryController(this);
+        leftSideController.setPrimaryController(this);
+        rightSideController.setPrimaryController(this);
+
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + PROGRAM_RESOURCE))
+                .newBuilder();
+
+        String finalURL = urlBuilder.build().toString();
+
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .get()
+                .build();
+
+        Call call = CLIENT.newCall(request);
+
+        new Thread(() -> {
+            try (Response response = call.execute()) {
+                if (response.isSuccessful()) {
+                    if (response.code() == HttpServletResponse.SC_OK) {
+                        try (ResponseBody responseBody = response.body()) {
+                            Gson gson = new Gson();
+                            this.program = gson.fromJson(Objects.requireNonNull(responseBody).string(), ProgramData.class);
+                            topComponentController.initAllFields();
+                            leftSideController.initAllFields();
+                            rightSideController.initAllFields();
+                        } catch (Exception e) {
+                            showAlert("Failed to close the body stream correctly, " + e.getMessage(), (Stage) root.getScene().getWindow());
+                        }
+                    } else if (response.code() == HttpServletResponse.SC_NO_CONTENT) {
+                        showAlert("No program data detected for the user.", (Stage) root.getScene().getWindow());
+                    }
+                } else {
+                    showAlert("Failed to retrieve program data. HTTP Code: " + response.code(), (Stage) root.getScene().getWindow());
+                }
+            } catch (Exception e) {
+                showAlert("Error: " + e.getMessage(), (Stage) root.getScene().getWindow());
+            }
+        }).start();
+    }
+
+    public TopComponentController getTopComponentController() {
+        return topComponentController;
+    }
+
+    public LeftSideController getLeftSideController() {
+        return leftSideController;
+    }
+
+    public RightSideController getRightSideController() {
+        return rightSideController;
+    }
+}

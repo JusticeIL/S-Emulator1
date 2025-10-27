@@ -1,0 +1,51 @@
+27-Oct-2025 12:55:47.550 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version name:   Apache Tomcat/10.1.46
+27-Oct-2025 12:55:47.552 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Sep 8 2025 14:26:21 UTC
+27-Oct-2025 12:55:47.552 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version number: 10.1.46.0
+27-Oct-2025 12:55:47.553 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Mac OS X
+27-Oct-2025 12:55:47.553 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            15.6.1
+27-Oct-2025 12:55:47.553 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          aarch64
+27-Oct-2025 12:55:47.553 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Java Home:             /Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home
+27-Oct-2025 12:55:47.553 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Version:           21.0.8+12-LTS-250
+27-Oct-2025 12:55:47.553 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Vendor:            Oracle Corporation
+27-Oct-2025 12:55:47.553 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_BASE:         /Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46
+27-Oct-2025 12:55:47.553 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_HOME:         /Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.config.file=/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/conf/logging.properties
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djdk.tls.ephemeralDHKeySize=2048
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.protocol.handler.pkgs=org.apache.catalina.webresources
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.io.useCanonCaches=false
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dorg.apache.catalina.security.SecurityListener.UMASK=0027
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.lang=ALL-UNNAMED
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.io=ALL-UNNAMED
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.util=ALL-UNNAMED
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.base=/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.home=/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46
+27-Oct-2025 12:55:47.558 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.io.tmpdir=/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/temp
+27-Oct-2025 12:55:47.564 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent The Apache Tomcat Native library which allows using OpenSSL was not found on the java.library.path: [/Users/galrubinstein/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+27-Oct-2025 12:55:47.696 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["http-nio-8080"]
+27-Oct-2025 12:55:47.711 INFO [main] org.apache.catalina.startup.Catalina.load Server initialization in [238] milliseconds
+27-Oct-2025 12:55:47.729 INFO [main] org.apache.catalina.core.StandardService.startInternal Starting service [Catalina]
+27-Oct-2025 12:55:47.729 INFO [main] org.apache.catalina.core.StandardEngine.startInternal Starting Servlet engine: [Apache Tomcat/10.1.46]
+27-Oct-2025 12:55:47.736 INFO [main] org.apache.catalina.startup.HostConfig.deployWAR Deploying web application archive [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/S-emulator.war]
+27-Oct-2025 12:55:48.083 INFO [main] org.apache.jasper.servlet.TldScanner.scanJars At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+27-Oct-2025 12:55:48.099 INFO [main] org.apache.catalina.startup.HostConfig.deployWAR Deployment of web application archive [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/S-emulator.war] has finished in [363] ms
+27-Oct-2025 12:55:48.100 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/docs]
+27-Oct-2025 12:55:48.110 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/docs] has finished in [10] ms
+27-Oct-2025 12:55:48.110 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/manager]
+27-Oct-2025 12:55:48.124 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/manager] has finished in [14] ms
+27-Oct-2025 12:55:48.124 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/examples]
+27-Oct-2025 12:55:48.207 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/examples] has finished in [83] ms
+27-Oct-2025 12:55:48.207 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/ROOT]
+27-Oct-2025 12:55:48.214 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/ROOT] has finished in [7] ms
+27-Oct-2025 12:55:48.214 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/host-manager]
+27-Oct-2025 12:55:48.222 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/Users/galrubinstein/Documents/Programming/S-embly/lib/tomcat/apache-tomcat-10.1.46/webapps/host-manager] has finished in [8] ms
+27-Oct-2025 12:55:48.223 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+27-Oct-2025 12:55:48.230 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in [518] milliseconds
+27-Oct-2025 12:57:53.810 INFO [main] org.apache.catalina.core.StandardServer.await A valid shutdown command was received via the shutdown port. Stopping the Server instance.
+27-Oct-2025 12:57:53.810 INFO [main] org.apache.coyote.AbstractProtocol.pause Pausing ProtocolHandler ["http-nio-8080"]
+27-Oct-2025 12:57:53.812 INFO [main] org.apache.catalina.core.StandardService.stopInternal Stopping service [Catalina]
+27-Oct-2025 12:57:53.827 INFO [main] org.apache.coyote.AbstractProtocol.stop Stopping ProtocolHandler ["http-nio-8080"]
+27-Oct-2025 12:57:53.838 INFO [main] org.apache.coyote.AbstractProtocol.destroy Destroying ProtocolHandler ["http-nio-8080"]

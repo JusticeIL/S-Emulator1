@@ -1,10 +1,14 @@
 package program;
 
+import dto.ProgramData;
+import dto.ArchitectureGeneration;
+import dto.Run;
 import instruction.Instruction;
 import instruction.component.Label;
 import instruction.component.Variable;
-import program.data.VariableDTO;
+import dto.VariableDTO;
 import program.function.FunctionInstance;
+import user.User;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,10 +28,23 @@ public class ProgramExecutioner {
     private FunctionInstance callerFunctionInstance;
     private Map<String,Integer> xInitializedVariablesForDebug;
     private final Set<Integer> breakpoints = new HashSet<>();
+    private User user;
+    private int executionCost;
+    private ArchitectureGeneration architecture;
+
+    public boolean isProgramExecutionFailed() {
+        return programExecutionFailed;
+    }
+
+    private boolean programExecutionFailed;
 
     private void executeSingleInstruction() {
+
+        ProgramData savedState = new ProgramData(program);
+
         Label nextLabel = currentInstruction.execute();
-        cycleCounter += currentInstruction.getCycles();
+        int usedCycles = currentInstruction.getCycles();
+
 
         if (nextLabel.equals(Program.EMPTY_LABEL)) {
             currentCommandIndex++;
@@ -42,7 +59,26 @@ public class ProgramExecutioner {
             currentInstruction = program.getInstructionList().get(currentCommandIndex);
         }
 
+        if (user != null){//if activated by user
+            if(user.getCredits() < usedCycles){//if not enough credits
+                program.loadSavedState(savedState);//revert execution of last instruction
+                if(isDebugMode){//end execution
+                    stopDebug();
+                }
+                setProgramExecutionFailed();
+                return;
+            }
+            executionCost += (int) user.decreaseCredits(usedCycles);
+        }
+        cycleCounter+= usedCycles;
         program.setCycleCounter(cycleCounter);
+        if (isDebugMode&&nextLabel.equals(Program.EXIT_LABEL)){
+            stopDebug();
+        }
+    }
+
+    private void setProgramExecutionFailed() {
+        programExecutionFailed = true;
     }
 
     private void setUpNewRun(Set<VariableDTO> args){
@@ -56,7 +92,7 @@ public class ProgramExecutioner {
             variable.setValue(0);
         }
 
-        // Check if variables and functions in args exist in program
+        // Check if variables and functions in args exist in the program
         for (VariableDTO arg : args) {
             if (Variables.containsKey(arg.getName())) { // Case: variable argument
                 Variables.get(arg.getName()).setValue(arg.getValue());
@@ -76,11 +112,26 @@ public class ProgramExecutioner {
 
         this.currentCommandIndex = 0;
         this.cycleCounter = 0;
+
+        if (isMainExecutioner){
+            user.decreaseCredits(architecture.getCost());
+        }
+
+        if (user != null) {
+            user.updateProgramsExecuted();
+        }
+    }
+
+    public void setMainExecutioner(User user, ArchitectureGeneration architecture) {
+        isMainExecutioner = true;
+        this.user = user;
+        this.architecture = architecture;
     }
 
     public void setMainExecutioner() {
         isMainExecutioner = true;
     }
+
 
     public void setDebugMode(boolean debugMode) {
         isDebugMode = debugMode;
@@ -102,7 +153,7 @@ public class ProgramExecutioner {
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
         int currentRunLevel = program.getCurrentProgramLevel();
 
-        while (currentCommandIndex < program.getInstructionList().size()) {
+        while (canContinueExecution()) {
             executeSingleInstruction();
         }
 
@@ -110,7 +161,7 @@ public class ProgramExecutioner {
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
 
         if (isMainExecutioner) {
-            program.getStatistics().addRunToHistory(currentRunLevel, xInitializedVariables, finalStateOfAllVariables, cycleCounter);
+            saveRunToHistory(finalStateOfAllVariables, currentRunLevel, xInitializedVariables);
         }
         if (wasCalledFromFunction) {
             callerFunctionInstance.setCycles(cycleCounter);
@@ -128,15 +179,21 @@ public class ProgramExecutioner {
         currentRunLevelForDebug = program.getCurrentProgramLevel();
         program.setInDebugMode(true);
         program.setCycleCounter(cycleCounter);
-        if (!breakpoints.contains(currentInstruction.getNumber())) {
+        if (!breakpoints.isEmpty() &&!breakpoints.contains(currentInstruction.getNumber())) {
             resumeDebug();
         }
     }
 
     public void stepOver() {
-        executeSingleInstruction();
-        program.setNextInstructionIdForDebug(currentInstruction.getNumber());
-        if (currentCommandIndex >= program.getInstructionList().size() && isDebugMode) {
+        boolean programNotFinished = currentCommandIndex < program.getInstructionList().size();
+
+        if (programNotFinished) {
+            executeSingleInstruction();
+            program.setNextInstructionIdForDebug(currentInstruction.getNumber());
+
+        }
+
+        if (!programNotFinished && isDebugMode) {
             stopDebug();
         }
     }
@@ -147,13 +204,34 @@ public class ProgramExecutioner {
         Map<String,Integer> finalStateOfAllVariables = program.getVariables().stream()
                 .collect(Collectors.toMap(Variable::getName, Variable::getValue));
 
-        program.getStatistics().addRunToHistory(currentRunLevelForDebug, xInitializedVariablesForDebug, finalStateOfAllVariables, cycleCounter);
+        saveRunToHistory(finalStateOfAllVariables, currentRunLevelForDebug, xInitializedVariablesForDebug);
+    }
+
+    private void saveRunToHistory(Map<String, Integer> finalStateOfAllVariables, int currentRunLevelForDebug, Map<String, Integer> xInitializedVariablesForDebug) {
+        if (user != null){
+            RunBuilder runBuilder = new RunBuilder();
+            Run run = runBuilder.setRunCycles(cycleCounter)
+                    .setExpansionLevel(currentRunLevelForDebug)
+                    .setFinalStateOfAllVariables(finalStateOfAllVariables)
+                    .setInputArgs(xInitializedVariablesForDebug)
+                    .setProgramName(program.getProgramName())
+                    .setProgramType(program.getType())
+                    .setArchitectureGeneration(architecture)
+                    .build(user.getHistory());
+
+            user.getHistory().addRunToHistory(run);
+        }
     }
 
     public void resumeDebug() {
+        boolean programNotFinished = currentCommandIndex < program.getInstructionList().size();
         do {
-            stepOver();
-        } while (currentCommandIndex < program.getInstructionList().size()&&!breakpoints.contains(currentInstruction.getNumber()));
+                stepOver();
+            } while (canContinueExecution());
+
+        if (!programNotFinished) {
+            stopDebug();
+        }
     }
 
     public void addBreakpoint(int lineNumber) {
@@ -167,5 +245,23 @@ public class ProgramExecutioner {
     public void SetCallerFunctionInstance(FunctionInstance caller) {
         this.callerFunctionInstance = caller;
         this.wasCalledFromFunction = true;
+    }
+
+    private boolean canContinueExecution() {
+        boolean programNotFinished = currentCommandIndex < program.getInstructionList().size();
+        boolean ifDebugThenNoBreakpoint = true;
+        if (isDebugMode){
+           ifDebugThenNoBreakpoint = !breakpoints.contains(currentInstruction.getNumber());
+        }
+
+        return programNotFinished && ifDebugThenNoBreakpoint;
+    }
+
+    public boolean isInDebug() {
+        return isDebugMode;
+    }
+
+    public int getExecutionCost() {
+        return executionCost;
     }
 }

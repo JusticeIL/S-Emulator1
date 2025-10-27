@@ -1,0 +1,27 @@
+package servlets.execution;
+
+import configuration.CookiesAuthenticator;
+import controller.MultiUserModel;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+@WebServlet(name = "StopDebugServlet", urlPatterns = {"/api/program/debug/stop"})
+public class StopDebugServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
+        authenticator.checkForUsernameThenDo(req, resp,() -> {
+                    //onSuccess
+                    String username = authenticator.getUsername(req);
+                    MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
+                    model.stopDebug(username);
+                    resp.sendRedirect(req.getContextPath() + "/api/program");
+                });
+    }
+}
