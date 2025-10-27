@@ -56,7 +56,19 @@ The emulator now supports:
 3.**Copy .war file**  
    Copy the .WAR file from the `S-embly 3` folder (`S-emulator.war`) into the pre-defined tomcat webapps folder (`lib/tomcat/apache-tomcat-10.1.46/webapps`).
 
-6.**Run the GUI S-Emulator program**  
+4.**Deploy the tomcat server**  
+   Start the tomcat server by running the `startup.bat` script (Windows) or `startup.sh` script (Mac) from the `lib/tomcat/apache-tomcat-10.1.46/bin` folder:  
+   ```bash
+   # Windows
+   cd lib/tomcat/apache-tomcat-10.1.46/bin
+   startup.bat
+
+   # Mac
+   cd lib/tomcat/apache-tomcat-10.1.46/bin
+   ./startup.sh
+   ```
+
+5.**Run the GUI S-Emulator program**  
    If you are using Windows, run the `run.bat` script from the `Windows` folder:
    ```bash
    run.bat
