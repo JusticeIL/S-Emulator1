@@ -1,2 +1,0 @@
-O.O.B:
-Compile to WAR :)
