@@ -72,7 +72,7 @@ public class MainController {
                 if (response.isSuccessful()) {
                     Platform.runLater(() -> {
                         try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard/resources/fxml/dashboard.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard/resources/fxml/dashboard.fxml"));
                             Parent newRoot = loader.load();
                             Scene dashboardScene = new Scene(newRoot, 850, 600);
                             dashboardScene.getStylesheets().clear();
@@ -94,6 +94,7 @@ public class MainController {
                         } catch (Exception ex) {
                             Stage primaryStage = (Stage) clientApplicationTitle.getScene().getWindow();
                             showAlert("Failed to load dashboard: " + ex.getMessage(), primaryStage);
+                            ex.printStackTrace();
                         }
                     });
                 } else {
