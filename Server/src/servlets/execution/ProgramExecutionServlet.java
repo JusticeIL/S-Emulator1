@@ -23,7 +23,6 @@ import java.util.Set;
 public class ProgramExecutionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new Gson();
 
         // Expects the query parameters to contain the arguments for the program
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
@@ -58,7 +57,6 @@ public class ProgramExecutionServlet extends HttpServlet {
             }
         }
 
-        // 2. ניתוח ה-JSON לאובייקט ExecutionPayload
         return gson.fromJson(jsonBody.toString(), ExecutionPayload.class);
     }
 }

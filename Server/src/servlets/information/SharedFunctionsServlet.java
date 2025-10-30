@@ -18,7 +18,6 @@ public class SharedFunctionsServlet extends HttpServlet {
         CookiesAuthenticator authenticator = (CookiesAuthenticator) getServletContext().getAttribute("cookiesAuthenticator");
         authenticator.checkForUsernameThenDo(req, resp, () -> {
             //onSuccess
-            String username = authenticator.getUsername(req);
             MultiUserModel model = (MultiUserModel) getServletContext().getAttribute("model");
             Gson gson = new Gson();
             String responseJson = gson.toJson(model.getAllSharedFunctionsData());
