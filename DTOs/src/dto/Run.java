@@ -14,7 +14,6 @@ public class Run implements Serializable {
     private final int yValue;
     private final int runCycles;
 
-
     private final Map<String,Integer> inputArgs;
     private final Map<String,Integer> finalStateOfAllVariables;
 
